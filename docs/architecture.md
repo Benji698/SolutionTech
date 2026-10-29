@@ -1,6 +1,6 @@
 # Architecture — SOS Admin
 
-> Phase 1 — 29/10/2026 — **En attente de validation**
+> Phase 1 — 29/10/2026 — **Validée**
 
 ## 1. L'idée en une phrase
 

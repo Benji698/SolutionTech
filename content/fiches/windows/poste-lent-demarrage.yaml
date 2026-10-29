@@ -1,0 +1,331 @@
+id: poste-lent-demarrage
+titre: Poste lent au démarrage
+resume: Le PC met plusieurs minutes à devenir utilisable après l'allumage ou l'ouverture de session. Identifier la phase lente (démarrage, ouverture de session ou bureau), trouver le responsable, puis l'alléger ou le corriger.
+statut: a-relire
+domaine: windows
+sous_domaine: demarrage-performances
+niveau: N1
+temps_estime: { min: 15, max: 60 }
+critique: false
+environnements: [win11, win10]
+droits: admin-local
+outils: [gestionnaire-taches, observateur-evenements, autoruns]
+acces:
+  - Session sur le poste ou prise en main à distance.
+  - Droits administrateur local pour désactiver des services, lire certains journaux ou installer des mises à jour.
+
+symptomes:
+  - « Mon PC rame le matin, il faut attendre dix minutes avant de pouvoir travailler. »
+  - « L'écran reste longtemps sur “Bienvenue” ou “Préparation de Windows”. »
+  - « Le bureau s'affiche mais rien ne répond pendant plusieurs minutes. »
+  - « C'est long depuis la dernière mise à jour. »
+
+messages_erreur:
+  - texte: Veuillez patienter pour le client de stratégie de groupe… / Please wait for the Group Policy Client…
+    ou: Écran d'ouverture de session (poste dans un domaine)
+  - texte: Préparation de Windows. N'éteignez pas votre ordinateur. / Getting Windows ready. Don't turn off your computer.
+    ou: Écran de démarrage (installation de mises à jour)
+
+variables: []
+
+causes:
+  - id: c1
+    titre: Trop d'applications lancées au démarrage
+    frequence: tres-frequente
+    detail: Logiciels qui s'ajoutent eux-mêmes au démarrage (mises à jour automatiques, synchronisation, messageries, utilitaires constructeur).
+  - id: c2
+    titre: Mises à jour Windows en cours ou en attente de redémarrage
+    frequence: frequente
+  - id: c3
+    titre: Disque saturé, disque dur mécanique ou disque en fin de vie
+    frequence: frequente
+    detail: Un disque dur mécanique (HDD) ou un disque presque plein ralentit fortement le démarrage ; un disque qui se dégrade aussi.
+  - id: c4
+    titre: Ouverture de session ralentie par les stratégies de groupe et les scripts (poste en domaine)
+    frequence: frequente
+    detail: Lecteurs réseau vers des serveurs injoignables, scripts d'ouverture de session, stratégie « Toujours attendre le réseau ».
+  - id: c5
+    titre: Pilote ou service qui retarde le démarrage
+    frequence: occasionnelle
+    detail: Pilote obsolète ou défectueux, service tiers qui met longtemps à démarrer.
+
+diagnostic:
+  - id: d1
+    titre: Repérer la phase lente et l'âge du dernier redémarrage
+    niveau: N1
+    graphique: |
+      Faire décrire précisément à l'utilisateur, ou observer, **à quel moment** c'est lent :
+
+      - **A.** Avant l'écran de connexion (logo du constructeur, cercle de chargement).
+      - **B.** Après la saisie du mot de passe : « Bienvenue », « Préparation de Windows », « Veuillez patienter pour le client de stratégie de groupe ».
+      - **C.** Le bureau s'affiche, mais le PC reste inutilisable plusieurs minutes.
+
+      Vérifier aussi **depuis quand le PC n'a pas vraiment redémarré** : *Gestionnaire des tâches* (**Ctrl + Maj + Échap**) › **Performances** › **Processeur** › **Temps d'activité** (*Up time*).
+    commande:
+      langage: powershell
+      code: |
+        # Date du dernier vrai démarrage
+        (Get-CimInstance Win32_OperatingSystem).LastBootUpTime
+    astuce: Avec le **démarrage rapide** de Windows, un « Arrêter » ne remet pas le système à zéro (le temps d'activité continue de compter). Seul **Redémarrer** le fait. Un temps d'activité de plusieurs semaines suffit à expliquer des lenteurs.
+    conclusions:
+      - { si: "« Préparation de Windows » ou « N'éteignez pas votre ordinateur »", cause: c2, aller_a: r2 }
+      - { si: "« Veuillez patienter pour le client de stratégie de groupe » ou phase B très longue sur un poste en domaine", cause: c4, aller_a: r4 }
+      - { si: "Phase C : le bureau s'affiche mais rien ne répond", aller_a: d2 }
+      - { si: "Phase A : lent avant même l'écran de connexion", aller_a: d4 }
+
+  - id: d2
+    titre: Repérer les applications qui ralentissent le démarrage
+    niveau: N1
+    graphique:
+      - versions: [win11]
+        texte: |
+          1. Ouvrir le **Gestionnaire des tâches** (**Ctrl + Maj + Échap**).
+          2. Dans le menu de gauche, ouvrir **Applications de démarrage** (*Startup apps*).
+          3. Trier par la colonne **Impact au démarrage** (*Startup impact*) et noter les applications à impact **Élevé**.
+      - versions: [win10]
+        texte: |
+          1. Ouvrir le **Gestionnaire des tâches** (**Ctrl + Maj + Échap**), cliquer sur **Plus de détails** si la fenêtre est réduite.
+          2. Ouvrir l'onglet **Démarrage** (*Startup*).
+          3. Trier par la colonne **Impact au démarrage** (*Startup impact*) et noter les applications à impact **Élevé**.
+    commande:
+      langage: powershell
+      code: Get-CimInstance -ClassName Win32_StartupCommand | Select-Object Name, Command, Location, User
+    astuce: En haut à droite de cette page, **Dernier temps du BIOS** (*Last BIOS time*) indique le temps passé dans le firmware avant le chargement de Windows. Une valeur de plusieurs dizaines de secondes oriente vers le BIOS/UEFI (mise à jour du firmware, ordre de démarrage, périphérique USB branché).
+    conclusions:
+      - { si: "Plusieurs applications ont un impact « Élevé »", cause: c1, aller_a: r1 }
+      - { si: "Peu d'applications au démarrage", aller_a: d3 }
+
+  - id: d3
+    titre: Vérifier le disque
+    niveau: N1
+    graphique: |
+      1. **Gestionnaire des tâches** › **Performances** › **Disque 0** : noter le **type** (SSD ou HDD) et regarder si le **Temps d'activité** (*Active time*) reste bloqué près de **100 %** après le démarrage.
+      2. **Explorateur de fichiers** › **Ce PC** : vérifier l'espace libre sur **C:**. En dessous de 10 % d'espace libre, Windows ralentit nettement.
+    commande:
+      langage: powershell
+      code: |
+        Get-PhysicalDisk | Select-Object FriendlyName, MediaType, HealthStatus, OperationalStatus
+        Get-Volume -DriveLetter C | Select-Object DriveLetter, @{ n = 'LibreGo'; e = { [math]::Round($_.SizeRemaining / 1GB, 1) } }, @{ n = 'TotalGo'; e = { [math]::Round($_.Size / 1GB, 1) } }
+    conclusions:
+      - { si: "Disque presque plein, disque mécanique (HDD) toujours à 100 %, ou état de santé autre que « Healthy »", cause: c3, aller_a: r3 }
+      - { si: "Disque SSD en bonne santé, avec de l'espace libre", aller_a: d4 }
+
+  - id: d4
+    titre: Mesurer la durée du démarrage et trouver le responsable dans les journaux
+    niveau: N2
+    graphique: |
+      1. Ouvrir l'**Observateur d'événements** (`eventvwr.msc`).
+      2. Aller dans **Journaux des applications et des services** › **Microsoft** › **Windows** › **Diagnostics-Performance** › **Opérationnel** (*Operational*).
+      3. Les événements **100** indiquent la **durée totale** de chaque démarrage (en millisecondes) : comparer avec les démarrages précédents.
+      4. Les événements **101** (application), **102** (pilote) et **103** (service) nomment ce qui a **ralenti** le démarrage.
+    commande:
+      langage: powershell
+      admin: true
+      code: |
+        # Durée des 5 derniers démarrages
+        Get-WinEvent -LogName 'Microsoft-Windows-Diagnostics-Performance/Operational' -FilterXPath '*[System[EventID=100]]' -MaxEvents 5 |
+          Format-List TimeCreated, Message
+
+        # Applications, pilotes et services signalés comme lents
+        Get-WinEvent -LogName 'Microsoft-Windows-Diagnostics-Performance/Operational' -FilterXPath '*[System[(EventID=101 or EventID=102 or EventID=103)]]' -MaxEvents 20 |
+          Format-List TimeCreated, Id, Message
+    astuce: |
+      Une lenteur ponctuelle juste après une mise à jour de Windows ou d'un pilote est normale. Ce qui compte, c'est un même élément qui revient à chaque démarrage.
+
+      > [!a-verifier]
+      > Ce journal n'explique pas toujours la lenteur : il arrive qu'un événement 100 apparaisse seul, sans 101, 102 ou 103.
+    conclusions:
+      - { si: "Événement 101 : une application est signalée", cause: c1, aller_a: r1 }
+      - { si: "Événement 102 ou 103 : un pilote ou un service est signalé", cause: c5, aller_a: r5 }
+      - { si: "Aucun responsable identifié mais démarrage toujours long sur un HDD ou un disque plein", cause: c3, aller_a: r3 }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Désactiver les applications inutiles au démarrage
+    etapes:
+      - id: r1-e1
+        titre: Désactiver les applications à fort impact qui ne sont pas indispensables
+        niveau: N1
+        graphique:
+          - versions: [win11]
+            texte: |
+              1. **Paramètres** › **Applications** (*Apps*) › **Démarrage** (*Startup*), ou *Gestionnaire des tâches* › **Applications de démarrage**.
+              2. Désactiver les applications non indispensables à l'ouverture de session (lanceurs de jeux, utilitaires de mise à jour, logiciels rarement utilisés).
+              3. Redémarrer (**Redémarrer**, pas « Arrêter ») et comparer.
+          - versions: [win10]
+            texte: |
+              1. **Paramètres** › **Applications** (*Apps*) › **Démarrage** (*Startup*), ou *Gestionnaire des tâches* › onglet **Démarrage**.
+              2. Désactiver les applications non indispensables à l'ouverture de session (lanceurs de jeux, utilitaires de mise à jour, logiciels rarement utilisés).
+              3. Redémarrer (**Redémarrer**, pas « Arrêter ») et comparer.
+        avertissement:
+          type: attention
+          texte: "Ne pas désactiver l'antivirus, le client VPN, les pilotes audio, tactiles ou graphiques, ni les outils imposés par l'entreprise (agent de gestion, sauvegarde). Désactiver une application ne la désinstalle pas : on peut la réactiver au même endroit."
+        astuce: Pour aller plus loin (N2), l'outil **Autoruns** de Microsoft Sysinternals montre tout ce qui se lance au démarrage (services, tâches planifiées, extensions), au-delà de ce qu'affiche le Gestionnaire des tâches.
+
+  - id: r2
+    causes: [c2]
+    titre: Terminer l'installation des mises à jour
+    etapes:
+      - id: r2-e1
+        titre: Installer les mises à jour en attente et redémarrer
+        niveau: N1
+        graphique:
+          - versions: [win11]
+            texte: |
+              1. **Paramètres** › **Windows Update**.
+              2. Installer les mises à jour proposées, puis cliquer sur **Redémarrer maintenant** (*Restart now*).
+              3. Laisser le PC sur secteur jusqu'à la fin, puis redémarrer une deuxième fois pour comparer.
+          - versions: [win10]
+            texte: |
+              1. **Paramètres** › **Mise à jour et sécurité** (*Update & Security*) › **Windows Update**.
+              2. Installer les mises à jour proposées, puis cliquer sur **Redémarrer maintenant** (*Restart now*).
+              3. Laisser le PC sur secteur jusqu'à la fin, puis redémarrer une deuxième fois pour comparer.
+        avertissement:
+          type: attention
+          texte: "Ne jamais éteindre ou débrancher le PC pendant l'écran « Préparation de Windows » ou « N'éteignez pas votre ordinateur », même si c'est long : une coupure à ce moment peut empêcher Windows de redémarrer."
+
+  - id: r3
+    causes: [c3]
+    titre: Libérer de l'espace, ou remplacer le disque
+    etapes:
+      - id: r3-e1
+        titre: "Libérer de l'espace sur C:"
+        niveau: N1
+        graphique:
+          - versions: [win11]
+            texte: |
+              1. **Paramètres** › **Système** › **Stockage** (*Storage*) › **Recommandations de nettoyage** (*Cleanup recommendations*).
+              2. Supprimer les fichiers temporaires et les anciens fichiers de mise à jour. Vérifier avec l'utilisateur avant de vider **Téléchargements** ou la **Corbeille**.
+              3. Activer **Assistant Stockage** (*Storage Sense*) pour automatiser ce nettoyage.
+          - versions: [win10]
+            texte: |
+              1. **Paramètres** › **Système** › **Stockage** (*Storage*) › **Fichiers temporaires** (*Temporary files*).
+              2. Supprimer les fichiers temporaires et les anciens fichiers de mise à jour. Vérifier avec l'utilisateur avant de vider **Téléchargements** ou la **Corbeille**.
+              3. Activer **Assistant Stockage** (*Storage Sense*) pour automatiser ce nettoyage.
+        avertissement:
+          type: destructif
+          texte: Les fichiers supprimés depuis Téléchargements ou la Corbeille ne sont pas récupérables. Toujours faire valider la liste par l'utilisateur.
+      - id: r3-e2
+        titre: Si le disque est mécanique ou en mauvaise santé, sauvegarder puis le remplacer
+        niveau: N2
+        graphique: |
+          - **Disque en mauvaise santé** (état autre que *Healthy*, erreurs disque dans le journal Système) : **sauvegarder immédiatement** les données de l'utilisateur, puis planifier le remplacement du disque.
+          - **Disque dur mécanique (HDD)** en bonne santé : le remplacement par un **SSD** est la solution la plus efficace contre les démarrages lents.
+          - Pour une vérification sans risque du système de fichiers : clic droit sur **C:** › **Propriétés** › **Outils** › **Vérifier** (*Check*).
+        commande:
+          langage: cmd
+          admin: true
+          code: |
+            rem Analyse en ligne du système de fichiers, sans réparation ni redémarrage
+            chkdsk C: /scan
+
+  - id: r4
+    causes: [c4]
+    titre: Accélérer le traitement des stratégies de groupe à l'ouverture de session
+    etapes:
+      - id: r4-e1
+        titre: Identifier la stratégie ou le script qui prend du temps
+        niveau: N2
+        graphique: |
+          1. Sur le poste, **Observateur d'événements** › *Journaux des applications et des services* › *Microsoft* › *Windows* › **GroupPolicy** › **Opérationnel**.
+          2. Repérer les événements qui indiquent la **durée** du traitement des stratégies au démarrage et à l'ouverture de session, puis les extensions ou scripts les plus longs.
+          3. Générer un rapport des stratégies appliquées et repérer les **lecteurs réseau** ou **scripts** qui pointent vers des serveurs disparus.
+
+          > [!a-verifier]
+          > Les événements 8000 (démarrage de l'ordinateur) et 8001 (ouverture de session) sont souvent cités pour lire la durée totale du traitement.
+        commande:
+          langage: cmd
+          ou: Dans la session de l'utilisateur, console non élevée
+          code: gpresult /h "%USERPROFILE%\Desktop\rapport-gpo.html"
+      - id: r4-e2
+        titre: Corriger les éléments lents
+        niveau: N3
+        graphique: |
+          Dans **Gestion des stratégies de groupe** :
+
+          - Supprimer ou corriger les **lecteurs réseau** et **scripts** qui visent des serveurs qui n'existent plus.
+          - Réévaluer la stratégie **Toujours attendre le réseau lors du démarrage de l'ordinateur et de l'ouverture de session** (*Always wait for the network at computer startup and logon*) : *Configuration ordinateur › Stratégies › Modèles d'administration › Système › Ouverture de session*. Activée, elle garantit que toutes les stratégies sont appliquées mais rend chaque ouverture de session synchrone, donc plus lente.
+          - Pour les préférences de lecteurs, préférer l'action **Mettre à jour** (*Update*) à **Remplacer** (*Replace*).
+        avertissement:
+          type: attention
+          texte: Une modification de GPO s'applique à tous les postes et utilisateurs ciblés. La tester d'abord sur une OU de test.
+
+  - id: r5
+    causes: [c5]
+    titre: Mettre à jour ou différer le pilote ou le service en cause
+    etapes:
+      - id: r5-e1
+        titre: Mettre à jour le pilote signalé
+        niveau: N2
+        graphique: |
+          1. Noter le nom du pilote indiqué par l'événement 102.
+          2. Installer la dernière version du pilote : site du constructeur du PC (outil de mise à jour du constructeur), ou **Windows Update** › **Options avancées** › **Mises à jour facultatives** (*Optional updates*).
+          3. Redémarrer et comparer la durée de démarrage (événement 100).
+      - id: r5-e2
+        titre: Différer le démarrage d'un service tiers non critique
+        niveau: N2
+        graphique: |
+          1. **Services** (`services.msc`) › propriétés du service signalé par l'événement 103.
+          2. **Type de démarrage** (*Startup type*) › **Automatique (début différé)** (*Automatic (Delayed Start)*) : le service démarre environ deux minutes après les autres et ne bloque plus l'ouverture de session.
+        avertissement:
+          type: attention
+          texte: Ne modifier que des services tiers non critiques. Ne pas toucher aux services Windows, de sécurité ou de sauvegarde sans savoir précisément à quoi ils servent.
+
+verification:
+  - id: v1
+    titre: La durée de démarrage a baissé
+    niveau: N2
+    graphique: Après deux ou trois redémarrages, comparer les nouveaux événements **100** du journal *Diagnostics-Performance* avec les anciens.
+    commande:
+      langage: powershell
+      admin: true
+      code: |
+        Get-WinEvent -LogName 'Microsoft-Windows-Diagnostics-Performance/Operational' -FilterXPath '*[System[EventID=100]]' -MaxEvents 5 |
+          Format-List TimeCreated, Message
+  - id: v2
+    titre: L'utilisateur peut travailler rapidement après l'ouverture de session
+    niveau: N1
+    graphique: Faire redémarrer le poste et chronométrer le temps entre l'allumage et l'ouverture effective des applications de travail. Comparer avec le temps décrit au départ.
+
+prevention:
+  - Équiper les postes de SSD et garder au moins 15 à 20 % d'espace libre sur C:.
+  - Limiter les applications au démarrage dans l'image de déploiement des postes.
+  - Redémarrer les postes régulièrement (au moins une fois par semaine) ; le rappeler aux utilisateurs.
+  - Programmer les mises à jour en dehors des heures de travail (**Heures d'activité** dans Windows Update, ou stratégie de l'entreprise).
+  - "Nettoyer régulièrement les GPO : lecteurs réseau, scripts et imprimantes qui pointent vers des serveurs disparus."
+
+comprendre: |
+  Le démarrage se déroule en trois phases : le **firmware** (BIOS/UEFI) puis le chargement de **Windows** jusqu'à l'écran de connexion, l'**ouverture de session** (profil, stratégies de groupe, scripts), et enfin le **lancement des applications** de démarrage. Chaque phase a ses causes typiques : identifier la phase lente évite de chercher au mauvais endroit.
+  Pour une analyse fine (N3), le **Windows Performance Toolkit** de Microsoft (WPR pour enregistrer, WPA pour analyser) permet de chronométrer chaque élément du démarrage.
+
+fiches_liees: [windows-ouverture-session-lente, windows-disque-100-pourcent, gpo-ne-s-applique-pas]
+tags: [lent, lenteur, rame, demarrage, boot, ouverture de session, performances, startup, ssd, disque, gpo, diagnostics-performance, evenement 100]
+
+sources:
+  - titre: "Event ID 100 Windows Diagnostics-Performance — Microsoft TechNet Wiki (archive)"
+    url: https://learn.microsoft.com/en-us/archive/technet-wiki/11559.event-id-100-windows-diagnostics-performance
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Windows Enterprise Client Boot and Logon Optimization – Part 18, Group Policy — Microsoft (blog archive)"
+    url: https://learn.microsoft.com/en-us/archive/blogs/markrenoden/windows-enterprise-client-boot-and-logon-optimization-part-18-infrastructure-and-settings-group-policy
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Autoruns — Microsoft Sysinternals"
+    url: https://learn.microsoft.com/en-us/sysinternals/downloads/autoruns
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Diagnostics-Performance event ID 100, slow boot — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/2422685/diagnostics-perfomance-event-id-100-slow-boot
+    type: forum
+    consulte_le: 2026-10-29
+  - titre: "Enable or Disable Startup Apps in Windows 11 — ElevenForum"
+    url: https://www.elevenforum.com/t/enable-or-disable-startup-apps-in-windows-11.699/
+    type: forum
+    consulte_le: 2026-10-29
+  - titre: "Windows boot performance diagnostics, part 1 — Event Log Explorer blog"
+    url: https://eventlogxp.com/blog/windows-boot-performance-diagnostics-1/
+    type: blog
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

@@ -54,77 +54,36 @@ docs/                     Cahier des charges, architecture, avancement, a-reveri
 - **Commits :** en français, avec un préfixe : `contenu(<domaine>): …`, `site: …`, `ios: …`, `build: …`, `docs: …`. Développement sur la branche de travail, fusion dans `main` après validation, ce qui déclenche le déploiement.
 - **Licences :** code MIT (`LICENSE`), contenu CC BY-SA 4.0 (`content/LICENSE`).
 
-## Schéma d'une fiche (PROVISOIRE, finalisé en Phase 2)
+## Schéma d'une fiche
 
-```yaml
-id: ad-compte-verrouille
-titre: Utilisateur verrouillé dans l'Active Directory
-resume: Le compte AD est bloqué après trop d'échecs de mot de passe ; trouver la source puis déverrouiller.
-statut: a-relire                 # brouillon | a-relire | verifiee
-domaine: active-directory        # id issu de taxonomie.yaml (emplacement principal)
-sous_domaine: comptes-utilisateurs
-theme: verrouillage              # optionnel
-apparait_aussi_dans: [microsoft-365/entra-id]   # renvois (pas de copie)
-niveau: N1                       # N1 | N2 | N3
-temps_estime: { min: 5, max: 20 }  # minutes
-critique: false
-environnements: [ws2019, ws2022, ws2025]        # ids issus de environnements.yaml
-droits: admin-domaine            # aucun | admin-local | admin-domaine | admin-m365 | …
-outils: [rsat-ad]                # ids de content/outils/
-acces: [Poste avec RSAT ou session sur un contrôleur de domaine]
-symptomes:
-  - « Il me dit que mon compte est verrouillé »
-messages_erreur:
-  - { texte: "Le compte référencé est actuellement verrouillé…", code: "0xC0000234" }
-variables:                       # alimentent le formulaire « Mes valeurs » (en mémoire seulement)
-  - { nom: NomUtilisateur, libelle: Identifiant (sAMAccountName), exemple: jdupont }
-premiers_reflexes: []            # si critique: true
-causes:
-  - { id: c1, titre: Mot de passe mal saisi à répétition, frequence: tres-frequente }
-  - { id: c2, titre: Ancien mot de passe enregistré sur un appareil (smartphone, lecteur réseau), frequence: frequente }
-diagnostic:
-  - id: d1
-    titre: Vérifier si le compte est verrouillé
-    niveau: N1
-    versions: []                 # vide = toutes les versions de la fiche
-    graphique: |                 # Markdown ; peut aussi être une liste de variantes { versions, texte }
-      *Utilisateurs et ordinateurs Active Directory* (*Active Directory Users and Computers*) > …
-    commande:
-      langage: powershell        # powershell | cmd | bash | cisco-ios | …
-      admin: false
-      mise_en_avant: false       # true seulement si pas d'équivalent graphique
-      code: Get-ADUser -Identity <NomUtilisateur> -Properties LockedOut
-    avertissement: null          # { type: destructif | attention, texte: … }
-    conclusions:
-      - { si: Le compte est verrouillé, cause: c1, aller_a: d2 }
-      - { sinon: true, aller_a: d3 }
-resolutions:
-  - { id: r1, cause: c1, titre: …, etapes: [ …même format que diagnostic… ] }
-verification: [ …étapes… ]
-prevention: [ … ]
-comprendre: …                    # optionnel, 3 à 5 lignes
-fiches_liees: [ … ]
-tags: [verrouillage, lockout, 4740]
-sources:
-  - { titre: …, url: https://learn.microsoft.com/…, type: officiel, consulte_le: 2026-10-29 }   # officiel | forum | blog
-derniere_verification: 2026-10-29
-```
+- **Référence technique (fait foi) :** `schema/fiche.ts` (Zod). Référentiels : `schema/referentiels.ts`.
+- **Guide de rédaction (pour humains) :** `docs/guide-redaction.md`, avec les pièges YAML.
+- **Exemples complets :** `content/fiches/active-directory/ad-compte-verrouille.yaml`, `content/fiches/materiel-peripheriques/imprimante-reseau-session.yaml`, `content/fiches/windows/poste-lent-demarrage.yaml`.
 
-Fiche outil (`content/outils/<id>.yaml`) : `id, nom, description, editeur, url_officielle, licence, plateformes, usages, pieges, derniere_verification`. La liste des fiches qui l'utilisent est calculée au build.
+En bref :
+- En-tête : `id, titre, resume, statut, domaine, sous_domaine, theme?, apparait_aussi_dans, niveau, temps_estime{min,max}, critique, environnements, droits, outils, acces, symptomes, messages_erreur, variables, premiers_reflexes`.
+- `causes[]` (id c1…, classées par fréquence) → `diagnostic[]` (étapes) → `resolutions[]` (`id`, `causes[]`, `titre`, `etapes[]`) → `verification[]` (étapes) → `prevention[]`, `comprendre?`, `fiches_liees`, `tags`, `sources[]`, `derniere_verification`.
+- **Étape** : `id, titre, niveau, versions?, graphique? (texte ou variantes {versions, texte}), commande? {langage, code, admin, ou?}, avertissement? {type: destructif|attention, texte}, astuce?, conclusions? [{si, cause?, aller_a? (id local ou "fiche:<id>")}]`.
+- Pas de champ « mise en avant » : la commande est mise en avant **seulement si l'étape n'a pas de `graphique`**.
+- Contrôles croisés dans `scripts/build-index.ts` : liens internes, variables déclarées/utilisées, versions, une résolution par cause, emplacement du fichier. ERREUR = build bloqué ; ALERTE = à traiter plus tard.
+- Pièges YAML fréquents en français : guillemets si la valeur contient « : » ; guillemets autour des codes et nombres (`"4740"`, `"0x0000011b"`).
 
-## Commandes (une fois le projet initialisé)
+## Commandes
 
 ```bash
 npm install            # dépendances
-npm run validate       # valide toutes les fiches (schéma + liens internes)
-npm run build:index    # génère generated/index.json et generated/search.json
-npm run dev            # site en local (http://localhost:4321)
-npm run build          # index + site complet → site/dist (ce que fait Cloudflare)
-npm run sync:ios       # copie l'index dans ios/SOSAdmin/Resources/
+npm run validate       # valide toutes les fiches (schéma + liens internes)  ✅ disponible
+npm run build:index    # génère generated/index.json et generated/search.json  ✅ disponible
+npm run typecheck      # vérifie le TypeScript  ✅ disponible
+npm run dev            # site en local (http://localhost:4321)  — Phase 4
+npm run build          # index + site complet → site/dist (ce que fait Cloudflare)  — Phase 4
+npm run sync:ios       # copie l'index dans ios/SOSAdmin/Resources/  — Phase 5
 ```
 
 ## État actuel
 
 - ✅ Phase 0 : cahier des charges validé.
-- 🔄 Phase 1 : architecture proposée, en attente de validation.
-- Phases suivantes : 2 taxonomie et schéma + 3 fiches exemples → 3 contenu par catégorie → 4 site → 5 iOS.
+- ✅ Phase 1 : architecture validée.
+- 🔄 Phase 2 : taxonomie (19 domaines), schéma final, script de build et 3 fiches exemples livrés ; en attente de validation du format.
+- Phases suivantes : 3 contenu par catégorie (suivi dans `docs/avancement.md`) → 4 site → 5 iOS.
+- Réseau de la session cloud : `learn.microsoft.com` et `support.microsoft.com` peuvent être bloqués en lecture directe (WebFetch) ; la recherche web fonctionne. Indiquer « à vérifier » quand une page officielle n'a pas pu être relue.

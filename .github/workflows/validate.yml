@@ -1,0 +1,21 @@
+# Valide toutes les fiches à chaque push et à chaque pull request.
+# Si une fiche est cassée (champ manquant, lien interne vers une étape inexistante…),
+# la coche devient rouge sur GitHub et on corrige avant de fusionner dans main.
+name: Validation du contenu
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  valider:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run validate

@@ -1,0 +1,318 @@
+id: ad-compte-verrouille
+titre: Utilisateur verrouillé dans l'Active Directory
+resume: Le compte AD est bloqué après trop d'échecs de mot de passe. Trouver d'où viennent les échecs, corriger la source, puis déverrouiller.
+statut: a-relire
+domaine: active-directory
+sous_domaine: comptes-utilisateurs
+theme: verrouillage
+apparait_aussi_dans: [windows/comptes-sessions]
+niveau: N1
+temps_estime: { min: 5, max: 45 }
+critique: false
+environnements: [ws2016, ws2019, ws2022, ws2025]
+droits: delegation-ad
+outils: [rsat-ad, observateur-evenements]
+acces:
+  - Poste d'administration avec les outils RSAT « Active Directory » installés, ou session sur un contrôleur de domaine.
+  - "Pour la recherche de la source (étape 3) : droit de lecture du journal Sécurité du contrôleur de domaine (administrateur du domaine ou membre de « Lecteurs des journaux d'événements » / *Event Log Readers*)."
+
+symptomes:
+  - « Je n'arrive plus à ouvrir ma session, Windows me dit que mon compte est verrouillé. »
+  - « Ça marchait ce matin, et maintenant plus rien, même avec le bon mot de passe. »
+  - « Mon compte se bloque tous les jours depuis que j'ai changé mon mot de passe. »
+  - « Je n'ai plus accès aux lecteurs réseau, à la messagerie ni au VPN. »
+
+messages_erreur:
+  - texte: The referenced account is currently locked out and may not be logged on to.
+    ou: Écran d'ouverture de session Windows (version anglaise)
+  - texte: Le compte référencé est actuellement verrouillé et ne peut pas être utilisé pour ouvrir une session.
+    ou: Écran d'ouverture de session Windows (version française, formulation à confirmer)
+  - texte: "A user account was locked out."
+    code: "4740"
+    ou: Journal Sécurité du contrôleur de domaine (émulateur PDC)
+
+variables:
+  - { nom: NomUtilisateur, libelle: "Identifiant de l'utilisateur (sAMAccountName)", exemple: jdupont }
+  - { nom: NomPC, libelle: "Nom de l'appareil à l'origine du verrouillage (trouvé à l'étape 3)", exemple: PC-COMPTA-07 }
+
+causes:
+  - id: c1
+    titre: Mot de passe mal saisi plusieurs fois de suite
+    frequence: tres-frequente
+    detail: Mot de passe oublié, touche Verr. Maj enfoncée, clavier passé en QWERTY, ancien mot de passe tapé par habitude.
+  - id: c2
+    titre: L'ancien mot de passe est encore utilisé par un autre appareil ou une session
+    frequence: frequente
+    detail: Smartphone (messagerie, Wi-Fi d'entreprise), deuxième PC, session Bureau à distance restée ouverte, lecteur réseau connecté avec d'anciens identifiants, identifiants enregistrés dans le Gestionnaire d'identification.
+  - id: c3
+    titre: Un service, une tâche planifiée ou une application tourne avec le compte de l'utilisateur
+    frequence: occasionnelle
+    detail: Après le changement de mot de passe, le service continue d'essayer l'ancien et verrouille le compte à chaque tentative.
+  - id: c4
+    titre: Tentatives malveillantes (force brute, password spraying)
+    frequence: rare
+    detail: Verrouillages répétés depuis des sources inconnues, souvent sur plusieurs comptes en même temps.
+
+diagnostic:
+  - id: d1
+    titre: Vérifier que le compte est réellement verrouillé
+    niveau: N1
+    graphique: |
+      1. Ouvrir **Utilisateurs et ordinateurs Active Directory** (*Active Directory Users and Computers*) : touche Windows, taper `dsa.msc`.
+      2. Clic droit sur le domaine › **Rechercher…** (*Find…*), saisir le nom de l'utilisateur, puis **Rechercher maintenant**.
+      3. Double-cliquer sur l'utilisateur › onglet **Compte** (*Account*).
+      4. Si le compte est verrouillé, la case **Déverrouiller le compte** est accompagnée de la mention « Ce compte est actuellement verrouillé sur ce contrôleur de domaine Active Directory » (*This account is currently locked out on this Active Directory Domain Controller*).
+      5. Sur le même onglet, vérifier aussi que le compte n'est pas **désactivé** et que le mot de passe n'a pas **expiré** : ce sont d'autres problèmes, avec d'autres solutions.
+    commande:
+      langage: powershell
+      code: |
+        Get-ADUser -Identity <NomUtilisateur> -Properties LockedOut, Enabled, PasswordExpired, PasswordLastSet, LastBadPasswordAttempt |
+          Select-Object Name, LockedOut, Enabled, PasswordExpired, PasswordLastSet, LastBadPasswordAttempt
+
+        # Lister tous les comptes actuellement verrouillés du domaine :
+        Search-ADAccount -LockedOut -UsersOnly | Select-Object Name, SamAccountName, LastLogonDate
+    astuce: |
+      Le verrouillage est transmis en priorité au contrôleur de domaine « émulateur PDC », puis répliqué vers les autres. Pendant quelques minutes, deux contrôleurs de domaine peuvent afficher un état différent.
+    conclusions:
+      - { si: "Le compte est verrouillé (LockedOut = True)", aller_a: d2 }
+      - { si: "Plusieurs comptes sont verrouillés en même temps sans raison apparente", cause: c4, aller_a: "fiche:securite-attaque-force-brute" }
+      - { si: "Le compte n'est pas verrouillé mais désactivé (Enabled = False)", aller_a: "fiche:ad-compte-desactive" }
+      - { si: "Le mot de passe a expiré (PasswordExpired = True)", aller_a: "fiche:ad-mot-de-passe-expire" }
+
+  - id: d2
+    titre: Questionner l'utilisateur
+    niveau: N1
+    graphique: |
+      Poser ces questions avant de déverrouiller, sinon le compte risque de se reverrouiller dans les minutes qui suivent :
+
+      - **A-t-il changé son mot de passe récemment** (lui-même ou suite à une expiration) ?
+      - **Le verrouillage est-il ponctuel ou revient-il** plusieurs fois par jour ?
+      - **Sur quels appareils utilise-t-il son compte** : deuxième PC, portable, smartphone (messagerie, Teams, Wi-Fi), tablette, session Bureau à distance sur un serveur ?
+      - Le clavier est-il en **AZERTY**, et la touche **Verr. Maj** est-elle désactivée ?
+    conclusions:
+      - { si: "Pas de changement récent, verrouillage ponctuel après des erreurs de saisie", cause: c1, aller_a: r1 }
+      - { si: "Mot de passe changé récemment, ou verrouillage qui revient", aller_a: d3 }
+
+  - id: d3
+    titre: Trouver l'appareil à l'origine du verrouillage
+    niveau: N2
+    graphique: |
+      1. **Repérer l'émulateur PDC** : dans *Utilisateurs et ordinateurs Active Directory*, clic droit sur le domaine › **Maîtres d'opérations…** (*Operations Masters…*) › onglet **PDC**. Noter le nom du serveur.
+      2. Ouvrir l'**Observateur d'événements** (`eventvwr.msc`) › menu **Action › Se connecter à un autre ordinateur…** (*Connect to Another Computer…*) › saisir le nom de l'émulateur PDC.
+      3. Aller dans **Journaux Windows › Sécurité** (*Windows Logs › Security*) › **Filtrer le journal actuel…** (*Filter Current Log…*) › saisir l'ID **4740**.
+      4. Ouvrir l'événement le plus récent qui concerne l'utilisateur et lire le champ **Nom de l'ordinateur appelant** (*Caller Computer Name*) : c'est l'appareil qui a envoyé les mauvais mots de passe.
+    commande:
+      langage: powershell
+      admin: true
+      ou: Depuis un poste d'administration avec RSAT (droit de lecture du journal Sécurité du PDC requis)
+      code: |
+        $PDC = (Get-ADDomain).PDCEmulator
+        Get-WinEvent -ComputerName $PDC -FilterHashtable @{ LogName = 'Security'; Id = 4740 } -MaxEvents 200 |
+          Where-Object { $_.Properties[0].Value -eq '<NomUtilisateur>' } |
+          Select-Object TimeCreated, @{ n = 'AppareilSource'; e = { $_.Properties[1].Value } }
+    astuce: |
+      Si le champ est **vide** ou indique **le nom d'un contrôleur de domaine**, la tentative est passée par un serveur intermédiaire (messagerie, ADFS, passerelle VPN ou Wi-Fi RADIUS) : la vraie source est souvent un **smartphone**. Chercher alors sur le contrôleur de domaine les événements **4771** (échec de pré-authentification Kerberos) ou **4776** (validation NTLM) au même horodatage.
+
+      > [!a-verifier]
+      > La formulation française exacte des noms de champs peut varier selon la version de Windows Server.
+    conclusions:
+      - { si: "La source est le PC habituel de l'utilisateur, et c'est un épisode isolé", cause: c1, aller_a: r1 }
+      - { si: "La source est un autre appareil (deuxième PC, serveur RDS, serveur de messagerie, VPN…)", aller_a: d4 }
+      - { si: "Les sources sont nombreuses, inconnues ou extérieures à l'entreprise", cause: c4, aller_a: "fiche:securite-attaque-force-brute" }
+
+  - id: d4
+    titre: Sur l'appareil source, trouver ce qui utilise l'ancien mot de passe
+    niveau: N2
+    graphique: |
+      Sur l'appareil identifié à l'étape 3, vérifier dans cet ordre :
+
+      1. **Sessions ouvertes** : Gestionnaire des tâches › onglet **Utilisateurs** (*Users*). Une session de l'utilisateur restée ouverte (souvent sur un serveur Bureau à distance) continue d'utiliser l'ancien mot de passe.
+      2. **Identifiants enregistrés** : *Panneau de configuration* › **Gestionnaire d'identification** (*Credential Manager*) › **Informations d'identification Windows** (*Windows Credentials*). Repérer les entrées qui contiennent le nom du domaine ou de l'utilisateur.
+      3. **Lecteurs réseau** : Explorateur de fichiers › **Ce PC** : un lecteur connecté avec d'autres identifiants.
+      4. **Services** : `services.msc`, trier la colonne **Ouvrir une session en tant que** (*Log On As*) et chercher le compte de l'utilisateur.
+      5. **Tâches planifiées** : *Planificateur de tâches* (*Task Scheduler*), colonne ou onglet **Général › Compte d'utilisateur** de chaque tâche.
+
+      Si la source est un **serveur de messagerie, ADFS ou VPN**, la cause est presque toujours un **smartphone ou une tablette** : demander à l'utilisateur de mettre à jour le mot de passe dans l'application de messagerie ou de supprimer le réseau Wi-Fi d'entreprise.
+    commande:
+      langage: powershell
+      admin: true
+      ou: Sur un poste d'administration, l'appareil source devant accepter la gestion à distance (WinRM)
+      code: |
+        # Sessions ouvertes sur l'appareil source
+        quser /server:<NomPC>
+
+        # Services qui tournent avec le compte de l'utilisateur
+        Get-CimInstance -ComputerName <NomPC> -ClassName Win32_Service |
+          Where-Object { $_.StartName -like '*<NomUtilisateur>*' } |
+          Select-Object Name, DisplayName, StartName, State
+
+        # Tâches planifiées qui utilisent le compte
+        Get-ScheduledTask -CimSession <NomPC> |
+          Where-Object { $_.Principal.UserId -like '*<NomUtilisateur>*' } |
+          Select-Object TaskPath, TaskName, State
+    astuce: Les identifiants du Gestionnaire d'identification ne sont visibles que depuis la session de l'utilisateur concerné (commande `cmdkey /list` dans sa session).
+    conclusions:
+      - { si: "Session restée ouverte, identifiants enregistrés, lecteur réseau ou smartphone", cause: c2, aller_a: r2 }
+      - { si: "Service ou tâche planifiée configuré avec le compte de l'utilisateur", cause: c3, aller_a: r3 }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Déverrouiller le compte, et réinitialiser le mot de passe s'il est oublié
+    etapes:
+      - id: r1-e1
+        titre: Déverrouiller le compte
+        niveau: N1
+        graphique: |
+          1. Dans *Utilisateurs et ordinateurs Active Directory*, ouvrir les propriétés de l'utilisateur › onglet **Compte** (*Account*).
+          2. Cocher **Déverrouiller le compte** (*Unlock account*) puis **Appliquer** (*Apply*).
+          3. Demander à l'utilisateur de se reconnecter en tapant son mot de passe lentement, Verr. Maj désactivé.
+        commande:
+          langage: powershell
+          code: Unlock-ADAccount -Identity <NomUtilisateur>
+      - id: r1-e2
+        titre: Si l'utilisateur a oublié son mot de passe, le réinitialiser
+        niveau: N1
+        graphique: |
+          1. Clic droit sur l'utilisateur › **Réinitialiser le mot de passe…** (*Reset Password…*).
+          2. Saisir un mot de passe temporaire conforme à la politique de l'entreprise.
+          3. Cocher **L'utilisateur doit changer le mot de passe à la prochaine ouverture de session** (*User must change password at next logon*) et **Déverrouiller le compte de l'utilisateur** (*Unlock the user's account*).
+          4. Communiquer le mot de passe temporaire par un canal sûr (de vive voix, jamais par e-mail).
+        commande:
+          langage: powershell
+          code: |
+            Set-ADAccountPassword -Identity <NomUtilisateur> -Reset -NewPassword (Read-Host -AsSecureString 'Mot de passe temporaire')
+            Set-ADUser -Identity <NomUtilisateur> -ChangePasswordAtLogon $true
+            Unlock-ADAccount -Identity <NomUtilisateur>
+        avertissement:
+          type: attention
+          texte: Vérifier l'identité de la personne avant toute réinitialisation (rappel sur son numéro connu, question au manager…). Se faire passer pour un collègue qui a « oublié son mot de passe » est une technique d'attaque classique. Après réinitialisation, l'utilisateur devra aussi mettre à jour le mot de passe sur ses autres appareils (smartphone, Wi-Fi), sinon le compte se reverrouillera.
+
+  - id: r2
+    causes: [c2]
+    titre: Retirer l'ancien mot de passe de l'appareil ou de la session, puis déverrouiller
+    etapes:
+      - id: r2-e1
+        titre: Fermer les sessions restées ouvertes
+        niveau: N2
+        graphique: |
+          Sur l'appareil source : **Gestionnaire des tâches** › onglet **Utilisateurs** (*Users*) › clic droit sur la session de l'utilisateur › **Se déconnecter** (*Sign off*).
+        commande:
+          langage: cmd
+          admin: true
+          code: |
+            rem Repérer l'ID de la session de l'utilisateur
+            quser /server:<NomPC>
+            rem Fermer la session (remplacer 2 par l'ID trouvé)
+            logoff 2 /server:<NomPC>
+        avertissement:
+          type: attention
+          texte: Fermer une session ferme aussi les documents ouverts dans cette session, sans les enregistrer. Prévenir l'utilisateur avant.
+      - id: r2-e2
+        titre: Supprimer les identifiants enregistrés et mettre à jour les appareils mobiles
+        niveau: N1
+        graphique: |
+          1. Dans la session de l'utilisateur : **Gestionnaire d'identification** (*Credential Manager*) › **Informations d'identification Windows** › supprimer les entrées liées au domaine ou aux serveurs de l'entreprise.
+          2. Déconnecter puis reconnecter les **lecteurs réseau** concernés.
+          3. Sur le **smartphone** : mettre à jour le mot de passe dans l'application de messagerie et dans Teams ; pour le Wi-Fi d'entreprise, **oublier le réseau** puis s'y reconnecter avec le nouveau mot de passe.
+        commande:
+          langage: cmd
+          ou: Dans la session de l'utilisateur
+          code: |
+            rem Lister les identifiants enregistrés
+            cmdkey /list
+            rem Supprimer une entrée (recopier la « Cible » affichée par la commande précédente)
+            cmdkey /delete:"Domain:target=SRV-FICHIERS01"
+      - id: r2-e3
+        titre: Déverrouiller le compte
+        niveau: N1
+        graphique: Procéder comme en Résolution 1, étape « Déverrouiller le compte ».
+        commande:
+          langage: powershell
+          code: Unlock-ADAccount -Identity <NomUtilisateur>
+
+  - id: r3
+    causes: [c3]
+    titre: Mettre à jour le mot de passe du service ou de la tâche, puis déverrouiller
+    etapes:
+      - id: r3-e1
+        titre: Mettre à jour le compte du service ou de la tâche
+        niveau: N2
+        graphique: |
+          - **Service** : `services.msc` › propriétés du service › onglet **Connexion** (*Log On*) › saisir le nouveau mot de passe › **OK**, puis redémarrer le service.
+          - **Tâche planifiée** : *Planificateur de tâches* › propriétés de la tâche › **OK** : Windows redemande le mot de passe du compte.
+          - Mieux : **ne plus utiliser un compte personnel**. Créer un compte de service dédié, ou un compte de service géré de groupe (*gMSA*), dont le mot de passe est géré automatiquement par l'AD.
+        avertissement:
+          type: attention
+          texte: Redémarrer le service interrompt l'application qui en dépend. Choisir un moment adapté et prévenir les utilisateurs concernés.
+      - id: r3-e2
+        titre: Déverrouiller le compte
+        niveau: N1
+        graphique: Procéder comme en Résolution 1, étape « Déverrouiller le compte ».
+        commande:
+          langage: powershell
+          code: Unlock-ADAccount -Identity <NomUtilisateur>
+
+verification:
+  - id: v1
+    titre: Le compte n'est plus verrouillé
+    niveau: N1
+    graphique: Dans les propriétés de l'utilisateur › onglet **Compte**, la mention « Ce compte est actuellement verrouillé » a disparu.
+    commande:
+      langage: powershell
+      code: Get-ADUser -Identity <NomUtilisateur> -Properties LockedOut | Select-Object Name, LockedOut
+  - id: v2
+    titre: L'utilisateur ouvre sa session et accède à ses ressources
+    niveau: N1
+    graphique: L'utilisateur ouvre sa session, accède à ses lecteurs réseau et à sa messagerie, sur son PC **et** sur son smartphone.
+  - id: v3
+    titre: Le verrouillage ne revient pas
+    niveau: N2
+    graphique: "Une heure plus tard, refaire la recherche de l'étape 3 : aucun nouvel événement **4740** pour ce compte."
+
+prevention:
+  - Après chaque changement de mot de passe, rappeler à l'utilisateur de le mettre à jour sur **tous** ses appareils (smartphone, tablette, Wi-Fi d'entreprise, deuxième PC).
+  - Ne jamais faire tourner un service, une tâche planifiée ou une application avec un compte personnel ; utiliser des comptes de service dédiés ou des gMSA.
+  - Configurer une limite de déconnexion des sessions Bureau à distance inactives, pour éviter les sessions oubliées.
+  - Garder une stratégie de verrouillage raisonnable (seuil, durée, réinitialisation du compteur) qui protège contre la force brute sans bloquer les utilisateurs à la moindre faute de frappe.
+  - Proposer la réinitialisation de mot de passe en libre-service (si l'entreprise utilise Microsoft 365 / Entra ID) pour réduire les appels au support.
+
+comprendre: |
+  La **stratégie de verrouillage** (*Default Domain Policy* › Configuration ordinateur › Stratégies › Paramètres Windows › Paramètres de sécurité › Stratégies de comptes › **Stratégie de verrouillage du compte**) définit le nombre d'échecs tolérés, la durée du blocage et le délai de remise à zéro du compteur.
+  Quand un contrôleur de domaine refuse un mot de passe, il redemande la vérification à l'**émulateur PDC**, qui connaît toujours le mot de passe le plus récent. C'est pour cela que l'événement **4740**, qui indique la source du verrouillage, se trouve dans le journal Sécurité de l'émulateur PDC.
+
+fiches_liees: [ad-compte-desactive, ad-mot-de-passe-expire, securite-attaque-force-brute]
+tags: [verrouillage, verrouille, lockout, bloque, "4740", "4771", "4776", mot de passe, session, unlock-adaccount, pdc]
+
+sources:
+  - titre: "4740(S): A user account was locked out — Microsoft Learn"
+    url: https://learn.microsoft.com/fr-fr/previous-versions/windows/it-pro/windows-10/security/threat-protection/auditing/event-4740
+    type: officiel
+    langue: fr
+    consulte_le: 2026-10-29
+  - titre: "Unlock-ADAccount (module ActiveDirectory) — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/powershell/module/activedirectory/unlock-adaccount
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Introduction to Account Lockout and Management Tools — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/windows-server/windows-security/account-lockout-and-management-tool
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "The source of my account lockouts are my domain controllers — Microsoft (blog PIE, archive)"
+    url: https://learn.microsoft.com/en-us/archive/blogs/pie/the-source-of-my-account-lockouts-are-my-domain-controllers
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Use PowerShell to Find Locked-Out User Accounts — Microsoft Scripting Blog"
+    url: https://devblogs.microsoft.com/scripting/use-powershell-to-find-locked-out-user-accounts/
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "User locked out, event ID 4740 caller machine name blank — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/2197570/user-locked-out-event-id-4740-caller-machine-name
+    type: forum
+    consulte_le: 2026-10-29
+  - titre: "Account Lockout Event ID: Find the Source of Account Lockouts — Active Directory Pro"
+    url: https://activedirectorypro.com/account-lockout-event-id/
+    type: blog
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

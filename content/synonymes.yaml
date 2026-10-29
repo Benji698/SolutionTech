@@ -1,0 +1,20 @@
+# Synonymes de terrain : la recherche considère les mots d'un même groupe comme équivalents.
+# Écrire en minuscules ; les accents sont ignorés par la recherche.
+
+groupes:
+  - [lent, lenteur, rame, ramer, freeze, fige, long, lourd]
+  - [demarrage, boot, allumage, demarrer, allumer]
+  - [session, ouverture de session, logon, connexion, login]
+  - [verrouille, verrouillage, lockout, locked, bloque]
+  - [mot de passe, mdp, password, pwd]
+  - [compte, utilisateur, user, identifiant]
+  - [imprimante, imprimer, impression, printer, copieur, multifonction, mfp]
+  - [pilote, driver]
+  - [disparu, absent, introuvable, n'apparait pas]
+  - [internet, reseau, web]
+  - [wifi, wi-fi, sans fil, wlan]
+  - [mail, email, courriel, messagerie]
+  - [ecran bleu, bsod, plantage, crash]
+  - [mise a jour, maj, update, windows update]
+  - [gpo, strategie de groupe, group policy]
+  - [ad, active directory, annuaire]

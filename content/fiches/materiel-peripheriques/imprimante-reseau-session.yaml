@@ -1,0 +1,396 @@
+id: imprimante-reseau-session
+titre: Imprimante réseau ne s'installe plus sur la session utilisateur
+resume: Une imprimante partagée par un serveur d'impression (déployée par GPO ou ajoutée à la main) n'apparaît plus ou refuse de s'installer pour l'utilisateur. Trouver si le blocage vient de la GPO, du pilote, du nom de l'imprimante, du spouleur ou de la connexion au serveur.
+statut: a-relire
+domaine: materiel-peripheriques
+sous_domaine: imprimantes-scanners
+theme: installation-deploiement
+apparait_aussi_dans: [windows/impression, active-directory/gpo, windows-server/serveur-impression]
+niveau: N2
+temps_estime: { min: 15, max: 60 }
+critique: false
+environnements: [win11, win10]
+droits: admin-domaine
+outils: [gestion-impression, gpmc, observateur-evenements]
+acces:
+  - Session sur le poste de l'utilisateur, ou prise en main à distance.
+  - "Pour les étapes N2 : administrateur local du poste, et accès à la console Gestion des stratégies de groupe et au serveur d'impression."
+
+symptomes:
+  - « Mon imprimante a disparu de la liste. »
+  - « Windows me demande un mot de passe administrateur quand j'essaie d'ajouter l'imprimante. »
+  - « Ça marche sur le PC de mon collègue, pas sur le mien. »
+  - « J'ai un message “Windows ne peut pas se connecter à l'imprimante”. »
+
+messages_erreur:
+  - texte: Windows cannot connect to the printer. Operation failed with error 0x0000011b.
+    code: "0x0000011b"
+    ou: Ajout de l'imprimante partagée sur le poste
+  - texte: Group Policy object did not apply because it failed with error code '0x80070709 The printer name is invalid.'
+    code: "0x80070709"
+    ou: Journal d'événements Application ou GroupPolicy du poste
+  - texte: "Voulez-vous faire confiance à cette imprimante ? / Do you trust this printer?"
+    ou: Fenêtre affichée à l'utilisateur, suivie d'une demande d'identifiants administrateur
+
+variables:
+  - { nom: ServeurImpression, libelle: "Nom complet (FQDN) du serveur d'impression", exemple: SRV-PRINT01.contoso.local }
+  - { nom: NomImprimante, libelle: "Nom de partage de l'imprimante sur le serveur", exemple: RDC-Compta-Copieur }
+  - { nom: CheminInf, libelle: "Chemin du fichier .inf du pilote (pré-installation)", exemple: "C:\\Pilotes\\Copieur\\x64\\driver.inf" }
+  - { nom: NomPilote, libelle: "Nom exact du pilote, tel qu'il apparaît sur le serveur", exemple: "HP Universal Printing PCL 6" }
+
+causes:
+  - id: c1
+    titre: La GPO de déploiement ne s'applique pas à cet utilisateur ou à ce poste
+    frequence: tres-frequente
+    detail: Utilisateur ou ordinateur dans une autre OU, filtrage de sécurité ou ciblage au niveau de l'élément qui l'exclut, GPO pas encore appliquée.
+  - id: c2
+    titre: L'installation du pilote est bloquée par la sécurité « Pointer et imprimer » (Point and Print)
+    frequence: frequente
+    detail: Depuis les mises à jour de sécurité de 2021 (vulnérabilités PrintNightmare), un utilisateur standard ne peut plus installer seul un pilote d'imprimante depuis un serveur.
+  - id: c3
+    titre: Le nom de l'imprimante ou du serveur a changé
+    frequence: frequente
+    detail: Imprimante renommée, supprimée ou déplacée sur un autre serveur, sans mise à jour de la GPO ou de la connexion du poste.
+  - id: c4
+    titre: Le spouleur d'impression du poste est bloqué
+    frequence: occasionnelle
+    detail: Service arrêté, file d'attente corrompue, travail d'impression coincé.
+  - id: c5
+    titre: Incompatibilité de connexion RPC entre le poste et le serveur
+    frequence: occasionnelle
+    detail: Durcissement de la sécurité RPC (erreur 0x0000011b) ou passage de Windows 11 22H2 et suivants à RPC sur TCP par défaut, bloqué par un pare-feu ou mal géré par un vieux serveur.
+  - id: c6
+    titre: Le serveur d'impression est injoignable
+    frequence: occasionnelle
+    detail: Problème réseau, pare-feu, serveur arrêté ou service Spouleur du serveur arrêté.
+
+diagnostic:
+  - id: d1
+    titre: Ajouter l'imprimante à la main depuis le serveur
+    niveau: N1
+    graphique: |
+      Ce test permet de séparer les problèmes de **GPO** des problèmes d'**imprimante, de pilote ou de réseau**.
+
+      1. Dans la session de l'utilisateur, appuyer sur **Windows + R**, taper `\\SRV-PRINT01.contoso.local` (le nom du serveur d'impression) puis **Entrée**.
+      2. La liste des imprimantes partagées s'affiche : double-cliquer sur l'imprimante voulue.
+      3. Noter ce qui se passe : installation réussie, demande d'identifiants administrateur, message d'erreur (noter le code), ou imprimante absente de la liste.
+    commande:
+      langage: powershell
+      ou: Dans la session de l'utilisateur (console non élevée)
+      code: Add-Printer -ConnectionName '\\<ServeurImpression>\<NomImprimante>'
+    conclusions:
+      - { si: "Le serveur ne répond pas (« Windows ne peut pas accéder à… », délai dépassé)", cause: c6, aller_a: r6 }
+      - { si: "L'imprimante n'apparaît pas dans la liste du serveur", cause: c3, aller_a: r3 }
+      - { si: "Windows demande des identifiants administrateur ou « Faire confiance à cette imprimante ? »", cause: c2, aller_a: r2 }
+      - { si: "Erreur 0x0000011b, ou erreur RPC (« Le serveur RPC n'est pas disponible »)", cause: c5, aller_a: r5 }
+      - { si: "L'installation manuelle fonctionne : le problème vient du déploiement automatique", aller_a: d2 }
+      - { si: "Erreur sans code clair, ou l'imprimante s'installe mais reste « hors connexion »", aller_a: d3 }
+
+  - id: d2
+    titre: Vérifier que la GPO s'applique à l'utilisateur et au poste
+    niveau: N2
+    graphique: |
+      1. Sur un poste d'administration, ouvrir **Gestion des stratégies de groupe** (*Group Policy Management*, `gpmc.msc`).
+      2. Clic droit sur **Résultats de stratégie de groupe** (*Group Policy Results*) › **Assistant Résultats de stratégie de groupe…** › choisir le poste puis l'utilisateur.
+      3. Dans l'onglet **Détails**, vérifier que la GPO qui déploie l'imprimante figure dans les **objets appliqués**. Si elle est dans les **objets refusés**, la raison est indiquée (filtrage de sécurité, WMI, OU…).
+      4. Dans la section **Paramètres** › **Imprimantes**, vérifier le chemin de l'imprimante (`\\serveur\partage`) et l'état du dernier traitement.
+    commande:
+      langage: cmd
+      ou: Dans la session de l'utilisateur, console NON élevée (sinon le résultat concerne le compte administrateur)
+      code: |
+        gpupdate /force
+        gpresult /r /scope:user
+        rem Rapport complet, à ouvrir dans le navigateur :
+        gpresult /h "%USERPROFILE%\Desktop\rapport-gpo.html"
+    astuce: Les erreurs de déploiement d'imprimante apparaissent aussi dans l'**Observateur d'événements** › *Journaux des applications et des services* › *Microsoft* › *Windows* › **GroupPolicy** › **Opérationnel**.
+    conclusions:
+      - { si: "La GPO n'apparaît pas, ou elle est dans les objets refusés", cause: c1, aller_a: r1 }
+      - { si: "La GPO est appliquée mais signale « 0x80070709 The printer name is invalid »", cause: c3, aller_a: r3 }
+      - { si: "La GPO est appliquée sans erreur, mais l'imprimante n'arrive pas", aller_a: d3 }
+
+  - id: d3
+    titre: Lire le journal du service d'impression du poste
+    niveau: N2
+    graphique: |
+      1. Ouvrir l'**Observateur d'événements** (`eventvwr.msc`).
+      2. Aller dans **Journaux des applications et des services** › **Microsoft** › **Windows** › **PrintService** › **Admin**.
+      3. Le journal **Opérationnel** (*Operational*), plus détaillé, est désactivé par défaut : clic droit › **Activer le journal** (*Enable Log*), refaire l'installation, puis le consulter.
+      4. Regarder les erreurs au moment de la tentative : pilote refusé, accès refusé, erreur RPC.
+    commande:
+      langage: powershell
+      admin: true
+      code: |
+        Get-WinEvent -LogName 'Microsoft-Windows-PrintService/Admin' -MaxEvents 30 |
+          Format-List TimeCreated, Id, LevelDisplayName, Message
+        # État du spouleur local
+        Get-Service -Name Spooler
+    conclusions:
+      - { si: "Erreurs liées au pilote, à « Point and Print » ou à un accès refusé pendant l'installation du pilote", cause: c2, aller_a: r2 }
+      - { si: "Erreurs RPC ou code 0x0000011b", cause: c5, aller_a: r5 }
+      - { si: "Le service Spouleur est arrêté, ou des travaux restent bloqués dans la file", cause: c4, aller_a: r4 }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Corriger la portée de la GPO de déploiement
+    etapes:
+      - id: r1-e1
+        titre: Vérifier la liaison, le filtrage et le ciblage
+        niveau: N2
+        graphique: |
+          Dans **Gestion des stratégies de groupe** :
+
+          1. **Liaison** : la GPO doit être liée à l'OU qui contient **l'utilisateur** si l'imprimante est déployée dans *Configuration utilisateur*, ou **l'ordinateur** si elle est dans *Configuration ordinateur*.
+          2. **Filtrage de sécurité** (*Security Filtering*) : l'utilisateur ou l'un de ses groupes doit y figurer.
+          3. Onglet **Délégation** (*Delegation*) : **Utilisateurs authentifiés** (*Authenticated Users*) ou **Ordinateurs du domaine** (*Domain Computers*) doit garder au moins le droit **Lecture** (*Read*), sinon les postes ne peuvent pas lire une GPO utilisateur.
+          4. Si l'imprimante est déployée par une **préférence** (*Configuration utilisateur › Préférences › Paramètres du Panneau de configuration › Imprimantes*) : ouvrir l'élément › onglet **Commun** › **Ciblage au niveau de l'élément** (*Item-level targeting*) et vérifier que l'utilisateur ou le poste correspond bien aux critères.
+      - id: r1-e2
+        titre: Appliquer la correction sur le poste
+        niveau: N1
+        graphique: Demander à l'utilisateur de **fermer sa session puis de la rouvrir** (ou redémarrer le poste si l'imprimante est déployée côté ordinateur).
+        commande:
+          langage: cmd
+          ou: Dans la session de l'utilisateur
+          code: gpupdate /force
+
+  - id: r2
+    causes: [c2]
+    titre: Installer le pilote sans désactiver la sécurité
+    etapes:
+      - id: r2-e1
+        titre: "Solution rapide : installer l'imprimante une fois avec un compte administrateur"
+        niveau: N1
+        graphique: |
+          1. Refaire l'ajout manuel (étape 1 du diagnostic). À la demande d'identifiants, saisir un compte **administrateur local** du poste.
+          2. Le pilote est alors installé pour **tout le poste** : l'utilisateur (et la GPO) peuvent ensuite se connecter à l'imprimante sans droits particuliers.
+        astuce: Cette solution est à refaire sur chaque poste et à chaque changement de pilote sur le serveur. Pour un parc, préférer les solutions suivantes.
+      - id: r2-e2
+        titre: "Solution propre : pré-installer le pilote sur les postes"
+        niveau: N2
+        graphique: |
+          Déployer le pilote (le même que sur le serveur, même version) sur les postes avec l'outil de déploiement de l'entreprise (Intune, SCCM, script de démarrage…).
+          Quand le pilote est déjà présent sur le poste, la connexion à l'imprimante ne demande plus de droits administrateur.
+        commande:
+          langage: powershell
+          admin: true
+          code: |
+            # Ajouter le pilote au magasin de pilotes de Windows
+            pnputil /add-driver "<CheminInf>" /install
+            # Le déclarer comme pilote d'imprimante (nom exact, identique à celui du serveur)
+            Add-PrinterDriver -Name '<NomPilote>'
+      - id: r2-e3
+        titre: "Solution parc : autoriser les serveurs d'impression de l'entreprise par GPO"
+        niveau: N3
+        graphique: |
+          Dans une GPO appliquée aux **ordinateurs** : *Configuration ordinateur › Stratégies › Modèles d'administration › Imprimantes* :
+
+          1. **Restrictions Pointer et imprimer** (*Point and Print Restrictions*) : **Activé**, cocher « Les utilisateurs peuvent uniquement pointer et imprimer sur ces serveurs » et saisir les **noms complets** (FQDN) des serveurs d'impression, séparés par des points-virgules.
+          2. **Pointer et imprimer de package – Serveurs approuvés** (*Package Point and print – Approved servers*) : **Activé**, avec la même liste de serveurs.
+          3. Sur le serveur d'impression, utiliser de préférence des **pilotes « package »** (*package-aware*), fournis par le constructeur ou ses pilotes universels.
+
+          > [!a-verifier]
+          > Depuis 2021, même avec ces stratégies, Windows exige par défaut des droits administrateur pour installer un pilote **qui n'est pas déjà sur le poste**. Ces réglages évitent surtout les avertissements et limitent les serveurs autorisés ; la pré-installation du pilote (solution précédente) reste la méthode la plus fiable. Les libellés français exacts des stratégies sont à confirmer.
+      - id: r2-e4
+        titre: "Dernier recours, déconseillé : lever la restriction d'installation des pilotes"
+        niveau: N3
+        graphique: |
+          Microsoft permet de revenir à l'ancien comportement par la valeur de registre `RestrictDriverInstallationToAdministrators` = **0**, sous
+          `HKEY_LOCAL_MACHINE\Software\Policies\Microsoft\Windows NT\Printers\PointAndPrint`.
+          À réserver à un dépannage **temporaire**, avec l'accord du responsable sécurité, et à remettre à **1** ensuite.
+        commande:
+          langage: cmd
+          admin: true
+          code: |
+            reg add "HKLM\Software\Policies\Microsoft\Windows NT\Printers\PointAndPrint" /v RestrictDriverInstallationToAdministrators /t REG_DWORD /d 0 /f
+            rem Pour revenir à la configuration sécurisée :
+            reg add "HKLM\Software\Policies\Microsoft\Windows NT\Printers\PointAndPrint" /v RestrictDriverInstallationToAdministrators /t REG_DWORD /d 1 /f
+        avertissement:
+          type: attention
+          texte: Mettre cette valeur à 0 rouvre la faille « PrintNightmare » corrigée en 2021, qui permet à un attaquant d'exécuter du code avec les droits SYSTEM via un faux pilote d'imprimante. Microsoft déconseille ce réglage. Ne jamais le laisser en place durablement.
+
+  - id: r3
+    causes: [c3]
+    titre: Remplacer l'ancienne connexion par le bon nom d'imprimante
+    etapes:
+      - id: r3-e1
+        titre: Vérifier le nom de partage sur le serveur et corriger la GPO
+        niveau: N2
+        graphique: |
+          1. Sur le serveur, ouvrir **Gestion de l'impression** (*Print Management*, `printmanagement.msc`) › **Serveurs d'impression** › le serveur › **Imprimantes**, et noter le **nom de partage** exact de l'imprimante.
+          2. Dans la GPO de déploiement, ouvrir l'élément de l'imprimante et corriger le **chemin partagé** (`\\serveur.contoso.local\NomDePartage`).
+          3. Pour un élément de préférence, choisir l'action **Mettre à jour** (*Update*) : elle crée la connexion si elle n'existe pas et la modifie sinon. L'action **Remplacer** (*Replace*) supprime et recrée la connexion à chaque application.
+      - id: r3-e2
+        titre: Supprimer l'ancienne imprimante du poste et ajouter la nouvelle
+        niveau: N1
+        graphique:
+          - versions: [win11]
+            texte: |
+              1. **Paramètres** › **Bluetooth et appareils** (*Bluetooth & devices*) › **Imprimantes et scanners** (*Printers & scanners*).
+              2. Cliquer sur l'ancienne imprimante › **Supprimer** (*Remove*).
+              3. Fermer puis rouvrir la session pour que la GPO ajoute la nouvelle connexion, ou l'ajouter à la main (étape 1 du diagnostic).
+          - versions: [win10]
+            texte: |
+              1. **Paramètres** › **Périphériques** (*Devices*) › **Imprimantes et scanners** (*Printers & scanners*).
+              2. Cliquer sur l'ancienne imprimante › **Supprimer le périphérique** (*Remove device*).
+              3. Fermer puis rouvrir la session pour que la GPO ajoute la nouvelle connexion, ou l'ajouter à la main (étape 1 du diagnostic).
+        commande:
+          langage: powershell
+          ou: Dans la session de l'utilisateur
+          code: |
+            # Lister les imprimantes réseau connectées
+            Get-Printer | Where-Object Type -eq 'Connection' | Select-Object Name, DriverName, PrinterStatus
+            # Supprimer l'ancienne (recopier le nom exact affiché ci-dessus)
+            Remove-Printer -Name '\\SRV-PRINT-ANCIEN.contoso.local\Ancien-Copieur'
+            # Ajouter la nouvelle
+            Add-Printer -ConnectionName '\\<ServeurImpression>\<NomImprimante>'
+
+  - id: r4
+    causes: [c4]
+    titre: Redémarrer le spouleur d'impression du poste
+    etapes:
+      - id: r4-e1
+        titre: Redémarrer le service Spouleur d'impression
+        niveau: N1
+        graphique: |
+          1. Ouvrir **Services** (`services.msc`).
+          2. Clic droit sur **Spouleur d'impression** (*Print Spooler*) › **Redémarrer** (*Restart*).
+          3. Vérifier que le **Type de démarrage** est **Automatique**.
+        commande:
+          langage: powershell
+          admin: true
+          code: Restart-Service -Name Spooler
+      - id: r4-e2
+        titre: Si des travaux restent bloqués, vider la file d'attente du poste
+        niveau: N2
+        graphique: |
+          1. Dans **Services**, **arrêter** le *Spouleur d'impression*.
+          2. Ouvrir le dossier `C:\Windows\System32\spool\PRINTERS` et supprimer son contenu (pas le dossier lui-même).
+          3. **Démarrer** le *Spouleur d'impression*.
+        commande:
+          langage: powershell
+          admin: true
+          code: |
+            Stop-Service -Name Spooler -Force
+            Remove-Item -Path "$env:SystemRoot\System32\spool\PRINTERS\*" -Force
+            Start-Service -Name Spooler
+        avertissement:
+          type: destructif
+          texte: Supprime définitivement tous les travaux d'impression en attente sur ce poste, pour toutes les imprimantes. Prévenir l'utilisateur, qui devra relancer ses impressions. Ne pas faire cette manipulation sur le serveur d'impression sans prévenir tous les utilisateurs.
+
+  - id: r5
+    causes: [c5]
+    titre: Rétablir la connexion RPC entre le poste et le serveur
+    etapes:
+      - id: r5-e1
+        titre: Mettre à jour le serveur d'impression et le poste
+        niveau: N2
+        graphique: |
+          Les erreurs RPC (dont **0x0000011b**) apparaissent quand le poste et le serveur n'ont pas le même niveau de mises à jour de sécurité.
+          Installer les dernières mises à jour cumulatives sur **le serveur d'impression et le poste**, redémarrer les deux, puis réessayer.
+
+          > [!a-verifier]
+          > Pour 0x0000011b, de nombreux sites conseillent la valeur de registre `RpcAuthnLevelPrivacyEnabled` = 0 sur le serveur. Elle désactive une protection de sécurité (CVE-2021-1678) et Microsoft a annoncé son retrait : ne l'utiliser qu'en dépannage temporaire, après vérification de la documentation Microsoft à jour.
+      - id: r5-e2
+        titre: "Windows 11 22H2 et suivants : vérifier RPC sur TCP"
+        niveau: N3
+        versions: [win11]
+        graphique: |
+          Depuis Windows 11 22H2, le poste se connecte au serveur d'impression en **RPC sur TCP** (port 135 puis un port dynamique) au lieu de **RPC sur canaux nommés** (*named pipes*, port 445).
+
+          1. **Solution durable** : sur le pare-feu entre le poste et le serveur, autoriser le trafic RPC vers le serveur d'impression (règles « Partage de fichiers et d'imprimantes » du pare-feu Windows du serveur).
+          2. **Contournement temporaire** : GPO ou stratégie locale (`gpedit.msc`) › *Configuration ordinateur › Modèles d'administration › Imprimantes* › **Configurer les paramètres de connexion RPC** (*Configure RPC connection settings*) › **Activé**, protocole **RPC sur canaux nommés** (*RPC over named pipes*).
+        commande:
+          langage: powershell
+          admin: true
+          code: |
+            # Le serveur répond-il sur les ports utilisés par l'impression ?
+            Test-NetConnection -ComputerName <ServeurImpression> -Port 135
+            Test-NetConnection -ComputerName <ServeurImpression> -Port 445
+        avertissement:
+          type: attention
+          texte: Le retour aux canaux nommés est un contournement. Microsoft a fait ce changement pour améliorer la sécurité de l'impression ; corriger le pare-feu reste la vraie solution.
+
+  - id: r6
+    causes: [c6]
+    titre: Rétablir l'accès au serveur d'impression
+    etapes:
+      - id: r6-e1
+        titre: Tester le réseau et le service Spouleur du serveur
+        niveau: N2
+        graphique: |
+          1. Depuis le poste : **Windows + R** › `\\SRV-PRINT01.contoso.local`. Si le partage ne s'ouvre pas, tester un autre partage de l'entreprise pour savoir si le problème vient du poste (réseau, VPN) ou du serveur.
+          2. Sur le serveur : **Services** › vérifier que **Spouleur d'impression** est **En cours d'exécution**.
+          3. Vérifier que le pare-feu du serveur autorise **Partage de fichiers et d'imprimantes** (*File and Printer Sharing*).
+        commande:
+          langage: cmd
+          ou: Depuis le poste de l'utilisateur ou un poste d'administration
+          code: |
+            ping <ServeurImpression>
+            sc.exe \\<ServeurImpression> query Spooler
+
+verification:
+  - id: v1
+    titre: L'imprimante apparaît dans la liste
+    niveau: N1
+    graphique:
+      - versions: [win11]
+        texte: "**Paramètres** › **Bluetooth et appareils** › **Imprimantes et scanners** : l'imprimante est présente et n'est pas « Hors connexion »."
+      - versions: [win10]
+        texte: "**Paramètres** › **Périphériques** › **Imprimantes et scanners** : l'imprimante est présente et n'est pas « Hors connexion »."
+  - id: v2
+    titre: Une page de test sort
+    niveau: N1
+    graphique: Cliquer sur l'imprimante › **Propriétés de l'imprimante** (*Printer properties*) › onglet **Général** › **Imprimer une page de test** (*Print Test Page*).
+  - id: v3
+    titre: La correction résiste à une nouvelle ouverture de session
+    niveau: N2
+    graphique: "Faire fermer puis rouvrir la session : l'imprimante est toujours là (la GPO la recrée correctement)."
+
+prevention:
+  - Utiliser sur le serveur des pilotes « package » récents, si possible les pilotes universels du constructeur, et les pré-déployer sur les postes.
+  - Ne jamais renommer ou déplacer une imprimante partagée sans mettre à jour, en même temps, la GPO qui la déploie.
+  - Pour les préférences d'imprimantes, préférer l'action « Mettre à jour » à « Remplacer ».
+  - Garder le serveur d'impression et les postes au même niveau de mises à jour.
+  - Documenter la liste des serveurs d'impression autorisés et la tenir à jour dans les stratégies « Pointer et imprimer ».
+
+comprendre: |
+  **Pointer et imprimer** (*Point and Print*) permet à un poste de télécharger automatiquement le pilote de l'imprimante depuis le serveur d'impression. En 2021, la faille **PrintNightmare** a montré qu'un attaquant pouvait s'en servir pour exécuter du code avec les droits SYSTEM. Depuis, Windows réserve par défaut l'installation des pilotes aux administrateurs.
+  Conséquence : une imprimante déployée par GPO ne s'installe plus pour un utilisateur standard **si le pilote n'est pas déjà présent sur le poste**. La bonne réponse est de pré-installer les pilotes, pas de désactiver la protection.
+
+  > [!a-verifier]
+  > Sur Windows 11 24H2 et suivants, le **mode d'impression protégé Windows** (*Windows protected print mode*), s'il est activé, n'autorise que les pilotes génériques Microsoft (IPP / Mopria) et bloque les pilotes des constructeurs.
+
+fiches_liees: [imprimante-hors-connexion, spouleur-impression-plante, gpo-ne-s-applique-pas]
+tags: [imprimante, impression, gpo, point and print, pointer et imprimer, pilote, driver, printnightmare, spouleur, spooler, "0x0000011b", "0x80070709", rpc, serveur d'impression]
+
+sources:
+  - titre: "KB5005010: Restricting installation of new printer drivers after applying the July 6, 2021 updates — Microsoft Support"
+    url: https://support.microsoft.com/en-us/help/5005010
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "KB5005652: Manage new Point and Print default driver installation behavior (CVE-2021-34481) — Microsoft Support"
+    url: https://support.microsoft.com/en-us/help/5005652
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "RPC connection updates for print in Windows 11 — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/windows-client/printing/windows-11-rpc-connection-updates-for-print
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Group Policy object did not apply… error code 0x80070709 The printer name is invalid — Microsoft Tech Community"
+    url: https://techcommunity.microsoft.com/discussions/windowsserver/group-policy-object-did-not-apply-because-failed-error-code0x80070709-the-printe/4371445
+    type: forum
+    consulte_le: 2026-10-29
+  - titre: "Configuring Point and Print in a PrintNightmare World — NC State University"
+    url: https://activedirectory.ncsu.edu/2021/09/configuring-point-and-print-in-a-printnightmare-world
+    type: blog
+    consulte_le: 2026-10-29
+  - titre: "How to fix the Windows 0x0000011b network printing error — BleepingComputer"
+    url: https://www.bleepingcomputer.com/news/microsoft/how-to-fix-the-windows-0x0000011b-network-printing-error/
+    type: blog
+    consulte_le: 2026-10-29
+  - titre: "Printers Not Deploying via GPO? Here Are Some Reasons Why — ezeep"
+    url: https://www.ezeep.com/blog/printers-gpo-deployment-issues
+    type: blog
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

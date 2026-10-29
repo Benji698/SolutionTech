@@ -1,0 +1,41 @@
+# Versions sélectionnables dans les fiches (sélecteur de version).
+# Une fiche liste les environnements concernés ; une étape peut se limiter à certains d'entre eux.
+# fin_support : date de fin de support de l'éditeur (indiquée quand elle est connue et vérifiée).
+
+familles:
+  - { id: windows, titre: Windows }
+  - { id: windows-server, titre: Windows Server }
+  - { id: macos, titre: macOS }
+  - { id: linux, titre: Linux }
+  - { id: cisco, titre: Cisco }
+  - { id: microsoft-365, titre: Microsoft 365 }
+  - { id: mobile, titre: Mobiles }
+
+environnements:
+  - id: win10
+    libelle: Windows 10
+    famille: windows
+    fin_support: 2025-10-14
+    note: Support standard terminé ; mises à jour de sécurité étendues (ESU) seulement pour les appareils inscrits.
+  - { id: win11, libelle: Windows 11, famille: windows }
+
+  - { id: ws2016, libelle: Windows Server 2016, famille: windows-server }
+  - { id: ws2019, libelle: Windows Server 2019, famille: windows-server }
+  - { id: ws2022, libelle: Windows Server 2022, famille: windows-server }
+  - { id: ws2025, libelle: Windows Server 2025, famille: windows-server }
+
+  - { id: macos-14, libelle: macOS 14 Sonoma, famille: macos }
+  - { id: macos-15, libelle: macOS 15 Sequoia, famille: macos }
+  - { id: macos-26, libelle: macOS 26 Tahoe, famille: macos }
+
+  - { id: ubuntu-2404, libelle: Ubuntu 24.04 LTS, famille: linux }
+  - { id: debian-12, libelle: Debian 12, famille: linux }
+  - { id: debian-13, libelle: Debian 13, famille: linux }
+
+  - { id: cisco-ios-15, libelle: Cisco IOS 15.x, famille: cisco }
+  - { id: cisco-ios-xe-17, libelle: Cisco IOS-XE 17.x, famille: cisco }
+
+  - { id: m365, libelle: Microsoft 365 (service en ligne), famille: microsoft-365 }
+
+  - { id: ios, libelle: iOS / iPadOS, famille: mobile }
+  - { id: android, libelle: Android, famille: mobile }

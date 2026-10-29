@@ -1,0 +1,290 @@
+# Taxonomie de SOS Admin : domaines → sous-domaines → thèmes (optionnels).
+# L'ordre d'affichage est alphabétique (calculé au build) : l'ordre ici n'a pas d'importance.
+# Règle : une fiche a UN emplacement principal (domaine + sous_domaine) et peut apparaître
+# ailleurs par renvoi (champ apparait_aussi_dans), jamais par copie.
+# Identifiants : kebab-case sans accents, stables (ils servent dans les URL).
+
+domaines:
+  - id: active-directory
+    titre: Active Directory, GPO, DNS, DHCP
+    sous_titre: Comptes, groupes, stratégies de groupe, résolution de noms et adressage
+    icone: annuaire
+    sous_domaines:
+      - id: comptes-utilisateurs
+        titre: Comptes utilisateurs
+        themes:
+          - { id: verrouillage, titre: "Verrouillage" }
+          - { id: mots-de-passe, titre: "Mots de passe" }
+          - { id: attributs-comptes, titre: "Attributs et propriétés" }
+      - { id: comptes-ordinateurs, titre: "Comptes ordinateurs et relation d'approbation" }
+      - { id: groupes-delegation, titre: "Groupes et délégation" }
+      - { id: gpo, titre: "Stratégies de groupe (GPO)" }
+      - { id: authentification-kerberos, titre: "Authentification et Kerberos" }
+      - { id: dns, titre: "DNS" }
+      - { id: dhcp, titre: "DHCP" }
+      - { id: controleurs-domaine, titre: "Contrôleurs de domaine et réplication" }
+      - { id: sites-services, titre: "Sites et services" }
+      - { id: entra-connect, titre: "Synchronisation Entra Connect" }
+
+  - id: gestion-comptes
+    titre: "Gestion des comptes : arrivées et départs"
+    sous_titre: Création, modification et suppression des accès AD et Microsoft 365
+    icone: badge
+    sous_domaines:
+      - { id: arrivee, titre: "Arrivée d'un collaborateur (onboarding)" }
+      - { id: depart, titre: "Départ d'un collaborateur (offboarding)" }
+      - { id: mobilite-interne, titre: "Changement de poste ou de service" }
+      - { id: comptes-temporaires, titre: "Prestataires, stagiaires et comptes temporaires" }
+      - { id: licences, titre: "Attribution des licences" }
+
+  - id: linux
+    titre: Linux
+    sous_titre: Ubuntu, Debian… sur PC fixes et portables
+    icone: terminal
+    sous_domaines:
+      - { id: demarrage, titre: "Démarrage et GRUB" }
+      - { id: mises-a-jour-paquets, titre: "Mises à jour et paquets" }
+      - { id: affichage-graphique, titre: "Affichage et environnement graphique" }
+      - { id: reseau, titre: "Réseau et Wi-Fi" }
+      - { id: comptes-droits, titre: "Comptes, sudo et droits" }
+      - { id: impression, titre: "Impression (CUPS)" }
+      - { id: integration-domaine, titre: "Intégration à l'Active Directory" }
+      - { id: disques-stockage, titre: "Disques et stockage" }
+      - { id: materiel-pilotes, titre: "Matériel et pilotes" }
+
+  - id: logiciels-metier
+    titre: Logiciels métier et applicatifs
+    sous_titre: Installation, licences, compatibilité, bases de données locales
+    icone: applications
+    sous_domaines:
+      - { id: installation-deploiement, titre: "Installation et déploiement" }
+      - { id: licences-activation, titre: "Licences et activation" }
+      - { id: navigateurs, titre: "Navigateurs web" }
+      - { id: microsoft-office, titre: "Microsoft Office (applications de bureau)" }
+      - { id: pdf-bureautique, titre: "PDF et bureautique" }
+      - { id: java-runtimes, titre: "Java, .NET et environnements d'exécution" }
+      - { id: bases-donnees-clients, titre: "Accès aux bases de données (clients lourds)" }
+      - { id: compatibilite, titre: "Compatibilité et anciennes applications" }
+
+  - id: macos
+    titre: macOS
+    sous_titre: Mac (MacBook, iMac, Mac mini)
+    icone: ordinateur-portable
+    sous_domaines:
+      - { id: demarrage-performances, titre: "Démarrage et performances" }
+      - { id: mises-a-jour, titre: "Mises à jour" }
+      - { id: comptes-identifiants, titre: "Comptes, mots de passe et trousseau" }
+      - { id: reseau, titre: "Réseau et Wi-Fi" }
+      - { id: impression, titre: "Impression" }
+      - { id: stockage-sauvegarde, titre: "Stockage et Time Machine" }
+      - { id: applications, titre: "Applications et autorisations" }
+      - { id: integration-entreprise, titre: "Intégration en entreprise (AD, Entra, MDM)" }
+      - { id: materiel, titre: "Matériel, écrans et périphériques" }
+
+  - id: materiel-peripheriques
+    titre: Matériel et périphériques
+    sous_titre: Imprimantes, écrans, docks, composants et accessoires
+    icone: imprimante
+    sous_domaines:
+      - id: imprimantes-scanners
+        titre: Imprimantes et scanners
+        themes:
+          - { id: installation-deploiement, titre: "Installation et déploiement" }
+          - { id: files-attente, titre: "Files d'attente et spouleur" }
+          - { id: numerisation, titre: "Numérisation (scan vers mail, scan vers dossier)" }
+          - { id: qualite-papier, titre: "Qualité d'impression et papier" }
+      - { id: ecrans-affichage, titre: "Écrans et affichage" }
+      - { id: docks-usb-c, titre: "Stations d'accueil, USB-C et Thunderbolt" }
+      - { id: peripheriques-entree, titre: "Claviers, souris, webcams et casques" }
+      - { id: batterie-alimentation, titre: "Batterie et alimentation" }
+      - { id: composants, titre: "Composants (disque, mémoire, carte mère)" }
+      - { id: bios-uefi, titre: "BIOS, UEFI et firmware" }
+      - { id: onduleurs, titre: "Onduleurs" }
+
+  - id: messagerie
+    titre: Messagerie
+    sous_titre: Clients de messagerie, protocoles et délivrabilité (SPF, DKIM, DMARC)
+    icone: enveloppe
+    sous_domaines:
+      - { id: outlook-client, titre: "Outlook (client)" }
+      - { id: autres-clients, titre: "Autres clients (Thunderbird, Apple Mail, mobile)" }
+      - { id: delivrabilite, titre: "Délivrabilité et authentification (SPF, DKIM, DMARC)" }
+      - { id: protocoles, titre: "Protocoles (SMTP, IMAP, POP)" }
+      - { id: relais-smtp, titre: "Relais SMTP (copieurs, applications)" }
+      - { id: spam-filtrage, titre: "Spam et filtrage" }
+
+  - id: microsoft-365
+    titre: Microsoft 365
+    sous_titre: Entra ID, Exchange Online, Teams, OneDrive, SharePoint, Intune
+    icone: nuage
+    sous_domaines:
+      - { id: entra-id, titre: "Entra ID (identités et accès)" }
+      - { id: mfa-acces-conditionnel, titre: "MFA et accès conditionnel" }
+      - { id: exchange-online, titre: "Exchange Online" }
+      - { id: teams, titre: "Teams" }
+      - { id: onedrive, titre: "OneDrive" }
+      - { id: sharepoint, titre: "SharePoint" }
+      - { id: applications-office, titre: "Applications Microsoft 365 (activation, installation)" }
+      - { id: licences-facturation, titre: "Licences et facturation" }
+      - { id: centre-administration, titre: "Centres d'administration et PowerShell" }
+
+  - id: mobiles-mdm
+    titre: Mobiles et MDM
+    sous_titre: Smartphones et tablettes iOS / Android, Intune et autres MDM
+    icone: smartphone
+    sous_domaines:
+      - { id: inscription-mdm, titre: "Inscription et gestion (Intune, MDM)" }
+      - { id: messagerie-mobile, titre: "Messagerie et applications professionnelles" }
+      - { id: reseau-mobile, titre: "Wi-Fi d'entreprise et VPN mobile" }
+      - { id: securite-mobile, titre: "Sécurité, perte et vol" }
+      - { id: ios-ipados, titre: "iPhone et iPad" }
+      - { id: android, titre: "Android" }
+
+  - id: reseau
+    titre: Réseau
+    sous_titre: Connectivité, switching, VLAN, routage, Cisco IOS, Wi-Fi, VPN, pare-feu
+    icone: reseau
+    sous_domaines:
+      - { id: connectivite, titre: "Connectivité de base (pas d'Internet, adresse IP, DNS)" }
+      - { id: cablage-physique, titre: "Câblage et couche physique" }
+      - { id: switching-vlan, titre: "Switching et VLAN" }
+      - { id: spanning-tree, titre: "Spanning Tree et boucles" }
+      - { id: routage, titre: "Routage" }
+      - { id: cisco-ios, titre: "Administration Cisco IOS / IOS-XE" }
+      - { id: wifi, titre: "Wi-Fi" }
+      - { id: vpn, titre: "VPN" }
+      - { id: pare-feu, titre: "Pare-feu (Fortinet, Stormshield, pfSense…)" }
+      - { id: nat-publication, titre: "NAT et publication de services" }
+      - { id: supervision, titre: "Supervision et diagnostic" }
+
+  - id: sauvegarde-restauration
+    titre: Sauvegarde et restauration
+    sous_titre: Sauvegardes, restaurations, plan de reprise
+    icone: sauvegarde
+    sous_domaines:
+      - { id: echecs-sauvegarde, titre: "Échecs de sauvegarde" }
+      - { id: restauration-fichiers, titre: "Restauration de fichiers" }
+      - { id: restauration-systeme, titre: "Restauration de serveurs et de machines virtuelles" }
+      - { id: microsoft-365-sauvegarde, titre: "Sauvegarde Microsoft 365" }
+      - { id: cliches-versions, titre: "Clichés instantanés et versions précédentes" }
+      - { id: pra, titre: "Plan de reprise d'activité" }
+
+  - id: securite-incidents
+    titre: Sécurité et incidents
+    sous_titre: Malware, phishing, comptes compromis, ransomware
+    icone: bouclier
+    sous_domaines:
+      - { id: malware, titre: "Malware et antivirus" }
+      - { id: ransomware, titre: "Ransomware" }
+      - { id: phishing, titre: "Phishing et arnaques" }
+      - { id: comptes-compromis, titre: "Comptes compromis" }
+      - { id: attaques-authentification, titre: "Attaques sur l'authentification (force brute, spraying)" }
+      - { id: chiffrement-bitlocker, titre: "Chiffrement et BitLocker" }
+      - { id: durcissement, titre: "Durcissement et bonnes pratiques" }
+      - { id: gestion-incident, titre: "Gestion d'un incident (réflexes, preuves, déclaration)" }
+
+  - id: serveurs-linux
+    titre: Serveurs Linux
+    sous_titre: SSH, services systemd, disques, journaux, réseau
+    icone: serveur
+    sous_domaines:
+      - { id: acces-ssh, titre: "Accès SSH" }
+      - { id: services-systemd, titre: "Services et systemd" }
+      - { id: disques-partitions, titre: "Disques pleins et partitions" }
+      - { id: journaux, titre: "Journaux (journalctl, /var/log)" }
+      - { id: reseau-serveur, titre: "Réseau et pare-feu (nftables, ufw)" }
+      - { id: utilisateurs-droits, titre: "Utilisateurs et droits" }
+      - { id: mises-a-jour-serveur, titre: "Mises à jour" }
+
+  - id: stockage-nas
+    titre: Stockage et NAS
+    sous_titre: Partages SMB, droits NTFS, quotas, NAS Synology et QNAP
+    icone: disque
+    sous_domaines:
+      - { id: partages-smb, titre: "Partages SMB et lecteurs réseau" }
+      - { id: droits-ntfs, titre: "Droits NTFS et permissions" }
+      - { id: quotas-espace, titre: "Quotas et espace disque" }
+      - { id: dfs, titre: "DFS (espaces de noms et réplication)" }
+      - { id: nas, titre: "NAS (Synology, QNAP)" }
+      - { id: raid-disques, titre: "RAID et disques" }
+
+  - id: support-utilisateur
+    titre: Support utilisateur et procédures
+    sous_titre: Prise en main, méthode de diagnostic, communication, ticketing
+    icone: aide
+    sous_domaines:
+      - { id: methode-diagnostic, titre: "Méthode de diagnostic" }
+      - { id: prise-en-main, titre: "Prise en main à distance" }
+      - { id: communication, titre: "Communication avec l'utilisateur" }
+      - { id: ticketing, titre: "Ticketing et documentation" }
+      - { id: preparation-postes, titre: "Préparation et déploiement de postes" }
+      - { id: inventaire, titre: "Inventaire et parc" }
+
+  - id: telephonie-voip
+    titre: Téléphonie / VoIP
+    sous_titre: SIP, postes IP, standards, Teams Phone
+    icone: telephone
+    sous_domaines:
+      - { id: postes-ip, titre: "Postes IP et softphones" }
+      - { id: qualite-appel, titre: "Qualité d'appel (coupures, écho, voix hachée)" }
+      - { id: sip-trunk, titre: "Trunk SIP et opérateur" }
+      - { id: standard-ipbx, titre: "Standard et IPBX" }
+      - { id: teams-phone, titre: "Teams Phone" }
+
+  - id: virtualisation
+    titre: Virtualisation
+    sous_titre: Hyper-V, VMware, Proxmox
+    icone: virtualisation
+    sous_domaines:
+      - { id: hyper-v, titre: "Hyper-V" }
+      - { id: vmware, titre: "VMware vSphere / ESXi" }
+      - { id: proxmox, titre: "Proxmox VE" }
+      - { id: stockage-virtuel, titre: "Stockage et instantanés" }
+      - { id: reseau-virtuel, titre: "Réseau virtuel" }
+      - { id: vdi-rds, titre: "Bureaux à distance (RDS, VDI)" }
+
+  - id: windows
+    titre: Windows
+    sous_titre: Windows 10 et 11 sur PC fixes et portables
+    icone: windows
+    sous_domaines:
+      - { id: demarrage-performances, titre: "Démarrage et performances" }
+      - { id: mises-a-jour, titre: "Mises à jour" }
+      - { id: comptes-sessions, titre: "Comptes et ouverture de session" }
+      - { id: profils-utilisateurs, titre: "Profils utilisateurs" }
+      - { id: reseau, titre: "Réseau et Wi-Fi" }
+      - { id: impression, titre: "Impression" }
+      - { id: stockage-disques, titre: "Stockage et disques" }
+      - { id: ecran-bleu, titre: "Écran bleu (BSOD) et plantages" }
+      - { id: applications, titre: "Applications" }
+      - { id: securite-defender, titre: "Sécurité et Microsoft Defender" }
+      - { id: activation-licences, titre: "Activation et licences" }
+      - { id: bureau-distance, titre: "Bureau à distance (RDP)" }
+      - { id: peripheriques-pilotes, titre: "Périphériques et pilotes" }
+
+  - id: windows-server
+    titre: Windows Server
+    sous_titre: Windows Server 2019, 2022 et 2025 et ses rôles
+    icone: serveur-windows
+    sous_domaines:
+      - { id: demarrage-performances, titre: "Démarrage et performances" }
+      - { id: mises-a-jour, titre: "Mises à jour" }
+      - { id: serveur-fichiers, titre: "Rôle Serveur de fichiers" }
+      - { id: serveur-impression, titre: "Rôle Serveur d'impression" }
+      - { id: rds, titre: "Services Bureau à distance (RDS)" }
+      - { id: iis, titre: "IIS (serveur web)" }
+      - { id: wsus, titre: "WSUS" }
+      - { id: certificats-pki, titre: "Certificats et PKI (AD CS)" }
+      - { id: licences-cal, titre: "Licences et CAL" }
+      - { id: journaux-evenements, titre: "Journaux d'événements" }
+
+# Familles de la Boîte à outils (section à part).
+familles_outils:
+  - { id: prise-en-main, titre: "Prise en main à distance" }
+  - { id: diagnostic-reseau, titre: "Diagnostic réseau" }
+  - { id: diagnostic-systeme, titre: "Diagnostic système (Sysinternals…)" }
+  - { id: administration-ad-m365, titre: "Administration AD et Microsoft 365" }
+  - { id: ticketing-inventaire, titre: "Ticketing et inventaire" }
+  - { id: deploiement, titre: "Déploiement et préparation de postes" }
+  - { id: supports-demarrage, titre: "Supports de démarrage (clés USB)" }
+  - { id: sauvegarde, titre: "Sauvegarde" }

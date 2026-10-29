@@ -1,0 +1,25 @@
+{
+  "name": "sos-admin",
+  "version": "0.1.0",
+  "private": true,
+  "description": "SOS Admin — le guide de dépannage des techniciens IT",
+  "license": "MIT",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "validate": "tsx scripts/build-index.ts --check",
+    "build:index": "tsx scripts/build-index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "yaml": "2.9.1",
+    "zod": "4.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "22.20.5",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3"
+  }
+}
