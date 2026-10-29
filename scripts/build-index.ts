@@ -266,6 +266,7 @@ const recherche = {
     domaine: f.domaine,
     sous_domaine: f.sous_domaine,
     niveau: f.niveau,
+    format: f.format,
     critique: f.critique,
     droits: f.droits,
     statut: f.statut,

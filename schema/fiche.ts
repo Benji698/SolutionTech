@@ -78,6 +78,9 @@ export const Etape = z
 export const Fiche = z
   .strictObject({
     id: Id,
+    /** complete = fiche détaillée (diagnostic, vérification, prévention obligatoires) ;
+     *  express = problème ciblé ou rare : message/cause/solution, sans diagnostic détaillé. */
+    format: z.enum(["complete", "express"]).default("complete"),
     titre: Md,
     resume: Md,
     statut: Statut,
@@ -112,7 +115,7 @@ export const Fiche = z
     causes: z
       .array(z.strictObject({ id: IdLocal, titre: Md, frequence: Frequence, detail: Md.optional() }))
       .min(1),
-    diagnostic: z.array(Etape).min(1),
+    diagnostic: z.array(Etape).default([]),
     resolutions: z
       .array(
         z.strictObject({
@@ -123,8 +126,8 @@ export const Fiche = z
         }),
       )
       .min(1),
-    verification: z.array(Etape).min(1),
-    prevention: z.array(Md).min(1),
+    verification: z.array(Etape).default([]),
+    prevention: z.array(Md).default([]),
     comprendre: Md.optional(),
     fiches_liees: z.array(Id).default([]),
     tags: z.array(z.string().min(1)).default([]),
@@ -142,7 +145,12 @@ export const Fiche = z
     derniere_verification: DateISO,
   })
   .refine((f) => f.temps_estime.min <= f.temps_estime.max, "temps_estime : min doit être ≤ max")
-  .refine((f) => !f.critique || f.premiers_reflexes.length > 0, "une fiche critique doit avoir des premiers_reflexes");
+  .refine((f) => !f.critique || f.premiers_reflexes.length > 0, "une fiche critique doit avoir des premiers_reflexes")
+  .refine((f) => f.format === "express" || f.diagnostic.length > 0, "fiche complète : au moins une étape de diagnostic")
+  .refine((f) => f.format === "express" || f.verification.length > 0, "fiche complète : au moins une étape de vérification")
+  .refine((f) => f.format === "express" || f.prevention.length > 0, "fiche complète : au moins un conseil de prévention")
+  .refine((f) => f.format === "complete" || f.messages_erreur.length > 0 || f.symptomes.length > 0, "fiche express : un symptôme ou un message d'erreur précis")
+  .refine((f) => f.format === "complete" || f.resolutions.length <= 3, "fiche express : 3 résolutions au maximum (sinon, faire une fiche complète)");
 
 export type Fiche = z.infer<typeof Fiche>;
 export type Etape = z.infer<typeof Etape>;

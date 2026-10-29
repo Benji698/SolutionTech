@@ -1,0 +1,93 @@
+id: exchange-ndr-550-5-7-520-transfert-externe-bloque
+format: express
+titre: "Transfert automatique vers l'extérieur bloqué (550 5.7.520)"
+resume: "Les messages transférés automatiquement vers une adresse externe (règle Outlook, transfert de boîte) sont rejetés avec l'erreur 550 5.7.520. Microsoft 365 bloque par défaut le transfert automatique externe : l'autoriser uniquement pour les comptes qui en ont vraiment besoin."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: exchange-online
+apparait_aussi_dans: [microsoft-365/defender-office]
+niveau: N2
+temps_estime: { min: 10, max: 20 }
+critique: false
+environnements: [m365]
+droits: admin-m365
+outils: []
+acces:
+  - "Rôle **Administrateur de la sécurité** ou **Administrateur Exchange** sur le portail Microsoft Defender."
+
+symptomes:
+  - « J'ai mis un transfert vers ma boîte Gmail, je reçois un message d'erreur à chaque mail transféré. »
+  - « La règle qui transfère les factures au cabinet comptable ne marche plus. »
+
+messages_erreur:
+  - texte: "550 5.7.520 Access denied, Your organization does not allow external forwarding. Please contact your administrator for further assistance. AS(7555)"
+    code: "5.7.520"
+    ou: Message de non-remise reçu par l'utilisateur qui transfère
+
+variables:
+  - { nom: UPN, libelle: "Adresse de l'utilisateur qui transfère", exemple: jean.dupont@contoso.fr }
+
+causes:
+  - id: c1
+    titre: La stratégie anti-spam sortante bloque le transfert automatique externe
+    frequence: tres-frequente
+    detail: "Par défaut, le réglage « Règles de transfert automatique » est sur « Automatique - Contrôlé par le système », qui bloque le transfert externe. Cela protège contre les comptes piratés qui exfiltrent les e-mails."
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Autoriser le transfert externe pour ce seul utilisateur
+    etapes:
+      - id: r1-e1
+        titre: Vérifier que le transfert est légitime
+        niveau: N1
+        graphique: |
+          Avant toute modification, vérifier avec l'utilisateur et son responsable **où** vont les e-mails et **pourquoi**. Un transfert automatique vers une adresse inconnue est un signe classique de **compte piraté** : dans ce doute, ne rien autoriser et traiter le compte comme compromis.
+        conclusions:
+          - { si: "Le transfert n'a pas été créé par l'utilisateur", aller_a: "fiche:securite-compte-compromis" }
+      - id: r1-e2
+        titre: Créer une stratégie sortante dédiée
+        niveau: N2
+        graphique: |
+          1. Portail **Microsoft Defender** (*security.microsoft.com*) › **E-mail et collaboration** › **Stratégies et règles** › **Stratégies de menace** › **Anti-spam**.
+          2. **Créer une stratégie** › **Sortante** (*Outbound*), nommée par exemple « Transfert externe autorisé ».
+          3. Dans **Utilisateurs, groupes et domaines**, ajouter **uniquement** l'utilisateur concerné (ou un groupe dédié).
+          4. Dans **Paramètres de protection** › **Règles de transfert** › **Règles de transfert automatique** : choisir **Activé - Le transfert est activé** (*On - Forwarding is enabled*).
+          5. Enregistrer. L'application peut prendre quelques minutes.
+
+          > [!a-verifier]
+          > Les libellés français exacts des menus du portail Defender sont à confirmer.
+        commande:
+          langage: powershell
+          ou: Exchange Online PowerShell
+          code: |
+            New-HostedOutboundSpamFilterPolicy -Name 'Transfert externe autorise' -AutoForwardingMode On
+            New-HostedOutboundSpamFilterRule -Name 'Transfert externe autorise' -HostedOutboundSpamFilterPolicy 'Transfert externe autorise' -From '<UPN>'
+        avertissement:
+          type: attention
+          texte: "Ne jamais activer le transfert externe dans la stratégie par défaut (pour tout le monde) : un seul compte piraté pourrait alors faire sortir tous ses e-mails sans que personne ne le voie."
+
+verification:
+  - id: v1
+    titre: Le transfert fonctionne
+    niveau: N1
+    graphique: "Envoyer un message de test à l'utilisateur : il est reçu à l'adresse externe, et l'utilisateur ne reçoit plus de message d'erreur."
+
+fiches_liees: [exchange-mails-non-recus, securite-compte-compromis]
+tags: [transfert, forwarding, transfert externe, "5.7.520", "550 5.7.520", ndr, non remise, regle outlook, anti-spam sortant, outbound, gmail]
+
+sources:
+  - titre: "Configuring and controlling external email forwarding in Microsoft 365 — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/defender-office-365/outbound-spam-policies-external-email-forwarding
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "All you need to know about automatic email forwarding in Exchange Online — Microsoft Exchange Team Blog"
+    url: https://techcommunity.microsoft.com/t5/exchange-team-blog/all-you-need-to-know-about-automatic-email-forwarding-in/ba-p/2074888
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "550 5.7.520 Access denied, your organization does not allow external forwarding — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/1538176/550-5-7-520-access-denied-your-organization-does-n
+    type: forum
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

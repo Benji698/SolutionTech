@@ -3,8 +3,8 @@ titre: Outlook redemande le mot de passe en boucle
 resume: "Outlook (version classique) affiche sans arrêt une fenêtre de connexion, même avec le bon mot de passe. Les jetons de connexion enregistrés sur le PC sont le plus souvent en cause : les nettoyer, puis vérifier le compte Windows et le profil Outlook."
 statut: a-relire
 domaine: microsoft-365
-sous_domaine: exchange-online
-apparait_aussi_dans: [messagerie/outlook-client, microsoft-365/applications-office]
+sous_domaine: outlook
+apparait_aussi_dans: [messagerie/outlook-client, microsoft-365/exchange-online, microsoft-365/applications-office]
 niveau: N1
 temps_estime: { min: 10, max: 40 }
 critique: false

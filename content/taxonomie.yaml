@@ -127,6 +127,11 @@ domaines:
       - { id: applications-office, titre: "Applications Microsoft 365 (activation, installation)" }
       - { id: licences-facturation, titre: "Licences et facturation" }
       - { id: centre-administration, titre: "Centres d'administration et PowerShell" }
+      - { id: outlook, titre: "Outlook (classique, nouveau, web, mobile)" }
+      - { id: intune, titre: "Intune (gestion des appareils)" }
+      - { id: defender-office, titre: "Defender pour Office 365 (quarantaine, phishing)" }
+      - { id: purview-conformite, titre: "Purview (rétention, eDiscovery, DLP, étiquettes)" }
+      - { id: copilot, titre: "Microsoft 365 Copilot" }
 
   - id: mobiles-mdm
     titre: Mobiles et MDM

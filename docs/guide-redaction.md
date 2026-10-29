@@ -39,6 +39,21 @@ Exemples complets à copier : `content/fiches/active-directory/ad-compte-verroui
 | `sources` | `titre`, `url`, `type` (`officiel` / `forum` / `blog`), `langue`, `consulte_le` | Sources officielles en premier |
 | `derniere_verification` | `AAAA-MM-JJ` | Date du dernier contrôle complet de la fiche |
 
+## 2 bis. Fiche complète ou fiche express ?
+
+Deux formats existent, choisis avec le champ `format` (par défaut `complete`) :
+
+| | **Fiche complète** (`format: complete`) | **Fiche express** (`format: express`) |
+|---|---|---|
+| Pour | Problèmes fréquents ou critiques, avec plusieurs causes possibles | Problème ciblé ou rare, souvent lié à un **message ou un code d'erreur précis** |
+| Diagnostic | Obligatoire (au moins une étape) | Facultatif |
+| Résolutions | Autant que de causes | 1 à 3 au maximum |
+| Vérification, prévention | Obligatoires | Facultatives (la vérification reste conseillée) |
+| Messages d'erreur | Si possible | Fortement conseillé : c'est par lui que le technicien trouvera la fiche |
+
+Exemple de fiche express : `content/fiches/microsoft-365/exchange-ndr-550-5-7-520-transfert-externe-bloque.yaml`.
+Une fiche express qui devient fréquente peut être enrichie en fiche complète (même `id`, on passe `format` à `complete`).
+
 ## 3. Les étapes
 
 Les étapes du diagnostic, des résolutions et de la vérification ont toutes le même format :
