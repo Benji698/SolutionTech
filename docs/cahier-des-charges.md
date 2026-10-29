@@ -1,6 +1,6 @@
 # Cahier des charges — SOS Admin
 
-> Version 1.0 — 29/10/2026 — **En attente de validation**
+> Version 1.1 — 29/10/2026 — **Validé par Benji**
 > Auteur : Benji (BTS SIO SISR, alternance) · Dépôt GitHub : `SolutionTech`
 
 ---
@@ -43,13 +43,13 @@ Une seule source de contenu alimente toutes les versions, sans duplication manue
 
 ### 3.1 Domaines (affichés par ordre alphabétique)
 
-La taxonomie détaillée (sous-domaines et thèmes) sera établie en Phase 2.
+La taxonomie détaillée (sous-domaines et thèmes) sera établie en Phase 2. Chaque domaine affiche un sous-titre qui précise son périmètre. On n'utilise pas le terme « postes de travail » comme nom de section : il est trop vague. « Windows » et « Linux » désignent les PC, par opposition à « Windows Server » et « Serveurs Linux ».
 
 - Active Directory, GPO, DNS, DHCP
 - Gestion des comptes : arrivées / départs (AD + M365)
-- Linux (postes de travail)
+- Linux — Ubuntu, Debian… sur PC
 - Logiciels métier et applicatifs
-- macOS
+- macOS — Mac
 - Matériel et périphériques (imprimantes et scanners, écrans, docks, composants…)
 - Messagerie (clients, protocoles, SPF/DKIM/DMARC)
 - Microsoft 365 / Entra ID / Exchange Online / Teams / OneDrive / SharePoint
@@ -57,13 +57,13 @@ La taxonomie détaillée (sous-domaines et thèmes) sera établie en Phase 2.
 - Réseau (connectivité de base, switching, routage, VLAN, Cisco IOS, Wi-Fi, VPN, pare-feu)
 - Sauvegarde et restauration
 - Sécurité et incidents (malware, phishing, comptes compromis)
-- Serveurs Linux (bases : SSH, systemd, disques, logs, réseau)
+- Serveurs Linux — bases : SSH, systemd, disques, logs, réseau
 - Stockage et NAS (partages SMB, droits NTFS, quotas, Synology/QNAP)
 - Support utilisateur et procédures
 - Téléphonie / VoIP
 - Virtualisation
-- Windows (postes de travail)
-- Windows Server et rôles
+- Windows — Windows 10 / 11 sur PC fixes et portables
+- Windows Server — 2019 / 2022 / 2025 et ses rôles
 - **Boîte à outils** : section à part, une fiche par logiciel du technicien
 
 ### 3.2 Constructeurs réseau
