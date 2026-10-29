@@ -1,6 +1,6 @@
 # Cahier des charges — SOS Admin
 
-> Version 1.1 — 29/10/2026 — **Validé par Benji**
+> Version 1.2 — 29/10/2026 — **Validé par Benji** (1.2 : favoris sur un écran dédié)
 > Auteur : Benji (BTS SIO SISR, alternance) · Dépôt GitHub : `SolutionTech`
 
 ---
@@ -136,7 +136,7 @@ L'utilité de cette section sera réévaluée après les premières fiches.
 |---|---|
 | **Recherche** | Hors ligne, au fil de la frappe. Tolère les fautes de frappe, comprend les synonymes de terrain (« rame » = « lent »). Cherche dans le titre, les symptômes, les codes et messages d'erreur, les tags. **Comprend la version** : « imprimante windows 10 » filtre et ouvre les fiches sur la bonne version |
 | **Filtres** | Domaine, niveau, environnement/version, « Critique », temps estimé, **droits requis**. Filtres **contextuels** selon la section (constructeur en Réseau, service en M365) |
-| **Favoris** | Stockés uniquement sur l'appareil |
+| **Favoris** | Écran dédié **Favoris**, accessible depuis l'en-tête (bouton ★ Favoris) : il liste uniquement les fiches mises en favori, avec leur domaine et leur niveau ; une étoile permet de retirer une fiche. Écran vide expliqué (« Aucun favori pour l'instant »). Stockés uniquement sur l'appareil. Les favoris n'apparaissent **pas** sur l'accueil (demande de Benji, 29/10/2026) |
 | **Récemment consultées** | Bloc sur l'accueil (5 à 10 dernières fiches), sans page dédiée. Ne garde jamais les valeurs saisies. Bouton pour vider. *Fonction gardée à l'essai* |
 | **Sélecteur de version** | Dans chaque fiche, réglé par défaut sur la version la plus récente. Pas de réglage global « Mon environnement » |
 | **Mes valeurs (données temporaires)** | Formulaire qui remplace les variables (`<NomUtilisateur>`, `<IP_Imprimante>`…) dans les commandes. Valeurs **en mémoire vive uniquement** : jamais envoyées, jamais stockées, effacées en quittant la fiche ou avec le bouton « Effacer » |
@@ -159,7 +159,7 @@ L'utilité de cette section sera réévaluée après les premières fiches.
 | Style | Inspiré de **l'assistance Apple** : sobre, aéré, fond blanc / gris très clair |
 | Couleurs | Principale : bleu. Niveaux : N1 vert, N2 bleu, N3 violet. Rouge réservé aux actions destructives, orange aux « Attention » |
 | Logo | Moderne, simple, compréhensible par tous. Piste : bouée de sauvetage stylisée, en formes plates. 2 ou 3 variantes proposées en Phase 4 |
-| Accueil | Grande barre de recherche → Favoris + Récemment consultées (masqués si vides) → grille des domaines par ordre alphabétique (icône + nombre de fiches) |
+| Accueil | Grande barre de recherche → Récemment consultées (masqué si vide) → grille des domaines par ordre alphabétique (icône + nombre de fiches). Les favoris ont leur propre écran |
 | Police | Police du système, chasse fixe pour les commandes. Aucune police externe |
 | Navigation | Mobile : recherche toujours accessible + menu des sections. PC : sections à gauche, fiche au centre, sommaire à droite. iOS : barre d'onglets en bas (Accueil · Recherche · Favoris · Réglages) |
 
