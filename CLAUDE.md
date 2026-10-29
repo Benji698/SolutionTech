@@ -73,7 +73,7 @@ En bref :
 - **En-tête fixe** : toute navigation (fil d'Ariane, liens « Étape n » / « Résolution n », sommaire, retour à l'accueil, résultat de recherche) doit amener le haut de la cible **juste sous l'en-tête**, jamais dessous. Utiliser `scroll-margin-top` égal à la hauteur de l'en-tête (ou un décalage calculé), et le tester sur PC et à la largeur d'un téléphone.
 - **Blocs de commande** : une longue commande défile **dans son bloc** (`overflow-x: auto`), elle ne doit jamais élargir l'étape ni la page. Dans les grilles CSS, donner `min-width: 0` / `minmax(0, 1fr)` aux colonnes qui contiennent du code.
 - **Mobile** : onglets et menus passent à la ligne au lieu d'être coupés ; aucun défilement horizontal de la page.
-- **Retour arrière** (demande de Benji) : glisser le doigt de gauche à droite sur téléphone, deux doigts vers la droite sur le trackpad du Mac, ⌥/Alt + ← au clavier, et un bouton « ‹ Retour » visible. Sur le site, chaque écran a sa **vraie adresse** : le geste natif du navigateur (historique) fonctionne alors sans code spécial, il ne faut pas le bloquer. Dans l'app iOS, `NavigationStack` fournit le glissement depuis le bord gauche.
+- **Retour arrière** (demande de Benji) : glisser le doigt de gauche à droite sur téléphone, deux doigts vers la droite sur le trackpad du Mac, ⌥/Alt + ← au clavier, et un bouton « ‹ Retour » visible. Sur le site, chaque écran a sa **vraie adresse** : le geste natif du navigateur (historique) fonctionne alors sans code spécial, il ne faut pas le bloquer. Dans l'app iOS, `NavigationStack` fournit le glissement depuis le bord gauche. **L'accueil est la racine** : y revenir (logo, fil d'Ariane) vide l'historique de l'app, et aucun retour n'est possible depuis l'accueil.
 
 ## Commandes
 
