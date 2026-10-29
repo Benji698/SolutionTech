@@ -1,0 +1,208 @@
+id: dns-noms-internes-non-resolus
+titre: Les noms des serveurs internes ne sont plus trouvés (DNS)
+resume: "Internet fonctionne, mais le poste n'atteint plus un serveur interne par son nom (partage, intranet, application). Vérifier quel DNS le poste utilise, ce qu'il répond, puis corriger le poste ou l'enregistrement sur le serveur DNS."
+statut: a-relire
+domaine: active-directory
+sous_domaine: dns
+apparait_aussi_dans: [reseau/connectivite, windows/reseau]
+niveau: N1
+temps_estime: { min: 10, max: 40 }
+critique: false
+environnements: [win11, win10]
+droits: admin-local
+outils: []
+acces:
+  - Session sur le poste concerné.
+  - "Pour la correction côté serveur : accès à la console DNS d'un contrôleur de domaine."
+
+symptomes:
+  - « Internet marche mais je n'ai plus accès au serveur de fichiers. »
+  - « L'intranet ne s'ouvre plus, alors que le collègue d'à côté y arrive. »
+  - « Ça marche avec l'adresse IP du serveur, mais pas avec son nom. »
+
+messages_erreur:
+  - texte: Windows can't find '\\SRV-FICHIERS01'. Check the spelling and try again.
+    ou: Explorateur de fichiers (version anglaise)
+  - texte: "*** UnKnown can't find srv-fichiers01: Non-existent domain"
+    ou: Résultat de nslookup
+  - texte: DNS_PROBE_FINISHED_NXDOMAIN
+    ou: Navigateur (Chrome, Edge) pour une adresse intranet
+
+variables:
+  - { nom: NomServeur, libelle: "Nom du serveur interne recherché", exemple: SRV-FICHIERS01 }
+  - { nom: Domaine, libelle: "Nom DNS du domaine", exemple: contoso.local }
+  - { nom: IPDC, libelle: "Adresse IP d'un contrôleur de domaine (serveur DNS)", exemple: 192.168.10.10 }
+
+causes:
+  - id: c1
+    titre: Le poste utilise un serveur DNS qui ne connaît pas les noms internes
+    frequence: tres-frequente
+    detail: DNS de la box, de l'opérateur ou public reçu par DHCP, saisi à la main, ou imposé par un VPN, un antivirus ou un navigateur (« DNS sécurisé »).
+  - id: c2
+    titre: Le poste a gardé une ancienne réponse en cache
+    frequence: frequente
+    detail: Le serveur a changé d'adresse IP ; le poste utilise encore l'ancienne.
+  - id: c3
+    titre: L'enregistrement DNS du serveur est absent ou faux sur le serveur DNS
+    frequence: occasionnelle
+    detail: Enregistrement supprimé, serveur réinstallé avec une autre adresse, doublon d'enregistrements.
+  - id: c4
+    titre: Le nom court n'est pas complété par le suffixe du domaine
+    frequence: occasionnelle
+    detail: Poste hors domaine ou en VPN sans suffixe DNS ; « SRV-FICHIERS01 » ne marche pas mais « SRV-FICHIERS01.contoso.local » fonctionne.
+
+diagnostic:
+  - id: d1
+    titre: Tester le nom complet et le nom court
+    niveau: N1
+    graphique: |
+      1. Noter l'adresse IP du serveur (inventaire, ou en demandant à un collègue dont le poste fonctionne).
+      2. Dans l'Explorateur, tester successivement `\\SRV-FICHIERS01`, `\\SRV-FICHIERS01.contoso.local` et `\\192.168.10.20` (l'adresse IP).
+    commande:
+      langage: cmd
+      code: |
+        nslookup <NomServeur>
+        nslookup <NomServeur>.<Domaine>
+        ipconfig /all
+    astuce: La première ligne de la réponse de nslookup indique **quel serveur DNS** a répondu. Dans `ipconfig /all`, la ligne « Liste de recherche du suffixe DNS » (*DNS Suffix Search List*) doit contenir le domaine.
+    conclusions:
+      - { si: "nslookup est répondu par un serveur qui n'est pas un contrôleur de domaine", cause: c1, aller_a: r1 }
+      - { si: "Le nom complet fonctionne mais pas le nom court", cause: c4, aller_a: r4 }
+      - { si: "Le DNS de l'AD répond une mauvaise adresse IP, ou « Non-existent domain »", aller_a: d2 }
+      - { si: "nslookup répond la bonne adresse, mais l'Explorateur échoue toujours", cause: c2, aller_a: r2 }
+
+  - id: d2
+    titre: Vérifier l'enregistrement sur le serveur DNS
+    niveau: N2
+    graphique: |
+      Sur un contrôleur de domaine : **DNS** (`dnsmgmt.msc`) › **Zones de recherche directes** (*Forward Lookup Zones*) › zone du domaine › rechercher le nom du serveur.
+      Vérifier qu'il existe **un seul** enregistrement **A (hôte)** avec la **bonne adresse IP**, et regarder son horodatage.
+    commande:
+      langage: powershell
+      code: |
+        # Interroger directement le DNS de l'AD
+        Resolve-DnsName -Name <NomServeur>.<Domaine> -Server <IPDC>
+        # Sur le contrôleur de domaine : enregistrements portant ce nom
+        Get-DnsServerResourceRecord -ZoneName '<Domaine>' -Name '<NomServeur>'
+    conclusions:
+      - { si: "Enregistrement absent, avec une ancienne adresse, ou en double", cause: c3, aller_a: r3 }
+      - { si: "L'enregistrement est correct sur le serveur DNS", cause: c2, aller_a: r2 }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Faire utiliser au poste le DNS de l'Active Directory
+    etapes:
+      - id: r1-e1
+        titre: Corriger les serveurs DNS du poste
+        niveau: N1
+        graphique: |
+          1. `ncpa.cpl` › clic droit sur la carte réseau › **Propriétés** › **Protocole Internet version 4 (TCP/IPv4)** › **Propriétés**.
+          2. Normalement : **Obtenir les adresses des serveurs DNS automatiquement**. Si le DHCP distribue un DNS public, corriger l'étendue DHCP (option 006) pour qu'elle ne donne que les contrôleurs de domaine.
+          3. Vérifier qu'aucun logiciel n'impose un autre DNS : client VPN, antivirus ou option **DNS sécurisé** du navigateur (*Utiliser un DNS sécurisé* dans Edge ou Chrome), qui contourne le DNS de l'entreprise pour les sites web.
+        commande:
+          langage: cmd
+          admin: true
+          code: |
+            ipconfig /renew
+            ipconfig /flushdns
+        astuce: "Les contrôleurs de domaine résolvent aussi les noms Internet (grâce à leurs redirecteurs) : il n'y a pas besoin de DNS public « en secours » sur les postes."
+
+  - id: r2
+    causes: [c2]
+    titre: Vider le cache DNS du poste
+    etapes:
+      - id: r2-e1
+        titre: Vider le cache et réessayer
+        niveau: N1
+        graphique: "Il n'y a pas de bouton dans les Paramètres : utiliser la commande ci-dessous, puis réessayer l'accès. Un redémarrage du poste vide aussi le cache."
+        commande:
+          langage: cmd
+          admin: true
+          code: |
+            ipconfig /flushdns
+            ipconfig /displaydns | findstr /i "<NomServeur>"
+        astuce: "Vérifier aussi le fichier `C:\\Windows\\System32\\drivers\\etc\\hosts` : une ancienne ligne y prend le dessus sur le DNS."
+
+  - id: r3
+    causes: [c3]
+    titre: Corriger l'enregistrement DNS du serveur
+    etapes:
+      - id: r3-e1
+        titre: Demander au serveur de se réenregistrer
+        niveau: N2
+        graphique: Sur le **serveur concerné** (s'il est membre du domaine et en adresse fixe), lancer la commande ci-dessous puis vérifier dans la console DNS que l'enregistrement est à jour.
+        commande:
+          langage: cmd
+          admin: true
+          ou: Sur le serveur dont le nom n'est pas résolu
+          code: ipconfig /registerdns
+      - id: r3-e2
+        titre: Corriger l'enregistrement à la main
+        niveau: N2
+        graphique: |
+          Dans **DNS** (`dnsmgmt.msc`) › zone du domaine :
+
+          - Enregistrement **faux** : double-cliquer dessus et corriger l'adresse IP.
+          - Enregistrement **en double** avec une ancienne adresse : supprimer celui qui est faux (clic droit › **Supprimer**).
+          - Enregistrement **absent** : clic droit sur la zone › **Nouvel hôte (A ou AAAA)…** › nom et adresse IP, en cochant **Créer un pointeur d'enregistrement PTR associé** si une zone inverse existe.
+        avertissement:
+          type: attention
+          texte: Supprimer un enregistrement DNS rend le serveur injoignable par son nom pour tout le monde jusqu'à sa recréation. Vérifier l'adresse IP réelle du serveur avant toute modification.
+
+  - id: r4
+    causes: [c4]
+    titre: Faire compléter les noms courts par le suffixe du domaine
+    etapes:
+      - id: r4-e1
+        titre: Vérifier le suffixe DNS du poste
+        niveau: N2
+        graphique: |
+          - Poste **membre du domaine** : le suffixe est ajouté automatiquement. S'il manque, vérifier l'option DHCP **015 Nom de domaine DNS** et la configuration du VPN (suffixe DNS de la connexion).
+          - Poste **hors domaine** ou en VPN : `ncpa.cpl` › carte › **Propriétés** › **TCP/IPv4** › **Propriétés** › **Avancé…** › onglet **DNS** › **Suffixe DNS pour cette connexion** : saisir le nom du domaine.
+          - En attendant, utiliser le **nom complet** (`SRV-FICHIERS01.contoso.local`).
+
+verification:
+  - id: v1
+    titre: Le nom est résolu par le DNS de l'AD avec la bonne adresse
+    niveau: N1
+    commande:
+      langage: cmd
+      code: nslookup <NomServeur>
+    graphique: La réponse vient d'un contrôleur de domaine et donne la bonne adresse IP.
+  - id: v2
+    titre: La ressource est accessible par son nom
+    niveau: N1
+    graphique: Le partage, l'intranet ou l'application s'ouvre avec le **nom** du serveur.
+
+prevention:
+  - Ne distribuer par DHCP que les contrôleurs de domaine comme serveurs DNS, avec l'option 015 (nom de domaine DNS).
+  - Activer le nettoyage (*scavenging*) des enregistrements obsolètes sur les zones DNS, avec prudence et après avoir vérifié les enregistrements statiques.
+  - Désactiver le « DNS sécurisé » des navigateurs par stratégie sur les postes de l'entreprise si l'intranet doit être résolu par le DNS interne.
+  - Documenter les adresses IP fixes des serveurs et mettre à jour le DNS lors de chaque changement.
+
+comprendre: |
+  Pour trouver un serveur interne, le poste interroge son serveur DNS. Seuls les **serveurs DNS de l'Active Directory** connaissent les noms internes ; ils transmettent eux-mêmes les autres demandes vers Internet (**redirecteurs**). Un poste réglé sur un DNS public garde donc Internet, mais perd tous les noms internes. Le poste garde aussi les réponses en **cache** pendant leur durée de vie (TTL), d'où l'intérêt de `ipconfig /flushdns` après une modification.
+
+fiches_liees: [ad-jonction-domaine-echoue, dhcp-etendue-saturee]
+tags: [dns, nom, resolution, nslookup, flushdns, introuvable, serveur, intranet, partage, suffixe, cache dns, nxdomain]
+
+sources:
+  - titre: "Best practices for DNS client settings in Windows Server — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/best-practices-for-dns-client-settings
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "DNS server forwarder questions — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/2196268/dns-server-forwarder-questions
+    type: forum
+    consulte_le: 2026-10-29
+  - titre: "DNS best practices — Active Directory Pro"
+    url: https://activedirectorypro.com/dns-best-practices/
+    type: blog
+    consulte_le: 2026-10-29
+  - titre: "Stop using 8.8.8.8 for your production network — Mirazon"
+    url: https://www.mirazon.com/stop-using-8-8-8-8-for-your-production-network
+    type: blog
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

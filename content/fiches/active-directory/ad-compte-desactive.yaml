@@ -1,0 +1,176 @@
+id: ad-compte-desactive
+titre: Compte utilisateur désactivé dans l'Active Directory
+resume: "L'utilisateur ne peut plus se connecter car son compte AD est désactivé. Vérifier pourquoi il l'a été avant de le réactiver : un compte désactivé l'est souvent volontairement."
+statut: a-relire
+domaine: active-directory
+sous_domaine: comptes-utilisateurs
+theme: attributs-comptes
+apparait_aussi_dans: [windows/comptes-sessions, gestion-comptes/depart]
+niveau: N1
+temps_estime: { min: 5, max: 20 }
+critique: false
+environnements: [ws2025, ws2022, ws2019, ws2016]
+droits: delegation-ad
+outils: [rsat-ad]
+acces:
+  - Poste d'administration avec les outils RSAT « Active Directory », ou session sur un contrôleur de domaine.
+
+symptomes:
+  - « Windows me dit que mon compte a été désactivé. »
+  - « Je reviens de congé et je ne peux plus me connecter. »
+  - "« Mon compte ne marche plus nulle part : ni le PC, ni la messagerie, ni le VPN. »"
+
+messages_erreur:
+  - texte: Your account has been disabled. Please see your system administrator.
+    ou: Écran d'ouverture de session Windows (version anglaise)
+  - texte: Votre compte a été désactivé. Contactez votre administrateur système.
+    ou: Écran d'ouverture de session Windows (version française, formulation à confirmer)
+
+variables:
+  - { nom: NomUtilisateur, libelle: "Identifiant de l'utilisateur (sAMAccountName)", exemple: jdupont }
+
+causes:
+  - id: c1
+    titre: Compte désactivé volontairement (départ, absence longue, fin de contrat, sanction)
+    frequence: tres-frequente
+  - id: c2
+    titre: Compte désactivé automatiquement (date d'expiration, script ou outil de nettoyage des comptes inactifs)
+    frequence: frequente
+  - id: c3
+    titre: Compte désactivé par erreur (mauvais utilisateur sélectionné, script mal ciblé)
+    frequence: occasionnelle
+  - id: c4
+    titre: Compte désactivé suite à une suspicion de compromission
+    frequence: rare
+    detail: L'équipe sécurité ou un outil de détection a pu bloquer le compte. Le réactiver sans vérifier peut rouvrir l'accès à un attaquant.
+
+diagnostic:
+  - id: d1
+    titre: Confirmer que le compte est désactivé (et pas verrouillé ni expiré)
+    niveau: N1
+    graphique: |
+      1. Ouvrir **Utilisateurs et ordinateurs Active Directory** (*Active Directory Users and Computers*, `dsa.msc`).
+      2. Rechercher l'utilisateur : un compte désactivé apparaît avec une **flèche vers le bas** sur son icône.
+      3. Ouvrir ses propriétés › onglet **Compte** (*Account*) :
+         - dans **Options de compte** (*Account options*), la case **Le compte est désactivé** (*Account is disabled*) est cochée ;
+         - vérifier aussi la zone **Date d'expiration du compte** (*Account expires*) : une date passée bloque aussi le compte.
+    commande:
+      langage: powershell
+      code: |
+        Get-ADUser -Identity <NomUtilisateur> -Properties Enabled, AccountExpirationDate, LockedOut, whenChanged, Description |
+          Select-Object Name, Enabled, AccountExpirationDate, LockedOut, whenChanged, Description, DistinguishedName
+    conclusions:
+      - { si: "Le compte est verrouillé (et non désactivé)", aller_a: "fiche:ad-compte-verrouille" }
+      - { si: "La date d'expiration du compte est dépassée", cause: c2, aller_a: r2 }
+      - { si: "Le compte est désactivé (Enabled = False)", aller_a: d2 }
+
+  - id: d2
+    titre: Comprendre pourquoi le compte a été désactivé avant de le réactiver
+    niveau: N1
+    graphique: |
+      Ne **jamais** réactiver un compte sans savoir pourquoi il a été désactivé :
+
+      1. Regarder où se trouve le compte : une OU du type « Comptes désactivés » ou « Départs » indique une désactivation volontaire.
+      2. Lire le champ **Description** et l'onglet **Organisation** : une mention de départ ou de fin de contrat est fréquente.
+      3. Vérifier dans l'outil de tickets s'il existe une demande de départ, d'absence longue ou un incident de sécurité pour cet utilisateur.
+      4. En cas de doute, demander la validation du **manager** ou du **responsable informatique**.
+    astuce: |
+      Pour savoir **qui** a désactivé le compte et **quand**, chercher l'événement **4725** (*A user account was disabled*) dans le journal Sécurité des contrôleurs de domaine, si l'audit de la gestion des comptes est activé.
+    conclusions:
+      - { si: "Départ, fin de contrat ou désactivation demandée : c'est normal", cause: c1, aller_a: r1 }
+      - { si: "Aucune trace de demande et l'utilisateur est bien en poste", cause: c3, aller_a: r3 }
+      - { si: "Désactivation par l'équipe sécurité ou suspicion de piratage", cause: c4, aller_a: "fiche:securite-compte-compromis" }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Ne pas réactiver sans validation
+    etapes:
+      - id: r1-e1
+        titre: Informer l'utilisateur et faire valider la demande
+        niveau: N1
+        graphique: |
+          Expliquer à l'utilisateur que son compte a été désactivé volontairement et l'orienter vers son manager ou les ressources humaines.
+          Ne réactiver le compte que sur demande **écrite** d'une personne habilitée (ticket validé), puis appliquer la Résolution 3.
+
+  - id: r2
+    causes: [c2]
+    titre: Prolonger ou supprimer la date d'expiration du compte
+    etapes:
+      - id: r2-e1
+        titre: Modifier la date d'expiration (après validation)
+        niveau: N1
+        graphique: |
+          1. Vérifier avec le manager que le contrat ou la mission est bien prolongé.
+          2. Propriétés de l'utilisateur › onglet **Compte** › **Date d'expiration du compte** : choisir **Jamais** (*Never*) ou **Fin de** (*End of*) avec la nouvelle date.
+          3. **Appliquer**, puis vérifier aussi que la case **Le compte est désactivé** n'est pas cochée.
+        commande:
+          langage: powershell
+          code: |
+            # Nouvelle date de fin (la date indiquée est le premier jour où le compte ne fonctionne plus)
+            Set-ADAccountExpiration -Identity <NomUtilisateur> -DateTime '2027-01-01'
+            # Ou supprimer l'expiration
+            Clear-ADAccountExpiration -Identity <NomUtilisateur>
+
+  - id: r3
+    causes: [c3]
+    titre: Réactiver le compte
+    etapes:
+      - id: r3-e1
+        titre: Réactiver le compte et vérifier son emplacement
+        niveau: N1
+        graphique: |
+          1. Clic droit sur l'utilisateur › **Activer le compte** (*Enable Account*).
+          2. Si le compte avait été déplacé dans une OU « Désactivés », le remettre dans son OU d'origine (clic droit › **Déplacer…**) : sinon il ne reçoit pas les bonnes stratégies de groupe.
+          3. Vérifier ses **groupes** (onglet **Membre de**) : un script de désactivation retire parfois les appartenances.
+        commande:
+          langage: powershell
+          code: |
+            Enable-ADAccount -Identity <NomUtilisateur>
+            Get-ADUser -Identity <NomUtilisateur> -Properties MemberOf | Select-Object Name, Enabled, DistinguishedName, MemberOf
+        astuce: La réactivation doit être répliquée vers les autres contrôleurs de domaine ; sur un site distant, cela peut prendre quelques minutes.
+
+verification:
+  - id: v1
+    titre: Le compte est actif
+    niveau: N1
+    graphique: L'icône de l'utilisateur n'a plus de flèche vers le bas, et la case **Le compte est désactivé** est décochée.
+    commande:
+      langage: powershell
+      code: Get-ADUser -Identity <NomUtilisateur> -Properties Enabled | Select-Object Name, Enabled
+  - id: v2
+    titre: L'utilisateur se connecte
+    niveau: N1
+    graphique: L'utilisateur ouvre sa session et accède à ses ressources habituelles (lecteurs réseau, messagerie).
+
+prevention:
+  - Tracer chaque désactivation dans un ticket et dans le champ Description du compte (date, motif, demandeur).
+  - Utiliser une OU dédiée aux comptes désactivés, avec une procédure de départ documentée.
+  - Pour les contrats à durée limitée, renseigner la date d'expiration dès la création du compte et prévenir le manager avant l'échéance.
+  - Faire valider tout script de nettoyage des comptes inactifs et exclure les comptes en absence longue connue.
+
+comprendre: |
+  Un compte **désactivé** (attribut *userAccountControl*) ne peut plus s'authentifier, même avec le bon mot de passe. C'est différent d'un compte **verrouillé** (trop d'erreurs de mot de passe, déblocage automatique ou manuel) et d'un compte **expiré** (date de fin atteinte). Les trois se voient dans l'onglet **Compte** des propriétés de l'utilisateur.
+
+fiches_liees: [ad-compte-verrouille, ad-mot-de-passe-expire, securite-compte-compromis]
+tags: [desactive, disabled, compte, bloque, expire, expiration, enable-adaccount, "4725", depart]
+
+sources:
+  - titre: "Search-ADAccount (module ActiveDirectory) — Microsoft Learn"
+    url: https://learn.microsoft.com/powershell/module/activedirectory/search-adaccount
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Locating Disabled User Accounts — Microsoft TechNet"
+    url: https://technet.microsoft.com/en-us/library/dd378939.aspx
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "How to lock, unlock, enable and disable AD accounts with PowerShell — Netwrix"
+    url: https://netwrix.com/en/resources/blog/how-to-lock-unlock-enable-and-disable-ad-accounts-with-powershell/
+    type: blog
+    consulte_le: 2026-10-29
+  - titre: "Disable account in Active Directory — TheITBros"
+    url: https://theitbros.com/disable-account-active-directory/
+    type: blog
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

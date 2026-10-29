@@ -1,0 +1,226 @@
+id: dhcp-etendue-saturee
+titre: Les appareils ne reçoivent plus d'adresse IP (étendue DHCP pleine ou injoignable)
+resume: "De nouveaux appareils obtiennent une adresse en 169.254.x.x et n'ont pas de réseau. Vérifier si le serveur DHCP répond et s'il lui reste des adresses, puis libérer de la place ou corriger l'acheminement des demandes."
+statut: a-relire
+domaine: active-directory
+sous_domaine: dhcp
+apparait_aussi_dans: [reseau/connectivite, windows-server/journaux-evenements]
+niveau: N2
+temps_estime: { min: 15, max: 60 }
+critique: false
+environnements: [ws2025, ws2022, ws2019, ws2016]
+droits: admin-domaine
+outils: []
+acces:
+  - Console DHCP (RSAT) ou session sur le serveur DHCP, avec un compte membre de « Administrateurs DHCP ».
+  - "Pour le relais DHCP : accès en mode privilégié au routeur ou au switch de niveau 3."
+
+symptomes:
+  - « Mon PC est connecté mais il n'a pas d'Internet. »
+  - « Les nouveaux arrivants n'ont pas de réseau, les anciens oui. »
+  - « Les smartphones ne se connectent plus au Wi-Fi. »
+
+messages_erreur:
+  - texte: "Adresse IPv4 : 169.254.x.x (Adresse IPv4 de configuration automatique)"
+    ou: Résultat de ipconfig /all sur le poste (adresse APIPA, aucun serveur DHCP n'a répondu)
+  - texte: Scope, 192.168.20.0, is 95 percent full with only 12 IP addresses remaining.
+    code: "1020"
+    ou: Journal Système du serveur DHCP (avertissement d'étendue presque pleine)
+
+variables:
+  - { nom: IdEtendue, libelle: "Adresse réseau de l'étendue (ScopeId)", exemple: 192.168.20.0 }
+  - { nom: IPServeurDHCP, libelle: "Adresse IP du serveur DHCP", exemple: 192.168.10.10 }
+
+causes:
+  - id: c1
+    titre: L'étendue est pleine (plus d'adresses disponibles)
+    frequence: frequente
+    detail: Plus d'appareils que prévu (smartphones, invités, objets connectés) et durée de bail trop longue.
+  - id: c2
+    titre: Le service DHCP est arrêté, ou le serveur n'est pas autorisé dans l'AD
+    frequence: occasionnelle
+  - id: c3
+    titre: Les demandes n'arrivent pas au serveur (relais DHCP manquant sur un VLAN)
+    frequence: occasionnelle
+    detail: Nouveau VLAN créé sans « ip helper-address » sur le routeur ou le switch de niveau 3.
+  - id: c4
+    titre: L'étendue est désactivée ou ses adresses sont « BAD_ADDRESS »
+    frequence: rare
+    detail: Des adresses refusées pour conflit (un appareil en adresse fixe dans la plage) restent bloquées.
+
+diagnostic:
+  - id: d1
+    titre: Confirmer que le poste n'a pas reçu d'adresse
+    niveau: N1
+    graphique: |
+      `ncpa.cpl` › double-clic sur la carte connectée › **Détails…** : une **Adresse IPv4** en `169.254.x.x` et aucun **Serveur DHCP** indiquent que personne n'a répondu.
+      Vérifier sur plusieurs appareils et sur plusieurs réseaux (filaire, Wi-Fi, autre étage) pour délimiter le problème.
+    commande:
+      langage: cmd
+      admin: true
+      code: |
+        ipconfig /all
+        ipconfig /release
+        ipconfig /renew
+    conclusions:
+      - { si: "Seuls les appareils d'un VLAN ou d'un site sont touchés, et c'est un réseau récent", cause: c3, aller_a: r3 }
+      - { si: "Plusieurs appareils du même réseau sont touchés", aller_a: d2 }
+      - { si: "Un seul appareil est touché, les autres reçoivent une adresse", aller_a: "fiche:reseau-pas-d-adresse-ip" }
+
+  - id: d2
+    titre: Vérifier le service et le taux d'occupation de l'étendue
+    niveau: N2
+    graphique: |
+      1. Ouvrir la console **DHCP** (`dhcpmgmt.msc`) : le serveur doit apparaître avec une **coche verte** (autorisé, service démarré). Une flèche rouge signale un service arrêté ou un serveur non autorisé.
+      2. Clic droit sur **IPv4** › **Afficher les statistiques** (*Display Statistics*) : regarder **Disponibles** (*Available*) et le pourcentage **En cours d'utilisation** (*In use*) de chaque étendue.
+      3. Ouvrir l'étendue › **Baux d'adresses** (*Address Leases*) : repérer des baux nommés **BAD_ADDRESS**.
+    commande:
+      langage: powershell
+      ou: Sur le serveur DHCP ou depuis un poste avec RSAT
+      code: |
+        Get-Service -Name DHCPServer
+        Get-DhcpServerInDC
+        Get-DhcpServerv4Scope | Select-Object ScopeId, Name, State, StartRange, EndRange, LeaseDuration
+        Get-DhcpServerv4ScopeStatistics | Select-Object ScopeId, Free, InUse, PercentageInUse, Reserved
+    conclusions:
+      - { si: "Service arrêté, ou serveur absent de la liste des serveurs autorisés", cause: c2, aller_a: r2 }
+      - { si: "L'étendue est à 100 % (Free = 0) ou presque", cause: c1, aller_a: r1 }
+      - { si: "L'étendue est inactive, ou il y a beaucoup de baux BAD_ADDRESS", cause: c4, aller_a: r4 }
+      - { si: "Le service tourne et l'étendue a des adresses libres", cause: c3, aller_a: r3 }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Libérer des adresses ou agrandir l'étendue
+    etapes:
+      - id: r1-e1
+        titre: Réduire la durée des baux
+        niveau: N2
+        graphique: |
+          Clic droit sur l'étendue › **Propriétés** › onglet **Général** › **Durée du bail pour les clients DHCP** (*Lease duration*).
+          8 jours (valeur par défaut) convient aux postes fixes ; pour un réseau d'invités ou de smartphones, quelques heures suffisent.
+          Les baux existants ne raccourcissent qu'à leur prochain renouvellement : l'effet n'est pas immédiat.
+        commande:
+          langage: powershell
+          code: Set-DhcpServerv4Scope -ScopeId <IdEtendue> -LeaseDuration 1.00:00:00
+      - id: r1-e2
+        titre: Agrandir la plage de l'étendue
+        niveau: N3
+        graphique: |
+          Si le masque de sous-réseau le permet : **Propriétés** de l'étendue › onglet **Général** › agrandir l'**Adresse IP de fin** (*End IP address*), en vérifiant qu'aucun appareil en adresse fixe ne se trouve dans les nouvelles adresses (sinon, les ajouter en **exclusions**).
+          Si le réseau est trop petit (masque /24 plein), il faut **redécouper le réseau** (nouveau VLAN ou masque plus large) : c'est un changement d'architecture à préparer.
+        avertissement:
+          type: attention
+          texte: "Le masque de sous-réseau d'une étendue existante ne se modifie pas : il faut recréer l'étendue, ce qui touche tous les appareils du réseau, les routeurs et les pare-feu. À planifier, jamais en urgence en pleine journée."
+
+  - id: r2
+    causes: [c2]
+    titre: Redémarrer le service DHCP ou autoriser le serveur
+    etapes:
+      - id: r2-e1
+        titre: Démarrer le service et vérifier l'autorisation
+        niveau: N2
+        graphique: |
+          1. **Services** (`services.msc`) sur le serveur DHCP › **Serveur DHCP** (*DHCP Server*) › **Démarrer**, type de démarrage **Automatique**.
+          2. Dans la console DHCP, clic droit sur le serveur › **Autoriser** (*Authorize*), puis actualiser après quelques secondes.
+          3. Lire le journal **Système** du serveur pour comprendre pourquoi le service s'était arrêté.
+        commande:
+          langage: powershell
+          admin: true
+          ou: Sur le serveur DHCP
+          code: |
+            Start-Service -Name DHCPServer
+            Set-Service -Name DHCPServer -StartupType Automatic
+            Add-DhcpServerInDC
+
+  - id: r3
+    causes: [c3]
+    titre: Configurer le relais DHCP sur le VLAN
+    etapes:
+      - id: r3-e1
+        titre: "Ajouter « ip helper-address » sur l'interface du VLAN"
+        niveau: N3
+        graphique: |
+          Quand le serveur DHCP n'est pas dans le même VLAN que les appareils, le routeur (ou le switch de niveau 3) doit **relayer** les demandes. Sur un équipement Cisco, ajouter l'adresse du serveur DHCP sur l'interface VLAN des appareils (commande ci-dessous), puis vérifier qu'une **étendue** existe bien pour ce réseau sur le serveur.
+          Sur un pare-feu (Fortinet, Stormshield, pfSense…), activer le **relais DHCP** sur l'interface concernée.
+        commande:
+          langage: cisco-ios
+          admin: true
+          ou: Sur le routeur ou le switch de niveau 3 qui porte la passerelle du VLAN (ici le VLAN 20)
+          code: |
+            configure terminal
+             interface Vlan20
+              ip helper-address <IPServeurDHCP>
+             end
+            show running-config interface Vlan20
+            copy running-config startup-config
+        avertissement:
+          type: attention
+          texte: "Modifier la configuration d'un équipement réseau en production peut couper le réseau en cas d'erreur de saisie. Vérifier l'interface avant de valider et sauvegarder la configuration (copy running-config startup-config) une fois le résultat confirmé."
+
+  - id: r4
+    causes: [c4]
+    titre: Activer l'étendue ou nettoyer les adresses en conflit
+    etapes:
+      - id: r4-e1
+        titre: Activer l'étendue et supprimer les baux BAD_ADDRESS
+        niveau: N2
+        graphique: |
+          - Étendue inactive (flèche rouge) : clic droit › **Activer** (*Activate*).
+          - Baux **BAD_ADDRESS** : trouver d'abord **l'appareil en adresse fixe** qui occupe ces adresses (imprimante, caméra) et l'exclure de la plage (**Pool d'adresses › Nouvelle plage d'exclusion**) ou le passer en réservation. Supprimer ensuite les baux BAD_ADDRESS (clic droit › **Supprimer**).
+        commande:
+          langage: powershell
+          code: |
+            Get-DhcpServerv4Lease -ScopeId <IdEtendue> | Where-Object HostName -eq 'BAD_ADDRESS'
+            Remove-DhcpServerv4Lease -ScopeId <IdEtendue> -BadLeases
+
+verification:
+  - id: v1
+    titre: Les appareils reçoivent une adresse
+    niveau: N1
+    commande:
+      langage: cmd
+      admin: true
+      code: |
+        ipconfig /renew
+        ipconfig /all
+    graphique: L'appareil obtient une adresse du bon réseau (pas en 169.254), avec la bonne passerelle et les bons serveurs DNS.
+  - id: v2
+    titre: L'étendue garde une marge
+    niveau: N2
+    commande:
+      langage: powershell
+      code: Get-DhcpServerv4ScopeStatistics -ScopeId <IdEtendue> | Select-Object ScopeId, Free, PercentageInUse
+    graphique: Le pourcentage d'utilisation reste nettement sous 100 %.
+
+prevention:
+  - Séparer les réseaux (postes, invités, téléphonie, objets connectés) en VLAN distincts avec des durées de bail adaptées.
+  - Surveiller le taux d'occupation des étendues (alerte à 80 %, événement 1020).
+  - Exclure de la plage DHCP toutes les adresses fixes, et préférer les réservations aux adresses saisies à la main.
+  - Mettre en place le basculement DHCP (DHCP failover) entre deux serveurs pour éviter la panne unique.
+
+comprendre: |
+  À son arrivée sur le réseau, un appareil envoie une demande en **diffusion** (*broadcast*) : le serveur DHCP lui propose une adresse pour une durée limitée (le **bail**). Une diffusion ne traverse pas les routeurs : pour les VLAN où il n'y a pas de serveur DHCP, le routeur doit **relayer** la demande (*ip helper-address*). Sans réponse, Windows s'attribue une adresse **APIPA** en `169.254.x.x`, qui ne permet de communiquer avec personne.
+
+fiches_liees: [dns-noms-internes-non-resolus, reseau-pas-d-adresse-ip]
+tags: [dhcp, etendue, scope, "169.254", apipa, adresse ip, bail, lease, ip helper-address, relais dhcp, bad_address, "1020"]
+
+sources:
+  - titre: "Event ID 1020 — DHCP Lease Availability — Microsoft TechNet"
+    url: https://technet.microsoft.com/de-de/library/cc726940(v=ws.10)
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Get-DhcpServerv4ScopeStatistics — Microsoft Learn"
+    url: https://learn.microsoft.com/de-de/previous-versions/windows/powershell-scripting/jj590738(v=wps.620)
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "DHCP on Windows servers: why are the expired IP addresses not getting re-assigned — Microsoft TechNet Wiki"
+    url: https://learn.microsoft.com/en-us/archive/technet-wiki/25089.dhcp-on-windows-servers-why-are-the-expired-ip-addresses-not-getting-re-assigned
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Event 20287 DHCP (out of available IP addresses) on Server 2019 — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/1460882/event-20287-dhcp-(out-of-available-ip-addresses)-o
+    type: forum
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

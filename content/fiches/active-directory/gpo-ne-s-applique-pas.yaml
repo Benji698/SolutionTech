@@ -1,0 +1,250 @@
+id: gpo-ne-s-applique-pas
+titre: Une stratégie de groupe (GPO) ne s'applique pas
+resume: "Un paramètre défini par GPO (lecteur réseau, fond d'écran, imprimante, restriction…) n'arrive pas sur un poste ou pour un utilisateur. Vérifier d'abord si la GPO est appliquée, puis pourquoi elle ne l'est pas : portée, filtrage, mauvaise partie de la GPO ou accès à SYSVOL."
+statut: a-relire
+domaine: active-directory
+sous_domaine: gpo
+apparait_aussi_dans: [windows/comptes-sessions]
+niveau: N2
+temps_estime: { min: 15, max: 60 }
+critique: false
+environnements: [win11, win10]
+droits: admin-domaine
+outils: [gpmc, observateur-evenements]
+acces:
+  - Session sur le poste concerné (celle de l'utilisateur pour les paramètres utilisateur).
+  - Console « Gestion des stratégies de groupe » (RSAT) avec un compte autorisé à lire les GPO.
+
+symptomes:
+  - « Mon collègue a le lecteur réseau, pas moi. »
+  - « On a changé le fond d'écran pour tout le monde, mais ce PC garde l'ancien. »
+  - « La restriction s'applique sur certains PC seulement. »
+
+messages_erreur:
+  - texte: The processing of Group Policy failed. Windows attempted to read the file \\contoso.local\sysvol\contoso.local\Policies\{…}\gpt.ini from a domain controller and was not successful.
+    code: "1058"
+    ou: Journal Système du poste (source GroupPolicy)
+  - texte: The processing of Group Policy failed. Windows could not obtain the name of a domain controller.
+    code: "1054"
+    ou: Journal Système du poste (source GroupPolicy)
+  - texte: "Computer policy could not be updated successfully. The following errors were encountered: …"
+    ou: Résultat de la commande gpupdate /force
+
+variables:
+  - { nom: Domaine, libelle: "Nom DNS du domaine", exemple: contoso.local }
+
+causes:
+  - id: c1
+    titre: La GPO n'est pas liée à l'OU qui contient l'objet (utilisateur ou ordinateur)
+    frequence: tres-frequente
+    detail: Objet resté dans le conteneur par défaut (Users, Computers), déplacé dans une autre OU, ou lien désactivé.
+  - id: c2
+    titre: Le paramètre est dans la mauvaise partie de la GPO
+    frequence: frequente
+    detail: Un paramètre « Configuration utilisateur » ne s'applique qu'à des utilisateurs dont le compte est dans l'OU liée ; lier la GPO à une OU d'ordinateurs ne suffit pas (sauf traitement par bouclage).
+  - id: c3
+    titre: Le filtrage de sécurité ou un filtre WMI exclut l'objet
+    frequence: frequente
+    detail: "Depuis la mise à jour MS16-072 (2016), les GPO utilisateur sont lues avec le compte de l'ordinateur : si « Utilisateurs authentifiés » a été retiré, il faut que « Ordinateurs du domaine » garde le droit de Lecture."
+  - id: c4
+    titre: L'héritage est bloqué, ou une autre GPO prioritaire impose un réglage contraire
+    frequence: occasionnelle
+  - id: c5
+    titre: Le poste ne lit pas SYSVOL ou ne joint pas de contrôleur de domaine
+    frequence: occasionnelle
+    detail: Problème réseau ou DNS au démarrage, réplication SYSVOL en échec, droits SYSVOL modifiés.
+  - id: c6
+    titre: Le paramètre nécessite un redémarrage ou une nouvelle ouverture de session
+    frequence: frequente
+    detail: Installation de logiciel, redirection de dossiers et certains paramètres ne s'appliquent qu'au démarrage ou à l'ouverture de session.
+
+diagnostic:
+  - id: d1
+    titre: Forcer l'application et lire le résultat sur le poste
+    niveau: N1
+    graphique: |
+      Ouvrir l'**Invite de commandes** dans la **session de l'utilisateur** (sans « Exécuter en tant qu'administrateur » pour voir la partie utilisateur), puis lancer les commandes ci-dessous.
+      Dans le rapport HTML, sections **Configuration ordinateur** et **Configuration utilisateur** : la GPO apparaît soit dans **Objets de stratégie de groupe appliqués** (*Applied GPOs*), soit dans **refusés** (*Denied GPOs*) avec la raison.
+    commande:
+      langage: cmd
+      ou: Dans la session de l'utilisateur
+      code: |
+        gpupdate /force
+        gpresult /r
+        gpresult /h "%USERPROFILE%\Desktop\rapport-gpo.html"
+    astuce: "« Refusé (Vide) » (*Denied (Empty)*) signifie que cette partie de la GPO ne contient aucun paramètre : c'est normal et sans conséquence."
+    conclusions:
+      - { si: "gpupdate signale une erreur, ou le rapport ne mentionne aucun contrôleur de domaine", cause: c5, aller_a: d3 }
+      - { si: "La GPO n'apparaît nulle part (ni appliquée, ni refusée)", cause: c1, aller_a: r1 }
+      - { si: "La GPO est refusée : « Accès refusé (filtrage de sécurité) » ou « Filtre WMI »", cause: c3, aller_a: r3 }
+      - { si: "La GPO est appliquée mais le paramètre n'a pas d'effet", aller_a: d2 }
+
+  - id: d2
+    titre: Vérifier dans la console où est le paramètre et qui l'emporte
+    niveau: N2
+    graphique: |
+      Dans **Gestion des stratégies de groupe** (`gpmc.msc`) :
+
+      1. Cliquer sur la GPO › onglet **Paramètres** (*Settings*) : le paramètre est-il dans **Configuration ordinateur** ou **Configuration utilisateur** ? Correspond-il au type d'objet présent dans l'OU liée ?
+      2. Cliquer sur l'OU de l'objet › onglet **Héritage de stratégie de groupe** (*Group Policy Inheritance*) : voir l'ordre de priorité et si l'héritage est **bloqué** (point d'exclamation bleu sur l'OU).
+      3. Dans le rapport `gpresult /h`, la colonne **GPO gagnante** (*Winning GPO*) indique quelle GPO a imposé chaque valeur.
+    conclusions:
+      - { si: "Paramètre utilisateur dans une GPO liée à une OU d'ordinateurs (ou l'inverse)", cause: c2, aller_a: r2 }
+      - { si: "Une autre GPO est « gagnante » ou l'héritage est bloqué", cause: c4, aller_a: r4 }
+      - { si: "Paramètre au bon endroit, GPO gagnante : il ne s'applique qu'au démarrage ou à l'ouverture de session", cause: c6, aller_a: r6 }
+
+  - id: d3
+    titre: Vérifier l'accès au contrôleur de domaine et à SYSVOL
+    niveau: N2
+    graphique: |
+      1. Dans l'**Observateur d'événements** du poste › **Journaux Windows › Système**, filtrer la source **GroupPolicy** : repérer les erreurs **1058**, **1030** ou **1054** et le chemin de fichier cité.
+      2. Plus de détails : *Journaux des applications et des services › Microsoft › Windows › GroupPolicy › Opérationnel*.
+      3. Ouvrir dans l'Explorateur `\\contoso.local\SYSVOL` (le nom du domaine) : le dossier **Policies** doit s'afficher.
+    commande:
+      langage: cmd
+      code: |
+        nltest /dsgetdc:<Domaine>
+        dir \\<Domaine>\SYSVOL\<Domaine>\Policies
+    conclusions:
+      - { si: "Aucun contrôleur de domaine trouvé, ou SYSVOL inaccessible", cause: c5, aller_a: r5 }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Lier la GPO au bon endroit, ou déplacer l'objet
+    etapes:
+      - id: r1-e1
+        titre: Vérifier l'OU de l'objet et le lien de la GPO
+        niveau: N2
+        graphique: |
+          1. Dans *Utilisateurs et ordinateurs Active Directory*, repérer l'OU de l'utilisateur ou de l'ordinateur (onglet **Objet** des propriétés, avec les fonctionnalités avancées).
+          2. Si l'objet est dans le mauvais conteneur, le **déplacer** dans la bonne OU (clic droit › **Déplacer…**).
+          3. Sinon, dans `gpmc.msc` : clic droit sur l'OU › **Lier un objet de stratégie de groupe existant…** (*Link an Existing GPO…*), ou vérifier que le lien existant est **Activé** (*Link Enabled*).
+          4. Relancer `gpupdate /force` sur le poste.
+        avertissement:
+          type: attention
+          texte: "Lier une GPO à une OU l'applique à tous les objets de cette OU et de ses sous-OU. Vérifier le contenu de l'OU avant, et tester sur une OU de test si la GPO est sensible."
+
+  - id: r2
+    causes: [c2]
+    titre: Placer le paramètre dans la bonne partie de la GPO
+    etapes:
+      - id: r2-e1
+        titre: Lier à l'OU des utilisateurs, ou utiliser le traitement par bouclage
+        niveau: N3
+        graphique: |
+          - **Cas simple** : lier la GPO (ou une nouvelle GPO avec les paramètres utilisateur) à l'**OU qui contient les comptes utilisateurs**.
+          - **Paramètres utilisateur à appliquer selon le PC** (salle de formation, kiosque, serveur RDS) : dans la GPO liée à l'OU des ordinateurs, activer *Configuration ordinateur › Stratégies › Modèles d'administration › Système › Stratégie de groupe › **Configurer le mode de traitement par bouclage de la stratégie de groupe utilisateur*** (*Configure user Group Policy loopback processing mode*), en mode **Fusion** (*Merge*) ou **Remplacer** (*Replace*).
+        avertissement:
+          type: attention
+          texte: "Le mode « Remplacer » ignore toutes les GPO utilisateur habituelles des personnes qui se connectent sur ces PC. Bien en mesurer l'effet avant de l'activer."
+
+  - id: r3
+    causes: [c3]
+    titre: Corriger le filtrage de sécurité ou le filtre WMI
+    etapes:
+      - id: r3-e1
+        titre: Corriger le filtrage et la délégation
+        niveau: N2
+        graphique: |
+          Dans `gpmc.msc`, sélectionner la GPO :
+
+          1. Onglet **Étendue** (*Scope*) › **Filtrage de sécurité** (*Security Filtering*) : l'utilisateur, l'ordinateur ou l'un de leurs groupes doit figurer dans la liste.
+          2. Onglet **Délégation** (*Delegation*) : si **Utilisateurs authentifiés** a été retiré du filtrage, il doit au moins garder **Lecture** ici, ou **Ordinateurs du domaine** (*Domain Computers*) doit avoir **Lecture**. Sinon les GPO utilisateur sont refusées.
+          3. Onglet **Étendue** › **Filtrage WMI** : si un filtre est appliqué, vérifier sa requête (par exemple une version de Windows qui ne correspond plus au parc).
+          4. Si le filtrage repose sur un groupe d'**ordinateurs** qui vient d'être modifié, **redémarrer** le poste pour qu'il récupère ses nouveaux groupes.
+
+  - id: r4
+    causes: [c4]
+    titre: Régler le conflit entre GPO
+    etapes:
+      - id: r4-e1
+        titre: Ajuster l'ordre, l'héritage ou l'application forcée
+        niveau: N3
+        graphique: |
+          - Identifier dans le rapport `gpresult /h` la **GPO gagnante** pour le paramètre et corriger celle qui a tort.
+          - Sur une OU, l'**ordre des liens** (*Link Order*) : le numéro 1 est prioritaire.
+          - **Blocage de l'héritage** (*Block Inheritance*) sur une OU : à n'utiliser que s'il est voulu.
+          - **Appliqué** (*Enforced*) sur un lien : la GPO l'emporte sur les GPO des OU enfants, même si l'héritage y est bloqué.
+        avertissement:
+          type: attention
+          texte: Modifier l'ordre, le blocage ou l'application forcée change le résultat pour tous les objets concernés, pas seulement pour ce poste. Vérifier l'effet avec l'assistant « Modélisation de stratégie de groupe » de la console avant de modifier.
+
+  - id: r5
+    causes: [c5]
+    titre: Rétablir l'accès aux contrôleurs de domaine et à SYSVOL
+    etapes:
+      - id: r5-e1
+        titre: Corriger le DNS et le réseau du poste
+        niveau: N2
+        graphique: |
+          Le poste doit utiliser **uniquement** les contrôleurs de domaine comme serveurs DNS et pouvoir les joindre (voir la fiche sur la jonction au domaine).
+          Si SYSVOL s'ouvre sur certains contrôleurs de domaine mais pas sur d'autres, le problème vient de la **réplication SYSVOL** (fiche sur la réplication AD).
+      - id: r5-e2
+        titre: Si les erreurs n'apparaissent qu'au démarrage
+        niveau: N3
+        graphique: |
+          Des erreurs 1058/1030 **isolées au démarrage** sont fréquentes (le réseau n'est pas encore prêt) et sans gravité si un `gpupdate /force` ultérieur réussit.
+          Si les paramètres concernés doivent absolument s'appliquer au démarrage (installation de logiciels, redirection de dossiers), activer la stratégie *Configuration ordinateur › Modèles d'administration › Système › Ouverture de session › **Toujours attendre le réseau lors du démarrage de l'ordinateur et de l'ouverture de session***, en sachant qu'elle ralentit l'ouverture de session.
+
+  - id: r6
+    causes: [c6]
+    titre: Redémarrer ou rouvrir la session
+    etapes:
+      - id: r6-e1
+        titre: Appliquer au bon moment
+        niveau: N1
+        graphique: |
+          - Paramètres **ordinateur** (installation de logiciels, certains paramètres de sécurité) : **redémarrer** le poste, parfois deux fois.
+          - Paramètres **utilisateur** (redirection de dossiers, lecteurs réseau, scripts) : **fermer puis rouvrir** la session.
+          `gpupdate /force` indique lui-même quand un redémarrage ou une déconnexion est nécessaire.
+
+verification:
+  - id: v1
+    titre: La GPO apparaît comme appliquée
+    niveau: N1
+    commande:
+      langage: cmd
+      ou: Dans la session de l'utilisateur
+      code: gpresult /r
+    graphique: La GPO figure dans les objets **appliqués**, dans la bonne partie (ordinateur ou utilisateur).
+  - id: v2
+    titre: Le paramètre a l'effet attendu
+    niveau: N1
+    graphique: Constater l'effet sur le poste (lecteur présent, fond d'écran, restriction active) après redémarrage ou nouvelle ouverture de session.
+
+prevention:
+  - Organiser l'AD en OU distinctes pour les utilisateurs et les ordinateurs, et ne laisser aucun objet dans les conteneurs par défaut (Users, Computers).
+  - Nommer les GPO selon leur cible et leur rôle (ex. U-Lecteurs-Compta, C-Securite-Postes) et désactiver la partie inutilisée.
+  - Ne pas retirer « Utilisateurs authentifiés » du filtrage sans donner la Lecture à « Ordinateurs du domaine ».
+  - Tester toute nouvelle GPO sur une OU de test avant de la lier en production.
+
+comprendre: |
+  Une GPO s'applique à un objet si elle est **liée** à son site, son domaine ou une de ses OU, si l'objet passe le **filtrage de sécurité** (droits Lecture + Appliquer) et l'éventuel **filtre WMI**. Ordre d'application : local, site, domaine, puis OU de la plus haute à la plus proche ; en cas de conflit, la dernière appliquée gagne, sauf GPO **appliquée** (*Enforced*). Les fichiers des GPO sont stockés dans **SYSVOL**, sur chaque contrôleur de domaine.
+
+fiches_liees: [ad-jonction-domaine-echoue, ad-replication-echoue, ad-ajout-groupe-non-pris-en-compte]
+tags: [gpo, strategie de groupe, group policy, gpresult, gpupdate, sysvol, "1058", "1030", "1054", filtrage de securite, ms16-072, bouclage, loopback, wmi]
+
+sources:
+  - titre: "What are Userenv 1030 and 1058 events — Microsoft (blog archive)"
+    url: https://learn.microsoft.com/en-us/archive/blogs/instan/what-are-userenv-1030-and-1058-events
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Userenv errors occur and events are logged — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/windows-server/group-policy/userenv-errors-occur-events-are-logged
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Event ID 1058 — Group Policy Preprocessing (Networking) — Microsoft TechNet"
+    url: https://technet.microsoft.com/en-us/library/dd392533(v=ws.10)
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "gpupdate fail - access denied sporadically - event 1058 and 1096 — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/1264685/gpupdate-fail-error-access-denied-sporadically-eve
+    type: forum
+    consulte_le: 2026-10-29
+  - titre: "Can't access domain SYSVOL and NETLOGON folders — Windows OS Hub"
+    url: https://woshub.com/cant-access-domain-sysvol-netlogon-folders/
+    type: blog
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

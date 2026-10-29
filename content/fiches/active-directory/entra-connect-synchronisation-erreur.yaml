@@ -1,0 +1,234 @@
+id: entra-connect-synchronisation-erreur
+titre: Un compte AD n'est pas synchronisé vers Microsoft 365 (Entra Connect)
+resume: "Un utilisateur créé ou modifié dans l'Active Directory n'apparaît pas (ou pas correctement) dans Microsoft 365. Vérifier si la synchronisation tourne, si l'objet est dans le périmètre, puis traiter l'erreur signalée (souvent un attribut en double)."
+statut: a-relire
+domaine: active-directory
+sous_domaine: entra-connect
+apparait_aussi_dans: [microsoft-365/entra-id, gestion-comptes/arrivee]
+niveau: N2
+temps_estime: { min: 15, max: 60 }
+critique: false
+environnements: [ws2025, ws2022, ws2019, ws2016]
+droits: admin-domaine
+outils: [rsat-ad]
+acces:
+  - Session administrateur sur le serveur Microsoft Entra Connect (membre du groupe local ADSyncAdmins).
+  - Un compte administrateur Microsoft 365 / Entra ID pour lire les erreurs de synchronisation.
+
+symptomes:
+  - « Le nouvel arrivant n'a pas de boîte mail, il n'apparaît pas dans Microsoft 365. »
+  - « J'ai changé le nom de l'utilisatrice dans l'AD, mais Teams affiche toujours l'ancien. »
+  - « Microsoft nous envoie des e-mails “Identity synchronization error report”. »
+
+messages_erreur:
+  - texte: AttributeValueMustBeUnique
+    ou: Rapport d'erreurs de synchronisation (attribut proxyAddresses ou userPrincipalName en double)
+  - texte: InvalidSoftMatch
+    ou: Rapport d'erreurs de synchronisation (un objet cloud possède déjà cette valeur)
+
+variables:
+  - { nom: NomUtilisateur, libelle: "Identifiant de l'utilisateur (sAMAccountName)", exemple: jdupont }
+  - { nom: AdresseMail, libelle: "Adresse e-mail en doublon", exemple: jean.dupont@contoso.fr }
+
+causes:
+  - id: c1
+    titre: La synchronisation n'a pas encore eu lieu
+    frequence: tres-frequente
+    detail: Par défaut, un cycle de synchronisation a lieu toutes les 30 minutes.
+  - id: c2
+    titre: Un attribut est en double (adresse e-mail, UPN)
+    frequence: frequente
+    detail: La même adresse est déjà utilisée par un autre compte, un contact, un groupe ou un compte créé directement dans le cloud.
+  - id: c3
+    titre: L'objet est hors du périmètre de synchronisation
+    frequence: frequente
+    detail: Compte créé dans une OU qui n'est pas synchronisée (filtrage par OU défini à l'installation).
+  - id: c4
+    titre: Le service de synchronisation est arrêté ou le serveur Entra Connect est en panne
+    frequence: occasionnelle
+  - id: c5
+    titre: Le suffixe UPN n'est pas un domaine vérifié dans Microsoft 365
+    frequence: occasionnelle
+    detail: "Utilisateur en « @contoso.local » : il est synchronisé avec une adresse « @contoso.onmicrosoft.com »."
+
+diagnostic:
+  - id: d1
+    titre: Vérifier l'état de la synchronisation
+    niveau: N1
+    graphique: |
+      1. Dans le **Centre d'administration Microsoft 365** (*admin.microsoft.com*), la page d'accueil ou la carte **Gestion des utilisateurs** indique l'**état de la synchronisation d'annuaire** et la date de la dernière synchronisation.
+      2. Le même écran (ou le **Centre d'administration Microsoft Entra** › *Gestion hybride* › *Microsoft Entra Connect*) donne accès aux **erreurs de synchronisation**.
+
+      > [!a-verifier]
+      > L'emplacement exact de ces informations dans les centres d'administration change régulièrement.
+    conclusions:
+      - { si: "La dernière synchronisation date de moins de 30 minutes et aucune erreur n'est signalée", cause: c1, aller_a: r1 }
+      - { si: "Une erreur de synchronisation concerne l'utilisateur", cause: c2, aller_a: d3 }
+      - { si: "La dernière synchronisation date de plusieurs heures", cause: c4, aller_a: d2 }
+      - { si: "Pas d'erreur, synchronisation récente, mais l'utilisateur n'apparaît toujours pas", aller_a: d2 }
+
+  - id: d2
+    titre: Vérifier le service et le périmètre sur le serveur Entra Connect
+    niveau: N2
+    graphique: |
+      Sur le serveur Entra Connect :
+
+      1. **Services** › **Microsoft Azure AD Sync** (*ADSync*) doit être **En cours d'exécution**.
+      2. Ouvrir **Synchronization Service Manager** (menu Démarrer, *Synchronization Service*) › onglet **Operations** : chaque exécution doit être en **success** ; une ligne en erreur indique l'objet et l'erreur en cause.
+      3. Vérifier dans quelle **OU** se trouve l'utilisateur et si cette OU est synchronisée : assistant **Microsoft Entra Connect** › **Personnaliser les options de synchronisation** › **Filtrage des domaines et des unités d'organisation**.
+    commande:
+      langage: powershell
+      admin: true
+      ou: Sur le serveur Entra Connect
+      code: |
+        Get-Service -Name ADSync
+        Get-ADSyncScheduler
+        Get-ADUser -Identity <NomUtilisateur> -Properties UserPrincipalName, mail, proxyAddresses |
+          Select-Object Name, UserPrincipalName, mail, DistinguishedName
+    conclusions:
+      - { si: "Service arrêté, ou SyncCycleEnabled = False dans Get-ADSyncScheduler", cause: c4, aller_a: r4 }
+      - { si: "L'utilisateur est dans une OU non synchronisée", cause: c3, aller_a: r3 }
+      - { si: "L'UPN se termine par un domaine non vérifié (.local…)", cause: c5, aller_a: r5 }
+      - { si: "Le service tourne et l'OU est synchronisée", cause: c1, aller_a: r1 }
+
+  - id: d3
+    titre: Trouver le doublon
+    niveau: N2
+    graphique: |
+      Le rapport d'erreur indique l'**attribut** (proxyAddresses, userPrincipalName) et la **valeur** en conflit. Chercher qui d'autre porte cette valeur :
+
+      - dans l'**AD** : un autre utilisateur, un contact ou un groupe (recherche ci-dessous) ;
+      - dans **Microsoft 365** : un compte créé directement dans le cloud, ou un ancien compte dans les **utilisateurs supprimés**.
+    commande:
+      langage: powershell
+      code: |
+        # Tous les objets AD qui portent cette adresse (utilisateurs, contacts, groupes)
+        Get-ADObject -Filter "proxyAddresses -like '*<AdresseMail>*' -or mail -eq '<AdresseMail>' -or userPrincipalName -eq '<AdresseMail>'" -Properties proxyAddresses, mail |
+          Select-Object Name, ObjectClass, mail, DistinguishedName
+    conclusions:
+      - { si: "Un autre objet porte la même valeur", cause: c2, aller_a: r2 }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Lancer une synchronisation sans attendre
+    etapes:
+      - id: r1-e1
+        titre: Déclencher une synchronisation delta
+        niveau: N2
+        commande:
+          langage: powershell
+          admin: true
+          ou: Sur le serveur Entra Connect
+          code: Start-ADSyncSyncCycle -PolicyType Delta
+        graphique: Lancer la commande, attendre quelques minutes, puis vérifier dans le Centre d'administration Microsoft 365 que l'utilisateur apparaît. Lui attribuer ensuite une **licence** pour créer sa boîte mail.
+
+  - id: r2
+    causes: [c2]
+    titre: Supprimer le doublon
+    etapes:
+      - id: r2-e1
+        titre: Corriger la valeur en double sur le bon objet
+        niveau: N2
+        graphique: |
+          1. Décider quel objet doit **garder** l'adresse (en général, le compte de la personne).
+          2. Sur l'autre objet de l'**AD** : propriétés › onglet **Éditeur d'attributs** › **proxyAddresses** ou **mail** › retirer la valeur. Pour un compte **cloud** en doublon, le supprimer ou changer son adresse dans le Centre d'administration Microsoft 365.
+          3. Lancer une synchronisation delta (Résolution 1) ; Microsoft corrige l'erreur au cycle suivant.
+        astuce: Pour un nettoyage global, Microsoft propose l'outil **IdFix**, qui liste les doublons et valeurs invalides de l'AD avant synchronisation.
+        avertissement:
+          type: attention
+          texte: Retirer une adresse d'un objet coupe la réception des e-mails envoyés à cette adresse pour cet objet. Vérifier qu'il s'agit bien d'un reste inutile (ancien compte, contact obsolète).
+
+  - id: r3
+    causes: [c3]
+    titre: Placer l'utilisateur dans une OU synchronisée
+    etapes:
+      - id: r3-e1
+        titre: Déplacer le compte ou ajouter l'OU au périmètre
+        niveau: N2
+        graphique: |
+          - **Cas normal** : déplacer le compte dans l'OU prévue pour les utilisateurs (clic droit › **Déplacer…**), puis lancer une synchronisation delta.
+          - **Nouvelle OU à synchroniser** : relancer l'assistant **Microsoft Entra Connect** › **Personnaliser les options de synchronisation** › cocher l'OU dans **Filtrage des domaines et des unités d'organisation**.
+        avertissement:
+          type: attention
+          texte: Décocher une OU dans le filtrage fait supprimer de Microsoft 365 tous les comptes synchronisés qu'elle contient (boîtes mail comprises, après le délai de rétention). Ne jamais modifier le filtrage sans vérifier le contenu des OU concernées.
+
+  - id: r4
+    causes: [c4]
+    titre: Redémarrer la synchronisation
+    etapes:
+      - id: r4-e1
+        titre: Démarrer le service et réactiver le planificateur
+        niveau: N2
+        commande:
+          langage: powershell
+          admin: true
+          ou: Sur le serveur Entra Connect
+          code: |
+            Start-Service -Name ADSync
+            Set-ADSyncScheduler -SyncCycleEnabled $true
+            Start-ADSyncSyncCycle -PolicyType Delta
+        graphique: |
+          Démarrer le service **Microsoft Azure AD Sync** dans **Services**, puis vérifier dans **Synchronization Service Manager** que les exécutions repassent en **success**.
+          Si le service ne démarre pas, lire le journal **Application** du serveur. Vérifier aussi que la **version** d'Entra Connect est encore prise en charge par Microsoft : les anciennes versions cessent de synchroniser.
+
+  - id: r5
+    causes: [c5]
+    titre: Donner à l'utilisateur un UPN avec le domaine vérifié
+    etapes:
+      - id: r5-e1
+        titre: Ajouter le suffixe UPN et l'attribuer
+        niveau: N2
+        graphique: |
+          1. **Domaines et approbations Active Directory** (`domain.msc`) › clic droit sur la racine › **Propriétés** › **Suffixes UPN alternatifs** : ajouter le domaine vérifié dans Microsoft 365 (ex. `contoso.fr`).
+          2. Propriétés de l'utilisateur › onglet **Compte** › **Nom d'ouverture de session de l'utilisateur** : choisir le suffixe `@contoso.fr`.
+          3. Lancer une synchronisation delta.
+        commande:
+          langage: powershell
+          code: Set-ADUser -Identity <NomUtilisateur> -UserPrincipalName '<AdresseMail>'
+
+verification:
+  - id: v1
+    titre: La synchronisation est réussie
+    niveau: N2
+    graphique: Dans **Synchronization Service Manager**, les dernières exécutions sont en **success** ; aucune erreur ne concerne l'utilisateur dans le Centre d'administration.
+  - id: v2
+    titre: L'utilisateur apparaît correctement dans Microsoft 365
+    niveau: N1
+    graphique: L'utilisateur figure dans **Utilisateurs actifs** avec le bon nom et la bonne adresse, l'icône « synchronisé depuis l'annuaire local », et peut se connecter une fois sa licence attribuée.
+
+prevention:
+  - Créer les comptes dans les OU synchronisées, avec une procédure d'arrivée documentée (OU, UPN, adresse e-mail).
+  - Ne pas créer directement dans Microsoft 365 un compte qui sera ensuite synchronisé depuis l'AD.
+  - Lire les e-mails « Identity synchronization error report » et traiter les erreurs au fil de l'eau.
+  - Maintenir Microsoft Entra Connect à jour (ou activer la mise à jour automatique) et superviser l'état du service.
+
+comprendre: |
+  **Microsoft Entra Connect** (anciennement Azure AD Connect) copie régulièrement les comptes de l'AD local vers **Entra ID**, l'annuaire de Microsoft 365. L'AD reste la **source** : un compte synchronisé se modifie dans l'AD, pas dans le cloud. Certaines valeurs (adresse e-mail, UPN) doivent être **uniques** dans tout le tenant : en cas de doublon, Microsoft met la valeur en quarantaine et signale une erreur.
+
+fiches_liees: [ad-compte-desactive]
+tags: [entra connect, azure ad connect, synchronisation, sync, microsoft 365, office 365, adsync, start-adsyncsynccycle, doublon, proxyaddresses, upn, idfix, hybride]
+
+sources:
+  - titre: "Diagnose and remediate duplicated attribute sync errors — Microsoft Learn"
+    url: https://learn.microsoft.com/en-ie/entra/identity/hybrid/connect/how-to-connect-health-diagnose-sync-errors
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "One or more objects don't sync when using the sync tool — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/objects-dont-sync-ad-sync-tool
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Duplicate or invalid attributes prevent directory synchronization in Microsoft 365 — Microsoft Support"
+    url: https://support.microsoft.com/kb/2647098
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Troubleshoot directory synchronization (module de formation) — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/training/modules/manage-synchronized/7-troubleshoot-directory-synchronization
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Entra Connect Sync duplicated UPN — Microsoft Tech Community"
+    url: https://techcommunity.microsoft.com/discussions/microsoft-entra/entra-connect-sync-duplicated-upn/4246171
+    type: forum
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

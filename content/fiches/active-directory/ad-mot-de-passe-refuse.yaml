@@ -1,0 +1,152 @@
+id: ad-mot-de-passe-refuse
+titre: Nouveau mot de passe refusé (longueur, complexité ou historique)
+resume: "L'utilisateur ne parvient pas à choisir un nouveau mot de passe : Windows le refuse sans dire quelle règle n'est pas respectée. Trouver la stratégie qui s'applique au compte et expliquer la règle en cause."
+statut: a-relire
+domaine: active-directory
+sous_domaine: comptes-utilisateurs
+theme: mots-de-passe
+apparait_aussi_dans: [windows/comptes-sessions]
+niveau: N1
+temps_estime: { min: 5, max: 20 }
+critique: false
+environnements: [ws2025, ws2022, ws2019, ws2016]
+droits: delegation-ad
+outils: [rsat-ad]
+acces:
+  - Poste d'administration avec les outils RSAT « Active Directory ».
+
+symptomes:
+  - « Windows refuse tous les mots de passe que je propose. »
+  - « J'ai changé mon mot de passe hier et je veux le rechanger, mais ça ne marche pas. »
+  - « Le message dit que mon mot de passe ne respecte pas les exigences, mais il est long et compliqué. »
+
+messages_erreur:
+  - texte: Unable to update the password. The value provided for the new password does not meet the length, complexity, or history requirements of the domain.
+    ou: Changement de mot de passe Windows (version anglaise)
+  - texte: Impossible de mettre à jour le mot de passe. Le nouveau mot de passe ne respecte pas les exigences de longueur, de complexité ou d'historique du domaine.
+    ou: Changement de mot de passe Windows (version française, formulation à confirmer)
+
+variables:
+  - { nom: NomUtilisateur, libelle: "Identifiant de l'utilisateur (sAMAccountName)", exemple: jdupont }
+
+causes:
+  - id: c1
+    titre: Le mot de passe ne respecte pas la longueur minimale ou la complexité
+    frequence: tres-frequente
+    detail: "Complexité Windows : au moins 3 types de caractères parmi majuscules, minuscules, chiffres et caractères spéciaux, et ne pas contenir le nom du compte ni le nom complet de l'utilisateur."
+  - id: c2
+    titre: Le mot de passe a déjà été utilisé (historique)
+    frequence: frequente
+    detail: Ancien mot de passe avec un chiffre changé à la fin, ou mot de passe repris d'il y a quelques mois.
+  - id: c3
+    titre: La durée minimale du mot de passe n'est pas écoulée
+    frequence: occasionnelle
+    detail: L'utilisateur a déjà changé son mot de passe récemment (souvent moins d'un jour avant) et veut le rechanger.
+  - id: c4
+    titre: Une stratégie de mot de passe affinée, plus stricte, s'applique au compte
+    frequence: occasionnelle
+    detail: Les comptes à privilèges ont souvent des règles plus strictes que les autres.
+
+diagnostic:
+  - id: d1
+    titre: Identifier la stratégie de mot de passe qui s'applique à l'utilisateur
+    niveau: N1
+    graphique: |
+      1. **Stratégie du domaine** : ouvrir **Gestion des stratégies de groupe** (`gpmc.msc`) › **Default Domain Policy** › onglet **Paramètres** (*Settings*) › *Configuration ordinateur › Stratégies › Paramètres Windows › Paramètres de sécurité › Stratégies de comptes › **Stratégie de mot de passe***. Noter la longueur minimale, la complexité, l'historique et la durée minimale.
+      2. **Stratégies affinées** : ouvrir le **Centre d'administration Active Directory** (`dsac.exe`) › le domaine › **System** › **Password Settings Container**. Si une stratégie y existe, vérifier si l'utilisateur ou l'un de ses groupes y est rattaché.
+    commande:
+      langage: powershell
+      code: |
+        # Stratégie affinée appliquée à l'utilisateur (aucun résultat = stratégie du domaine)
+        Get-ADUserResultantPasswordPolicy -Identity <NomUtilisateur>
+        # Stratégie du domaine
+        Get-ADDefaultDomainPasswordPolicy
+        # Date du dernier changement de mot de passe
+        Get-ADUser -Identity <NomUtilisateur> -Properties PasswordLastSet | Select-Object Name, PasswordLastSet
+    conclusions:
+      - { si: "Le dernier changement date de moins que la durée minimale (MinPasswordAge)", cause: c3, aller_a: r2 }
+      - { si: "Une stratégie affinée s'applique à l'utilisateur", cause: c4, aller_a: r1 }
+      - { si: "Le mot de passe proposé ne respecte pas la longueur ou la complexité", cause: c1, aller_a: r1 }
+      - { si: "Le mot de passe respecte les règles mais ressemble à un ancien", cause: c2, aller_a: r1 }
+
+resolutions:
+  - id: r1
+    causes: [c1, c2, c4]
+    titre: Aider l'utilisateur à choisir un mot de passe conforme
+    etapes:
+      - id: r1-e1
+        titre: Expliquer les règles et proposer une phrase de passe
+        niveau: N1
+        graphique: |
+          1. Donner à l'utilisateur les règles **exactes** trouvées au diagnostic : longueur minimale, nombre d'anciens mots de passe interdits.
+          2. Rappeler la complexité Windows : 3 types de caractères sur 4, et **ne pas contenir son identifiant ni son nom**.
+          3. Conseiller une **phrase de passe** : plusieurs mots sans lien, avec chiffres et ponctuation (par exemple quatre mots séparés par des caractères spéciaux), plutôt qu'un mot avec un chiffre ajouté à la fin.
+          4. Ne jamais demander à l'utilisateur de communiquer son mot de passe.
+
+  - id: r2
+    causes: [c3]
+    titre: Réinitialiser le mot de passe si le changement est urgent
+    etapes:
+      - id: r2-e1
+        titre: Réinitialiser par le support (la durée minimale ne s'applique pas à un administrateur)
+        niveau: N1
+        graphique: |
+          Si l'utilisateur doit changer son mot de passe tout de suite (par exemple, il pense qu'il a été vu ou volé) :
+
+          1. **Vérifier son identité**.
+          2. *Utilisateurs et ordinateurs Active Directory* › clic droit sur l'utilisateur › **Réinitialiser le mot de passe…** avec un mot de passe temporaire.
+          3. Cocher **L'utilisateur doit changer le mot de passe à la prochaine ouverture de session**, sauf s'il est à distance.
+
+          Sinon, lui demander simplement d'attendre la fin de la durée minimale.
+        commande:
+          langage: powershell
+          code: |
+            Set-ADAccountPassword -Identity <NomUtilisateur> -Reset -NewPassword (Read-Host -AsSecureString 'Mot de passe temporaire')
+            Set-ADUser -Identity <NomUtilisateur> -ChangePasswordAtLogon $true
+        avertissement:
+          type: attention
+          texte: Vérifier l'identité de la personne avant toute réinitialisation et transmettre le mot de passe temporaire de vive voix. Si l'utilisateur pense que son mot de passe a été volé, traiter aussi la situation comme un incident de sécurité.
+
+verification:
+  - id: v1
+    titre: Le nouveau mot de passe est accepté
+    niveau: N1
+    graphique: L'utilisateur réussit le changement, puis ouvre une session avec le nouveau mot de passe.
+    commande:
+      langage: powershell
+      code: Get-ADUser -Identity <NomUtilisateur> -Properties PasswordLastSet | Select-Object Name, PasswordLastSet
+
+prevention:
+  - Afficher les règles de mot de passe de l'entreprise là où l'utilisateur change son mot de passe (intranet, message de rappel).
+  - Préférer une longueur minimale élevée (phrases de passe) à des règles de complexité difficiles à retenir.
+  - Documenter les stratégies affinées (qui elles visent, pourquoi) pour que le support sache les trouver.
+
+comprendre: |
+  Windows ne précise jamais **quelle** règle n'est pas respectée, pour ne pas aider un attaquant. Le support doit donc connaître la stratégie qui s'applique : celle de la **Default Domain Policy**, sauf si une **stratégie de mot de passe affinée** (*Fine-Grained Password Policy*) vise l'utilisateur ou l'un de ses groupes. La **durée minimale** empêche de changer plusieurs fois de suite son mot de passe pour retomber sur l'ancien malgré l'historique.
+
+fiches_liees: [ad-mot-de-passe-expire, ad-compte-verrouille]
+tags: [mot de passe, refuse, complexite, historique, longueur, password policy, fine-grained, strategie affinee, minpasswordage]
+
+sources:
+  - titre: "Active Directory Password Policies — Microsoft TechNet Wiki (archive)"
+    url: https://learn.microsoft.com/en-us/archive/technet-wiki/24159.active-directory-password-policies
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Password writeback not compliant with on-premises AD password policy — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/password-writeback-not-compliant-on-premises-ad-pwd-policy
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Active Directory password policies: when does a password policy apply? — Microsoft Tech Community"
+    url: https://techcommunity.microsoft.com/t5/core-infrastructure-and-security/active-directory-password-policies-when-does-a-password-policy/ba-p/256636
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Fine Grained Password policy does not work for AD User — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/1139842/fine-grained-password-policy-does-not-work-for-ad
+    type: forum
+    consulte_le: 2026-10-29
+  - titre: "Password does not meet the requirements… minimum password age — Nishant Rana"
+    url: https://nishantrana.me/2024/06/05/this-password-does-not-meet-the-length-complexity-age-or-history-requirements-of-your-corporate-password-policy-minimum-password-age/
+    type: blog
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

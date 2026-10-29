@@ -1,0 +1,168 @@
+id: ad-mot-de-passe-expire
+titre: Mot de passe AD expiré (y compris pour un utilisateur à distance)
+resume: "Le mot de passe de l'utilisateur a atteint sa durée de vie maximale. Sur site, Windows propose de le changer ; à distance (VPN, télétravail, Wi-Fi d'entreprise), l'utilisateur est souvent bloqué et a besoin du support."
+statut: a-relire
+domaine: active-directory
+sous_domaine: comptes-utilisateurs
+theme: mots-de-passe
+apparait_aussi_dans: [windows/comptes-sessions, reseau/vpn]
+niveau: N1
+temps_estime: { min: 5, max: 20 }
+critique: false
+environnements: [ws2025, ws2022, ws2019, ws2016]
+droits: delegation-ad
+outils: [rsat-ad]
+acces:
+  - Poste d'administration avec les outils RSAT « Active Directory ».
+
+symptomes:
+  - « Windows me demande de changer mon mot de passe et refuse le nouveau. »
+  - « Je suis en télétravail, le VPN ne se connecte plus depuis ce matin. »
+  - « On me dit que mon mot de passe a expiré, mais je ne peux pas le changer. »
+
+messages_erreur:
+  - texte: Your password has expired and must be changed.
+    ou: Écran d'ouverture de session Windows (version anglaise)
+  - texte: "Le mot de passe de l'utilisateur doit être modifié avant la première connexion."
+    ou: Écran d'ouverture de session Windows (case « changer à la prochaine ouverture de session » cochée, formulation à confirmer)
+  - texte: Password expired
+    code: "532"
+    ou: Journaux d'un VPN ou d'un serveur RADIUS/NPS (code d'erreur AD 532 ; 773 = l'utilisateur doit changer son mot de passe)
+
+variables:
+  - { nom: NomUtilisateur, libelle: "Identifiant de l'utilisateur (sAMAccountName)", exemple: jdupont }
+
+causes:
+  - id: c1
+    titre: Le mot de passe a atteint sa durée de vie maximale (expiration normale)
+    frequence: tres-frequente
+  - id: c2
+    titre: L'utilisateur est à distance et ne peut pas changer son mot de passe seul
+    frequence: frequente
+    detail: Hors du réseau de l'entreprise, Windows ne joint pas de contrôleur de domaine ; beaucoup de VPN n'acceptent pas le changement d'un mot de passe expiré.
+  - id: c3
+    titre: La case « L'utilisateur doit changer le mot de passe à la prochaine ouverture de session » est cochée
+    frequence: occasionnelle
+    detail: Après une réinitialisation par le support, ou sur un compte neuf.
+
+diagnostic:
+  - id: d1
+    titre: Vérifier l'état du mot de passe
+    niveau: N1
+    graphique: |
+      1. *Utilisateurs et ordinateurs Active Directory* › propriétés de l'utilisateur › onglet **Compte** (*Account*).
+      2. Regarder dans **Options de compte** si **L'utilisateur doit changer le mot de passe à la prochaine ouverture de session** (*User must change password at next logon*) est coché.
+      3. Pour la date exacte d'expiration, activer **Affichage › Fonctionnalités avancées** (*View › Advanced Features*), puis onglet **Éditeur d'attributs** (*Attribute Editor*) : l'attribut **pwdLastSet** donne la date du dernier changement.
+    commande:
+      langage: powershell
+      code: |
+        Get-ADUser -Identity <NomUtilisateur> -Properties PasswordLastSet, PasswordExpired, PasswordNeverExpires, 'msDS-UserPasswordExpiryTimeComputed' |
+          Select-Object Name, PasswordLastSet, PasswordExpired, PasswordNeverExpires,
+            @{ n = 'ExpireLe'; e = { [datetime]::FromFileTime($_.'msDS-UserPasswordExpiryTimeComputed') } }
+    astuce: PasswordLastSet vide ou à zéro signifie que la case « doit changer le mot de passe » est cochée.
+    conclusions:
+      - { si: "La case « doit changer le mot de passe » est cochée", cause: c3, aller_a: d2 }
+      - { si: "Le mot de passe est expiré (PasswordExpired = True)", cause: c1, aller_a: d2 }
+      - { si: "Le mot de passe n'est pas expiré mais le nouveau est refusé", aller_a: "fiche:ad-mot-de-passe-refuse" }
+
+  - id: d2
+    titre: Savoir si l'utilisateur est sur site ou à distance
+    niveau: N1
+    graphique: |
+      Demander à l'utilisateur **où il se trouve** et **comment il se connecte** :
+
+      - **Au bureau, sur le réseau de l'entreprise** : il peut changer son mot de passe lui-même à l'ouverture de session.
+      - **À distance** (VPN, télétravail, PC qui n'a pas vu le réseau de l'entreprise depuis longtemps) : il ne peut généralement pas le changer seul.
+    conclusions:
+      - { si: "L'utilisateur est sur le réseau de l'entreprise", cause: c1, aller_a: r1 }
+      - { si: "L'utilisateur est à distance", cause: c2, aller_a: r2 }
+
+resolutions:
+  - id: r1
+    causes: [c1, c3]
+    titre: Faire changer le mot de passe par l'utilisateur
+    etapes:
+      - id: r1-e1
+        titre: Changer le mot de passe à l'ouverture de session
+        niveau: N1
+        graphique: |
+          1. À l'écran de connexion, saisir l'ancien mot de passe : Windows affiche « Le mot de passe a expiré » puis propose de le changer.
+          2. Saisir l'ancien mot de passe, puis deux fois le nouveau.
+          3. Si le nouveau est refusé, rappeler les règles de l'entreprise (longueur, complexité, pas de réutilisation d'un ancien mot de passe).
+          4. Rappeler de mettre à jour le mot de passe sur le **smartphone** (messagerie, Wi-Fi), sinon le compte risque de se verrouiller.
+        astuce: Déjà connecté sur un PC du domaine, l'utilisateur peut aussi faire **Ctrl + Alt + Suppr › Modifier un mot de passe** (*Change a password*).
+
+  - id: r2
+    causes: [c2]
+    titre: Débloquer un utilisateur à distance
+    etapes:
+      - id: r2-e1
+        titre: "Si le VPN permet de changer un mot de passe expiré : guider l'utilisateur"
+        niveau: N1
+        graphique: |
+          Certains VPN (selon leur configuration) proposent de changer le mot de passe expiré à la connexion. Guider l'utilisateur dans cette fenêtre, puis lui faire **verrouiller et déverrouiller sa session Windows** (**Windows + L**) une fois le VPN connecté, pour que Windows enregistre le nouveau mot de passe.
+
+          > [!a-verifier]
+          > Cette possibilité dépend du produit VPN et de sa configuration (protocole d'authentification, droits du compte de liaison LDAP). Consulter la documentation du VPN de l'entreprise.
+      - id: r2-e2
+        titre: Sinon, réinitialiser le mot de passe en gardant l'accès à distance
+        niveau: N1
+        graphique: |
+          1. **Vérifier l'identité** de l'utilisateur (rappel sur un numéro connu, question au manager).
+          2. *Utilisateurs et ordinateurs Active Directory* › clic droit sur l'utilisateur › **Réinitialiser le mot de passe…** (*Reset Password…*).
+          3. Saisir un mot de passe temporaire et **décocher** « L'utilisateur doit changer le mot de passe à la prochaine ouverture de session » : à distance, il ne pourrait pas le faire.
+          4. L'utilisateur se connecte au VPN avec le mot de passe temporaire, verrouille puis déverrouille sa session (**Windows + L**), puis change son mot de passe (**Ctrl + Alt + Suppr › Modifier un mot de passe**) pendant que le VPN est connecté.
+        commande:
+          langage: powershell
+          code: |
+            Set-ADAccountPassword -Identity <NomUtilisateur> -Reset -NewPassword (Read-Host -AsSecureString 'Mot de passe temporaire')
+            Set-ADUser -Identity <NomUtilisateur> -ChangePasswordAtLogon $false
+        avertissement:
+          type: attention
+          texte: "Vérifier l'identité de la personne avant toute réinitialisation. Communiquer le mot de passe temporaire de vive voix, jamais par e-mail ni messagerie. Le PC à distance garde l'ancien mot de passe en cache tant que l'utilisateur n'a pas verrouillé/déverrouillé sa session avec le VPN connecté."
+
+verification:
+  - id: v1
+    titre: Le mot de passe n'est plus expiré
+    niveau: N1
+    graphique: Dans l'onglet **Compte**, la case « doit changer le mot de passe » est dans l'état voulu, et la date de dernier changement est celle du jour.
+    commande:
+      langage: powershell
+      code: Get-ADUser -Identity <NomUtilisateur> -Properties PasswordLastSet, PasswordExpired | Select-Object Name, PasswordLastSet, PasswordExpired
+  - id: v2
+    titre: L'utilisateur se connecte partout
+    niveau: N1
+    graphique: L'utilisateur se connecte au VPN, à sa session Windows et à sa messagerie avec le nouveau mot de passe.
+
+prevention:
+  - Activer la notification d'expiration à l'ouverture de session (stratégie « Ouverture de session interactive Demander à l'utilisateur de changer le mot de passe avant qu'il n'expire », par exemple 14 jours avant).
+  - Envoyer un e-mail de rappel automatique quelques jours avant l'expiration, surtout aux télétravailleurs.
+  - Proposer une réinitialisation en libre-service (par exemple via Microsoft Entra ID avec réécriture du mot de passe, si l'entreprise l'utilise).
+  - Configurer le VPN pour qu'il accepte le changement d'un mot de passe expiré, si le produit le permet.
+  - Suivre les recommandations actuelles (ANSSI, NIST) qui privilégient des mots de passe longs plutôt que des changements fréquents.
+
+comprendre: |
+  La durée de vie maximale du mot de passe vient de la **Default Domain Policy** (*Stratégies de comptes › Stratégie de mot de passe*) ou d'une **stratégie de mot de passe affinée** appliquée à l'utilisateur. Quand elle est atteinte, le contrôleur de domaine refuse l'authentification avec le code 532 tant que le mot de passe n'est pas changé. Hors du réseau, le PC utilise le mot de passe **en cache** : c'est pour cela qu'il faut verrouiller/déverrouiller la session avec le VPN connecté après un changement.
+
+fiches_liees: [ad-mot-de-passe-refuse, ad-compte-verrouille]
+tags: [mot de passe, expire, expiration, password expired, "532", "773", vpn, teletravail, pwdlastset, changer mot de passe]
+
+sources:
+  - titre: "Active Directory Password Policies — Microsoft TechNet Wiki (archive)"
+    url: https://learn.microsoft.com/en-us/archive/technet-wiki/24159.active-directory-password-policies
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Implementing password change policy through GPO — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/451607/implementing-password-change-policy-through-gpo
+    type: forum
+    consulte_le: 2026-10-29
+  - titre: "Active Directory error code 532 - password expired — ManageEngine"
+    url: https://manageengine.com/products/self-service-password/kb/active-directory-issues/active-directory-error-code-532-password-expired.html
+    type: blog
+    consulte_le: 2026-10-29
+  - titre: "How do I support users who are required to change their password on initial login? — SonicWall"
+    url: https://www.sonicwall.com/support/knowledge-base/how-do-i-support-users-who-are-required-to-change-their-password-on-initial-login/200102135118799/
+    type: blog
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

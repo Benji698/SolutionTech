@@ -1,0 +1,262 @@
+id: ad-replication-echoue
+titre: La réplication entre contrôleurs de domaine échoue
+resume: "Les contrôleurs de domaine ne se transmettent plus les modifications (comptes, mots de passe, GPO). Mesurer l'ampleur avec repadmin, identifier le code d'erreur, corriger la cause (DNS, réseau, heure, droits), puis forcer la réplication. Ne jamais « réparer » en restaurant un contrôleur de domaine."
+statut: a-relire
+domaine: active-directory
+sous_domaine: controleurs-domaine
+apparait_aussi_dans: [windows-server/journaux-evenements, active-directory/sites-services]
+niveau: N3
+temps_estime: { min: 30, max: 240 }
+critique: true
+environnements: [ws2025, ws2022, ws2019, ws2016]
+droits: admin-domaine
+outils: [rsat-ad, observateur-evenements]
+acces:
+  - Session administrateur du domaine sur les contrôleurs de domaine concernés (console ou Bureau à distance).
+
+symptomes:
+  - « Un mot de passe changé ce matin ne marche que sur certains sites. »
+  - « Un utilisateur créé hier n'existe pas pour l'agence de Lyon. »
+  - « Les GPO ne sont pas les mêmes selon le contrôleur de domaine. »
+
+messages_erreur:
+  - texte: The RPC server is unavailable.
+    code: "1722"
+    ou: repadmin /showrepl ou /replsummary
+  - texte: Replication access was denied.
+    code: "8453"
+    ou: repadmin /showrepl ou /replsummary
+  - texte: The DSA operation is unable to proceed because of a DNS lookup failure.
+    code: "8524"
+    ou: repadmin /showrepl ou /replsummary
+  - texte: The directory service cannot replicate with this server because the time since the last replication with this server has exceeded the tombstone lifetime.
+    code: "8614"
+    ou: repadmin /showrepl ou /replsummary (cas grave)
+
+variables:
+  - { nom: NomDC, libelle: "Contrôleur de domaine destination (celui qui n'est pas à jour)", exemple: SRV-DC02 }
+  - { nom: NomDCSource, libelle: "Contrôleur de domaine source (partenaire de réplication)", exemple: SRV-DC01 }
+
+premiers_reflexes:
+  - "Ne **pas** restaurer un contrôleur de domaine à partir d'un instantané (snapshot) de machine virtuelle ou d'une ancienne image pour « remettre d'aplomb » : cela peut corrompre l'annuaire."
+  - Ne **pas** supprimer ni rétrograder de contrôleur de domaine dans la précipitation, et ne pas toucher aux rôles FSMO avant d'avoir identifié la cause.
+  - "Relever les **codes d'erreur** (repadmin) et la **date du dernier succès** de chaque réplication : ils guident tout le dépannage."
+  - "Si un contrôleur de domaine ne réplique plus depuis **plus de 60 jours** (ou proche de la durée de vie des objets supprimés), arrêter et faire appel à un expert : forcer la réplication peut réintroduire des objets supprimés."
+
+causes:
+  - id: c1
+    titre: Problème DNS entre contrôleurs de domaine
+    frequence: tres-frequente
+    detail: "Erreurs 8524 ou 1722 : un DC ne trouve pas son partenaire, souvent parce que ses cartes réseau pointent vers un DNS public ou un ancien DC."
+  - id: c2
+    titre: Problème réseau ou pare-feu entre sites
+    frequence: frequente
+    detail: "Erreur 1722 : lien inter-sites coupé, VPN de site à site en panne, ports RPC filtrés."
+  - id: c3
+    titre: Décalage d'heure ou canal sécurisé rompu entre contrôleurs de domaine
+    frequence: occasionnelle
+    detail: "Erreurs 8453 ou de type Kerberos : un DC a une heure trop différente, ou son compte ordinateur n'est plus synchronisé."
+  - id: c4
+    titre: Contrôleur de domaine hors ligne trop longtemps (durée de vie des objets supprimés dépassée)
+    frequence: rare
+    detail: "Erreur 8614 : le DC n'a pas répliqué depuis plus que la durée de vie des objets supprimés (180 jours par défaut dans les forêts récentes)."
+
+diagnostic:
+  - id: d1
+    titre: Mesurer l'ampleur du problème
+    niveau: N2
+    graphique: |
+      Sur un contrôleur de domaine, ouvrir une invite de commandes **en administrateur** et lancer `repadmin /replsummary`.
+      Le résultat liste, pour chaque DC source et destination, le **plus grand écart** depuis la dernière réplication réussie, le nombre d'**échecs** et le **code d'erreur**.
+      Graphiquement, **Sites et services Active Directory** (`dssite.msc`) › site › serveur › **NTDS Settings** › clic droit sur une connexion › **Répliquer maintenant** affiche le message d'erreur d'une connexion précise.
+    commande:
+      langage: cmd
+      admin: true
+      ou: Sur un contrôleur de domaine
+      code: |
+        repadmin /replsummary
+        repadmin /showrepl <NomDC>
+    conclusions:
+      - { si: "Erreur 8614, ou dernier succès il y a plus de 60 jours", cause: c4, aller_a: r4 }
+      - { si: "Erreurs 8524 ou 1722", aller_a: d2 }
+      - { si: "Erreur 8453 (accès refusé) ou erreur Kerberos", aller_a: d3 }
+
+  - id: d2
+    titre: Vérifier le DNS et la connectivité entre les deux contrôleurs de domaine
+    niveau: N3
+    graphique: |
+      1. Sur **chaque DC**, `ncpa.cpl` › carte › **TCP/IPv4** : les serveurs DNS doivent être des **contrôleurs de domaine du domaine** (un autre DC en premier, lui-même en second est une configuration courante), jamais un DNS public ni l'adresse d'un ancien DC supprimé.
+      2. Dans la console **DNS**, vérifier que l'enregistrement du DC partenaire existe dans `_msdcs.<domaine racine>` (alias **CNAME** au nom d'un GUID).
+      3. Tester la connectivité réseau entre les deux DC (commandes ci-dessous).
+    commande:
+      langage: cmd
+      admin: true
+      ou: Sur le contrôleur de domaine destination
+      code: |
+        dcdiag /test:dns /v /s:<NomDC>
+        nslookup <NomDCSource>
+        powershell -Command "Test-NetConnection -ComputerName <NomDCSource> -Port 135"
+        powershell -Command "Test-NetConnection -ComputerName <NomDCSource> -Port 389"
+    conclusions:
+      - { si: "dcdiag signale des erreurs DNS, ou le partenaire n'est pas résolu", cause: c1, aller_a: r1 }
+      - { si: "Le DNS est correct mais le port 135 ou 389 ne répond pas", cause: c2, aller_a: r2 }
+
+  - id: d3
+    titre: Vérifier l'heure et le canal sécurisé des contrôleurs de domaine
+    niveau: N3
+    commande:
+      langage: cmd
+      admin: true
+      ou: Sur le contrôleur de domaine destination
+      code: |
+        w32tm /stripchart /computer:<NomDCSource> /samples:3 /dataonly
+        dcdiag /test:CheckSecurityError /s:<NomDC>
+    astuce: "Un écart de plus de 5 minutes entre deux DC suffit à bloquer la réplication (Kerberos)."
+    conclusions:
+      - { si: "Écart d'heure important entre les deux DC", cause: c3, aller_a: "fiche:ad-decalage-horaire-kerberos" }
+      - { si: "dcdiag CheckSecurityError signale un problème de compte ou de droits", cause: c3, aller_a: r3 }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Corriger la configuration DNS des contrôleurs de domaine
+    etapes:
+      - id: r1-e1
+        titre: Corriger les DNS des cartes réseau et réenregistrer le DC
+        niveau: N3
+        graphique: |
+          1. Sur le DC fautif, `ncpa.cpl` › carte › **TCP/IPv4** › **Propriétés** : saisir comme serveurs DNS des **contrôleurs de domaine actifs** du domaine.
+          2. Lancer les commandes ci-dessous pour réenregistrer les enregistrements DNS du DC.
+          3. Attendre quelques minutes (réplication de la zone DNS), puis relancer `repadmin /replsummary`.
+        commande:
+          langage: cmd
+          admin: true
+          ou: Sur le contrôleur de domaine fautif
+          code: |
+            ipconfig /flushdns
+            ipconfig /registerdns
+            net stop netlogon
+            net start netlogon
+        avertissement:
+          type: attention
+          texte: Redémarrer Netlogon interrompt brièvement les authentifications sur ce DC. Choisir un moment calme.
+
+  - id: r2
+    causes: [c2]
+    titre: Rétablir la connectivité réseau entre les sites
+    etapes:
+      - id: r2-e1
+        titre: Vérifier le lien et les ports
+        niveau: N3
+        graphique: |
+          - Vérifier que le lien entre les sites (VPN de site à site, MPLS, fibre) est en service.
+          - Sur les pare-feu entre DC, autoriser au minimum : DNS (53), Kerberos (88), RPC (135 + ports dynamiques 49152-65535), LDAP (389), SMB (445), LDAP du catalogue global (3268) et la synchronisation de l'heure (123/UDP).
+          - Une fois le lien rétabli, forcer la réplication (Résolution 5).
+
+  - id: r3
+    causes: [c3]
+    titre: Réparer le compte ou le canal sécurisé du contrôleur de domaine
+    etapes:
+      - id: r3-e1
+        titre: Corriger l'heure puis réinitialiser le mot de passe du compte du DC
+        niveau: N3
+        graphique: |
+          1. Corriger d'abord l'heure du DC (fiche sur le décalage d'heure).
+          2. Si dcdiag signale encore une erreur de sécurité, la réinitialisation du mot de passe du compte ordinateur d'un DC se fait avec `netdom resetpwd`, en suivant **précisément** la procédure Microsoft pour l'erreur 8453 ou le message obtenu.
+
+          > [!a-verifier]
+          > La procédure de réinitialisation du compte d'un contrôleur de domaine (arrêt du service KDC, choix du DC partenaire) dépend de la situation. Lire l'article Microsoft correspondant au code d'erreur avant d'agir.
+
+  - id: r4
+    causes: [c4]
+    titre: Contrôleur de domaine hors ligne trop longtemps
+    etapes:
+      - id: r4-e1
+        titre: Isoler le DC et faire appel à un expert
+        niveau: N3
+        graphique: |
+          Un DC qui n'a pas répliqué depuis plus que la **durée de vie des objets supprimés** ne doit **pas** être resynchronisé de force : il pourrait réintroduire des objets supprimés (« objets persistants », *lingering objects*) dans tout l'annuaire.
+
+          1. Laisser la protection en place (le blocage 8614 est une sécurité voulue).
+          2. Débrancher ce DC du réseau si les autres DC fonctionnent.
+          3. La solution habituelle est de **rétrograder** proprement ce DC (ou de le supprimer de l'annuaire puis de nettoyer ses métadonnées), puis d'en réinstaller un nouveau. Faire valider la procédure par un administrateur expérimenté ou par le support Microsoft.
+        avertissement:
+          type: destructif
+          texte: "Supprimer un contrôleur de domaine de l'annuaire (nettoyage des métadonnées) est irréversible. Vérifier au préalable qu'il ne détient aucun rôle FSMO, qu'il n'est pas le seul catalogue global ou serveur DNS d'un site, et qu'une sauvegarde de l'état du système d'un DC sain existe."
+
+  - id: r5
+    causes: [c1, c2, c3]
+    titre: Forcer la réplication une fois la cause corrigée
+    etapes:
+      - id: r5-e1
+        titre: Lancer une réplication complète
+        niveau: N2
+        graphique: |
+          **Sites et services Active Directory** › site › serveur › **NTDS Settings** › clic droit sur chaque connexion › **Répliquer maintenant** (*Replicate Now*).
+          Pour tous les DC à la fois, utiliser la commande ci-dessous.
+        commande:
+          langage: cmd
+          admin: true
+          ou: Sur un contrôleur de domaine
+          code: |
+            repadmin /syncall /AdeP
+            repadmin /replsummary
+
+verification:
+  - id: v1
+    titre: Plus aucun échec de réplication
+    niveau: N2
+    commande:
+      langage: cmd
+      admin: true
+      code: repadmin /replsummary
+    graphique: La colonne des échecs est à **0** pour tous les DC, et le plus grand écart est de quelques minutes (ou de la durée de la planification entre sites).
+  - id: v2
+    titre: Test complet du contrôleur de domaine
+    niveau: N3
+    commande:
+      langage: cmd
+      admin: true
+      code: dcdiag /v /c /e /q
+    graphique: "Avec /q, dcdiag n'affiche que les erreurs : aucune ligne ne doit apparaître (ou seulement des erreurs connues et expliquées)."
+  - id: v3
+    titre: Une modification se propage
+    niveau: N2
+    graphique: Modifier un attribut de test (par exemple la description d'un compte de test) sur un DC et vérifier qu'il apparaît sur les autres après la réplication.
+
+prevention:
+  - Superviser la réplication (repadmin /replsummary planifié, ou outil de supervision) avec une alerte en cas d'échec.
+  - Configurer correctement le DNS de chaque DC et ne jamais pointer un DC vers un DNS public.
+  - Ne jamais restaurer un instantané de VM de DC ; utiliser les sauvegardes de l'état du système.
+  - Retirer proprement (rétrogradation) tout DC qui doit être arrêté durablement, au lieu de le laisser éteint.
+  - Documenter les sites, les liens et les ports nécessaires entre DC.
+
+comprendre: |
+  Chaque contrôleur de domaine possède une copie complète de l'annuaire et transmet ses modifications aux autres (**réplication multimaître**). À l'intérieur d'un site, la réplication est quasi immédiate ; entre sites, elle suit une planification (toutes les 180 minutes par défaut). Un objet supprimé est conservé sous forme de « pierre tombale » pendant une durée limitée (**tombstone lifetime**) : un DC absent plus longtemps ne peut plus rattraper son retard sans risque.
+
+fiches_liees: [ad-decalage-horaire-kerberos, dns-noms-internes-non-resolus, gpo-ne-s-applique-pas]
+tags: [replication, repadmin, dcdiag, controleur de domaine, dc, "1722", "8453", "8524", "8614", tombstone, sysvol, ntds]
+
+sources:
+  - titre: "Troubleshoot common Active Directory replication errors — Microsoft Learn"
+    url: https://support.microsoft.com/kb/3108513
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Active Directory replication error 1722: The RPC server is unavailable — Microsoft Learn"
+    url: https://support.microsoft.com/kb/2102154
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Active Directory replication error 8453: Replication access was denied — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/windows-server/active-directory/replication-error-8453
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Interpret and scope replication failures (module de formation) — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/training/modules/troubleshoot-active-directory-replication/2-interpret-scope-replication-failures
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "How to troubleshoot Active Directory replication errors — ATA Learning"
+    url: https://adamtheautomator.com/troubleshoot-active-directory-replication-errors/
+    type: blog
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

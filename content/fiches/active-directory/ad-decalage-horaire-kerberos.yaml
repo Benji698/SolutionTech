@@ -1,0 +1,219 @@
+id: ad-decalage-horaire-kerberos
+titre: Connexion refusée à cause d'un décalage d'heure (Kerberos)
+resume: "Le PC (ou un serveur) n'a pas la même heure que le domaine. Au-delà de 5 minutes d'écart, Kerberos refuse l'authentification. Corriger l'heure du poste, puis s'assurer que toute la chaîne de synchronisation du domaine est correcte."
+statut: a-relire
+domaine: active-directory
+sous_domaine: authentification-kerberos
+apparait_aussi_dans: [windows/comptes-sessions, windows-server/demarrage-performances]
+niveau: N1
+temps_estime: { min: 10, max: 45 }
+critique: false
+environnements: [win11, win10]
+droits: admin-local
+outils: []
+acces:
+  - Session administrateur local sur le poste concerné.
+  - "Pour la partie serveur (étape 3) : session administrateur sur le contrôleur de domaine émulateur PDC."
+
+symptomes:
+  - « Windows dit qu'il y a une différence d'heure entre mon PC et le serveur. »
+  - « L'horloge de mon PC n'est pas à l'heure, et depuis je ne peux plus accéder aux dossiers partagés. »
+  - « Le PC est resté éteint des mois dans un placard et ne se connecte plus au domaine. »
+
+messages_erreur:
+  - texte: There is a time and/or date difference between the client and server.
+    ou: Écran d'ouverture de session Windows (version anglaise)
+  - texte: KRB_AP_ERR_SKEW
+    code: "0x25"
+    ou: Journaux d'événements (erreur Kerberos « Clock skew too great »)
+
+variables:
+  - { nom: NomDC, libelle: "Nom d'un contrôleur de domaine", exemple: SRV-DC01.contoso.local }
+
+causes:
+  - id: c1
+    titre: L'horloge du poste est déréglée
+    frequence: frequente
+    detail: Pile de la carte mère usée, PC resté longtemps éteint, heure changée à la main, mauvais fuseau horaire choisi lors d'un changement manuel.
+  - id: c2
+    titre: Le poste ne se synchronise pas sur le domaine
+    frequence: occasionnelle
+    detail: Service « Temps Windows » arrêté, ou poste configuré pour se synchroniser sur un serveur NTP Internet au lieu du domaine.
+  - id: c3
+    titre: Le contrôleur de domaine émulateur PDC n'a pas la bonne heure
+    frequence: occasionnelle
+    detail: Il ne se synchronise sur aucune source externe fiable, ou une machine virtuelle prend l'heure de son hôte.
+
+diagnostic:
+  - id: d1
+    titre: Comparer l'heure du poste avec celle du domaine
+    niveau: N1
+    graphique: |
+      1. Sur le poste, regarder l'heure et la **date** en bas à droite, ainsi que le **fuseau horaire** : *Paramètres › Heure et langue › Date et heure* (*Time & language › Date & time*).
+      2. Comparer avec l'heure d'un serveur ou d'un autre PC du domaine qui fonctionne.
+    commande:
+      langage: cmd
+      ou: Sur le poste concerné
+      code: |
+        rem Source de temps et dernière synchronisation
+        w32tm /query /status
+        rem Écart mesuré avec un contrôleur de domaine (5 mesures)
+        w32tm /stripchart /computer:<NomDC> /samples:5 /dataonly
+    astuce: Kerberos compare l'heure **universelle** (UTC). Un PC à la bonne heure affichée mais avec le mauvais fuseau horaire est donc en réalité décalé d'une ou plusieurs heures.
+    conclusions:
+      - { si: "Le poste est décalé de plus de quelques minutes, mais les autres PC sont à l'heure", aller_a: d2 }
+      - { si: "Plusieurs postes ou serveurs ont la même mauvaise heure que le contrôleur de domaine", cause: c3, aller_a: d3 }
+
+  - id: d2
+    titre: Vérifier la source de temps du poste
+    niveau: N2
+    graphique: "Pas d'affichage graphique fiable de la source de temps dans un domaine : utiliser la commande ci-dessous."
+    commande:
+      langage: cmd
+      admin: true
+      ou: Sur le poste concerné
+      code: |
+        w32tm /query /source
+        w32tm /query /configuration | findstr /i "Type NtpServer"
+        sc query w32time
+    astuce: "Dans un domaine, la source doit être un contrôleur de domaine et le type **NT5DS** (hiérarchie du domaine). « Local CMOS Clock » ou « Free-running System Clock » signifie que le poste ne se synchronise sur rien."
+    conclusions:
+      - { si: "Le type est NT5DS et la source est un contrôleur de domaine : seule l'horloge est fausse", cause: c1, aller_a: r1 }
+      - { si: "Le type est NTP (serveur Internet), ou le service Temps Windows est arrêté", cause: c2, aller_a: r2 }
+
+  - id: d3
+    titre: Vérifier l'heure de l'émulateur PDC
+    niveau: N3
+    graphique: |
+      Dans un domaine, tous les PC prennent l'heure des contrôleurs de domaine, qui la prennent eux-mêmes de l'**émulateur PDC** de la racine de la forêt. Seul ce dernier doit se synchroniser sur une source externe.
+      Repérer l'émulateur PDC (*Utilisateurs et ordinateurs Active Directory* › clic droit sur le domaine › **Maîtres d'opérations…** › onglet **PDC**), puis lancer les commandes sur ce serveur.
+    commande:
+      langage: cmd
+      admin: true
+      ou: Sur le contrôleur de domaine émulateur PDC
+      code: |
+        netdom query fsmo
+        w32tm /query /source
+        w32tm /query /status
+    conclusions:
+      - { si: "La source est « Local CMOS Clock », « VM IC Time Synchronization Provider » ou un serveur injoignable", cause: c3, aller_a: r3 }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Remettre le poste à l'heure
+    etapes:
+      - id: r1-e1
+        titre: Corriger le fuseau horaire et resynchroniser
+        niveau: N1
+        graphique: |
+          1. *Paramètres › Heure et langue › Date et heure* : vérifier le **fuseau horaire** (*(UTC+01:00) Bruxelles, Copenhague, Madrid, Paris* en France métropolitaine).
+          2. Activer **Définir l'heure automatiquement** (*Set time automatically*) puis cliquer sur **Synchroniser maintenant** (*Sync now*).
+          3. Si l'écart est très grand (plusieurs jours), la synchronisation peut être refusée : désactiver temporairement le réglage automatique, régler la date et l'heure à la main au plus juste, puis le réactiver et resynchroniser.
+        commande:
+          langage: cmd
+          admin: true
+          code: w32tm /resync /force
+        astuce: "Si le PC se dérègle à chaque démarrage, la **pile de la carte mère** est probablement usée : la faire remplacer."
+
+  - id: r2
+    causes: [c2]
+    titre: Remettre le poste sur la synchronisation du domaine
+    etapes:
+      - id: r2-e1
+        titre: Configurer la source de temps sur la hiérarchie du domaine
+        niveau: N2
+        commande:
+          langage: cmd
+          admin: true
+          ou: Sur le poste concerné
+          code: |
+            sc config w32time start= auto
+            w32tm /config /syncfromflags:domhier /update
+            net stop w32time
+            net start w32time
+            w32tm /resync /rediscover
+        astuce: "Si le réglage revient après redémarrage, une GPO ou un script impose un serveur NTP : vérifier avec `gpresult /h` les paramètres de *Système › Service de temps Windows*."
+
+  - id: r3
+    causes: [c3]
+    titre: Configurer correctement la source de temps de l'émulateur PDC
+    etapes:
+      - id: r3-e1
+        titre: Synchroniser l'émulateur PDC sur une source externe fiable
+        niveau: N3
+        commande:
+          langage: cmd
+          admin: true
+          ou: Sur le contrôleur de domaine émulateur PDC uniquement
+          code: |
+            w32tm /config /manualpeerlist:"0.fr.pool.ntp.org,0x8 1.fr.pool.ntp.org,0x8 2.fr.pool.ntp.org,0x8" /syncfromflags:manual /reliable:yes /update
+            net stop w32time
+            net start w32time
+            w32tm /resync /rediscover
+            w32tm /query /status
+        avertissement:
+          type: attention
+          texte: "Ne faire cette configuration que sur l'émulateur PDC de la racine de la forêt. Le pare-feu doit autoriser le trafic sortant UDP 123 depuis ce serveur. Un changement brutal d'heure du PDC se propage à tout le domaine : prévenir et surveiller."
+      - id: r3-e2
+        titre: Cas d'un contrôleur de domaine virtuel
+        niveau: N3
+        graphique: |
+          Un contrôleur de domaine en machine virtuelle ne doit pas prendre en permanence l'heure de son hôte : sinon tout le domaine suit l'horloge de l'hyperviseur.
+          Sur Hyper-V, désactiver le **service d'intégration Synchronisation date/heure** (*Time synchronization*) pour le DC émulateur PDC ; sur VMware, désactiver la synchronisation de l'heure avec l'hôte dans les options des VMware Tools.
+
+          > [!a-verifier]
+          > Les recommandations précises (désactivation totale ou seulement en fonctionnement) varient selon l'hyperviseur et sa version : consulter la documentation de l'éditeur avant de modifier.
+
+verification:
+  - id: v1
+    titre: L'écart avec le domaine est faible
+    niveau: N2
+    commande:
+      langage: cmd
+      code: w32tm /stripchart /computer:<NomDC> /samples:3 /dataonly
+    graphique: L'écart affiché est de quelques secondes au plus (bien en dessous de 5 minutes).
+  - id: v2
+    titre: L'utilisateur se connecte
+    niveau: N1
+    graphique: L'utilisateur ouvre sa session et accède aux dossiers partagés sans message d'erreur.
+
+prevention:
+  - Configurer une source de temps fiable sur le seul émulateur PDC de la forêt, et laisser tous les autres postes et serveurs en hiérarchie du domaine.
+  - Surveiller l'heure de l'émulateur PDC (supervision, alerte si la source devient « Local CMOS Clock »).
+  - Remettre à l'heure et resynchroniser les PC sortis du stock avant de les remettre aux utilisateurs.
+  - Remplacer la pile de la carte mère des PC qui se dérèglent à chaque démarrage.
+
+comprendre: |
+  Kerberos, le protocole d'authentification de l'Active Directory, horodate ses tickets pour empêcher qu'un attaquant ne les rejoue. Par défaut, un écart de plus de **5 minutes** entre le poste et le contrôleur de domaine (stratégie *Tolérance maximale pour la synchronisation de l'horloge de l'ordinateur*) fait refuser l'authentification. Augmenter cette tolérance affaiblit la sécurité : il vaut mieux corriger l'heure.
+
+fiches_liees: [ad-replication-echoue]
+tags: [heure, horloge, decalage, time skew, clock skew, kerberos, w32tm, ntp, pdc, krb_ap_err_skew, date]
+
+sources:
+  - titre: "Windows Time service tools and settings — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/windows-server/networking/windows-time-service/windows-time-service-tools-and-settings
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Configure the root PDC with an authoritative time source and avoid widespread time skew — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/services-hub/unified/health/remediation-steps-ad/configure-the-root-pdc-with-an-authoritative-time-source-and-avoid-widespread-time-skew
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Troubleshooting the Windows Time Service (w32time) — Dell"
+    url: https://www.dell.com/support/kbdoc/en-us/000134430
+    type: blog
+    consulte_le: 2026-10-29
+  - titre: "Why is time synchronization critical in an AD environment? — ITPro Today"
+    url: https://itprotoday.com/active-directory/q-why-is-time-synchronization-between-windows-machines-critical-in-an-active-directory-ad-environment-how-important-is-this-for-kerberos-authentication-what-service-controls-time-synchronization-on-windows-machines-
+    type: blog
+    consulte_le: 2026-10-29
+  - titre: "Fix Kerberos clock skew with w32tm — ATA Learning"
+    url: https://adamtheautomator.com/fix-kerberos-clock-skew-w32tm/
+    type: blog
+    consulte_le: 2026-10-29
+  - titre: "Clock skew is too great — Netwrix documentation"
+    url: https://docs.netwrix.com/docs/auditor/10_6/kb/features-and-operations/glossaries-and-faqs/clock-skew-is-too-great
+    type: blog
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

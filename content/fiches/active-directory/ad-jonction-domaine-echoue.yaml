@@ -1,0 +1,217 @@
+id: ad-jonction-domaine-echoue
+titre: "Impossible de joindre un PC au domaine : « contrôleur de domaine introuvable »"
+resume: "Lors de la jonction au domaine, Windows ne trouve pas de contrôleur de domaine. Dans la grande majorité des cas, le PC n'utilise pas le DNS de l'Active Directory. Vérifier le DNS, puis le réseau et les droits."
+statut: a-relire
+domaine: active-directory
+sous_domaine: comptes-ordinateurs
+apparait_aussi_dans: [support-utilisateur/preparation-postes, active-directory/dns]
+niveau: N1
+temps_estime: { min: 10, max: 30 }
+critique: false
+environnements: [win11, win10]
+droits: admin-local
+outils: [rsat-ad]
+acces:
+  - Session administrateur local sur le PC à joindre.
+  - Un compte du domaine autorisé à joindre des ordinateurs.
+
+symptomes:
+  - « Je n'arrive pas à mettre le nouveau PC dans le domaine. »
+  - « Windows dit qu'il ne trouve pas le domaine, alors que j'ai bien Internet. »
+
+messages_erreur:
+  - texte: An Active Directory Domain Controller (AD DC) for the domain "contoso.local" could not be contacted.
+    ou: Fenêtre de jonction au domaine (version anglaise)
+  - texte: Impossible de contacter un contrôleur de domaine Active Directory (AD DC) pour le domaine « contoso.local ».
+    ou: Fenêtre de jonction au domaine (version française, formulation à confirmer)
+  - texte: The specified domain either does not exist or could not be contacted.
+    ou: Variante (version anglaise)
+
+variables:
+  - { nom: Domaine, libelle: "Nom DNS complet du domaine", exemple: contoso.local }
+  - { nom: IPDC, libelle: "Adresse IP d'un contrôleur de domaine", exemple: 192.168.10.10 }
+  - { nom: NomDC, libelle: "Nom d'un contrôleur de domaine", exemple: SRV-DC01.contoso.local }
+
+causes:
+  - id: c1
+    titre: Le PC n'utilise pas les serveurs DNS de l'Active Directory
+    frequence: tres-frequente
+    detail: DNS de la box, de l'opérateur ou public (8.8.8.8, 1.1.1.1), reçu par DHCP ou saisi à la main. Ces serveurs ne connaissent pas les enregistrements du domaine.
+  - id: c2
+    titre: Le nom du domaine est mal saisi
+    frequence: frequente
+    detail: Faute de frappe, ou nom NetBIOS (CONTOSO) au lieu du nom DNS complet (contoso.local).
+  - id: c3
+    titre: Le PC ne joint pas le contrôleur de domaine (réseau, VLAN, pare-feu, VPN)
+    frequence: occasionnelle
+  - id: c4
+    titre: Les enregistrements DNS du domaine sont absents ou incorrects sur le serveur DNS
+    frequence: rare
+    detail: Problème côté contrôleur de domaine (service Netlogon, zone DNS).
+
+diagnostic:
+  - id: d1
+    titre: Vérifier les serveurs DNS utilisés par le PC
+    niveau: N1
+    graphique: |
+      1. Touche Windows, taper `ncpa.cpl` › **Entrée** : la liste des cartes réseau s'ouvre.
+      2. Double-cliquer sur la carte connectée › **Détails…** (*Details…*).
+      3. Lire les lignes **Serveurs DNS IPv4** (*IPv4 DNS Servers*) : elles doivent contenir **uniquement** les adresses des contrôleurs de domaine.
+    commande:
+      langage: cmd
+      code: ipconfig /all
+    conclusions:
+      - { si: "Les serveurs DNS ne sont pas des contrôleurs de domaine (box, 8.8.8.8…)", cause: c1, aller_a: r1 }
+      - { si: "Les serveurs DNS sont bien les contrôleurs de domaine", aller_a: d2 }
+
+  - id: d2
+    titre: Tester la recherche du contrôleur de domaine
+    niveau: N2
+    commande:
+      langage: cmd
+      ou: Sur le PC à joindre
+      code: |
+        rem Le DNS connaît-il les contrôleurs de domaine ?
+        nslookup -type=SRV _ldap._tcp.dc._msdcs.<Domaine>
+        rem Windows trouve-t-il un contrôleur de domaine ?
+        nltest /dsgetdc:<Domaine>
+        rem Le contrôleur de domaine répond-il ?
+        ping <IPDC>
+    astuce: "La réponse de nslookup doit lister un ou plusieurs contrôleurs de domaine (lignes « svr hostname »). Le fichier hosts ne sert à rien ici : il ne contient pas d'enregistrements SRV."
+    conclusions:
+      - { si: "nslookup répond « Non-existent domain » ou ne liste aucun DC, alors que le nom est bien écrit", cause: c4, aller_a: r4 }
+      - { si: "nslookup fonctionne avec le nom complet, mais la jonction échouait avec un nom court ou mal orthographié", cause: c2, aller_a: r2 }
+      - { si: "nslookup liste les DC mais le ping ou nltest échoue (délai dépassé)", cause: c3, aller_a: r3 }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Configurer le PC pour utiliser le DNS de l'Active Directory
+    etapes:
+      - id: r1-e1
+        titre: "Corriger durablement : dans l'étendue DHCP"
+        niveau: N2
+        graphique: |
+          Sur le serveur DHCP (console **DHCP**, `dhcpmgmt.msc`) › étendue du réseau des postes › **Options d'étendue** (*Scope Options*) › option **006 Serveurs DNS** : ne laisser **que** les adresses des contrôleurs de domaine.
+          Si la box ou le pare-feu distribue le DHCP, faire la même correction dans son interface.
+          Sur le PC, renouveler ensuite le bail (voir l'étape suivante).
+        avertissement:
+          type: attention
+          texte: "Modifier une option d'étendue DHCP touche tous les postes du réseau au renouvellement de leur bail. Vérifier les adresses avant de valider. Ne pas ajouter de DNS public « en secours » : les postes l'utiliseraient au hasard et perdraient le domaine."
+      - id: r1-e2
+        titre: "Sur le PC : renouveler le bail ou saisir le DNS à la main"
+        niveau: N1
+        graphique: |
+          - **PC en DHCP** (cas normal) : après correction de l'étendue, renouveler le bail (commande ci-dessous) ou redémarrer le PC.
+          - **Dépannage immédiat** : `ncpa.cpl` › clic droit sur la carte › **Propriétés** › **Protocole Internet version 4 (TCP/IPv4)** › **Propriétés** › **Utiliser l'adresse de serveur DNS suivante** › saisir l'IP d'un contrôleur de domaine › **OK**. Penser à remettre en automatique une fois le DHCP corrigé.
+        commande:
+          langage: cmd
+          admin: true
+          code: |
+            ipconfig /release
+            ipconfig /renew
+            ipconfig /flushdns
+
+  - id: r2
+    causes: [c2]
+    titre: Saisir le nom DNS complet du domaine
+    etapes:
+      - id: r2-e1
+        titre: Refaire la jonction avec le nom complet
+        niveau: N1
+        graphique: |
+          Dans `sysdm.cpl` › **Modifier…** › **Domaine**, saisir le **nom DNS complet** (`contoso.local`, et non `CONTOSO`), puis fournir un compte autorisé à joindre des ordinateurs.
+        commande:
+          langage: powershell
+          admin: true
+          code: Add-Computer -DomainName <Domaine> -Credential (Get-Credential) -Restart
+
+  - id: r3
+    causes: [c3]
+    titre: Rétablir l'accès réseau au contrôleur de domaine
+    etapes:
+      - id: r3-e1
+        titre: Vérifier le réseau et les ports nécessaires
+        niveau: N2
+        graphique: |
+          - Le PC est-il dans le bon **VLAN** (prise réseau, Wi-Fi invités) ? A-t-il une adresse IP du réseau des postes ?
+          - Un **pare-feu** filtre-t-il le trafic vers les contrôleurs de domaine ? La jonction a besoin notamment de **DNS (53)**, **Kerberos (88)**, **LDAP (389)**, **SMB (445)** et **RPC (135 + ports dynamiques)**.
+          - En **VPN**, la jonction au domaine est souvent impossible ou bloquée : faire la jonction depuis le réseau de l'entreprise.
+        commande:
+          langage: powershell
+          code: |
+            Test-NetConnection -ComputerName <NomDC> -Port 389
+            Test-NetConnection -ComputerName <NomDC> -Port 445
+            Test-NetConnection -ComputerName <NomDC> -Port 88
+
+  - id: r4
+    causes: [c4]
+    titre: Réenregistrer les enregistrements DNS du contrôleur de domaine
+    etapes:
+      - id: r4-e1
+        titre: Contrôler et réenregistrer le DNS sur le contrôleur de domaine
+        niveau: N3
+        graphique: |
+          1. Sur un contrôleur de domaine, ouvrir **DNS** (`dnsmgmt.msc`) › **Zones de recherche directes** › vérifier que la zone du domaine et la zone `_msdcs.<domaine>` existent et contiennent les enregistrements des DC.
+          2. Vérifier que les **cartes réseau des DC** pointent vers des serveurs DNS de l'AD (eux-mêmes ou un autre DC), jamais vers un DNS public.
+          3. Réenregistrer les enregistrements (commandes ci-dessous), puis relancer le test de l'étape 2 du diagnostic.
+        commande:
+          langage: cmd
+          admin: true
+          ou: Sur le contrôleur de domaine
+          code: |
+            ipconfig /registerdns
+            net stop netlogon
+            net start netlogon
+            dcdiag /test:dns /v
+        avertissement:
+          type: attention
+          texte: Redémarrer le service Netlogon interrompt brièvement les authentifications sur ce contrôleur de domaine. Le faire de préférence hors des heures de pointe.
+
+verification:
+  - id: v1
+    titre: Le PC trouve un contrôleur de domaine
+    niveau: N2
+    commande:
+      langage: cmd
+      code: nltest /dsgetdc:<Domaine>
+    graphique: La commande affiche le nom d'un contrôleur de domaine et se termine par « The command completed successfully ».
+  - id: v2
+    titre: La jonction réussit
+    niveau: N1
+    graphique: Le message « Bienvenue dans le domaine » s'affiche ; après redémarrage, un utilisateur du domaine ouvre sa session. Déplacer ensuite le compte ordinateur dans la bonne OU.
+
+prevention:
+  - Ne distribuer par DHCP que les adresses des contrôleurs de domaine comme serveurs DNS ; les DC transmettent eux-mêmes les requêtes Internet (redirecteurs).
+  - Préparer les PC depuis le réseau de l'entreprise, avec une procédure de jonction documentée.
+  - Pré-créer les comptes ordinateurs dans la bonne OU, ou rediriger l'OU par défaut des nouveaux ordinateurs (redircmp).
+
+comprendre: |
+  Pour trouver un contrôleur de domaine, Windows interroge le DNS sur des enregistrements spéciaux (**SRV**), par exemple `_ldap._tcp.dc._msdcs.contoso.local`. Seuls les serveurs DNS de l'Active Directory les connaissent. Un DNS public répond correctement pour Internet, mais ignore tout du domaine interne : la jonction échoue alors même que « Internet marche ».
+
+fiches_liees: [dns-noms-internes-non-resolus, ad-relation-approbation-rompue]
+tags: [jonction, joindre, domaine, join domain, controleur de domaine introuvable, dns, srv, nltest, add-computer, ad dc could not be contacted]
+
+sources:
+  - titre: "Domain join networking errors — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/windows-server/active-directory/domain-join-networking-errors
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Error 0xa8b: resolve DNS fail (domain join) — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/windows-server/active-directory/error-0xa8b-resolve-dns-fail
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Best practices for DNS client settings in Windows Server — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/windows-server/networking/best-practices-for-dns-client-settings
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Fix 'An Active Directory Domain Controller Could Not Be Contacted' — ATA Learning"
+    url: https://adamtheautomator.com/an-active-directory-domain-controller-could-not-be-contacted/
+    type: blog
+    consulte_le: 2026-10-29
+  - titre: "Can't join windows client to domain — Univention Help"
+    url: https://help.univention.com/t/cant-join-windows-client-to-domain/6221
+    type: forum
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

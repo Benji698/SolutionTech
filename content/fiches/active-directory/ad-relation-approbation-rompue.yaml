@@ -1,0 +1,210 @@
+id: ad-relation-approbation-rompue
+titre: "« La relation d'approbation entre cette station de travail et le domaine principal a échoué »"
+resume: "Le PC n'arrive plus à prouver son identité au domaine : son mot de passe d'ordinateur ne correspond plus à celui de l'Active Directory. Réparer le canal sécurisé sans sortir du domaine, ou à défaut, retirer puis rejoindre le domaine."
+statut: a-relire
+domaine: active-directory
+sous_domaine: comptes-ordinateurs
+apparait_aussi_dans: [windows/comptes-sessions]
+niveau: N2
+temps_estime: { min: 10, max: 40 }
+critique: false
+environnements: [win11, win10]
+droits: admin-local
+outils: [rsat-ad]
+acces:
+  - Mot de passe d'un compte **administrateur local** du PC (ou de la solution LAPS de l'entreprise).
+  - Identifiants d'un compte ayant le droit de joindre ou de réinitialiser les ordinateurs dans l'AD.
+
+symptomes:
+  - « Je ne peux plus ouvrir ma session, Windows parle de relation d'approbation. »
+  - « Le PC marchait hier, depuis qu'il a été restauré ou réinstallé, plus personne ne peut se connecter. »
+  - « Ça ne touche que ce PC, les collègues se connectent normalement. »
+
+messages_erreur:
+  - texte: The trust relationship between this workstation and the primary domain failed.
+    ou: Écran d'ouverture de session Windows (version anglaise)
+  - texte: La relation d'approbation entre cette station de travail et le domaine principal a échoué.
+    ou: Écran d'ouverture de session Windows (version française)
+  - texte: "The security database on the server does not have a computer account for this workstation trust relationship."
+    ou: Variante, quand le compte ordinateur a été supprimé de l'AD
+
+variables:
+  - { nom: Domaine, libelle: "Nom DNS du domaine", exemple: contoso.local }
+  - { nom: NomDC, libelle: "Nom d'un contrôleur de domaine", exemple: SRV-DC01.contoso.local }
+  - { nom: NomPC, libelle: "Nom du PC concerné", exemple: PC-COMPTA-07 }
+
+causes:
+  - id: c1
+    titre: Le PC a été restauré à un état antérieur (instantané de VM, image disque, point de restauration)
+    frequence: frequente
+    detail: Le PC revient avec un ancien mot de passe d'ordinateur, alors que l'AD connaît le plus récent.
+  - id: c2
+    titre: Le compte ordinateur a été réinitialisé, supprimé ou recréé dans l'AD
+    frequence: frequente
+    detail: Nettoyage des ordinateurs inactifs, ou un autre PC a été joint au domaine avec le même nom.
+  - id: c3
+    titre: Deux PC portent le même nom (clonage sans sysprep, réinstallation avec le même nom)
+    frequence: occasionnelle
+  - id: c4
+    titre: Le PC ne joint aucun contrôleur de domaine (réseau, DNS)
+    frequence: occasionnelle
+    detail: Le message peut alors être trompeur ; le vrai problème est l'accès au contrôleur de domaine.
+
+diagnostic:
+  - id: d1
+    titre: Vérifier le compte ordinateur dans l'AD
+    niveau: N1
+    graphique: |
+      1. Dans **Utilisateurs et ordinateurs Active Directory**, rechercher le PC (clic droit sur le domaine › **Rechercher…** › type **Ordinateurs**).
+      2. Le compte existe-t-il ? Est-il **désactivé** (flèche vers le bas) ? Est-il dans une OU de type « Ordinateurs inactifs » ?
+      3. Dans ses propriétés, onglet **Éditeur d'attributs** (*Attribute Editor*, visible avec **Affichage › Fonctionnalités avancées**), regarder **pwdLastSet** et **whenChanged** : un changement récent signale une réinitialisation ou une recréation.
+    commande:
+      langage: powershell
+      code: |
+        Get-ADComputer -Identity <NomPC> -Properties Enabled, PasswordLastSet, whenCreated, whenChanged, LastLogonDate |
+          Select-Object Name, Enabled, PasswordLastSet, whenCreated, whenChanged, LastLogonDate, DistinguishedName
+    conclusions:
+      - { si: "Le compte ordinateur n'existe plus ou a été recréé récemment", cause: c2, aller_a: r2 }
+      - { si: "Le compte est désactivé", cause: c2, aller_a: r2 }
+      - { si: "Le compte existe et est actif", aller_a: d2 }
+
+  - id: d2
+    titre: Ouvrir une session sur le PC et tester le canal sécurisé
+    niveau: N2
+    graphique: |
+      Ouvrir une session sur le PC avec le compte **administrateur local** (nom d'utilisateur `.\Administrateur` ou `NomDuPC\NomDuCompte`).
+
+      **Astuce si aucun compte local n'est connu** : débrancher le câble réseau (ou couper le Wi-Fi), puis ouvrir une session avec un compte du domaine qui s'est déjà connecté sur ce PC. Windows utilise alors les identifiants en cache. Rebrancher le réseau une fois la session ouverte.
+
+      Demander aussi à l'utilisateur si le PC a été **restauré, réinstallé ou cloné** récemment.
+    commande:
+      langage: powershell
+      admin: true
+      ou: Sur le PC concerné
+      code: |
+        # True = canal sécurisé fonctionnel, False = relation d'approbation rompue
+        Test-ComputerSecureChannel -Verbose
+        # Quel contrôleur de domaine le PC trouve-t-il ?
+        nltest /dsgetdc:<Domaine>
+    conclusions:
+      - { si: "nltest ne trouve aucun contrôleur de domaine", cause: c4, aller_a: "fiche:ad-jonction-domaine-echoue" }
+      - { si: "Test-ComputerSecureChannel renvoie False, et le PC a été restauré ou réinstallé", cause: c1, aller_a: r1 }
+      - { si: "Un autre PC du parc porte le même nom", cause: c3, aller_a: r3 }
+      - { si: "Test-ComputerSecureChannel renvoie False sans explication évidente", cause: c1, aller_a: r1 }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Réparer le canal sécurisé sans sortir du domaine
+    etapes:
+      - id: r1-e1
+        titre: Réparer avec PowerShell
+        niveau: N2
+        commande:
+          langage: powershell
+          admin: true
+          ou: Sur le PC concerné, connecté au réseau de l'entreprise
+          code: |
+            # Saisir un compte autorisé à réinitialiser les comptes ordinateurs (ex. CONTOSO\admin-support)
+            Test-ComputerSecureChannel -Repair -Credential (Get-Credential) -Verbose
+
+            # Alternative : forcer un nouveau mot de passe d'ordinateur auprès d'un DC précis
+            Reset-ComputerMachinePassword -Server <NomDC> -Credential (Get-Credential)
+        astuce: "Lancer ces commandes dans **Windows PowerShell** (fourni avec Windows) : elles n'existent pas dans PowerShell 7. Pas de redémarrage obligatoire, mais il est conseillé ; fermer ensuite la session locale et ouvrir une session avec un compte du domaine."
+        conclusions:
+          - { si: "La commande échoue (accès refusé, DC introuvable)", aller_a: r2 }
+
+  - id: r2
+    causes: [c1, c2]
+    titre: Retirer le PC du domaine puis le joindre à nouveau
+    etapes:
+      - id: r2-e1
+        titre: Préparer le compte ordinateur dans l'AD
+        niveau: N2
+        graphique: |
+          - Si le compte est **désactivé** : clic droit › **Activer le compte**.
+          - S'il est dans une OU « inactifs », le remettre dans la bonne OU (sinon le PC ne recevra pas les bonnes GPO).
+          - S'il a été supprimé : il sera recréé à la jonction, dans l'OU par défaut **Computers** ; le déplacer ensuite dans la bonne OU.
+      - id: r2-e2
+        titre: Quitter puis rejoindre le domaine
+        niveau: N2
+        graphique: |
+          1. Sur le PC, session **administrateur local** : touche Windows, taper `sysdm.cpl` › **Entrée** › onglet **Nom de l'ordinateur** (*Computer Name*) › **Modifier…** (*Change…*).
+          2. Choisir **Groupe de travail** (*Workgroup*), saisir `WORKGROUP`, valider, puis **redémarrer**.
+          3. Revenir dans `sysdm.cpl` › **Modifier…** › **Domaine** (*Domain*) › saisir le nom du domaine › fournir un compte autorisé à joindre des ordinateurs › **redémarrer**.
+        commande:
+          langage: powershell
+          admin: true
+          ou: Sur le PC concerné
+          code: |
+            # Étape 1 : sortir du domaine
+            Remove-Computer -UnjoinDomainCredential (Get-Credential) -WorkgroupName WORKGROUP -Restart
+            # Étape 2 (après redémarrage, en administrateur local) : rejoindre le domaine
+            Add-Computer -DomainName <Domaine> -Credential (Get-Credential) -Restart
+        avertissement:
+          type: attention
+          texte: "Avant de sortir du domaine, s'assurer de connaître le mot de passe d'un compte administrateur local actif : sinon plus personne ne pourra ouvrir de session sur le PC. Les profils des utilisateurs du domaine sont conservés et retrouvés après la nouvelle jonction."
+
+  - id: r3
+    causes: [c3]
+    titre: Donner un nom unique à chaque PC
+    etapes:
+      - id: r3-e1
+        titre: Renommer l'un des deux PC, puis réparer ou rejoindre
+        niveau: N2
+        graphique: |
+          1. Identifier les deux machines qui portent le même nom (inventaire, DNS, DHCP).
+          2. Sur l'une d'elles, en administrateur local : `sysdm.cpl` › **Modifier…** › nouveau **Nom de l'ordinateur** › redémarrer.
+          3. Appliquer ensuite la Résolution 1 ou 2 sur chacun des deux PC si nécessaire.
+          4. Si le PC a été **cloné**, il doit avoir été préparé avec **sysprep** avant la copie ; sinon, le réinstaller proprement.
+        commande:
+          langage: powershell
+          admin: true
+          code: Rename-Computer -NewName 'PC-COMPTA-08' -DomainCredential (Get-Credential) -Restart
+
+verification:
+  - id: v1
+    titre: Le canal sécurisé fonctionne
+    niveau: N2
+    commande:
+      langage: powershell
+      admin: true
+      ou: Sur le PC concerné
+      code: Test-ComputerSecureChannel -Verbose
+    graphique: La commande renvoie **True**.
+  - id: v2
+    titre: L'utilisateur ouvre sa session de domaine
+    niveau: N1
+    graphique: L'utilisateur ouvre sa session avec son compte du domaine, retrouve son profil et ses lecteurs réseau.
+
+prevention:
+  - Ne jamais restaurer un instantané (snapshot) ancien d'une VM membre du domaine sans prévoir de réparer le canal sécurisé ensuite.
+  - Préparer toute image de déploiement avec sysprep et donner un nom unique à chaque PC.
+  - Avant de supprimer des comptes ordinateurs « inactifs », vérifier qu'ils ne correspondent pas à des PC simplement éteints (stock, congés).
+  - Gérer les mots de passe administrateur local avec Windows LAPS pour toujours pouvoir ouvrir une session locale.
+
+comprendre: |
+  Chaque PC du domaine possède un **compte ordinateur** dans l'AD, avec un mot de passe que le PC change lui-même automatiquement (tous les 30 jours par défaut). Le PC et le contrôleur de domaine utilisent ce secret pour établir un **canal sécurisé**. Si le PC revient à un ancien mot de passe (restauration) ou si le compte AD est réinitialisé, les deux ne correspondent plus : le domaine ne fait plus confiance au PC.
+
+fiches_liees: [ad-jonction-domaine-echoue, ad-compte-desactive]
+tags: [relation d'approbation, trust relationship, canal securise, secure channel, compte ordinateur, test-computersecurechannel, jonction, domaine, snapshot, sysprep]
+
+sources:
+  - titre: "The trust relationship between this workstation and the primary domain failed — Microsoft (blog archive)"
+    url: https://learn.microsoft.com/en-us/archive/blogs/reference_point/the-trust-relationship-between-this-workstation-and-the-primary-domain-failed
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "The trust relationship between this workstation and the primary domain failed — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/2192243/the-trust-relationship-between-this-workstation-an
+    type: forum
+    consulte_le: 2026-10-29
+  - titre: "Repair trust relationship of a workstation with the AD domain — Windows OS Hub"
+    url: https://woshub.com/repair-trust-relationship-workstation-with-ad-domain
+    type: blog
+    consulte_le: 2026-10-29
+  - titre: "How to fix trust relationship between this workstation and the primary domain failed — LazyAdmin"
+    url: https://lazyadmin.nl/it/how-to-fix-trust-relationship-between-this-workstation-and-the-primary-domain-failed/
+    type: blog
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

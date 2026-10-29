@@ -1,0 +1,208 @@
+id: ad-ajout-groupe-non-pris-en-compte
+titre: L'utilisateur a été ajouté à un groupe mais n'a toujours pas accès
+resume: "Après l'ajout à un groupe AD, l'utilisateur n'accède toujours pas au dossier, à l'application ou à l'imprimante. Le plus souvent, sa session utilise encore son ancienne liste de groupes : il faut la rafraîchir."
+statut: a-relire
+domaine: active-directory
+sous_domaine: groupes-delegation
+apparait_aussi_dans: [stockage-nas/droits-ntfs, windows/comptes-sessions]
+niveau: N1
+temps_estime: { min: 5, max: 20 }
+critique: false
+environnements: [win11, win10]
+droits: delegation-ad
+outils: [rsat-ad]
+acces:
+  - Session de l'utilisateur sur son PC (ou prise en main à distance).
+  - Console « Utilisateurs et ordinateurs Active Directory » pour vérifier l'appartenance.
+
+symptomes:
+  - « On m'a donné accès au dossier Compta, mais j'ai toujours “Accès refusé”. »
+  - « Mon collègue a les mêmes droits que moi et lui y arrive. »
+  - « J'ai été ajouté au groupe ce matin, rien n'a changé. »
+
+messages_erreur:
+  - texte: You don't currently have permission to access this folder.
+    ou: Explorateur de fichiers (version anglaise)
+  - texte: Vous n'avez actuellement pas l'autorisation d'accéder à ce dossier.
+    ou: Explorateur de fichiers (version française)
+
+variables:
+  - { nom: NomUtilisateur, libelle: "Identifiant de l'utilisateur (sAMAccountName)", exemple: jdupont }
+  - { nom: NomGroupe, libelle: "Nom du groupe AD", exemple: GG-Compta-Lecture }
+  - { nom: NomDC, libelle: "Contrôleur de domaine utilisé par le PC (variable LOGONSERVER)", exemple: SRV-DC02 }
+
+causes:
+  - id: c1
+    titre: La session de l'utilisateur utilise encore son ancien jeton (liste de groupes)
+    frequence: tres-frequente
+    detail: La liste des groupes est calculée à l'ouverture de session et n'est mise à jour qu'à la suivante (ou à l'expiration du ticket Kerberos, en général après 10 heures).
+  - id: c2
+    titre: L'ajout n'est pas encore répliqué sur le contrôleur de domaine utilisé par le PC
+    frequence: occasionnelle
+    detail: Fréquent sur les sites distants, où la réplication entre sites peut prendre plusieurs minutes.
+  - id: c3
+    titre: L'utilisateur a été ajouté au mauvais groupe, ou le groupe n'a pas les droits sur la ressource
+    frequence: frequente
+  - id: c4
+    titre: Accès à distance par VPN, la session ne récupère pas les nouveaux groupes
+    frequence: occasionnelle
+
+diagnostic:
+  - id: d1
+    titre: Vérifier les groupes vus par la session de l'utilisateur
+    niveau: N1
+    graphique: |
+      Il n'existe pas d'affichage graphique simple des groupes de la session : utiliser la commande ci-dessous, **dans la session de l'utilisateur** (invite de commandes normale, non administrateur).
+    commande:
+      langage: cmd
+      ou: Dans la session de l'utilisateur
+      code: |
+        rem Groupes contenus dans la session actuelle
+        whoami /groups | findstr /i "<NomGroupe>"
+        rem Contrôleur de domaine utilisé à l'ouverture de session
+        echo %LOGONSERVER%
+    conclusions:
+      - { si: "Le groupe apparaît dans whoami /groups : la session a bien le groupe", cause: c3, aller_a: d3 }
+      - { si: "Le groupe n'apparaît pas", aller_a: d2 }
+
+  - id: d2
+    titre: Vérifier l'appartenance dans l'Active Directory
+    niveau: N1
+    graphique: |
+      1. *Utilisateurs et ordinateurs Active Directory* › propriétés de l'utilisateur › onglet **Membre de** (*Member Of*) : le groupe doit y figurer.
+      2. Vérifier aussi sur le **contrôleur de domaine utilisé par le PC** (trouvé à l'étape 1) : clic droit sur le domaine › **Changer de contrôleur de domaine…** (*Change Domain Controller…*).
+    commande:
+      langage: powershell
+      code: |
+        # Appartenance vue par le contrôleur de domaine utilisé par le PC
+        Get-ADGroupMember -Identity '<NomGroupe>' -Server <NomDC> | Where-Object SamAccountName -eq '<NomUtilisateur>'
+        # Tous les groupes de l'utilisateur
+        Get-ADPrincipalGroupMembership -Identity <NomUtilisateur> | Select-Object Name
+    conclusions:
+      - { si: "L'utilisateur n'est pas dans le groupe", cause: c3, aller_a: r3 }
+      - { si: "Il est dans le groupe sur un DC, mais pas sur celui utilisé par le PC", cause: c2, aller_a: r2 }
+      - { si: "Il est dans le groupe partout, et l'utilisateur est au bureau", cause: c1, aller_a: r1 }
+      - { si: "Il est dans le groupe partout, et l'utilisateur travaille en VPN", cause: c4, aller_a: r4 }
+
+  - id: d3
+    titre: Vérifier que le groupe a bien les droits sur la ressource
+    niveau: N2
+    graphique: |
+      Pour un dossier partagé : clic droit sur le dossier (sur le serveur) › **Propriétés** › onglet **Sécurité** (*Security*) › **Avancé** (*Advanced*) › onglet **Accès effectif** (*Effective Access*) › **Sélectionner un utilisateur** › choisir l'utilisateur › **Afficher l'accès effectif**.
+      Vérifier aussi les **autorisations de partage** (onglet **Partage › Partage avancé › Autorisations**) : l'accès réel est le plus restrictif des deux.
+    conclusions:
+      - { si: "L'accès effectif ne donne pas le droit attendu", cause: c3, aller_a: r3 }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Rafraîchir les groupes de la session
+    etapes:
+      - id: r1-e1
+        titre: Fermer puis rouvrir la session (méthode fiable)
+        niveau: N1
+        graphique: Demander à l'utilisateur d'enregistrer son travail, de **se déconnecter** (*Démarrer › photo de profil › Se déconnecter*) puis de rouvrir sa session. Un simple verrouillage ne suffit pas toujours.
+      - id: r1-e2
+        titre: Sans fermer la session (pour un partage réseau)
+        niveau: N2
+        graphique: |
+          Purger les tickets Kerberos de la session, puis rouvrir l'Explorateur. Si l'accès est toujours refusé, la méthode fiable reste la déconnexion.
+        commande:
+          langage: cmd
+          ou: Dans la session de l'utilisateur
+          code: |
+            klist purge
+            rem Puis fermer et rouvrir l'Explorateur de fichiers, et réessayer l'accès
+        astuce: "Les programmes déjà ouverts gardent leur ancien jeton : il faut les relancer. Pour un groupe d'**ordinateurs** (ex. filtrage d'une GPO), redémarrer le PC."
+
+  - id: r2
+    causes: [c2]
+    titre: Attendre ou forcer la réplication
+    etapes:
+      - id: r2-e1
+        titre: Répliquer le changement vers le contrôleur de domaine du site
+        niveau: N2
+        graphique: |
+          Attendre quelques minutes (la réplication entre sites est planifiée), ou la forcer : **Sites et services Active Directory** (`dssite.msc`) › site › serveur › **NTDS Settings** › clic droit sur la connexion › **Répliquer maintenant** (*Replicate Now*).
+          Une fois répliqué, appliquer la Résolution 1.
+        commande:
+          langage: cmd
+          admin: true
+          ou: Sur un contrôleur de domaine
+          code: repadmin /syncall /AdeP
+
+  - id: r3
+    causes: [c3]
+    titre: Corriger le groupe ou les droits
+    etapes:
+      - id: r3-e1
+        titre: Ajouter l'utilisateur au bon groupe
+        niveau: N1
+        graphique: Propriétés de l'utilisateur › onglet **Membre de** › **Ajouter…** › saisir le nom du groupe › **Vérifier les noms** › **OK**. Puis appliquer la Résolution 1.
+        commande:
+          langage: powershell
+          code: Add-ADGroupMember -Identity '<NomGroupe>' -Members <NomUtilisateur>
+      - id: r3-e2
+        titre: Donner les droits au groupe sur la ressource (pas à l'utilisateur)
+        niveau: N2
+        graphique: |
+          Sur le dossier : **Propriétés › Sécurité › Modifier… › Ajouter…** › le **groupe** › cocher les droits nécessaires (Lecture, Modification).
+          Toujours attribuer les droits à des **groupes**, jamais directement aux utilisateurs.
+        avertissement:
+          type: attention
+          texte: "Modifier les autorisations d'un dossier parent se propage à tous ses sous-dossiers : sur une grosse arborescence, l'opération peut être longue et donner des droits plus larges que prévu. Vérifier le dossier ciblé avant de valider."
+
+  - id: r4
+    causes: [c4]
+    titre: Rafraîchir les groupes d'un utilisateur en VPN
+    etapes:
+      - id: r4-e1
+        titre: Verrouiller et déverrouiller la session avec le VPN connecté
+        niveau: N1
+        graphique: |
+          VPN connecté, demander à l'utilisateur de **verrouiller** sa session (**Windows + L**) puis de la **déverrouiller** avec son mot de passe : Windows redemande alors un ticket au contrôleur de domaine.
+          Si cela ne suffit pas, utiliser `klist purge` (Résolution 1), ou faire se connecter l'utilisateur au bureau.
+
+          > [!a-verifier]
+          > Selon le type de VPN (connexion avant ou après l'ouverture de session), le rafraîchissement peut ne pas fonctionner : Microsoft documente ce cas pour certaines connexions VPN.
+
+verification:
+  - id: v1
+    titre: La session contient le groupe et l'accès fonctionne
+    niveau: N1
+    commande:
+      langage: cmd
+      ou: Dans la session de l'utilisateur
+      code: whoami /groups | findstr /i "<NomGroupe>"
+    graphique: L'utilisateur ouvre la ressource (dossier, application, imprimante) sans message d'accès refusé.
+
+prevention:
+  - Prévenir l'utilisateur, à chaque ajout de groupe, qu'il devra fermer puis rouvrir sa session.
+  - Toujours donner les droits à des groupes, avec une convention de nommage claire (ex. GG-Service-Droit).
+  - Sur les sites distants, connaître les délais de réplication et forcer la réplication si l'accès est urgent.
+
+comprendre: |
+  À l'ouverture de session, le contrôleur de domaine remet à l'utilisateur un **ticket Kerberos** qui contient la liste de ses groupes. Windows en fait un **jeton d'accès** qu'il présente à chaque ressource. Ce jeton n'est pas mis à jour en cours de session : un ajout de groupe n'est donc pris en compte qu'à la prochaine ouverture de session (ou au renouvellement du ticket, en général au bout de 10 heures).
+
+fiches_liees: [ad-replication-echoue]
+tags: [groupe, appartenance, membre de, acces refuse, droits, ntfs, partage, kerberos, klist, whoami, jeton, token]
+
+sources:
+  - titre: "Group membership changes don't update over some VPN connections — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/windows-client/group-policy/group-membership-changes-not-updating-over-some-vpn-connections
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Klist: purge user Kerberos ticket without logoff — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/358858/klist-purge-user-kerberos-ticket-without-logoff
+    type: forum
+    consulte_le: 2026-10-29
+  - titre: "How to refresh AD groups membership without user logoff — Windows OS Hub"
+    url: https://woshub.com/how-to-refresh-ad-groups-membership-without-user-logoff/
+    type: blog
+    consulte_le: 2026-10-29
+  - titre: "Refresh membership in AD groups without logoff or reboot — Samuraj"
+    url: https://www.samuraj-cz.com/en/article/refresh-membership-in-ad-groups-without-logoff-or-reboot/
+    type: blog
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29
