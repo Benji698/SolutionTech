@@ -12,6 +12,10 @@ Contexte à relire au début de chaque session.
 - Ordre de livraison : **site web d'abord** (Cloudflare Pages + PWA), app iOS SwiftUI ensuite, Android via la PWA.
 - Méthode : on travaille phase par phase et on **attend la validation de Benji** à la fin de chaque phase.
 
+## Objectif de contenu : couverture maximale
+
+Benji veut que SOS Admin devienne **l'outil de référence ultime** : recenser **le plus de problèmes reconnus à ce jour** dans chaque section, fréquents comme rares. Méthode : inventaire d'abord (`docs/inventaire/<domaine>/<sous-domaine>.yaml`, format dans `docs/inventaire/README.md`), puis rédaction par lots, en **fiches complètes** (fréquent/critique) ou **fiches express** (`format: express`, problème ciblé ou code d'erreur). Des agents en parallèle sont autorisés pour ce travail ; tout passe `npm run validate` et reste `a-relire`.
+
 ## Principe central : une seule source de vérité
 
 ```

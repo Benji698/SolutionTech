@@ -1,6 +1,6 @@
 # Cahier des charges — SOS Admin
 
-> Version 1.2 — 29/10/2026 — **Validé par Benji** (1.2 : favoris sur un écran dédié)
+> Version 1.3 — 29/10/2026 — **Validé par Benji** (1.3 : couverture maximale, inventaire, fiches express)
 > Auteur : Benji (BTS SIO SISR, alternance) · Dépôt GitHub : `SolutionTech`
 
 ---
@@ -72,7 +72,10 @@ Cisco en priorité, avec les commandes exactes. Pare-feu : Fortinet, Stormshield
 
 ### 3.3 Couverture et sources
 
-- **Pas de quota de fiches.** Répertorier autant de problèmes que possible, avec les réponses les plus pertinentes pour chacun.
+- **Objectif : couverture maximale** (précisé par Benji le 29/10/2026). Recenser **le plus grand nombre possible de problèmes reconnus à ce jour** dans chaque section, fréquents comme rares, pour qu'un technicien trouve précisément son problème, y compris par un message ou un code d'erreur peu connu. SOS Admin vise à devenir l'outil de référence des techniciens.
+- **Méthode** : pour chaque domaine, un **inventaire** des problèmes documentés (bases de connaissances des éditeurs, forums) est d'abord dressé dans `docs/inventaire/`, puis les fiches sont rédigées à partir de cet inventaire. Des agents travaillant en parallèle peuvent être utilisés pour les recherches et la rédaction ; toutes les fiches passent la validation automatique et restent « À relire » jusqu'à vérification humaine.
+- **Deux formats de fiche** : **complète** (problèmes fréquents ou critiques, plusieurs causes, diagnostic pas à pas) et **express** (problème ciblé ou rare, souvent lié à un message ou code d'erreur : cause et solution directes, 1 à 3 résolutions).
+- **Quand un problème est introuvable** : recherche assistée (documentation des éditeurs et forums), bouton « Ce problème n'existe pas encore » (demande sur GitHub, ajoutée à l'inventaire), puis assistant IA en v2.
 - **Ordre de priorité des sources :**
   1. documentation officielle de l'éditeur (Microsoft Learn, Cisco, Apple…) ;
   2. à défaut, solutions de techniciens publiées sur des forums et blogs reconnus (r/sysadmin, Spiceworks, Microsoft Q&A, Super User…), **recoupées entre plusieurs sources**.
