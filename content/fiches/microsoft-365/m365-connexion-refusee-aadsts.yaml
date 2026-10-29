@@ -1,0 +1,184 @@
+id: m365-connexion-refusee-aadsts
+titre: Connexion à Microsoft 365 refusée (codes d'erreur AADSTS)
+resume: "L'utilisateur n'arrive pas à se connecter à Microsoft 365 et un code AADSTS s'affiche, ou rien de clair. Le journal de connexion Entra donne la vraie raison : mot de passe, compte bloqué ou désactivé, MFA, accès conditionnel ou appareil non conforme."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: entra-id
+apparait_aussi_dans: [microsoft-365/mfa-acces-conditionnel]
+niveau: N2
+temps_estime: { min: 10, max: 40 }
+critique: false
+environnements: [m365]
+droits: admin-m365
+outils: []
+acces:
+  - "Rôle Entra permettant de lire les journaux de connexion (par exemple **Lecteur de rapports** ou **Lecteur de sécurité**)."
+
+symptomes:
+  - « Je ne peux plus me connecter à Outlook sur le web, il y a un code bizarre. »
+  - « Sur mon PC ça marche, sur mon téléphone on me dit que je ne peux pas accéder à cette ressource. »
+  - « Ça me dit que mon compte est verrouillé. »
+
+messages_erreur:
+  - texte: "AADSTS50126: Error validating credentials due to invalid username or password."
+    code: "50126"
+  - texte: "AADSTS50053: The account is locked."
+    code: "50053"
+  - texte: "AADSTS50057: The user account is disabled."
+    code: "50057"
+  - texte: "AADSTS53003: Access has been blocked by Conditional Access policies."
+    code: "53003"
+  - texte: "AADSTS53000: Device is not in required device state: compliant."
+    code: "53000"
+
+variables:
+  - { nom: UPN, libelle: "Adresse de connexion de l'utilisateur (UPN)", exemple: jean.dupont@contoso.fr }
+
+causes:
+  - id: c1
+    titre: Mauvais mot de passe ou mauvais compte (50126)
+    frequence: tres-frequente
+    detail: Faute de frappe, ancien mot de passe enregistré dans une application, ou connexion avec un compte personnel au lieu du compte professionnel.
+  - id: c2
+    titre: Compte verrouillé par le verrouillage intelligent (50053)
+    frequence: frequente
+    detail: Trop d'échecs, parfois venant d'une application qui réessaie avec un ancien mot de passe, ou d'une tentative d'attaque.
+  - id: c3
+    titre: Accès bloqué par une stratégie d'accès conditionnel (53003) ou appareil non conforme (53000)
+    frequence: frequente
+    detail: Pays bloqué, application non autorisée, appareil non inscrit ou non conforme dans Intune.
+  - id: c4
+    titre: Compte désactivé (50057)
+    frequence: occasionnelle
+    detail: Compte bloqué dans Microsoft 365, ou désactivé dans l'AD et synchronisé.
+
+diagnostic:
+  - id: d1
+    titre: Lire la tentative de connexion dans le journal Entra
+    niveau: N2
+    graphique: |
+      1. **Centre d'administration Microsoft Entra** › *Entra ID* › **Surveillance et intégrité** › **Journaux de connexion** (*Monitoring & health › Sign-in logs*).
+      2. Filtrer sur l'**utilisateur** et l'**état** « Échec » (*Failure*), sur les dernières heures.
+      3. Ouvrir la tentative : noter le **code d'erreur**, la **raison de l'échec**, l'**application**, l'**appareil** et le **lieu**.
+      4. Onglet **Accès conditionnel** (*Conditional Access*) : il indique quelle stratégie a bloqué la connexion et pourquoi.
+
+      > [!a-verifier]
+      > Les noms des menus du centre d'administration Entra changent régulièrement.
+    commande:
+      langage: powershell
+      ou: Microsoft Graph PowerShell (Connect-MgGraph -Scopes AuditLog.Read.All, Directory.Read.All)
+      code: |
+        Get-MgAuditLogSignIn -Filter "userPrincipalName eq '<UPN>'" -Top 10 |
+          Select-Object CreatedDateTime, AppDisplayName, IpAddress,
+            @{ n = 'Code'; e = { $_.Status.ErrorCode } }, @{ n = 'Raison'; e = { $_.Status.FailureReason } }
+    astuce: "La lecture des journaux par PowerShell nécessite une licence Entra ID P1 ou P2. L'utilisateur peut aussi lire le code lui-même : sur la page d'erreur Microsoft, le lien **Plus de détails** (*More details*) affiche le code AADSTS et un identifiant de corrélation à transmettre au support."
+    conclusions:
+      - { si: "Code 50126 (identifiants non valides)", cause: c1, aller_a: r1 }
+      - { si: "Code 50053 (compte verrouillé)", cause: c2, aller_a: r2 }
+      - { si: "Code 53003 ou 53000 (accès conditionnel, appareil)", cause: c3, aller_a: r3 }
+      - { si: "Code 50057 (compte désactivé)", cause: c4, aller_a: r4 }
+      - { si: "Code 50076 ou 50074 (MFA demandée et non réalisée), l'utilisateur n'a plus son téléphone", aller_a: "fiche:m365-mfa-nouveau-telephone" }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Corriger les identifiants
+    etapes:
+      - id: r1-e1
+        titre: Vérifier le compte utilisé et le mot de passe
+        niveau: N1
+        graphique: |
+          1. Vérifier que l'utilisateur saisit bien son **adresse professionnelle** complète (et pas un compte Microsoft personnel).
+          2. Lui faire saisir le mot de passe dans un champ visible (bloc-notes) pour vérifier la disposition du clavier, puis le recopier.
+          3. Si le mot de passe est oublié, le réinitialiser : **Centre d'administration Microsoft 365** › **Utilisateurs actifs** › l'utilisateur › **Réinitialiser le mot de passe**. Pour un compte **synchronisé depuis l'AD**, réinitialiser dans l'Active Directory (sauf si la réécriture du mot de passe est activée).
+        avertissement:
+          type: attention
+          texte: Vérifier l'identité de la personne avant toute réinitialisation et transmettre le mot de passe temporaire de vive voix.
+
+  - id: r2
+    causes: [c2]
+    titre: Attendre le déverrouillage ou réinitialiser le mot de passe
+    etapes:
+      - id: r2-e1
+        titre: Comprendre d'où viennent les échecs
+        niveau: N2
+        graphique: |
+          Le verrouillage intelligent d'Entra se lève seul après un délai (une minute par défaut, plus long en cas d'échecs répétés).
+          Dans les journaux de connexion, regarder **d'où** viennent les échecs (adresse IP, pays, application) :
+
+          - échecs depuis le réseau de l'entreprise ou une application connue (messagerie du téléphone) : faire mettre à jour le mot de passe dans cette application ;
+          - échecs depuis des pays ou des adresses inconnus : c'est probablement une **attaque**, ouvrir la fiche sécurité correspondante.
+
+          Si l'utilisateur ne peut pas attendre, une réinitialisation du mot de passe par un administrateur débloque le compte.
+        conclusions:
+          - { si: "Échecs depuis des adresses inconnues ou à l'étranger", aller_a: "fiche:securite-attaque-force-brute" }
+
+  - id: r3
+    causes: [c3]
+    titre: Satisfaire ou corriger la stratégie d'accès conditionnel
+    etapes:
+      - id: r3-e1
+        titre: Mettre l'appareil en conformité, ou vérifier la stratégie
+        niveau: N2
+        graphique: |
+          Selon l'onglet **Accès conditionnel** de la tentative :
+
+          - **Appareil non conforme (53000)** : vérifier dans le **centre d'administration Intune** › **Appareils** que l'appareil est inscrit et **conforme** ; sinon, corriger le point non conforme (chiffrement, mise à jour, code de verrouillage) ou faire inscrire l'appareil (application **Portail d'entreprise**).
+          - **Accès bloqué (53003)** : lire la stratégie en cause. Si le blocage est **voulu** (pays interdit, application non autorisée), expliquer à l'utilisateur. S'il semble **anormal**, utiliser l'outil **What If** (*Accès conditionnel › Stratégies › What If*) pour simuler la connexion et le signaler à l'administrateur des stratégies.
+        avertissement:
+          type: attention
+          texte: "Ne jamais exclure un utilisateur d'une stratégie d'accès conditionnel « pour dépanner » sans validation du responsable sécurité : c'est souvent la seule protection contre une connexion frauduleuse."
+
+  - id: r4
+    causes: [c4]
+    titre: Réactiver le compte après vérification
+    etapes:
+      - id: r4-e1
+        titre: Vérifier pourquoi le compte est bloqué, puis le débloquer
+        niveau: N1
+        graphique: |
+          - Compte **cloud** : **Centre d'administration Microsoft 365** › **Utilisateurs actifs** › l'utilisateur › **Bloquer la connexion** : décocher **Empêcher cet utilisateur de se connecter**, uniquement si le blocage n'était pas volontaire (départ, compromission).
+          - Compte **synchronisé depuis l'AD** : le réactiver dans l'Active Directory (voir la fiche « Compte désactivé »), puis attendre la synchronisation.
+        conclusions:
+          - { si: "Compte synchronisé depuis l'AD", aller_a: "fiche:ad-compte-desactive" }
+
+verification:
+  - id: v1
+    titre: La connexion réussit
+    niveau: N1
+    graphique: "L'utilisateur se connecte, et la nouvelle tentative apparaît en **Réussite** dans les journaux de connexion."
+
+prevention:
+  - Apprendre aux utilisateurs à lire le lien « Plus de détails » et à transmettre le code AADSTS au support.
+  - Documenter les stratégies d'accès conditionnel (qui, quoi, pourquoi) pour que le support sache les interpréter.
+  - Inscrire les appareils dans Intune avant de les remettre aux utilisateurs si une stratégie exige des appareils conformes.
+
+comprendre: |
+  Chaque connexion à Microsoft 365 passe par **Entra ID**, qui vérifie dans l'ordre : le compte, le mot de passe, puis les **stratégies d'accès conditionnel** (MFA, appareil, lieu, application). En cas de refus, Entra renvoie un code **AADSTS** et enregistre la tentative dans le **journal de connexion**, la source la plus fiable pour comprendre un échec.
+
+fiches_liees: [m365-mfa-nouveau-telephone, ad-compte-desactive, securite-attaque-force-brute]
+tags: [aadsts, connexion, sign-in, entra, azure ad, acces conditionnel, conditional access, "50126", "50053", "50057", "53003", "53000", journaux de connexion, intune, conforme]
+
+sources:
+  - titre: "How to troubleshoot Microsoft Entra sign-in errors — Microsoft Learn"
+    url: https://learn.microsoft.com/entra/identity/monitoring-health/howto-troubleshoot-sign-in-errors
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Microsoft Entra authentication and authorization error codes — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Troubleshooting sign-in problems with Conditional Access — Microsoft Learn"
+    url: https://learn.microsoft.com/vi-vn/entra/identity/conditional-access/troubleshoot-conditional-access
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Conditional access error code 53000 but device is compliant — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/708101/conditional-access-error-code-53000-but-device-is
+    type: forum
+    consulte_le: 2026-10-29
+  - titre: "Entra ID sign-in error code 50126 — AdminDroid"
+    url: https://admindroid.com/entra-id-sign-in-error-code-50126-invalid-username-or-password
+    type: blog
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

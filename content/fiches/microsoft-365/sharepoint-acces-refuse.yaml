@@ -1,0 +1,175 @@
+id: sharepoint-acces-refuse
+titre: "« Vous avez besoin d'une autorisation » sur un site ou un fichier SharePoint"
+resume: "Un utilisateur interne ou un invité externe n'accède pas à un site, une bibliothèque ou un fichier SharePoint (ou Teams). Vérifier le compte utilisé, les autorisations réelles de l'élément, puis les paramètres de partage externe."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: sharepoint
+apparait_aussi_dans: [microsoft-365/teams, microsoft-365/onedrive]
+niveau: N2
+temps_estime: { min: 10, max: 45 }
+critique: false
+environnements: [m365]
+droits: admin-m365
+outils: []
+acces:
+  - Être propriétaire du site, ou administrateur SharePoint pour les paramètres de partage.
+
+symptomes:
+  - « On m'a envoyé un lien et j'ai “Vous avez besoin d'une autorisation pour accéder à cet élément”. »
+  - « Mon client n'arrive pas à ouvrir le dossier que je lui ai partagé. »
+  - « Je vois le site Teams mais pas les fichiers du canal. »
+
+messages_erreur:
+  - texte: You need permission to access this item. / Vous avez besoin d'une autorisation pour accéder à cet élément.
+    ou: Page SharePoint ou OneDrive
+  - texte: "Sorry, this site hasn't been shared with you."
+    ou: Page SharePoint (version anglaise)
+
+variables:
+  - { nom: UrlSite, libelle: "Adresse du site SharePoint", exemple: https://contoso.sharepoint.com/sites/Compta }
+
+causes:
+  - id: c1
+    titre: L'utilisateur est connecté avec un autre compte
+    frequence: tres-frequente
+    detail: Compte personnel ou compte d'une autre organisation déjà connecté dans le navigateur.
+  - id: c2
+    titre: L'utilisateur n'a pas d'autorisation sur cet élément
+    frequence: frequente
+    detail: Site non partagé, ou dossier/fichier avec des autorisations uniques (héritage rompu).
+  - id: c3
+    titre: Le partage externe est désactivé ou restreint
+    frequence: frequente
+    detail: Au niveau de l'organisation ou du site ; un site ne peut pas être plus ouvert que l'organisation.
+  - id: c4
+    titre: L'invité a accepté l'invitation avec un autre compte
+    frequence: occasionnelle
+
+diagnostic:
+  - id: d1
+    titre: Vérifier le compte utilisé
+    niveau: N1
+    graphique: |
+      1. Sur la page d'erreur, regarder en haut à droite le **compte connecté**.
+      2. Demander à l'utilisateur d'ouvrir le lien dans une **fenêtre de navigation privée** et de se connecter avec l'adresse **à laquelle le lien a été envoyé**.
+    conclusions:
+      - { si: "Ça fonctionne en navigation privée avec le bon compte", cause: c1, aller_a: r1 }
+      - { si: "Toujours refusé avec le bon compte, utilisateur interne", aller_a: d2 }
+      - { si: "Toujours refusé, utilisateur externe (invité)", aller_a: d3 }
+
+  - id: d2
+    titre: Vérifier les autorisations réelles
+    niveau: N2
+    graphique: |
+      En tant que propriétaire du site :
+
+      1. Sur le dossier ou le fichier : **…** › **Gérer l'accès** (*Manage access*) : voir qui a accès et par quel lien.
+      2. **Paramètres** (roue dentée) › **Autorisations du site** › **Paramètres avancés des autorisations** › **Vérifier les autorisations** (*Check Permissions*) : saisir l'utilisateur pour voir ses droits effectifs.
+      3. Un message « Cette bibliothèque a des autorisations uniques » signale un héritage rompu.
+    conclusions:
+      - { si: "L'utilisateur n'a aucun droit sur l'élément", cause: c2, aller_a: r2 }
+
+  - id: d3
+    titre: Vérifier les paramètres de partage externe
+    niveau: N2
+    graphique: |
+      1. **Centre d'administration SharePoint** › **Stratégies** › **Partage** (*Policies › Sharing*) : niveau de partage externe de l'organisation (personne, invités existants, nouveaux invités, tout le monde).
+      2. **Sites** › **Sites actifs** › le site › **Paramètres** › **Partage externe** : niveau du site.
+      3. Vérifier aussi si le domaine de l'invité n'est pas dans une **liste de domaines bloqués**.
+    commande:
+      langage: powershell
+      ou: SharePoint Online Management Shell (Connect-SPOService)
+      code: |
+        Get-SPOTenant | Select-Object SharingCapability
+        Get-SPOSite -Identity '<UrlSite>' | Select-Object Url, SharingCapability
+    conclusions:
+      - { si: "Le partage externe est désactivé pour l'organisation ou le site", cause: c3, aller_a: r3 }
+      - { si: "Le partage est autorisé, l'invité existe déjà avec une autre adresse", cause: c4, aller_a: r4 }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Se connecter avec le bon compte
+    etapes:
+      - id: r1-e1
+        titre: Changer de compte dans le navigateur
+        niveau: N1
+        graphique: Se déconnecter du compte affiché (photo de profil › **Se déconnecter**), puis rouvrir le lien et se connecter avec l'adresse professionnelle (ou celle qui a reçu le partage). Utiliser un **profil de navigateur** séparé pour les comptes d'autres organisations.
+
+  - id: r2
+    causes: [c2]
+    titre: Donner l'accès avec le bon niveau
+    etapes:
+      - id: r2-e1
+        titre: Partager ou ajouter l'utilisateur au bon groupe
+        niveau: N1
+        graphique: |
+          - **Site Teams** : ajouter l'utilisateur comme **membre de l'équipe** dans Teams (c'est ce qui donne l'accès aux fichiers).
+          - **Site SharePoint** : **Paramètres › Autorisations du site** › ajouter l'utilisateur au groupe **Membres** (modification) ou **Visiteurs** (lecture).
+          - **Un seul fichier ou dossier** : **Partager** › saisir l'adresse › choisir **Peut modifier** ou **Peut afficher**.
+          Si une **demande d'accès** est arrivée par e-mail au propriétaire, l'approuver depuis ce message.
+        avertissement:
+          type: attention
+          texte: Donner l'accès au site entier quand un seul dossier est demandé expose d'autres documents. Toujours donner le niveau d'accès le plus restreint qui répond au besoin, après accord du propriétaire des données.
+
+  - id: r3
+    causes: [c3]
+    titre: Ouvrir le partage externe si la politique de l'entreprise le permet
+    etapes:
+      - id: r3-e1
+        titre: Ajuster le niveau de partage du site
+        niveau: N3
+        graphique: |
+          Avec l'accord du responsable sécurité : **Centre d'administration SharePoint** › **Sites actifs** › le site › **Paramètres** › **Partage externe** › choisir **Invités nouveaux et existants** (connexion obligatoire), plutôt que **Tout le monde** (liens anonymes).
+          Le niveau du site ne peut pas dépasser celui de l'organisation.
+        avertissement:
+          type: attention
+          texte: "Ouvrir le partage externe permet de faire sortir des documents de l'entreprise. Ne jamais ouvrir le niveau « Tout le monde » sur un site contenant des données sensibles."
+
+  - id: r4
+    causes: [c4]
+    titre: Corriger le compte invité
+    etapes:
+      - id: r4-e1
+        titre: Retirer l'invité puis le réinviter
+        niveau: N2
+        graphique: |
+          Retirer les accès de l'invité sur l'élément, supprimer son compte invité dans **Centre d'administration Microsoft 365 › Utilisateurs › Utilisateurs invités** si nécessaire, puis repartager l'élément avec la **bonne** adresse et demander à l'invité d'accepter avec cette adresse.
+        commande:
+          langage: powershell
+          ou: SharePoint Online Management Shell
+          code: Get-SPOExternalUser -SiteUrl '<UrlSite>' | Select-Object DisplayName, Email, AcceptedAs
+        astuce: "La colonne **AcceptedAs** montre l'adresse avec laquelle l'invité a réellement accepté l'invitation."
+
+verification:
+  - id: v1
+    titre: L'accès fonctionne
+    niveau: N1
+    graphique: L'utilisateur (ou l'invité) ouvre l'élément avec le niveau d'accès prévu (lecture ou modification) depuis le lien reçu.
+
+prevention:
+  - Donner les accès aux sites Teams en ajoutant les personnes à l'équipe, pas en partageant fichier par fichier.
+  - Limiter les autorisations uniques (héritage rompu), difficiles à suivre.
+  - Définir une politique de partage externe claire, par site, selon la sensibilité des données.
+
+comprendre: |
+  SharePoint (et les fichiers de Teams, qui y sont stockés) gère les droits à plusieurs niveaux : **site**, **bibliothèque**, **dossier**, **fichier**. Par défaut, chaque niveau hérite du précédent, sauf si l'héritage a été rompu. Le **partage externe** est réglé d'abord pour toute l'organisation, puis par site, sans jamais pouvoir être plus ouvert que l'organisation.
+
+fiches_liees: [onedrive-synchronisation-bloquee]
+tags: [sharepoint, acces refuse, autorisation, permission, partage, invite, externe, guest, teams fichiers, lien de partage]
+
+sources:
+  - titre: "Request access to a resource — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sharing-and-permissions/request-access-to-resource
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Error when an external user accepts an invitation by using another account — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/sharepoint/sharing-and-permissions/error-when-external-user-accepts-an-invitation-by-using-another-account
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "SharePoint Online external users getting prompted to request access — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/705496/sharepoint-online-external-users-getting-prompted
+    type: forum
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

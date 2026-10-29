@@ -1,0 +1,159 @@
+id: m365-licence-boite-non-creee
+titre: Nouvel utilisateur sans boîte mail ni Teams (licence non attribuée)
+resume: "Un nouvel utilisateur existe dans Microsoft 365 mais n'a pas de boîte aux lettres, ni Teams, ni OneDrive. Il manque presque toujours la licence, ou elle n'a pas pu être attribuée (emplacement d'utilisation absent, attribution par groupe en erreur)."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: licences-facturation
+apparait_aussi_dans: [gestion-comptes/arrivee, microsoft-365/exchange-online]
+niveau: N1
+temps_estime: { min: 10, max: 60 }
+critique: false
+environnements: [m365]
+droits: admin-m365
+outils: []
+acces:
+  - "Rôle **Administrateur de licences** ou **Administrateur des utilisateurs** dans Microsoft 365."
+
+symptomes:
+  - « Le nouvel arrivant ne peut pas ouvrir Outlook, ça dit qu'il n'a pas de boîte aux lettres. »
+  - « Il n'apparaît pas dans le carnet d'adresses. »
+  - « Teams ne veut pas se lancer pour lui. »
+
+messages_erreur:
+  - texte: UserHasNoMailboxAndNoLicenseAssignedError
+    ou: Outlook sur le web ou Outlook (l'utilisateur n'a ni boîte ni licence)
+  - texte: "License assignment cannot be done for user with invalid usage location."
+    ou: Erreur d'attribution de licence (centre d'administration ou PowerShell)
+
+variables:
+  - { nom: UPN, libelle: "Adresse de l'utilisateur", exemple: jean.dupont@contoso.fr }
+
+causes:
+  - id: c1
+    titre: Aucune licence n'a été attribuée
+    frequence: tres-frequente
+  - id: c2
+    titre: L'emplacement d'utilisation (pays) n'est pas renseigné
+    frequence: frequente
+    detail: Une licence ne peut pas être attribuée sans emplacement d'utilisation.
+  - id: c3
+    titre: Attribution de licence par groupe en erreur
+    frequence: occasionnelle
+    detail: Plus de licences disponibles, conflit d'adresse proxy, ou service désactivé dans la licence du groupe.
+  - id: c4
+    titre: La licence vient d'être attribuée (création de la boîte en cours)
+    frequence: frequente
+
+diagnostic:
+  - id: d1
+    titre: Vérifier les licences de l'utilisateur
+    niveau: N1
+    graphique: |
+      **Centre d'administration Microsoft 365** › **Utilisateurs actifs** › l'utilisateur :
+
+      - onglet **Licences et applications** : quelles licences sont cochées, et si **Exchange Online** et **Microsoft Teams** sont activés dans la liste des applications ;
+      - onglet **Compte** : le champ **Emplacement d'utilisation** (*Usage location*) ;
+      - une **erreur d'attribution** éventuelle est affichée en haut de ces onglets.
+      Vérifier aussi qu'il reste des licences disponibles : **Facturation › Licences**.
+    commande:
+      langage: powershell
+      ou: Microsoft Graph PowerShell (Connect-MgGraph -Scopes User.Read.All, Organization.Read.All)
+      code: |
+        Get-MgUser -UserId '<UPN>' -Property DisplayName, UsageLocation, AssignedLicenses, LicenseAssignmentStates |
+          Select-Object DisplayName, UsageLocation, @{ n = 'Licences'; e = { $_.AssignedLicenses.SkuId } }, @{ n = 'Etats'; e = { $_.LicenseAssignmentStates.State } }
+        # Licences disponibles
+        Get-MgSubscribedSku | Select-Object SkuPartNumber, ConsumedUnits, @{ n = 'Achetees'; e = { $_.PrepaidUnits.Enabled } }
+    conclusions:
+      - { si: "Emplacement d'utilisation vide", cause: c2, aller_a: r2 }
+      - { si: "Aucune licence attribuée", cause: c1, aller_a: r1 }
+      - { si: "Licence héritée d'un groupe avec une erreur", cause: c3, aller_a: r3 }
+      - { si: "Licence attribuée il y a moins d'une heure, sans erreur", cause: c4, aller_a: r4 }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Attribuer la licence
+    etapes:
+      - id: r1-e1
+        titre: Cocher la licence prévue pour ce profil
+        niveau: N1
+        graphique: |
+          **Utilisateurs actifs** › l'utilisateur › **Licences et applications** › cocher la licence prévue (selon la demande validée) › vérifier que **Exchange Online** et **Teams** sont cochés › **Enregistrer les modifications**.
+          Si l'entreprise attribue les licences **par groupe**, ajouter plutôt l'utilisateur au groupe prévu.
+        avertissement:
+          type: attention
+          texte: Chaque licence attribuée est facturée. S'assurer qu'il reste des licences disponibles et que la demande est validée, plutôt que d'en acheter une nouvelle sans accord.
+
+  - id: r2
+    causes: [c2]
+    titre: Renseigner l'emplacement d'utilisation
+    etapes:
+      - id: r2-e1
+        titre: Définir le pays, puis attribuer la licence
+        niveau: N1
+        graphique: |
+          **Utilisateurs actifs** › l'utilisateur › **Compte** › **Gérer les informations de contact** (ou **Emplacement d'utilisation**) › choisir le **pays** › **Enregistrer**. Attribuer ensuite la licence (Résolution 1).
+          Pour un compte **synchronisé depuis l'AD**, l'emplacement peut venir de l'attribut AD `usageLocation` (ou `c`) selon la configuration de la synchronisation.
+        commande:
+          langage: powershell
+          ou: Microsoft Graph PowerShell (Connect-MgGraph -Scopes User.ReadWrite.All)
+          code: Update-MgUser -UserId '<UPN>' -UsageLocation 'FR'
+
+  - id: r3
+    causes: [c3]
+    titre: Corriger l'attribution par groupe
+    etapes:
+      - id: r3-e1
+        titre: Lire l'erreur du groupe et retraiter
+        niveau: N2
+        graphique: |
+          **Centre d'administration Microsoft Entra** › **Groupes** › le groupe de licences › **Licences** : les utilisateurs en erreur sont listés avec la raison (plus de licences, emplacement manquant, conflit d'adresse proxy).
+          Corriger la cause, puis cliquer sur **Retraiter** (*Reprocess*).
+        conclusions:
+          - { si: "Conflit d'adresse proxy (adresse déjà utilisée)", aller_a: "fiche:entra-connect-synchronisation-erreur" }
+
+  - id: r4
+    causes: [c4]
+    titre: Attendre la création de la boîte
+    etapes:
+      - id: r4-e1
+        titre: Patienter, puis vérifier la boîte
+        niveau: N1
+        graphique: Après l'attribution de la licence, la boîte aux lettres, OneDrive et Teams sont créés automatiquement, ce qui peut prendre de quelques minutes à quelques heures. Vérifier ensuite dans le **Centre d'administration Exchange** › **Boîtes aux lettres** que la boîte de l'utilisateur apparaît.
+        commande:
+          langage: powershell
+          ou: Exchange Online PowerShell
+          code: Get-EXOMailbox -Identity '<UPN>' | Select-Object DisplayName, PrimarySmtpAddress, WhenCreated
+
+verification:
+  - id: v1
+    titre: La boîte existe et l'utilisateur se connecte
+    niveau: N1
+    graphique: L'utilisateur ouvre Outlook sur le web (https://outlook.office.com), reçoit un message de test et peut lancer Teams.
+
+prevention:
+  - Utiliser une procédure d'arrivée qui inclut l'emplacement d'utilisation et la licence (ou le groupe de licences).
+  - Préférer l'attribution des licences par groupe, avec une surveillance des erreurs.
+  - Suivre le nombre de licences disponibles pour anticiper les arrivées.
+
+comprendre: |
+  Dans Microsoft 365, un compte sans **licence** n'a aucun service : pas de boîte mail, pas de Teams, pas de OneDrive. C'est l'attribution d'une licence incluant **Exchange Online** qui déclenche la création de la boîte. Pour des raisons légales (services disponibles selon les pays), Microsoft exige un **emplacement d'utilisation** avant toute attribution.
+
+fiches_liees: [entra-connect-synchronisation-erreur, office-produit-sans-licence]
+tags: [licence, license, boite mail, mailbox, nouvel utilisateur, arrivee, onboarding, usage location, emplacement d'utilisation, attribution par groupe, teams]
+
+sources:
+  - titre: "Identify and resolve license assignment problems for a group — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/entra/fundamentals/licensing-groups-resolve-problems
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Manage group licenses — Microsoft Learn"
+    url: https://learn.microsoft.com/en-au/microsoft-365/admin/manage/manage-group-licenses?view=o365-worldwide
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Microsoft 365 license assignment issues — Adaxes"
+    url: https://www.adaxes.com/questions/all/active-directory-management-with-adaxes?start=1140
+    type: forum
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

@@ -1,0 +1,154 @@
+id: exchange-boite-pleine
+titre: Boîte aux lettres Exchange Online pleine
+resume: "La boîte de l'utilisateur atteint son quota : avertissements, puis plus d'envoi, puis plus de réception. Mesurer ce qui occupe la place, libérer de l'espace, puis mettre en place l'archivage."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: exchange-online
+apparait_aussi_dans: [messagerie/outlook-client]
+niveau: N1
+temps_estime: { min: 15, max: 60 }
+critique: false
+environnements: [m365]
+droits: admin-m365
+outils: []
+acces:
+  - "Rôle **Administrateur Exchange** pour consulter la taille et activer l'archive."
+
+symptomes:
+  - « Outlook me dit que ma boîte est pleine. »
+  - « Je ne peux plus envoyer de mails. »
+  - « Mes correspondants reçoivent un message d'erreur quand ils m'écrivent. »
+
+messages_erreur:
+  - texte: Your mailbox is full.
+    ou: Bandeau Outlook / message d'avertissement
+  - texte: "554 5.2.2 mailbox full"
+    code: "5.2.2"
+    ou: Message de non-remise reçu par les expéditeurs
+
+variables:
+  - { nom: UPN, libelle: "Adresse de l'utilisateur", exemple: jean.dupont@contoso.fr }
+
+causes:
+  - id: c1
+    titre: Accumulation normale de messages et de pièces jointes
+    frequence: tres-frequente
+  - id: c2
+    titre: Dossier « Éléments supprimés » ou « Éléments récupérables » volumineux
+    frequence: frequente
+    detail: Les éléments supprimés comptent dans le quota tant qu'ils ne sont pas vidés ; une conservation légale peut empêcher la purge.
+  - id: c3
+    titre: Pas d'archive en ligne, ou archive non utilisée
+    frequence: frequente
+
+diagnostic:
+  - id: d1
+    titre: Mesurer la taille de la boîte et des dossiers
+    niveau: N1
+    graphique: |
+      - **Côté utilisateur** : Outlook classique › **Fichier** › **Outils** › **Nettoyage de boîte aux lettres** › **Afficher la taille de la boîte aux lettres** : taille par dossier.
+      - **Côté administrateur** : Centre d'administration Microsoft 365 › **Utilisateurs actifs** › l'utilisateur › onglet **Courrier** › **Utilisation de la boîte aux lettres**.
+    commande:
+      langage: powershell
+      ou: Exchange Online PowerShell
+      code: |
+        Get-EXOMailboxStatistics -Identity '<UPN>' | Select-Object DisplayName, TotalItemSize, TotalDeletedItemSize, ItemCount
+        Get-EXOMailbox -Identity '<UPN>' -PropertySets Quota, Archive | Select-Object ProhibitSendQuota, ProhibitSendReceiveQuota, ArchiveStatus
+        # Les 10 dossiers les plus volumineux
+        Get-EXOMailboxFolderStatistics -Identity '<UPN>' | Sort-Object FolderAndSubfolderSize -Descending | Select-Object -First 10 Name, FolderAndSubfolderSize, ItemsInFolderAndSubfolders
+    conclusions:
+      - { si: "Les éléments supprimés ou récupérables occupent une grosse part", cause: c2, aller_a: r2 }
+      - { si: "L'archive n'est pas activée (ArchiveStatus = None)", cause: c3, aller_a: r3 }
+      - { si: "Les messages sont répartis dans la boîte de réception et les envoyés", cause: c1, aller_a: r1 }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Libérer de l'espace rapidement
+    etapes:
+      - id: r1-e1
+        titre: Supprimer les gros messages inutiles
+        niveau: N1
+        graphique: |
+          Avec l'utilisateur :
+
+          1. Dans la boîte de réception, trier par **Taille** (ou rechercher `taille:énorme` / `size:huge` dans Outlook) et supprimer les messages volumineux inutiles, après avoir enregistré les pièces jointes utiles dans OneDrive ou SharePoint.
+          2. Faire de même dans **Éléments envoyés**.
+          3. Vider **Éléments supprimés** et **Courrier indésirable**.
+        avertissement:
+          type: destructif
+          texte: "Les messages supprimés puis vidés de la corbeille ne sont récupérables que pendant une durée limitée (Éléments récupérables). Faire valider chaque suppression par l'utilisateur et vérifier qu'aucune obligation de conservation ne s'applique."
+
+  - id: r2
+    causes: [c2]
+    titre: Vider les éléments supprimés
+    etapes:
+      - id: r2-e1
+        titre: Vider la corbeille et vérifier les conservations
+        niveau: N2
+        graphique: |
+          1. Faire vider le dossier **Éléments supprimés** par l'utilisateur (clic droit › **Vider le dossier**).
+          2. Si **TotalDeletedItemSize** (éléments récupérables) reste très élevé, vérifier si une **conservation** (*Litigation Hold*, stratégie de rétention Purview) s'applique à la boîte : dans ce cas, la place ne se libère pas, et l'archive (Résolution 3) est la bonne solution.
+        commande:
+          langage: powershell
+          ou: Exchange Online PowerShell
+          code: Get-EXOMailbox -Identity '<UPN>' -Properties LitigationHoldEnabled, InPlaceHolds | Select-Object LitigationHoldEnabled, InPlaceHolds
+
+  - id: r3
+    causes: [c1, c3]
+    titre: Activer et utiliser l'archive en ligne
+    etapes:
+      - id: r3-e1
+        titre: Activer l'archive de l'utilisateur
+        niveau: N2
+        graphique: |
+          **Centre d'administration Exchange** › **Destinataires** › **Boîtes aux lettres** › l'utilisateur › **Autres** (*Others*) › **Gérer la boîte aux lettres d'archivage** (*Manage mailbox archive*) › activer.
+          La stratégie de rétention par défaut déplace ensuite les éléments de plus de **2 ans** vers l'archive. L'archive apparaît dans Outlook sous le nom « Archive en ligne ».
+
+          > [!a-verifier]
+          > La taille de l'archive et l'archivage à extension automatique dépendent de la licence (Exchange Online Plan 1 ou 2, options d'archivage). Vérifier la licence de l'utilisateur.
+        commande:
+          langage: powershell
+          ou: Exchange Online PowerShell
+          code: |
+            Enable-Mailbox -Identity '<UPN>' -Archive
+            # Lancer tout de suite le traitement de la stratégie de rétention
+            Start-ManagedFolderAssistant -Identity '<UPN>'
+        astuce: Le premier déplacement vers l'archive peut prendre jusqu'à quelques jours. En attendant, l'utilisateur peut glisser lui-même des dossiers anciens dans l'archive.
+
+verification:
+  - id: v1
+    titre: La boîte est sous son quota
+    niveau: N1
+    commande:
+      langage: powershell
+      ou: Exchange Online PowerShell
+      code: Get-EXOMailboxStatistics -Identity '<UPN>' | Select-Object TotalItemSize
+    graphique: La taille est nettement sous le quota d'interdiction d'envoi ; l'avertissement a disparu d'Outlook et un message de test est envoyé et reçu.
+
+prevention:
+  - Activer l'archive en ligne pour tous les utilisateurs dès la création du compte, si la licence le permet.
+  - Encourager le partage de fichiers par liens OneDrive/SharePoint plutôt qu'en pièces jointes.
+  - Surveiller les boîtes proches du quota (rapport d'utilisation des boîtes aux lettres du centre d'administration).
+
+comprendre: |
+  Chaque boîte Exchange Online a des seuils : **avertissement**, puis **interdiction d'envoyer**, puis **interdiction d'envoyer et de recevoir**. Les tailles dépendent de la licence (souvent 50 ou 100 Go). L'**archive en ligne** est une deuxième boîte, rattachée à la première, où une stratégie de rétention déplace automatiquement les anciens éléments.
+
+fiches_liees: [exchange-mails-non-recus]
+tags: [boite pleine, mailbox full, quota, archive, archivage, espace, taille boite, "5.2.2", exchange online, outlook]
+
+sources:
+  - titre: "Service advisories for auto-expanding archive utilization — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/microsoft-365/enterprise/microsoft-365-exo-archive-advisory
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Demystifying Exchange Online mailbox quotas — Microsoft Exchange Team Blog"
+    url: https://techcommunity.microsoft.com/blog/exchange/demystifying-exchange-online-mailbox-quotas/4486474
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Mailbox size in Microsoft 365 (Office 365) — CodeTwo"
+    url: https://www.codetwo.com/admins-blog/mailbox-size-microsoft-365/
+    type: blog
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

@@ -1,0 +1,134 @@
+id: teams-ne-fonctionne-plus-cache
+titre: Teams ne se lance plus, reste bloqué ou se comporte bizarrement
+resume: "Teams reste sur un écran blanc, tourne en boucle, n'affiche pas les messages récents ou plante au démarrage. Le plus souvent, vider le cache de Teams (ou réinitialiser l'application) suffit. Sinon, vérifier le compte et réinstaller."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: teams
+apparait_aussi_dans: [windows/applications]
+niveau: N1
+temps_estime: { min: 5, max: 30 }
+critique: false
+environnements: [win11, win10]
+droits: aucun
+outils: []
+acces:
+  - Session de l'utilisateur sur son PC.
+
+symptomes:
+  - « Teams reste sur un écran blanc. »
+  - « Teams tourne en boucle au démarrage. »
+  - « Je ne vois pas les derniers messages, ou ma photo et mon statut ne se mettent pas à jour. »
+
+messages_erreur:
+  - texte: "We're sorry—we've run into an issue."
+    ou: Fenêtre Teams (version anglaise)
+
+variables: []
+
+causes:
+  - id: c1
+    titre: Cache de Teams corrompu
+    frequence: tres-frequente
+  - id: c2
+    titre: Problème de connexion du compte (jetons, mot de passe changé)
+    frequence: frequente
+  - id: c3
+    titre: Installation de Teams endommagée ou obsolète
+    frequence: occasionnelle
+
+diagnostic:
+  - id: d1
+    titre: Tester Teams sur le web
+    niveau: N1
+    graphique: |
+      Ouvrir https://teams.microsoft.com dans un navigateur avec le compte de l'utilisateur.
+
+      - Si Teams **web fonctionne**, le problème est **local** à l'application installée.
+      - Si Teams web a **le même problème** ou refuse la connexion, le problème vient du **compte** ou du **service** : consulter l'**état du service** dans le centre d'administration Microsoft 365 (*Santé › Intégrité du service*).
+    conclusions:
+      - { si: "Teams web fonctionne", cause: c1, aller_a: r1 }
+      - { si: "Teams web refuse la connexion", cause: c2, aller_a: "fiche:m365-connexion-refusee-aadsts" }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Vider le cache de Teams
+    etapes:
+      - id: r1-e1
+        titre: Réinitialiser l'application Teams (méthode simple)
+        niveau: N1
+        graphique:
+          - versions: [win11]
+            texte: |
+              1. Quitter Teams : clic droit sur l'icône Teams dans la zone de notification (en bas à droite) › **Quitter**.
+              2. **Paramètres** › **Applications** › **Applications installées** › **Microsoft Teams** › **…** › **Options avancées**.
+              3. Dans la section **Réinitialiser**, cliquer sur **Réparer** d'abord ; si cela ne suffit pas, **Réinitialiser** (*Reset*).
+              4. Relancer Teams et se reconnecter.
+          - versions: [win10]
+            texte: |
+              1. Quitter Teams : clic droit sur l'icône Teams dans la zone de notification (en bas à droite) › **Quitter**.
+              2. **Paramètres** › **Applications** › **Applications et fonctionnalités** › **Microsoft Teams** › **Options avancées**.
+              3. Dans la section **Réinitialiser**, cliquer sur **Réparer** d'abord ; si cela ne suffit pas, **Réinitialiser** (*Reset*).
+              4. Relancer Teams et se reconnecter.
+        astuce: La réinitialisation efface aussi les préférences locales de Teams (thème, notifications sur ce PC). Le premier démarrage est plus long, le temps de reconstruire le cache.
+      - id: r1-e2
+        titre: Vider seulement le dossier de cache (conserve les préférences)
+        niveau: N1
+        graphique: |
+          1. Quitter complètement Teams (voir ci-dessus).
+          2. **Windows + R**, coller le chemin ci-dessous puis **Entrée** :
+             `%userprofile%\appdata\local\Packages\MSTeams_8wekyb3d8bbwe\LocalCache\Microsoft\MSTeams`
+          3. Supprimer **tout le contenu** de ce dossier.
+          4. Relancer Teams.
+        commande:
+          langage: powershell
+          ou: Dans la session de l'utilisateur
+          code: |
+            Get-Process -Name ms-teams -ErrorAction SilentlyContinue | Stop-Process -Force
+            Remove-Item -Path "$env:LOCALAPPDATA\Packages\MSTeams_8wekyb3d8bbwe\LocalCache\Microsoft\MSTeams\*" -Recurse -Force
+        astuce: "Ce chemin concerne le **nouveau Teams**. L'ancien Teams « classique », retiré par Microsoft, utilisait `%appdata%\\Microsoft\\Teams`."
+        conclusions:
+          - { si: "Teams fonctionne toujours mal après avoir vidé le cache", cause: c3, aller_a: r2 }
+
+  - id: r2
+    causes: [c2, c3]
+    titre: Se reconnecter, puis réinstaller Teams
+    etapes:
+      - id: r2-e1
+        titre: Se déconnecter et se reconnecter, puis réinstaller si besoin
+        niveau: N1
+        graphique: |
+          1. Dans Teams : photo de profil › **Se déconnecter**, puis se reconnecter avec l'adresse professionnelle.
+          2. Si le problème persiste : **Paramètres › Applications › Applications installées** › **Microsoft Teams** › **Désinstaller**, redémarrer le PC, puis réinstaller Teams depuis le **Microsoft Store** ou le portail https://www.microsoft.com/microsoft-teams/download-app (ou via l'outil de déploiement de l'entreprise).
+
+verification:
+  - id: v1
+    titre: Teams démarre normalement
+    niveau: N1
+    graphique: Teams s'ouvre, affiche les conversations à jour, le statut de présence et permet de passer un appel de test (**Paramètres › Appareils › Passer un appel test**).
+
+prevention:
+  - Garder Teams à jour (mises à jour automatiques activées).
+  - Fermer complètement Teams de temps en temps (Quitter), surtout après un changement de mot de passe.
+
+comprendre: |
+  Teams garde localement une copie de nombreuses données (conversations récentes, images, paramètres) pour s'ouvrir plus vite : c'est le **cache**. S'il est endommagé, Teams affiche des données incohérentes ou ne démarre plus. Le vider ne supprime **aucune** conversation : tout est stocké dans Microsoft 365 et retéléchargé au démarrage suivant.
+
+fiches_liees: [m365-connexion-refusee-aadsts]
+tags: [teams, cache, ecran blanc, bloque, plante, ne demarre pas, reinitialiser, msteams, nouveau teams, vider cache]
+
+sources:
+  - titre: "Clear the Teams client cache — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/clear-teams-cache
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Réponse sur le cache du nouveau Teams — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/a/8458165
+    type: forum
+    consulte_le: 2026-10-29
+  - titre: "Clear Microsoft Teams cache — LazyAdmin"
+    url: https://lazyadmin.nl/office-365/clear-microsoft-teams-cache/
+    type: blog
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

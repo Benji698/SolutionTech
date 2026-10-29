@@ -92,6 +92,7 @@ npm run sync:ios       # copie l'index dans ios/SOSAdmin/Resources/  — Phase 5
 
 - ✅ Phase 0 : cahier des charges validé.
 - ✅ Phase 1 : architecture validée.
-- 🔄 Phase 2 : taxonomie (19 domaines), schéma final, script de build et 3 fiches exemples livrés ; en attente de validation du format.
-- Phases suivantes : 3 contenu par catégorie (suivi dans `docs/avancement.md`) → 4 site → 5 iOS.
+- ✅ Phase 2 : taxonomie (19 domaines), schéma final, script de build et 3 fiches exemples validés.
+- 🔄 Phase 3 (contenu, suivi dans `docs/avancement.md`) : Active Directory validé (13 fiches) ; Microsoft 365 rédigé (11 fiches), en attente de validation.
+- Phases suivantes : 4 site → 5 iOS.
 - Réseau de la session cloud : `learn.microsoft.com` et `support.microsoft.com` peuvent être bloqués en lecture directe (WebFetch) ; la recherche web fonctionne. Indiquer « à vérifier » quand une page officielle n'a pas pu être relue.

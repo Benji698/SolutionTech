@@ -1,0 +1,168 @@
+id: outlook-demande-mot-de-passe-en-boucle
+titre: Outlook redemande le mot de passe en boucle
+resume: "Outlook (version classique) affiche sans arrêt une fenêtre de connexion, même avec le bon mot de passe. Les jetons de connexion enregistrés sur le PC sont le plus souvent en cause : les nettoyer, puis vérifier le compte Windows et le profil Outlook."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: exchange-online
+apparait_aussi_dans: [messagerie/outlook-client, microsoft-365/applications-office]
+niveau: N1
+temps_estime: { min: 10, max: 40 }
+critique: false
+environnements: [win11, win10]
+droits: aucun
+outils: []
+acces:
+  - Session de l'utilisateur sur son PC (ou prise en main à distance).
+
+symptomes:
+  - « Outlook me demande mon mot de passe toutes les cinq minutes. »
+  - « Je tape mon mot de passe, la fenêtre se ferme et revient. »
+  - « Depuis que j'ai changé mon mot de passe, Outlook n'arrête pas de le redemander. »
+
+messages_erreur:
+  - texte: Need password
+    ou: Barre d'état d'Outlook (en bas), avec l'état « Mot de passe requis »
+  - texte: "Something went wrong. [4usqa]"
+    ou: Fenêtre de connexion Microsoft dans Outlook (code variable)
+
+variables: []
+
+causes:
+  - id: c1
+    titre: Jetons de connexion obsolètes enregistrés dans Windows
+    frequence: tres-frequente
+    detail: Après un changement de mot de passe ou de compte, Windows garde d'anciens identifiants pour Office.
+  - id: c2
+    titre: Le mot de passe a changé et la session n'a pas été mise à jour
+    frequence: frequente
+  - id: c3
+    titre: Problème de compte professionnel dans Windows ou d'inscription de l'appareil
+    frequence: occasionnelle
+    detail: Le compte professionnel connecté à Windows (« Accès professionnel ou scolaire ») est en erreur.
+  - id: c4
+    titre: Profil Outlook endommagé
+    frequence: occasionnelle
+
+diagnostic:
+  - id: d1
+    titre: Vérifier que le compte fonctionne en dehors d'Outlook
+    niveau: N1
+    graphique: |
+      1. Ouvrir un navigateur en **navigation privée** et se connecter à https://outlook.office.com avec le compte de l'utilisateur.
+      2. Si la connexion échoue ou affiche un code d'erreur, le problème vient du **compte** et non d'Outlook.
+      3. Si elle fonctionne, le problème est **local au PC** (jetons, profil).
+    conclusions:
+      - { si: "La connexion web échoue aussi", aller_a: "fiche:m365-connexion-refusee-aadsts" }
+      - { si: "La connexion web fonctionne, et le mot de passe a été changé récemment", cause: c2, aller_a: r1 }
+      - { si: "La connexion web fonctionne", cause: c1, aller_a: r1 }
+      - { si: "La connexion web fonctionne, mais le problème revient après la Résolution 1", aller_a: d2 }
+
+  - id: d2
+    titre: Vérifier le compte professionnel connecté à Windows
+    niveau: N2
+    graphique: |
+      **Paramètres** › **Comptes** › **Accès professionnel ou scolaire** (*Access work or school*) : le compte de l'utilisateur doit y apparaître, sans message d'erreur. Un message du type « Action requise » ou une erreur indique un problème de compte au niveau de Windows.
+    commande:
+      langage: cmd
+      code: dsregcmd /status
+    astuce: "Dans le résultat de `dsregcmd /status`, la ligne **AzureAdPrt : YES** (section *SSO State*) indique que Windows dispose d'un jeton de connexion valide pour Microsoft 365."
+    conclusions:
+      - { si: "Le compte est absent, en erreur, ou AzureAdPrt vaut NO", cause: c3, aller_a: r2 }
+      - { si: "Le compte est correct mais le problème persiste après la Résolution 1", cause: c4, aller_a: r3 }
+
+resolutions:
+  - id: r1
+    causes: [c1, c2]
+    titre: Supprimer les identifiants Office enregistrés et se reconnecter
+    etapes:
+      - id: r1-e1
+        titre: Nettoyer le Gestionnaire d'identification
+        niveau: N1
+        graphique: |
+          1. **Fermer Outlook** et les autres applications Office (Word, Excel, Teams).
+          2. Ouvrir le **Gestionnaire d'identification** (*Credential Manager*) : touche Windows, taper « Gestionnaire d'identification ».
+          3. **Informations d'identification Windows** (*Windows Credentials*) › dans **Informations d'identification génériques**, supprimer les entrées qui commencent par **MicrosoftOffice16_Data** ou contiennent **Office**, **Outlook** ou l'adresse de l'utilisateur (bouton **Supprimer** dans chaque entrée).
+          4. Rouvrir Outlook et se connecter avec l'adresse et le mot de passe **actuels**.
+        commande:
+          langage: cmd
+          code: |
+            rem Lister les identifiants Office enregistrés
+            cmdkey /list | findstr /i "MicrosoftOffice Outlook"
+        astuce: "Dans Outlook, **Fichier** › **Compte Office** › **Se déconnecter**, puis se reconnecter, a souvent le même effet. Penser aussi à mettre à jour le mot de passe sur le **smartphone** de l'utilisateur."
+
+  - id: r2
+    causes: [c3]
+    titre: Reconnecter le compte professionnel dans Windows
+    etapes:
+      - id: r2-e1
+        titre: Corriger le compte dans « Accès professionnel ou scolaire »
+        niveau: N2
+        graphique: |
+          - Si le compte est **en erreur**, cliquer dessus et suivre l'action proposée (se reconnecter).
+          - Si le PC est **personnel ou non joint** et que le compte a été ajouté par erreur avec un autre utilisateur, le **déconnecter** puis le rajouter (**+ Connecter**).
+          - Si le PC est **joint au domaine ou à Entra ID** et que le problème persiste, le signaler à l'administrateur : l'appareil peut devoir être réinscrit.
+
+          > [!a-verifier]
+          > Ne pas « déconnecter » le compte d'un PC joint à Entra ID ou inscrit dans Intune sans l'accord de l'administrateur : cela peut retirer le PC de la gestion de l'entreprise.
+
+  - id: r3
+    causes: [c4]
+    titre: Créer un nouveau profil Outlook
+    etapes:
+      - id: r3-e1
+        titre: Créer un profil et le définir par défaut
+        niveau: N1
+        graphique: |
+          1. Fermer Outlook.
+          2. **Panneau de configuration** (afficher par grandes icônes) › **Courrier (Microsoft Outlook)** › **Afficher les profils…** › **Ajouter…** : saisir un nom (ex. « Outlook2 ») puis l'adresse de l'utilisateur.
+          3. Choisir **Toujours utiliser ce profil** › sélectionner le nouveau profil › **OK**.
+          4. Ouvrir Outlook : la boîte se télécharge à nouveau (cela peut prendre du temps sur une grosse boîte).
+        avertissement:
+          type: attention
+          texte: "Ne pas supprimer l'ancien profil tout de suite s'il contient des fichiers de données locaux (.pst) rattachés : vérifier d'abord dans Fichier › Paramètres du compte › Fichiers de données, et les rattacher au nouveau profil."
+        astuce: "L'outil Microsoft **Assistant Support et récupération** (*SaRA*) ou l'application **Obtenir de l'aide** (*Get Help*) de Windows propose aussi des dépanneurs automatiques pour Outlook."
+
+verification:
+  - id: v1
+    titre: Outlook reste connecté
+    niveau: N1
+    graphique: Outlook affiche « Connecté à Microsoft Exchange » dans la barre d'état et ne redemande plus le mot de passe après une fermeture et une réouverture.
+
+prevention:
+  - Rappeler aux utilisateurs de se reconnecter partout (PC, smartphone) après un changement de mot de passe.
+  - "Garder Microsoft 365 Apps à jour : les mises à jour corrigent régulièrement des problèmes d'authentification."
+  - Éviter d'ajouter plusieurs comptes Microsoft différents sur une même session Windows.
+
+comprendre: |
+  Outlook ne garde pas le mot de passe lui-même : il utilise des **jetons** fournis par Windows (gestionnaire de comptes Web, WAM) et stockés dans le **Gestionnaire d'identification**. Si ces jetons correspondent à un ancien mot de passe ou à un autre compte, Outlook redemande la connexion sans fin. Les supprimer oblige Windows à en obtenir de nouveaux.
+
+fiches_liees: [m365-connexion-refusee-aadsts, m365-mfa-nouveau-telephone]
+tags: [outlook, mot de passe, boucle, password, demande, need password, gestionnaire d'identification, credential manager, profil outlook, wam, dsregcmd]
+
+sources:
+  - titre: "Outlook prompts for password when Modern Authentication is enabled — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/outlook/troubleshoot/authentication/outlook-prompt-password-modern-authentication-enabled
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Troubleshoot devices by using the dsregcmd command — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-device-dsregcmd
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Outlook need password — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/1609752/outlook-need-password
+    type: forum
+    consulte_le: 2026-10-29
+  - titre: "Outlook keeps asking for password — Microsoft Tech Community"
+    url: https://techcommunity.microsoft.com/discussions/microsoft-365/outlook-keeps-asking-for-password/3645546
+    type: forum
+    consulte_le: 2026-10-29
+  - titre: "Outlook keeps asking for password: why it happens and how to fix — Ablebits"
+    url: https://www.ablebits.com/office-addins-blog/outlook-keeps-asking-password/
+    type: blog
+    consulte_le: 2026-10-29
+  - titre: "How to fix Outlook continuing to prompt for an Exchange password — Slipstick forums"
+    url: https://forums.slipstick.com/threads/99652-how-to-fix-outlook-continuing-to-prompt-fo-an-exchange-password/
+    type: forum
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

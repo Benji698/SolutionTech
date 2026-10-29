@@ -1,0 +1,162 @@
+id: exchange-boite-partagee-acces
+titre: La boîte aux lettres partagée n'apparaît pas ou l'envoi « en tant que » échoue
+resume: "L'utilisateur ne voit pas une boîte partagée dans Outlook, ou ne peut pas envoyer de messages depuis son adresse. Vérifier les deux droits distincts (Accès total et Envoyer en tant que), le mappage automatique, puis le délai d'application."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: exchange-online
+apparait_aussi_dans: [messagerie/outlook-client]
+niveau: N1
+temps_estime: { min: 10, max: 60 }
+critique: false
+environnements: [m365]
+droits: admin-m365
+outils: []
+acces:
+  - "Rôle **Administrateur Exchange** (ou délégation équivalente) sur le Centre d'administration Exchange."
+
+symptomes:
+  - « On m'a donné accès à la boîte contact@, mais je ne la vois pas dans Outlook. »
+  - « J'arrive à lire les mails de la boîte partagée mais je ne peux pas répondre depuis cette adresse. »
+  - « Mes messages partent avec mon adresse au lieu de celle du service. »
+
+messages_erreur:
+  - texte: "You don't have permission to send the message on behalf of the specified user."
+    ou: Message de non-remise (NDR) reçu par l'utilisateur après un envoi depuis la boîte partagée
+  - texte: "Vous n'avez pas l'autorisation d'envoyer le message au nom de l'utilisateur spécifié."
+    ou: Message de non-remise (version française, formulation à confirmer)
+
+variables:
+  - { nom: BoitePartagee, libelle: "Adresse de la boîte partagée", exemple: contact@contoso.fr }
+  - { nom: UPN, libelle: "Adresse de l'utilisateur", exemple: jean.dupont@contoso.fr }
+
+causes:
+  - id: c1
+    titre: Le droit a été donné il y a peu (délai d'application)
+    frequence: tres-frequente
+    detail: Un ajout de droits peut mettre jusqu'à une heure (parfois plus) à apparaître dans Outlook.
+  - id: c2
+    titre: Le droit « Envoyer en tant que » n'a pas été donné
+    frequence: frequente
+    detail: L'accès total permet de lire la boîte, pas d'envoyer depuis son adresse. Ce sont deux droits distincts.
+  - id: c3
+    titre: Le mappage automatique ne s'applique pas (droits donnés via un groupe, ou désactivé)
+    frequence: frequente
+    detail: Une boîte n'apparaît automatiquement dans Outlook classique que si l'utilisateur a reçu l'accès total directement, avec le mappage automatique activé.
+  - id: c4
+    titre: L'utilisateur n'a pas de droit sur la boîte
+    frequence: occasionnelle
+
+diagnostic:
+  - id: d1
+    titre: Vérifier les droits de l'utilisateur sur la boîte partagée
+    niveau: N1
+    graphique: |
+      1. **Centre d'administration Exchange** (*admin.exchange.microsoft.com*) › **Destinataires** › **Boîtes aux lettres** › ouvrir la boîte partagée.
+      2. Onglet **Délégation** (*Delegation*) : regarder les trois listes **Lire et gérer** (*Read and manage*, accès total), **Envoyer en tant que** (*Send as*) et **Envoyer de la part de** (*Send on behalf*).
+      3. Noter si l'utilisateur y figure **directement** ou seulement via un **groupe**.
+    commande:
+      langage: powershell
+      ou: Exchange Online PowerShell (Connect-ExchangeOnline)
+      code: |
+        # Accès total
+        Get-EXOMailboxPermission -Identity '<BoitePartagee>' | Where-Object User -like '*<UPN>*'
+        # Envoyer en tant que
+        Get-EXORecipientPermission -Identity '<BoitePartagee>' | Where-Object Trustee -like '*<UPN>*'
+    conclusions:
+      - { si: "L'utilisateur n'apparaît nulle part", cause: c4, aller_a: r1 }
+      - { si: "Il a l'accès total mais pas « Envoyer en tant que », et le problème est l'envoi", cause: c2, aller_a: r2 }
+      - { si: "Le droit a été donné via un groupe, ou la boîte n'apparaît pas malgré un accès direct ancien", cause: c3, aller_a: r3 }
+      - { si: "Droits corrects, donnés il y a moins d'une heure", cause: c1, aller_a: r4 }
+
+resolutions:
+  - id: r1
+    causes: [c4]
+    titre: Donner l'accès total à la boîte
+    etapes:
+      - id: r1-e1
+        titre: Ajouter l'utilisateur dans « Lire et gérer »
+        niveau: N1
+        graphique: |
+          Boîte partagée › **Délégation** › **Lire et gérer** › **Modifier** › **+ Ajouter des membres** › l'utilisateur › **Enregistrer**.
+          Vérifier avec le responsable du service que l'accès est bien autorisé (ticket validé).
+        commande:
+          langage: powershell
+          ou: Exchange Online PowerShell
+          code: Add-MailboxPermission -Identity '<BoitePartagee>' -User '<UPN>' -AccessRights FullAccess -InheritanceType All -AutoMapping $true
+
+  - id: r2
+    causes: [c2]
+    titre: Donner le droit « Envoyer en tant que »
+    etapes:
+      - id: r2-e1
+        titre: Ajouter l'utilisateur dans « Envoyer en tant que »
+        niveau: N1
+        graphique: |
+          Boîte partagée › **Délégation** › **Envoyer en tant que** › **Modifier** › **+ Ajouter des membres** › l'utilisateur › **Enregistrer**.
+          Dans Outlook, l'utilisateur doit ensuite choisir l'adresse de la boîte dans le champ **De** (*From*) ; si ce champ n'est pas visible : **Options** › **Afficher le champ De**.
+        commande:
+          langage: powershell
+          ou: Exchange Online PowerShell
+          code: Add-RecipientPermission -Identity '<BoitePartagee>' -Trustee '<UPN>' -AccessRights SendAs -Confirm:$false
+        astuce: "Si l'adresse saisie dans le champ **De** a été mémorisée avant l'ajout du droit, supprimer la suggestion (croix dans la liste de saisie automatique) et la retaper."
+
+  - id: r3
+    causes: [c3]
+    titre: Faire apparaître la boîte dans Outlook
+    etapes:
+      - id: r3-e1
+        titre: Donner l'accès directement avec mappage automatique, ou ajouter la boîte à la main
+        niveau: N1
+        graphique: |
+          - **Mappage automatique** : donner l'accès total **directement à l'utilisateur** (pas via un groupe). Si l'accès existait déjà sans mappage, le retirer puis le redonner (Résolution 1), puis fermer et rouvrir Outlook.
+          - **Ajout manuel dans Outlook classique** : **Fichier** › **Paramètres du compte** › **Paramètres du compte…** › double-clic sur le compte › **Paramètres supplémentaires…** › onglet **Options avancées** › **Ouvrir ces boîtes aux lettres supplémentaires** › **Ajouter…** › adresse de la boîte partagée.
+          - **Nouvel Outlook et Outlook sur le web** : clic droit sur **Dossiers** (ou sur le nom du compte) › **Ajouter un dossier partagé ou une boîte aux lettres partagée**.
+        avertissement:
+          type: attention
+          texte: Retirer puis redonner un droit coupe brièvement l'accès de l'utilisateur à la boîte. Le faire hors des moments où il en a besoin.
+
+  - id: r4
+    causes: [c1]
+    titre: Laisser le temps aux droits de s'appliquer
+    etapes:
+      - id: r4-e1
+        titre: Attendre puis redémarrer Outlook
+        niveau: N1
+        graphique: Attendre environ une heure après l'attribution, puis faire **fermer complètement** Outlook (vérifier qu'il n'est plus dans la zone de notification) et le rouvrir. En attendant, l'utilisateur peut accéder à la boîte via **Outlook sur le web** (photo de profil › **Ouvrir une autre boîte aux lettres**).
+
+verification:
+  - id: v1
+    titre: La boîte apparaît et l'envoi fonctionne
+    niveau: N1
+    graphique: La boîte partagée apparaît dans le volet des dossiers ; un message de test envoyé avec l'adresse de la boîte dans le champ **De** arrive chez le destinataire avec la bonne adresse d'expéditeur.
+
+prevention:
+  - Utiliser un formulaire de demande d'accès qui précise les deux besoins (lire / envoyer) pour ne pas oublier « Envoyer en tant que ».
+  - Prévenir l'utilisateur qu'un nouvel accès peut prendre jusqu'à une heure.
+  - Documenter qui valide les accès à chaque boîte partagée (responsable du service).
+
+comprendre: |
+  Une boîte partagée a trois droits indépendants : **Accès total** (lire et gérer les messages), **Envoyer en tant que** (le destinataire voit l'adresse de la boîte) et **Envoyer de la part de** (le destinataire voit « Jean de la part de Contact »). Le **mappage automatique** ajoute la boîte dans Outlook classique, mais seulement quand l'accès total est donné directement à l'utilisateur.
+
+fiches_liees: [exchange-mails-non-recus]
+tags: [boite partagee, shared mailbox, envoyer en tant que, send as, acces total, full access, automapping, mappage automatique, delegation, outlook, exchange online]
+
+sources:
+  - titre: "Unwanted Automapping results when you add or remove mailbox permissions — Microsoft Support"
+    url: https://support.microsoft.com/en-us/help/4487381
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "New shared mailboxes are not appearing for users in Outlook classic — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/5870683/new-shared-mailboxes-are-not-appearing-for-users-i
+    type: forum
+    consulte_le: 2026-10-29
+  - titre: "Shared mailbox in Exchange Online not auto-mapping for delegated users — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/5608279/shared-mailbox-in-exchange-online-not-auto-mapping
+    type: forum
+    consulte_le: 2026-10-29
+  - titre: "Office 365 – cannot send as shared mailboxes from Outlook — MySysAdminTips"
+    url: https://www.mysysadmintips.com/office-365-cannot-send-as-shared-mailboxes-from-outlook/
+    type: blog
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

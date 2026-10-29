@@ -1,0 +1,154 @@
+id: onedrive-synchronisation-bloquee
+titre: OneDrive ne synchronise plus (croix rouge, fichiers en attente)
+resume: "Des fichiers restent avec une croix rouge ou des flèches de synchronisation qui ne finissent jamais. Lire le message d'erreur dans OneDrive : nom ou chemin invalide, espace plein, fichier ouvert, conflit ou compte déconnecté. En dernier recours, réinitialiser OneDrive."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: onedrive
+apparait_aussi_dans: [microsoft-365/sharepoint, windows/applications]
+niveau: N1
+temps_estime: { min: 10, max: 45 }
+critique: false
+environnements: [win11, win10]
+droits: aucun
+outils: []
+acces:
+  - Session de l'utilisateur sur son PC.
+
+symptomes:
+  - « Mes fichiers ont une croix rouge. »
+  - « Mon collègue ne voit pas les modifications que j'ai faites sur le fichier partagé. »
+  - « L'icône OneDrive tourne en permanence, ça ne finit jamais. »
+
+messages_erreur:
+  - texte: "This file name isn't valid / Ce nom de fichier n'est pas valide"
+    ou: Centre d'activités OneDrive
+  - texte: "The file path is too long / Le chemin d'accès au fichier est trop long"
+    ou: Centre d'activités OneDrive
+  - texte: "Your OneDrive is full / Votre OneDrive est plein"
+    ou: Centre d'activités OneDrive
+
+variables: []
+
+causes:
+  - id: c1
+    titre: Nom de fichier ou chemin non valide
+    frequence: tres-frequente
+    detail: "Caractères interdits (\" * : < > ? / \\ |), espaces au début ou à la fin, chemin complet de plus de 400 caractères."
+  - id: c2
+    titre: Fichier ouvert ou verrouillé par une application
+    frequence: frequente
+  - id: c3
+    titre: Espace OneDrive (ou disque du PC) plein
+    frequence: occasionnelle
+  - id: c4
+    titre: OneDrive déconnecté, en pause ou bloqué
+    frequence: frequente
+    detail: Mot de passe changé, synchronisation mise en pause, ou client OneDrive dans un état incohérent.
+
+diagnostic:
+  - id: d1
+    titre: Lire l'erreur dans OneDrive
+    niveau: N1
+    graphique: |
+      1. Cliquer sur l'**icône OneDrive** (nuage) dans la zone de notification, en bas à droite.
+      2. Le panneau affiche l'état (« À jour », « En pause », « Problèmes de synchronisation ») et la liste des fichiers en erreur avec leur **message**.
+      3. Cliquer sur un message pour avoir l'explication et l'action proposée.
+      4. Si l'icône est **grise** ou barrée, OneDrive n'est pas connecté ; si elle n'apparaît pas du tout, OneDrive n'est pas lancé (le démarrer depuis le menu Démarrer).
+    conclusions:
+      - { si: "Nom non valide ou chemin trop long", cause: c1, aller_a: r1 }
+      - { si: "Fichier ouvert, verrouillé ou « en cours d'utilisation »", cause: c2, aller_a: r2 }
+      - { si: "OneDrive ou disque plein", cause: c3, aller_a: r3 }
+      - { si: "OneDrive en pause, déconnecté ou bloqué sans erreur claire", cause: c4, aller_a: r4 }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Renommer le fichier ou raccourcir le chemin
+    etapes:
+      - id: r1-e1
+        titre: Corriger le nom ou le chemin
+        niveau: N1
+        graphique: |
+          - Retirer du nom les caractères interdits `" * : < > ? / \ |` ainsi que les espaces au début et à la fin.
+          - Si le chemin est trop long, **raccourcir les noms des dossiers** ou déplacer le fichier moins profond dans l'arborescence.
+          - Éviter les noms réservés (par exemple `CON`, `PRN`, `AUX`, `NUL`) et la chaîne `_vti_`.
+
+  - id: r2
+    causes: [c2]
+    titre: Libérer le fichier
+    etapes:
+      - id: r2-e1
+        titre: Fermer le fichier puis relancer la synchronisation
+        niveau: N1
+        graphique: |
+          1. Fermer le fichier dans toutes les applications (Excel, Word, logiciel métier).
+          2. Les fichiers Office ouverts sont synchronisés en direct si l'option **Utiliser les applications Office pour synchroniser les fichiers Office que j'ouvre** est activée (Paramètres OneDrive › **Synchroniser et sauvegarder** › **Paramètres avancés**).
+          3. En cas de **conflit** (deux versions), OneDrive propose de garder les deux ou de fusionner : choisir avec l'utilisateur.
+
+  - id: r3
+    causes: [c3]
+    titre: Libérer de l'espace
+    etapes:
+      - id: r3-e1
+        titre: Libérer l'espace OneDrive ou le disque local
+        niveau: N1
+        graphique: |
+          - **OneDrive plein** : supprimer les fichiers inutiles et **vider la corbeille OneDrive** (sur le site OneDrive web, **Corbeille**), ou demander une augmentation de quota à l'administrateur.
+          - **Disque du PC plein** : activer **Fichiers à la demande** (*Files On-Demand*) : clic droit sur un dossier OneDrive › **Libérer de l'espace** (*Free up space*). Les fichiers restent visibles et se téléchargent à l'ouverture.
+
+  - id: r4
+    causes: [c4]
+    titre: Reprendre, reconnecter ou réinitialiser OneDrive
+    etapes:
+      - id: r4-e1
+        titre: Reprendre la synchronisation et se reconnecter
+        niveau: N1
+        graphique: |
+          1. Panneau OneDrive › **roue dentée** › **Reprendre la synchronisation** (*Resume syncing*) si elle est en pause.
+          2. Si OneDrive demande de se connecter, se connecter avec l'adresse professionnelle.
+          3. Sinon, **Quitter OneDrive** (roue dentée › Quitter) puis le relancer depuis le menu Démarrer.
+      - id: r4-e2
+        titre: Réinitialiser OneDrive
+        niveau: N1
+        graphique: |
+          1. **Windows + R**, coller la commande ci-dessous, **Entrée**.
+          2. L'icône OneDrive disparaît puis revient après une à deux minutes ; sinon, relancer OneDrive depuis le menu Démarrer.
+          3. OneDrive reparcourt tous les fichiers : la synchronisation complète peut être longue.
+        commande:
+          langage: cmd
+          ou: Dans la session de l'utilisateur
+          code: '%localappdata%\Microsoft\OneDrive\onedrive.exe /reset'
+        astuce: "La réinitialisation ne supprime aucun fichier, mais remet à zéro les paramètres (dossiers synchronisés, bibliothèques SharePoint ajoutées). Si Windows ne trouve pas le fichier, essayer `C:\\Program Files\\Microsoft OneDrive\\onedrive.exe /reset` ou `C:\\Program Files (x86)\\Microsoft OneDrive\\onedrive.exe /reset`."
+
+verification:
+  - id: v1
+    titre: OneDrive est à jour
+    niveau: N1
+    graphique: Le panneau OneDrive indique **Vos fichiers sont synchronisés** (*You're up to date*) et les fichiers affichent une coche verte ou un nuage, sans croix rouge.
+
+prevention:
+  - Garder des arborescences courtes et des noms de dossiers simples.
+  - Former les utilisateurs à reconnaître les icônes OneDrive (nuage, coche, croix rouge, flèches).
+  - Garder OneDrive à jour et activer les fichiers à la demande sur les PC à petit disque.
+
+comprendre: |
+  OneDrive garde une **copie synchronisée** des fichiers entre le PC et le cloud. Chaque fichier passe par un contrôle (nom, taille, chemin, droits) avant d'être envoyé. Un seul fichier en erreur n'arrête pas les autres, mais il reste bloqué tant que le problème n'est pas corrigé. Les bibliothèques **SharePoint** et les fichiers d'équipe **Teams** synchronisés passent par le même client OneDrive.
+
+fiches_liees: [sharepoint-acces-refuse]
+tags: [onedrive, synchronisation, sync, croix rouge, fichiers en attente, chemin trop long, nom non valide, reset, reinitialiser, fichiers a la demande]
+
+sources:
+  - titre: "Reset OneDrive — Microsoft Support"
+    url: https://support.microsoft.com/en-us/onedrive/reset-onedrive
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Restrictions and limitations in OneDrive and SharePoint — Microsoft Support"
+    url: https://support.microsoft.com/office/restrictions-and-limitations-in-onedrive-and-sharepoint-64883a5d-228e-48f5-b3d2-eb39e07630fa
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Reset OneDrive in Windows 10 and Windows 11 — ElevenForum"
+    url: https://elevenforum.com/t/reset-onedrive-in-windows-10-and-windows-11.11786/
+    type: forum
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

@@ -1,6 +1,6 @@
 # Avancement du contenu — SOS Admin
 
-> Mis à jour le 29/10/2026 (Phase 3 : domaine Active Directory traité). Le nombre de fiches par domaine est aussi calculé à chaque build (`generated/index.json`).
+> Mis à jour le 29/10/2026 (Phase 3 : domaines Active Directory et Microsoft 365 traités). Le nombre de fiches par domaine est aussi calculé à chaque build (`generated/index.json`).
 
 ## Phase 2 : fiches exemples (format)
 
@@ -14,14 +14,14 @@
 
 | Domaine | Fiches | État |
 |---|---:|---|
-| Active Directory, GPO, DNS, DHCP | 13 | ✅ Première passe terminée |
+| Active Directory, GPO, DNS, DHCP | 13 | ✅ Validé par Benji |
 | Gestion des comptes : arrivées et départs | 0 | À traiter |
 | Linux | 0 | À traiter |
 | Logiciels métier et applicatifs | 0 | À traiter |
 | macOS | 0 | À traiter |
 | Matériel et périphériques | 1 | À traiter |
 | Messagerie | 0 | À traiter |
-| Microsoft 365 | 0 | À traiter |
+| Microsoft 365 | 11 | ✅ Première passe terminée, à valider |
 | Mobiles et MDM | 0 | À traiter |
 | Réseau | 0 | À traiter |
 | Sauvegarde et restauration | 0 | À traiter |
@@ -52,6 +52,21 @@
 Pistes pour une deuxième passe : restrictions d'horaires et de postes de connexion, LAPS, profil temporaire, rôles FSMO indisponibles, SYSVOL/DFSR, DNS (enregistrements obsolètes, redirecteurs), basculement DHCP, Kerberos (SPN en double), certificats des contrôleurs de domaine.
 
 Limite de cette passe : learn.microsoft.com et support.microsoft.com n'ont pas pu être lus directement (réseau de la session) ; les informations viennent de recherches recoupées, et les points incertains sont marqués « À vérifier ».
+
+## Phase 3 : Microsoft 365 (11 fiches)
+
+| Sous-domaine | Fiches |
+|---|---|
+| MFA et accès conditionnel | Nouveau téléphone ou téléphone perdu (MFA) |
+| Entra ID | Connexion refusée : lire le code AADSTS et le journal de connexion |
+| Exchange Online | Outlook redemande le mot de passe en boucle · Boîte partagée invisible ou « Envoyer en tant que » refusé · E-mails non reçus (suivi des messages, quarantaine) · Boîte aux lettres pleine |
+| Teams | Teams ne démarre plus ou se comporte bizarrement (cache) |
+| OneDrive | Synchronisation bloquée (croix rouge) |
+| SharePoint | « Vous avez besoin d'une autorisation » (internes et invités) |
+| Applications Microsoft 365 | « Produit sans licence » |
+| Licences | Nouvel utilisateur sans boîte mail (licence, emplacement d'utilisation) |
+
+Pistes pour une deuxième passe : Teams (micro, caméra, réunions externes), calendrier partagé et salles de réunion, transfert automatique bloqué, règles de flux de messagerie, Intune (inscription d'un appareil), réinitialisation de mot de passe en libre-service, rétention et récupération d'éléments supprimés.
 
 ## Fiches déjà référencées mais pas encore rédigées
 

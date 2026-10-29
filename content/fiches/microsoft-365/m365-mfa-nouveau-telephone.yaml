@@ -1,0 +1,169 @@
+id: m365-mfa-nouveau-telephone
+titre: "Nouveau téléphone ou téléphone perdu : l'utilisateur ne peut plus valider la MFA"
+resume: "L'utilisateur a changé de téléphone, l'a perdu ou a supprimé Microsoft Authenticator : il ne peut plus valider la double authentification. Vérifier son identité, lui donner un moyen temporaire de se connecter, puis lui faire réenregistrer ses méthodes."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: mfa-acces-conditionnel
+apparait_aussi_dans: [mobiles-mdm/securite-mobile]
+niveau: N1
+temps_estime: { min: 10, max: 30 }
+critique: false
+environnements: [m365]
+droits: admin-m365
+outils: []
+acces:
+  - "Compte avec le rôle Entra **Administrateur d'authentification** (*Authentication Administrator*), ou plus élevé pour les comptes administrateurs."
+  - Accès au centre d'administration Microsoft Entra (entra.microsoft.com).
+
+symptomes:
+  - « J'ai changé de téléphone, Microsoft me demande un code que je n'ai plus. »
+  - « J'ai perdu mon téléphone, je ne peux plus me connecter à Outlook ni à Teams. »
+  - « La notification Authenticator n'arrive plus. »
+
+messages_erreur:
+  - texte: "Approve sign in request — Open your Authenticator app, and enter the number shown to sign in."
+    ou: Écran de connexion Microsoft (l'utilisateur n'a plus l'application)
+  - texte: AADSTS50076
+    code: "50076"
+    ou: Journaux de connexion Entra (authentification multifacteur requise et non réalisée)
+
+variables:
+  - { nom: UPN, libelle: "Adresse de connexion de l'utilisateur (UPN)", exemple: jean.dupont@contoso.fr }
+
+causes:
+  - id: c1
+    titre: Nouveau téléphone, Authenticator non transféré
+    frequence: tres-frequente
+    detail: "Les comptes professionnels de Microsoft Authenticator ne suivent pas toujours une restauration de sauvegarde : il faut les réenregistrer."
+  - id: c2
+    titre: Téléphone perdu ou volé
+    frequence: frequente
+    detail: Il faut en plus couper les sessions ouvertes sur l'ancien appareil.
+  - id: c3
+    titre: Changement de numéro de téléphone (méthode SMS ou appel)
+    frequence: occasionnelle
+
+diagnostic:
+  - id: d1
+    titre: Vérifier l'identité de la personne
+    niveau: N1
+    graphique: |
+      **Avant toute action**, s'assurer que l'appelant est bien l'utilisateur : rappel sur un numéro connu (annuaire interne, pas celui donné pendant l'appel), validation par son manager, ou présence physique.
+      Réinitialiser la MFA d'un imposteur lui donne un accès complet au compte : c'est une technique d'attaque courante.
+    conclusions:
+      - { si: "Le téléphone a été perdu ou volé", cause: c2, aller_a: r2 }
+      - { si: "Nouveau téléphone, ancien téléphone réinitialisé ou application supprimée", cause: c1, aller_a: d2 }
+      - { si: "Seul le numéro de téléphone a changé", cause: c3, aller_a: r1 }
+
+  - id: d2
+    titre: Regarder les méthodes enregistrées
+    niveau: N1
+    graphique: |
+      1. **Centre d'administration Microsoft Entra** › *Entra ID* › **Utilisateurs** › rechercher l'utilisateur.
+      2. Ouvrir **Méthodes d'authentification** (*Authentication methods*) : la liste montre l'application Authenticator (avec le modèle de l'ancien téléphone), les numéros de téléphone, les clés de sécurité.
+      3. Si l'utilisateur a encore une **autre méthode** utilisable (numéro de téléphone fixe, clé FIDO2), il peut se connecter avec « Se connecter d'une autre manière » et réenregistrer Authenticator lui-même sur https://mysignins.microsoft.com/security-info.
+
+      > [!a-verifier]
+      > Les noms des menus du centre d'administration Entra changent régulièrement.
+    commande:
+      langage: powershell
+      ou: Microsoft Graph PowerShell (Connect-MgGraph -Scopes UserAuthenticationMethod.ReadWrite.All)
+      code: Get-MgUserAuthenticationMethod -UserId '<UPN>' | Select-Object Id, @{ n = 'Type'; e = { $_.AdditionalProperties['@odata.type'] } }
+    conclusions:
+      - { si: "L'utilisateur a encore une autre méthode utilisable", cause: c1, aller_a: r1-e2 }
+      - { si: "Aucune autre méthode utilisable", cause: c1, aller_a: r1 }
+
+resolutions:
+  - id: r1
+    causes: [c1, c3]
+    titre: Faire réenregistrer les méthodes de l'utilisateur
+    etapes:
+      - id: r1-e1
+        titre: Exiger un nouvel enregistrement, ou donner un passe d'accès temporaire
+        niveau: N1
+        graphique: |
+          Dans **Méthodes d'authentification** de l'utilisateur :
+
+          - **Méthode simple** : supprimer l'ancienne méthode Authenticator ou l'ancien numéro (menu **…** › **Supprimer**), puis **Exiger une nouvelle inscription de l'authentification multifacteur** (*Require re-register multifactor authentication*). À la prochaine connexion, l'utilisateur est guidé pour enregistrer son nouveau téléphone.
+          - **Méthode recommandée si elle est activée dans le tenant** : **+ Ajouter une méthode d'authentification** › **Passe d'accès temporaire** (*Temporary Access Pass*), à usage unique et de courte durée (par exemple 1 heure). Le communiquer **de vive voix** à l'utilisateur, qui se connecte avec et enregistre Authenticator sur son nouveau téléphone.
+        commande:
+          langage: powershell
+          ou: Microsoft Graph PowerShell
+          code: |
+            # Passe d'accès temporaire à usage unique, valable 60 minutes
+            $tap = New-MgUserAuthenticationTemporaryAccessPassMethod -UserId '<UPN>' -BodyParameter @{ lifetimeInMinutes = 60; isUsableOnce = $true }
+            $tap.TemporaryAccessPass
+        avertissement:
+          type: attention
+          texte: "Un passe d'accès temporaire ouvre le compte comme un mot de passe : ne jamais l'envoyer par e-mail ni par messagerie, et le donner uniquement à la personne dont l'identité a été vérifiée."
+      - id: r1-e2
+        titre: Guider l'utilisateur pour enregistrer son nouveau téléphone
+        niveau: N1
+        graphique: |
+          1. Sur le nouveau téléphone, installer **Microsoft Authenticator** depuis l'App Store ou le Play Store.
+          2. Sur un PC, se connecter à https://mysignins.microsoft.com/security-info (avec le passe temporaire si besoin).
+          3. **+ Ajouter une méthode de connexion** › **Application Authenticator** › suivre les étapes et scanner le QR code avec le téléphone.
+          4. Faire un test : se déconnecter puis se reconnecter, et valider la notification.
+
+  - id: r2
+    causes: [c2]
+    titre: Téléphone perdu ou volé, sécuriser le compte puis réenregistrer
+    etapes:
+      - id: r2-e1
+        titre: Supprimer l'ancien appareil et couper les sessions
+        niveau: N2
+        graphique: |
+          1. Dans **Méthodes d'authentification** de l'utilisateur, **supprimer** l'application Authenticator et le numéro liés au téléphone perdu.
+          2. Sur la fiche de l'utilisateur, **Révoquer les sessions** (*Revoke sessions*) : toutes les applications devront se reconnecter.
+          3. Si le téléphone était géré par **Intune**, lancer un **effacement à distance** ou un **retrait** depuis le centre d'administration Intune.
+          4. Si le téléphone n'était pas verrouillé par un code, faire **changer le mot de passe** de l'utilisateur.
+          5. Appliquer ensuite la Résolution 1 pour le nouveau téléphone.
+        commande:
+          langage: powershell
+          ou: Microsoft Graph PowerShell
+          code: Revoke-MgUserSignInSession -UserId '<UPN>'
+        avertissement:
+          type: destructif
+          texte: "L'effacement à distance d'un téléphone supprime toutes ses données, y compris personnelles s'il s'agit d'un effacement complet. Pour un téléphone personnel (BYOD), préférer le retrait des seules données de l'entreprise."
+
+verification:
+  - id: v1
+    titre: La nouvelle méthode est enregistrée
+    niveau: N1
+    graphique: Dans **Méthodes d'authentification**, l'application Authenticator apparaît avec le modèle du **nouveau** téléphone, et l'ancienne a disparu.
+  - id: v2
+    titre: L'utilisateur se connecte avec la MFA
+    niveau: N1
+    graphique: L'utilisateur se connecte à Outlook ou à https://portal.office.com et valide la notification sur son nouveau téléphone.
+
+prevention:
+  - Demander aux utilisateurs d'enregistrer au moins deux méthodes (Authenticator + numéro de téléphone, ou clé de sécurité).
+  - Activer le passe d'accès temporaire dans la stratégie des méthodes d'authentification, pour ne pas désactiver la MFA en cas de perte.
+  - Rappeler, avant un changement de téléphone, de transférer Authenticator tant que l'ancien téléphone fonctionne.
+  - Garder deux comptes administrateurs d'urgence (« bris de glace »), protégés et exclus des stratégies qui pourraient les bloquer.
+
+comprendre: |
+  La **MFA** (authentification multifacteur) demande une deuxième preuve en plus du mot de passe, le plus souvent une notification dans **Microsoft Authenticator**. Cette preuve est liée au téléphone : un nouveau téléphone doit être enregistré à nouveau. Le support ne doit jamais simplement « désactiver la MFA » : il donne un moyen temporaire et contrôlé de se connecter pour enregistrer le nouvel appareil.
+
+fiches_liees: [m365-connexion-refusee-aadsts, securite-compte-compromis]
+tags: [mfa, authenticator, double authentification, 2fa, nouveau telephone, telephone perdu, temporary access pass, passe d'acces temporaire, "50076", entra]
+
+sources:
+  - titre: "How to troubleshoot Microsoft Entra sign-in errors — Microsoft Learn"
+    url: https://learn.microsoft.com/entra/identity/monitoring-health/howto-troubleshoot-sign-in-errors
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "How to get back into my account, I have a new phone — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-gb/answers/questions/2154930/how-to-get-back-into-my-account-i-have-a-new-phone
+    type: forum
+    consulte_le: 2026-10-29
+  - titre: "Cannot re-register MFA — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/2282454/cannot-re-register-mfa
+    type: forum
+    consulte_le: 2026-10-29
+  - titre: "Manage MFA in Entra ID — The Access Group"
+    url: https://help-oneoffice.theaccessgroup.com/en/articles/11514021-manage-mfa-entra-id
+    type: blog
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

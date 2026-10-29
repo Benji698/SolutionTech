@@ -1,0 +1,156 @@
+id: exchange-mails-non-recus
+titre: Un utilisateur ne reçoit pas certains e-mails (Exchange Online)
+resume: "Un expéditeur affirme avoir envoyé un message que l'utilisateur ne trouve pas. Le suivi des messages dit exactement ce qui lui est arrivé : jamais reçu, mis en quarantaine, filtré en courrier indésirable, déplacé par une règle ou bien remis."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: exchange-online
+apparait_aussi_dans: [messagerie/spam-filtrage]
+niveau: N1
+temps_estime: { min: 10, max: 40 }
+critique: false
+environnements: [m365]
+droits: admin-m365
+outils: []
+acces:
+  - "Rôle **Administrateur Exchange** pour le suivi des messages ; rôle **Administrateur de la sécurité** (ou équivalent) pour libérer un message de la quarantaine."
+
+symptomes:
+  - « Mon client m'a envoyé un devis hier, je ne l'ai jamais reçu. »
+  - « Je ne reçois plus les mails de tel fournisseur. »
+  - « Les notifications de tel site n'arrivent plus. »
+
+messages_erreur: []
+
+variables:
+  - { nom: UPN, libelle: "Adresse de l'utilisateur destinataire", exemple: jean.dupont@contoso.fr }
+  - { nom: Expediteur, libelle: "Adresse de l'expéditeur", exemple: devis@fournisseur.com }
+
+causes:
+  - id: c1
+    titre: Le message a été remis mais classé (courrier indésirable, autre dossier, règle de boîte)
+    frequence: tres-frequente
+    detail: Dossier « Courrier indésirable », onglet « Autres » de la boîte de réception prioritaire, ou règle de l'utilisateur qui déplace ou supprime.
+  - id: c2
+    titre: Le message est en quarantaine (spam, phishing, logiciel malveillant)
+    frequence: frequente
+  - id: c3
+    titre: Le message n'est jamais arrivé dans Microsoft 365
+    frequence: frequente
+    detail: L'expéditeur s'est trompé d'adresse, son serveur a rencontré une erreur, ou le message a été bloqué avant d'arriver (réputation, SPF/DMARC de l'expéditeur).
+  - id: c4
+    titre: L'expéditeur est bloqué (liste d'expéditeurs bloqués de l'utilisateur ou de l'organisation)
+    frequence: occasionnelle
+
+diagnostic:
+  - id: d1
+    titre: Tracer le message
+    niveau: N1
+    graphique: |
+      1. **Centre d'administration Exchange** › **Flux de courrier** › **Suivi des messages** (*Mail flow › Message trace*) › **Démarrer un suivi**.
+      2. Saisir l'**expéditeur**, le **destinataire** et la période (jusqu'à 10 jours pour un suivi immédiat, au-delà le rapport est différé).
+      3. Lire l'**état** du message : **Remis** (*Delivered*), **En quarantaine** (*Quarantined*), **Échec** (*Failed*), **Filtré comme courrier indésirable** (*Filtered as spam*)… Cliquer sur le message pour voir le détail des événements.
+    commande:
+      langage: powershell
+      ou: Exchange Online PowerShell (module 3.7.0 ou plus récent)
+      code: |
+        Get-MessageTraceV2 -RecipientAddress '<UPN>' -SenderAddress '<Expediteur>' -StartDate (Get-Date).AddDays(-7) -EndDate (Get-Date) |
+          Select-Object Received, SenderAddress, RecipientAddress, Subject, Status
+    astuce: "L'ancienne commande Get-MessageTrace est remplacée par **Get-MessageTraceV2** (une requête couvre au maximum 10 jours)."
+    conclusions:
+      - { si: "Aucun résultat : le message n'est jamais arrivé", cause: c3, aller_a: r3 }
+      - { si: "État « En quarantaine »", cause: c2, aller_a: r2 }
+      - { si: "État « Remis » ou « Filtré comme courrier indésirable »", cause: c1, aller_a: r1 }
+      - { si: "Échec, avec une raison liée à un expéditeur bloqué", cause: c4, aller_a: r4 }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Retrouver le message dans la boîte de l'utilisateur
+    etapes:
+      - id: r1-e1
+        titre: Chercher dans les autres dossiers et vérifier les règles
+        niveau: N1
+        graphique: |
+          1. Dans Outlook, rechercher l'expéditeur dans **Tous les dossiers** (portée de recherche « Toutes les boîtes aux lettres »).
+          2. Regarder le dossier **Courrier indésirable** et l'onglet **Autres** de la boîte de réception.
+          3. Vérifier les **règles** : Outlook sur le web › **Paramètres** › **Courrier** › **Règles** (ou Outlook classique › **Fichier** › **Gérer les règles et alertes**).
+          4. Si le message était en courrier indésirable : clic droit › **Courrier indésirable** › **Ne jamais bloquer l'expéditeur** (ou **Pas de courrier indésirable**).
+        commande:
+          langage: powershell
+          ou: Exchange Online PowerShell
+          code: Get-InboxRule -Mailbox '<UPN>' | Select-Object Name, Enabled, Description
+
+  - id: r2
+    causes: [c2]
+    titre: Examiner puis libérer le message de la quarantaine
+    etapes:
+      - id: r2-e1
+        titre: Libérer le message s'il est légitime
+        niveau: N2
+        graphique: |
+          1. Portail **Microsoft Defender** (*security.microsoft.com*) › **E-mail et collaboration** › **Examiner** › **Quarantaine**.
+          2. Rechercher le message, lire la **raison de la quarantaine** et l'aperçu des en-têtes.
+          3. Si le message est **légitime** et que la raison n'est pas « logiciel malveillant » ou « phishing à haut niveau de confiance » : **Libérer** (*Release*) vers le destinataire, et éventuellement **signaler à Microsoft** comme faux positif.
+        avertissement:
+          type: attention
+          texte: "Ne jamais libérer un message classé phishing ou logiciel malveillant sur la seule demande de l'utilisateur : vérifier l'expéditeur et les liens. En cas de doute, demander à l'expéditeur de confirmer l'envoi par téléphone."
+
+  - id: r3
+    causes: [c3]
+    titre: Faire vérifier l'envoi côté expéditeur
+    etapes:
+      - id: r3-e1
+        titre: Demander un rapport de non-remise ou les en-têtes
+        niveau: N1
+        graphique: |
+          - Vérifier avec l'expéditeur **l'adresse exacte** utilisée (faute de frappe, ancien domaine).
+          - Lui demander s'il a reçu un **message de non-remise** (NDR) et de le transférer : le code d'erreur indique la cause (adresse inconnue, message rejeté).
+          - Si son serveur est **rejeté pour réputation ou authentification** (SPF, DKIM, DMARC de son domaine), la correction est de son côté.
+
+  - id: r4
+    causes: [c4]
+    titre: Débloquer l'expéditeur
+    etapes:
+      - id: r4-e1
+        titre: Retirer l'expéditeur des listes de blocage
+        niveau: N2
+        graphique: |
+          - **Utilisateur** : Outlook sur le web › **Paramètres** › **Courrier** › **Courrier indésirable** › **Expéditeurs et domaines bloqués** : supprimer l'entrée.
+          - **Organisation** : portail Defender › **Stratégies et règles** › **Stratégies de menace** › **Liste d'autorisation/de blocage du client** (*Tenant Allow/Block List*) : vérifier les entrées bloquées.
+
+verification:
+  - id: v1
+    titre: Le message arrive
+    niveau: N1
+    graphique: Un nouveau message de test de l'expéditeur arrive dans la **Boîte de réception** ; le suivi des messages indique **Remis**.
+
+prevention:
+  - Former les utilisateurs à vérifier le courrier indésirable et l'onglet « Autres » avant d'appeler le support.
+  - Activer les notifications de quarantaine pour les utilisateurs, avec la possibilité de demander une libération.
+  - "Ne pas ajouter de domaines entiers en « expéditeurs approuvés » au niveau de l'organisation : cela contourne la protection contre le phishing."
+
+comprendre: |
+  Chaque message qui entre dans Microsoft 365 est enregistré dans le **suivi des messages** avec son parcours : réception, analyse anti-spam et anti-malware, puis remise ou blocage. C'est la seule façon de savoir objectivement si un message « perdu » est arrivé. Un message en **quarantaine** n'a jamais atteint la boîte de l'utilisateur ; un message **remis** est forcément quelque part dans la boîte.
+
+fiches_liees: [exchange-boite-pleine]
+tags: [mail non recu, email, courriel, message trace, suivi des messages, quarantaine, spam, courrier indesirable, regle, exchange online, get-messagetracev2]
+
+sources:
+  - titre: "New Message trace in Exchange admin center — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/exchange/monitoring/trace-an-email-message/new-message-trace
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Get-MessageTraceV2 — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/powershell/module/exchange/get-messagetracev2
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Message tracking in Microsoft 365 (Exchange Online) — CodeTwo"
+    url: https://www.codetwo.com/admins-blog/message-tracking-office-365/
+    type: blog
+    consulte_le: 2026-10-29
+  - titre: "New message trace in Exchange Online — AdminDroid"
+    url: https://blog.admindroid.com/new-message-trace-in-exchange-online/
+    type: blog
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29

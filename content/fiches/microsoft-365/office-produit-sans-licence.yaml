@@ -1,0 +1,156 @@
+id: office-produit-sans-licence
+titre: "Office affiche « Produit sans licence » ou refuse de s'activer"
+resume: "Word, Excel ou Outlook affichent une barre rouge « Produit sans licence » et passent en lecture seule. Vérifier que l'utilisateur a bien une licence avec les applications de bureau, qu'il est connecté avec le bon compte, puis réparer l'activation."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: applications-office
+apparait_aussi_dans: [logiciels-metier/microsoft-office]
+niveau: N1
+temps_estime: { min: 10, max: 45 }
+critique: false
+environnements: [win11, win10]
+droits: admin-local
+outils: []
+acces:
+  - Session de l'utilisateur sur son PC.
+  - Accès au centre d'administration Microsoft 365 pour vérifier la licence.
+
+symptomes:
+  - « Word me dit que le produit n'est pas activé, je ne peux plus modifier mes documents. »
+  - « Il y a une barre rouge en haut d'Excel. »
+  - « Office me demande de me connecter alors que je le suis déjà. »
+
+messages_erreur:
+  - texte: Unlicensed Product / Produit sans licence
+    ou: Barre de titre ou bannière rouge des applications Office
+  - texte: "Account Notice: There are problems with your account."
+    ou: Bannière dans les applications Office
+
+variables:
+  - { nom: UPN, libelle: "Adresse de l'utilisateur", exemple: jean.dupont@contoso.fr }
+
+causes:
+  - id: c1
+    titre: L'utilisateur n'a pas (ou plus) de licence incluant les applications de bureau
+    frequence: frequente
+    detail: Licence retirée, changée pour une licence « web uniquement » (par exemple Business Basic), ou nombre maximal d'installations atteint.
+  - id: c2
+    titre: Office est connecté avec un autre compte
+    frequence: tres-frequente
+    detail: Compte personnel, ancien compte ou compte d'un collègue enregistré dans Office.
+  - id: c3
+    titre: Activation locale endommagée
+    frequence: occasionnelle
+    detail: Jetons d'identité obsolètes, plusieurs versions d'Office installées, date ou heure du PC fausse.
+
+diagnostic:
+  - id: d1
+    titre: Vérifier le compte connecté dans Office
+    niveau: N1
+    graphique: |
+      Dans Word ou Excel : **Fichier** › **Compte** (*Account*).
+
+      - Section **Informations utilisateur** : quelle adresse est connectée ?
+      - Section **Informations sur le produit** : le produit indiqué (par exemple « Microsoft 365 Apps for business ») et son état.
+    conclusions:
+      - { si: "Un autre compte que le compte professionnel de l'utilisateur est connecté", cause: c2, aller_a: r2 }
+      - { si: "Le bon compte est connecté", aller_a: d2 }
+
+  - id: d2
+    titre: Vérifier la licence de l'utilisateur
+    niveau: N1
+    graphique: |
+      **Centre d'administration Microsoft 365** › **Utilisateurs actifs** › l'utilisateur › onglet **Licences et applications** :
+
+      - une licence avec les **applications de bureau** doit être cochée (par exemple Microsoft 365 Business Standard ou Premium, Microsoft 365 E3/E5), et l'application **Microsoft 365 Apps** activée dans la liste des applications ;
+      - onglet **Comptes** › **Installations d'Office** (*Office installs*) : nombre d'installations utilisées (5 PC/Mac maximum par utilisateur).
+    commande:
+      langage: powershell
+      ou: Microsoft Graph PowerShell (Connect-MgGraph -Scopes User.Read.All)
+      code: Get-MgUserLicenseDetail -UserId '<UPN>' | Select-Object SkuPartNumber
+    conclusions:
+      - { si: "Pas de licence avec applications de bureau, ou limite d'installations atteinte", cause: c1, aller_a: r1 }
+      - { si: "La licence est correcte", cause: c3, aller_a: r3 }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Attribuer la bonne licence ou libérer une installation
+    etapes:
+      - id: r1-e1
+        titre: Corriger la licence
+        niveau: N2
+        graphique: |
+          - **Licence absente ou insuffisante** : sur demande validée, cocher la bonne licence dans **Licences et applications** › **Enregistrer** (attention au coût, une licence se paie).
+          - **5 installations atteintes** : dans **Installations d'Office**, **désactiver** une installation sur un ancien PC qui n'est plus utilisé.
+          - Puis, dans Office : **Fichier › Compte › Se déconnecter**, fermer toutes les applications Office, rouvrir et se reconnecter.
+
+  - id: r2
+    causes: [c2]
+    titre: Se connecter avec le bon compte
+    etapes:
+      - id: r2-e1
+        titre: Changer de compte dans Office
+        niveau: N1
+        graphique: |
+          1. **Fichier** › **Compte** › **Se déconnecter** (*Sign out*) du mauvais compte.
+          2. Fermer **toutes** les applications Office (Outlook, Teams compris).
+          3. Rouvrir Word, se connecter avec l'**adresse professionnelle**.
+          4. Vérifier aussi **Paramètres Windows** › **Comptes** › **E-mail et comptes** : supprimer les comptes professionnels en double ou obsolètes qui y figurent.
+
+  - id: r3
+    causes: [c3]
+    titre: Réparer l'activation
+    etapes:
+      - id: r3-e1
+        titre: Vérifier la date, puis lancer la réparation en ligne
+        niveau: N1
+        graphique:
+          - versions: [win11]
+            texte: |
+              1. Vérifier que la **date, l'heure et le fuseau horaire** du PC sont justes (**Paramètres › Heure et langue**).
+              2. Vérifier qu'une seule version d'Office est installée (**Paramètres › Applications › Applications installées**, rechercher « Office » et « Microsoft 365 »).
+              3. **Paramètres › Applications › Applications installées** › **Microsoft 365 Apps** › **…** › **Modifier** › **Réparation en ligne** (*Online Repair*) › **Réparer**.
+          - versions: [win10]
+            texte: |
+              1. Vérifier que la **date, l'heure et le fuseau horaire** du PC sont justes (**Paramètres › Heure et langue**).
+              2. Vérifier qu'une seule version d'Office est installée (**Paramètres › Applications › Applications et fonctionnalités**, rechercher « Office » et « Microsoft 365 »).
+              3. **Paramètres › Applications › Applications et fonctionnalités** › **Microsoft 365 Apps** › **Modifier** › **Réparation en ligne** (*Online Repair*) › **Réparer**.
+        avertissement:
+          type: attention
+          texte: La réparation en ligne réinstalle Office et peut durer longtemps ; fermer toutes les applications Office avant, et prévoir une bonne connexion Internet.
+        astuce: "Microsoft propose aussi un **dépanneur d'activation** dans l'application **Obtenir de l'aide** (*Get Help*) de Windows. Si l'activation échoue toujours, la documentation Microsoft décrit la suppression des identités Office enregistrées dans le registre : à ne faire qu'en suivant précisément l'article."
+
+verification:
+  - id: v1
+    titre: Office est activé
+    niveau: N1
+    graphique: Dans **Fichier › Compte**, la mention **Produit activé** (*Product Activated*) apparaît, la barre rouge a disparu et l'utilisateur peut modifier ses documents.
+
+prevention:
+  - Vérifier, avant de changer la licence d'un utilisateur, si elle inclut les applications de bureau.
+  - Désactiver les installations d'Office des PC retirés du parc.
+  - Éviter que les utilisateurs se connectent avec un compte personnel dans Office sur les PC de l'entreprise.
+
+comprendre: |
+  Les applications **Microsoft 365 Apps** ne sont pas activées par une clé de produit, mais par le **compte** de l'utilisateur : Office vérifie régulièrement en ligne que ce compte possède une licence qui inclut les applications de bureau. Si la vérification échoue (mauvais compte, licence retirée, problème d'identité), Office passe en **mode fonctionnalités réduites**, en lecture seule.
+
+fiches_liees: [m365-licence-boite-non-creee]
+tags: [office, produit sans licence, unlicensed product, activation, licence, word, excel, microsoft 365 apps, reparation en ligne, lecture seule]
+
+sources:
+  - titre: "Unlicensed Product error — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/office/troubleshoot/activation/unlicensed-product-error
+    type: officiel
+    consulte_le: 2026-10-29
+  - titre: "Unlicensed Product and activation errors in Office — Microsoft Support"
+    url: https://support.microsoft.com/en-us/microsoft-365-activation-licensing/office-install/unlicensed-product-and-activation-errors-in-office
+    type: officiel
+    langue: en
+    consulte_le: 2026-10-29
+  - titre: "Cannot activate Office 365 apps: your organization has disabled this device — University of Michigan"
+    url: https://teamdynamix.umich.edu/TDClient/30/Portal/KB/PrintArticle?ID=10131
+    type: blog
+    consulte_le: 2026-10-29
+
+derniere_verification: 2026-10-29
