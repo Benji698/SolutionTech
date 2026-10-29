@@ -9,7 +9,7 @@ apparait_aussi_dans: [windows/comptes-sessions]
 niveau: N1
 temps_estime: { min: 5, max: 45 }
 critique: false
-environnements: [ws2016, ws2019, ws2022, ws2025]
+environnements: [ws2025, ws2022, ws2019, ws2016]
 droits: delegation-ad
 outils: [rsat-ad, observateur-evenements]
 acces:
