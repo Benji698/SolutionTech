@@ -68,6 +68,12 @@ En bref :
 - Contrôles croisés dans `scripts/build-index.ts` : liens internes, variables déclarées/utilisées, versions, une résolution par cause, emplacement du fichier. ERREUR = build bloqué ; ALERTE = à traiter plus tard.
 - Pièges YAML fréquents en français : guillemets si la valeur contient « : » ; guillemets autour des codes et nombres (`"4740"`, `"0x0000011b"`).
 
+## Règles d'interface issues des tests de la maquette (à appliquer au site, Phase 4)
+
+- **En-tête fixe** : toute navigation (fil d'Ariane, liens « Étape n » / « Résolution n », sommaire, retour à l'accueil, résultat de recherche) doit amener le haut de la cible **juste sous l'en-tête**, jamais dessous. Utiliser `scroll-margin-top` égal à la hauteur de l'en-tête (ou un décalage calculé), et le tester sur PC et à la largeur d'un téléphone.
+- **Blocs de commande** : une longue commande défile **dans son bloc** (`overflow-x: auto`), elle ne doit jamais élargir l'étape ni la page. Dans les grilles CSS, donner `min-width: 0` / `minmax(0, 1fr)` aux colonnes qui contiennent du code.
+- **Mobile** : onglets et menus passent à la ligne au lieu d'être coupés ; aucun défilement horizontal de la page.
+
 ## Commandes
 
 ```bash
