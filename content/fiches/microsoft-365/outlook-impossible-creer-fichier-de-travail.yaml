@@ -1,0 +1,66 @@
+id: outlook-impossible-creer-fichier-de-travail
+format: express
+titre: "« Outlook n'a pas pu créer le fichier de travail. Vérifiez la variable d'environnement temp »"
+resume: "Outlook refuse de démarrer car la valeur de registre Cache ne pointe pas vers un dossier valide. Rétablir la valeur par défaut dans l'Éditeur du Registre, puis relancer Outlook."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: outlook
+apparait_aussi_dans: []
+niveau: N2
+temps_estime: { min: 5, max: 15 }
+critique: false
+environnements: [win11, win10]
+droits: aucun
+outils: []
+acces:
+  - "Session de l'utilisateur concerné (la clé est dans HKEY_CURRENT_USER)."
+symptomes:
+  - « Outlook affiche une erreur au démarrage et ne s'ouvre pas. »
+  - « Il parle d'une variable temp alors que mon dossier Temp existe. »
+messages_erreur:
+  - texte: "Outlook could not create the work file. Check the temp environment variable."
+    ou: Fenêtre d'erreur au lancement d'Outlook
+variables: []
+causes:
+  - id: c1
+    titre: La valeur de registre Cache ne désigne pas un dossier valide
+    frequence: tres-frequente
+    detail: "Outlook utilise le dossier des fichiers temporaires Internet défini par la valeur Cache de la clé User Shell Folders. Si ce chemin est invalide, le fichier de travail ne peut pas être créé."
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Rétablir la valeur Cache par défaut
+    etapes:
+      - id: r1-e1
+        titre: Corriger la valeur Cache dans le registre
+        niveau: N2
+        commande:
+          langage: cmd
+          ou: Invite de commandes (session de l'utilisateur)
+          admin: false
+          code: |
+            reg query "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" /v Cache
+            reg add "HKCU\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders" /v Cache /t REG_EXPAND_SZ /d "%USERPROFILE%\AppData\Local\Microsoft\Windows\INetCache" /f
+        graphique: |
+          1. Quitter Outlook.
+          2. Appuyer sur **Windows + R**, saisir `regedit.exe` puis valider.
+          3. Aller à `HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders`.
+          4. Clic droit sur la valeur **Cache** › **Modifier** (*Modify*).
+          5. Saisir (type REG_EXPAND_SZ) : `%USERPROFILE%\AppData\Local\Microsoft\Windows\INetCache` (Windows 10 et 11).
+          6. Quitter l'Éditeur du Registre (**Fichier** › **Quitter**) et relancer Outlook.
+        avertissement:
+          type: attention
+          texte: "Une erreur dans le registre peut dégrader Windows : lire la valeur actuelle et la noter avant de la modifier."
+verification:
+  - id: v1
+    titre: Outlook démarre normalement
+    niveau: N1
+    graphique: "Lancer Outlook : plus aucun message sur le fichier de travail."
+fiches_liees: []
+tags: [outlook, "fichier-de-travail", temp, cache, registre, demarrage]
+sources:
+  - titre: "Outlook could not create the work file error when you start Outlook — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/outlook-could-not-create-the-work-file-error-when-starting
+    type: officiel
+    consulte_le: 2026-10-30
+derniere_verification: 2026-10-30

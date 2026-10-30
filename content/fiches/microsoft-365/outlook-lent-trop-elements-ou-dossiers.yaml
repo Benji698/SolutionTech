@@ -1,0 +1,87 @@
+id: outlook-lent-trop-elements-ou-dossiers
+format: express
+titre: "Outlook lent à cause d'un trop grand nombre d'éléments par dossier ou de dossiers"
+resume: "Dans un OST (mode Exchange mis en cache) ou un PST, des dossiers très remplis ou trop nombreux ralentissent Outlook, surtout le calendrier. Réduire le volume : archiver, appliquer une rétention, limiter la fenêtre de synchronisation."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: outlook
+apparait_aussi_dans: []
+niveau: N2
+temps_estime: { min: 20, max: 60 }
+critique: false
+environnements: [win11, win10, m365]
+droits: aucun
+outils: []
+acces:
+  - "Session de l'utilisateur sur son PC."
+  - "Pour l'archivage en ligne ou la rétention : rôle d'administrateur Exchange / conformité."
+symptomes:
+  - « Outlook rame quand je change de dossier ou que je trie. »
+  - « Mon calendrier est lent ou ne se met pas à jour. »
+  - « Les dossiers mettent du temps à s'afficher. »
+messages_erreur: []
+variables: []
+causes:
+  - id: c1
+    titre: Dossier de messagerie proche ou au-delà de 100 000 éléments
+    frequence: tres-frequente
+    detail: "Il n'y a pas de limite stricte, mais les performances baissent à l'approche d'environ 100 000 messages par dossier, 10 000 éléments de calendrier ou 10 000 dossiers."
+  - id: c2
+    titre: Calendrier chargé (séries récurrentes anciennes, nombreuses exceptions)
+    frequence: frequente
+    detail: "Chaque modification d'une occurrence crée une exception stockée dans la série, qui grossit et pèse sur les performances."
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Répartir ou archiver les messages
+    etapes:
+      - id: r1-e1
+        titre: Déplacer les éléments vers des sous-dossiers ou l'archive en ligne
+        niveau: N1
+        graphique: |
+          1. Repérer les dossiers volumineux (Boîte de réception, Éléments envoyés, Éléments supprimés).
+          2. Déplacer les anciens messages vers des sous-dossiers de la même boîte ou vers l'**archive en ligne** (*Online Archive*) si elle est activée.
+          3. Option côté administrateur : appliquer une stratégie de rétention qui supprime ou déplace automatiquement les éléments anciens.
+        avertissement:
+          type: attention
+          texte: "Une stratégie de rétention supprime des messages : la valider avec le responsable avant de l'appliquer."
+  - id: r2
+    causes: [c2]
+    titre: Alléger le calendrier et limiter la synchronisation
+    etapes:
+      - id: r2-e1
+        titre: Terminer les séries récurrentes anciennes
+        niveau: N1
+        graphique: |
+          Dans les options de récurrence (*Appointment Recurrence*), définir une date de fin ou un nombre maximal d'occurrences, puis créer une nouvelle série plutôt que de prolonger l'ancienne.
+      - id: r2-e2
+        titre: Limiter la fenêtre de synchronisation du calendrier
+        niveau: N3
+        graphique: |
+          Ajouter dans `HKEY_CURRENT_USER\Software\Microsoft\Office\16.0\Outlook\Cached Mode` les valeurs REG_DWORD `CalendarSyncWindowSetting` (0 inactif, 1 calendrier principal, 2 tous les calendriers) et `CalendarSyncWindowSettingMonths` (nombre de mois, 6 par défaut). Pour les dossiers partagés : `SharedFolderSyncWindowSettingDays` (1 à 365 jours). Redémarrer Outlook.
+          Pour purger l'existant : clic droit sur le dossier **Calendrier** › **Propriétés** › onglet **Général** › **Effacer les éléments hors connexion** (*Clear Offline Items*).
+          > [!a-verifier]
+          > Clés valables pour Microsoft 365 Apps version 1810 ou ultérieure (Démarrer en un clic) ; l'étiquette française exacte du bouton n'a pas été vérifiée.
+        commande:
+          langage: cmd
+          ou: Invite de commandes (session de l'utilisateur)
+          admin: false
+          code: |
+            reg add "HKCU\Software\Microsoft\Office\16.0\Outlook\Cached Mode" /v CalendarSyncWindowSetting /t REG_DWORD /d 1 /f
+            reg add "HKCU\Software\Microsoft\Office\16.0\Outlook\Cached Mode" /v CalendarSyncWindowSettingMonths /t REG_DWORD /d 6 /f
+        avertissement:
+          type: attention
+          texte: "Modifier le registre avec précaution ; l'effacement des éléments hors connexion force une nouvelle synchronisation."
+verification:
+  - id: v1
+    titre: Outlook répond normalement au changement de dossier
+    niveau: N1
+    graphique: "Changer de dossier, trier et ouvrir le calendrier : les délais doivent être redevenus normaux. Si le doute persiste, lancer le diagnostic Outlook de l'assistant de support et de récupération Microsoft (SaRA)."
+fiches_liees: [outlook-pauses-gros-fichier-de-donnees, outlook-lent-nombreuses-boites-partagees]
+tags: [outlook, lenteur, calendrier, ost, pst, "mode-cache"]
+sources:
+  - titre: "Outlook performance issues in a Cached Exchange Mode .ost or .pst file — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/performance-issues-if-too-many-items-or-folders
+    type: officiel
+    consulte_le: 2026-10-30
+derniere_verification: 2026-10-30

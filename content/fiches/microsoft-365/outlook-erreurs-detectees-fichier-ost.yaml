@@ -1,0 +1,59 @@
+id: outlook-erreurs-detectees-fichier-ost
+format: express
+titre: "« Des erreurs ont été détectées dans le fichier .ost »"
+resume: "Outlook signale une corruption du fichier OST local (événement 2000). Le fichier n'est qu'un cache : le supprimer et laisser Outlook retélécharger la boîte depuis Exchange."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: outlook
+apparait_aussi_dans: []
+niveau: N1
+temps_estime: { min: 10, max: 60 }
+critique: false
+environnements: [win11, win10, m365]
+droits: aucun
+outils: []
+acces:
+  - "Session de l'utilisateur sur son PC."
+symptomes:
+  - « Au démarrage, Outlook dit qu'il y a des erreurs dans mon fichier de données. »
+messages_erreur:
+  - texte: "Errors have been detected in the file C:\\Users\\jdupont\\AppData\\Local\\Microsoft\\Outlook\\jean.dupont@contoso.fr.ost"
+    code: "2000"
+    ou: Fenêtre au démarrage d'Outlook ; événement 2000 dans le journal Application
+variables: []
+causes:
+  - id: c1
+    titre: Corruption du fichier OST (fichier de données hors connexion)
+    frequence: tres-frequente
+    detail: "Scanost.exe n'existe plus depuis Outlook 2010 ; la solution recommandée est de supprimer l'OST et de laisser Outlook le recréer depuis le serveur."
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Supprimer l'OST et le laisser se recréer
+    etapes:
+      - id: r1-e1
+        titre: Supprimer le fichier OST signalé
+        niveau: N1
+        graphique: |
+          1. Quitter Outlook.
+          2. Ouvrir l'Explorateur de fichiers et saisir `%localappdata%\Microsoft\Outlook` dans la barre d'adresse.
+          3. Supprimer le fichier .ost cité dans le message d'erreur.
+          4. Relancer Outlook : la boîte est resynchronisée depuis Exchange (durée selon la taille de la boîte).
+        avertissement:
+          type: destructif
+          texte: "Suppression du cache local. Les éléments absents du serveur sont perdus : vérifier avant qu'aucun élément local n'existe qu'ici (brouillons non synchronisés, ou OST d'un compte non Exchange)."
+        conclusions:
+          - { si: "L'erreur revient après la resynchronisation", aller_a: "fiche:outlook-fichier-pst-endommage-scanpst" }
+verification:
+  - id: v1
+    titre: Plus de message d'erreur et boîte complète
+    niveau: N1
+    graphique: "Après la synchronisation, vérifier que les dossiers et le calendrier sont complets et qu'Outlook affiche « Connecté à Microsoft Exchange »."
+fiches_liees: [outlook-pauses-gros-fichier-de-donnees]
+tags: [outlook, ost, corruption, "evenement-2000", cache]
+sources:
+  - titre: "Errors have been detected in your .ost file in Outlook — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/outlook/data-files/errors-have-been-detected-in-.ost-file
+    type: officiel
+    consulte_le: 2026-10-30
+derniere_verification: 2026-10-30

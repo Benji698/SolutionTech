@@ -1,0 +1,67 @@
+id: outlook-redemarrage-demande-par-administrateur
+format: express
+titre: "« L'administrateur Microsoft Exchange a apporté une modification qui nécessite de redémarrer Outlook »"
+resume: "Outlook classique demande de le quitter et de le relancer, parfois à répétition, après un changement de configuration côté Exchange Online. Relancer Outlook, puis relier l'événement 67 du poste au journal d'audit administrateur pour identifier le changement."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: outlook
+apparait_aussi_dans: []
+niveau: N2
+temps_estime: { min: 5, max: 30 }
+critique: false
+environnements: [win11, win10, m365]
+droits: aucun
+outils: []
+acces:
+  - "Session de l'utilisateur sur son PC (Observateur d'événements)."
+  - "Pour l'audit : rôle d'administrateur Exchange ou de lecture du journal d'audit."
+symptomes:
+  - « Outlook me dit de le fermer et de le relancer à cause de l'administrateur. »
+  - « Le message revient plusieurs fois dans la journée. »
+messages_erreur:
+  - texte: "The Microsoft Exchange administrator has made a change that requires you quit and restart Outlook."
+    ou: Fenêtre d'Outlook classique pour Windows
+variables: []
+causes:
+  - id: c1
+    titre: Une modification de configuration faite par l'administrateur Exchange Online
+    frequence: tres-frequente
+    detail: "Le message peut avoir plusieurs origines ; il s'accompagne de l'événement 67 dans le journal Application de l'Observateur d'événements. Outlook ne redémarre pas seul."
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Redémarrer Outlook puis identifier le changement via l'audit
+    etapes:
+      - id: r1-e1
+        titre: Redémarrer Outlook
+        niveau: N1
+        graphique: |
+          1. Cliquer sur **OK** pour fermer la fenêtre du message.
+          2. Quitter Outlook (**Fichier** › **Quitter**, *File* › *Exit*), puis le relancer manuellement.
+      - id: r1-e2
+        titre: Consulter l'événement 67 sur le poste
+        niveau: N2
+        graphique: |
+          1. Ouvrir **Observateur d'événements** (*Event Viewer*) depuis le menu **Démarrer**.
+          2. Aller dans **Journaux Windows** (*Windows Logs*) › **Application**.
+          3. Repérer l'**ID d'événement 67** et lire les onglets **Général** (*General*) et **Détails** (*Details*).
+      - id: r1-e3
+        titre: Relier l'événement au journal d'audit administrateur
+        niveau: N3
+        graphique: |
+          Comparer l'heure et les détails de l'événement 67 avec le journal d'audit administrateur Exchange (Microsoft Purview ou Exchange) afin de retrouver la modification à l'origine du message.
+          > [!a-verifier]
+          > Le chemin exact du journal d'audit à consulter (portail Purview ou Exchange) dépend du tenant et des licences ; Microsoft indique seulement de corréler avec le « administrator audit log ».
+verification:
+  - id: v1
+    titre: Le message n'apparaît plus après le redémarrage
+    niveau: N1
+    graphique: "Relancer Outlook et l'utiliser quelques minutes : le message ne doit plus revenir tant qu'aucune nouvelle modification n'est faite par l'administrateur."
+fiches_liees: []
+tags: [outlook, redemarrage, exchange-online, "evenement-67", audit]
+sources:
+  - titre: "Users have to restart Outlook after Exchange Online administrator makes a change — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/outlook/profiles-and-accounts/change-requires-restart
+    type: officiel
+    consulte_le: 2026-10-30
+derniere_verification: 2026-10-30

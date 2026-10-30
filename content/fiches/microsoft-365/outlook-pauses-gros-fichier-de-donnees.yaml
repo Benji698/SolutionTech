@@ -1,0 +1,61 @@
+id: outlook-pauses-gros-fichier-de-donnees
+format: express
+titre: "Outlook se fige quelques secondes avec un gros fichier OST ou PST"
+resume: "Au-delà d'environ 10 Go, un fichier OST ou PST provoque des micro-pauses de plus en plus fréquentes. Réduire sa taille (archivage) ou limiter la période synchronisée."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: outlook
+apparait_aussi_dans: []
+niveau: N1
+temps_estime: { min: 15, max: 45 }
+critique: false
+environnements: [win11, win10, m365]
+droits: aucun
+outils: []
+acces:
+  - "Session de l'utilisateur sur son PC."
+symptomes:
+  - « Outlook se fige quelques secondes quand je lis ou déplace un mail. »
+  - « Ça rame surtout pendant la réception des nouveaux messages. »
+messages_erreur: []
+variables: []
+causes:
+  - id: c1
+    titre: Fichier de données de 10 Go ou plus
+    frequence: tres-frequente
+    detail: "Repères Microsoft : jusqu'à 5 Go, bonne expérience ; de 5 à 10 Go, dépend du matériel (disques lents sensibles) ; au-delà de 10 Go, pauses courtes sur la plupart des machines ; à partir de 25 Go, pauses plus fréquentes."
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Réduire la taille du fichier ou de la synchronisation
+    etapes:
+      - id: r1-e1
+        titre: Contrôler la taille du fichier de données
+        niveau: N1
+        graphique: |
+          Dans Outlook : **Fichier** (*File*) › **Paramètres du compte** (*Account Settings*) › **Paramètres du compte…** › onglet **Fichiers de données** (*Data Files*) › **Ouvrir l'emplacement du fichier** (*Open File Location*), puis lire la taille du fichier .ost ou .pst dans l'Explorateur.
+      - id: r1-e2
+        titre: Archiver ou déplacer des éléments
+        niveau: N1
+        graphique: |
+          Déplacer ou archiver les éléments anciens (archivage Outlook, archive en ligne si disponible) pour ramener le fichier sous 10 Go.
+      - id: r1-e3
+        titre: Réduire la période synchronisée (mode Exchange mis en cache)
+        niveau: N1
+        graphique: |
+          Dans **Paramètres du compte** › sélectionner le compte Exchange › **Modifier** (*Change*) › curseur **Courrier à conserver hors connexion** (*Mail to keep offline*), choisir moins de mois. C'est une solution d'attente quand la boîte ne peut pas être réduite.
+          > [!a-verifier]
+          > Libellé français exact du curseur à confirmer sur la version installée.
+verification:
+  - id: v1
+    titre: Les pauses ont disparu
+    niveau: N1
+    graphique: "Lire, déplacer et supprimer des messages pendant quelques minutes sans blocage."
+fiches_liees: [outlook-lent-trop-elements-ou-dossiers]
+tags: [outlook, pauses, gel, ost, pst, taille]
+sources:
+  - titre: "You may experience application pauses if you have a large Outlook data file — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/application-pauses-if-you-have-large-data-file
+    type: officiel
+    consulte_le: 2026-10-30
+derniere_verification: 2026-10-30

@@ -1,0 +1,79 @@
+id: outlook-lent-nombreuses-boites-partagees
+format: express
+titre: "Outlook lent quand de nombreuses boîtes ou dossiers partagés sont ouverts"
+resume: "Trop de boîtes partagées (ajoutées à la main ou par mappage automatique) ou de dossiers partagés ralentissent Outlook et peuvent bloquer l'édition du calendrier. Réduire leur nombre."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: outlook
+apparait_aussi_dans: []
+niveau: N2
+temps_estime: { min: 15, max: 40 }
+critique: false
+environnements: [win11, win10, m365]
+droits: aucun
+outils: []
+acces:
+  - "Session de l'utilisateur ; rôle Exchange pour retirer l'accès ou le mappage automatique."
+symptomes:
+  - « Outlook est lent au démarrage et quand je change de dossier. »
+  - « Je n'arrive pas à modifier un calendrier partagé. »
+messages_erreur:
+  - texte: "You don't have permission to create an entry in this folder. Right-click the folder, then click Properties to check your permissions for the folder. See the folder owner or your administrator to change your permissions."
+    ou: Ajout ou modification dans un calendrier partagé
+variables: []
+causes:
+  - id: c1
+    titre: Boîtes partagées mappées automatiquement
+    frequence: tres-frequente
+    detail: "Le mappage automatique (AutoMapping) ouvre toutes les boîtes sur lesquelles l'utilisateur a un accès Contrôle total."
+  - id: c2
+    titre: Boîtes ajoutées manuellement ou dossiers partagés ouverts
+    frequence: frequente
+    detail: "Selon matériel, taille de boîte et réseau, 5 boîtes ou dossiers partagés peuvent déjà suffire à ralentir ; 10 ou plus passent sur une machine rapide."
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Retirer le mappage automatique ou l'accès
+    etapes:
+      - id: r1-e1
+        titre: Identifier les boîtes mappées automatiquement
+        niveau: N2
+        graphique: |
+          1. Maintenir **Ctrl** et clic droit sur l'icône Outlook de la zone de notification › **Test de configuration automatique de la messagerie** (*Test E-mail AutoConfiguration*).
+          2. Saisir l'adresse et le mot de passe, décocher **Utiliser Guessmart** et **Authentification Guessmart sécurisée**, cliquer sur **Tester**.
+          3. Onglet **XML** : chercher la section `<AlternativeMailbox>` avec `<Type>Delegate</Type>`.
+      - id: r1-e2
+        titre: Supprimer le mappage automatique ou l'accès
+        niveau: N3
+        graphique: |
+          Soit retirer l'autorisation Contrôle total (*Full Access*) si l'accès n'est plus utile, soit désactiver le mappage automatique pour cette boîte tout en conservant l'accès (documentation Microsoft « Remove automapping for a shared mailbox »).
+        avertissement:
+          type: attention
+          texte: "Retirer une autorisation coupe l'accès à la boîte partagée : valider avec le propriétaire."
+  - id: r2
+    causes: [c2]
+    titre: Retirer les boîtes et dossiers partagés inutiles de la vue
+    etapes:
+      - id: r2-e1
+        titre: Retirer une boîte ajoutée manuellement
+        niveau: N1
+        graphique: |
+          **Fichier** › **Paramètres du compte** › **Paramètres du compte…** › compte Exchange › **Modifier** › **Autres paramètres** (*More Settings*) › onglet **Avancé** (*Advanced*) › sélectionner la boîte sous **Ouvrir ces boîtes aux lettres supplémentaires** › **Supprimer** › **OK** › **Suivant** › **Terminer**.
+      - id: r2-e2
+        titre: Retirer un calendrier ou un dossier partagé de la vue
+        niveau: N1
+        graphique: |
+          Dans le volet de navigation (Calendrier, Contacts, Tâches, Notes), clic droit sur le dossier listé sous **Partagés** › **Supprimer le dossier** ou **Supprimer le calendrier**. Cela ne supprime que l'affichage, pas le dossier d'origine. Un dossier Boîte de réception partagé se ferme en sélectionnant un autre dossier.
+verification:
+  - id: v1
+    titre: Outlook redevient fluide
+    niveau: N1
+    graphique: "Redémarrer Outlook et vérifier le temps de démarrage, le changement de dossier et la modification du calendrier."
+fiches_liees: [outlook-lent-trop-elements-ou-dossiers]
+tags: [outlook, "boite-partagee", automapping, lenteur, calendrier]
+sources:
+  - titre: "Outlook performance issues when you have many shared folders or mailboxes open — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/slow-performance-if-having-many-shared-folder-or-mailboxes-open
+    type: officiel
+    consulte_le: 2026-10-30
+derniere_verification: 2026-10-30

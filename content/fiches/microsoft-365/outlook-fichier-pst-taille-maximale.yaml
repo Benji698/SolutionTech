@@ -1,0 +1,73 @@
+id: outlook-fichier-pst-taille-maximale
+format: express
+titre: "Fichier PST plein ou trop volumineux (limite de taille atteinte)"
+resume: "Un PST (ou OST) qui atteint sa limite de taille empêche d'ajouter ou d'archiver des éléments. Libérer de l'espace, répartir sur un second PST, ou relever la limite par le registre en connaissance de cause."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: outlook
+apparait_aussi_dans: []
+niveau: N2
+temps_estime: { min: 15, max: 45 }
+critique: false
+environnements: [win11, win10]
+droits: aucun
+outils: []
+acces:
+  - "Session de l'utilisateur sur son PC."
+symptomes:
+  - « Impossible d'archiver, le fichier est plein. »
+  - « Outlook refuse d'ajouter des éléments dans mon PST. »
+messages_erreur:
+  - texte: "The Outlook data file has reached the maximum size"
+    ou: Archivage ou ajout d'éléments dans un PST
+variables: []
+causes:
+  - id: c1
+    titre: Limite de taille du fichier de données atteinte
+    frequence: tres-frequente
+    detail: "Les fichiers au format Unicode ont une limite par défaut élevée (50 Go dans les versions récentes), les anciens fichiers au format ANSI (Outlook 2002 et avant) sont limités à 2 Go."
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Libérer de la place, scinder ou relever la limite
+    etapes:
+      - id: r1-e1
+        titre: Libérer de l'espace dans le fichier
+        niveau: N1
+        graphique: |
+          1. Vider **Éléments supprimés** (*Deleted Items*) et supprimer les gros éléments inutiles.
+          2. Cliquer droit sur le fichier de données dans le volet de dossiers › **Propriétés** › **Avancé** › **Compacter maintenant** (*Compact Now*).
+          3. Sinon, créer un second fichier PST et y déplacer les anciens éléments.
+        avertissement:
+          type: destructif
+          texte: "La suppression d'éléments d'un PST n'est pas récupérable depuis le serveur : sauvegarder le fichier avant."
+      - id: r1-e2
+        titre: Relever la limite par le registre (dernier recours)
+        niveau: N3
+        graphique: |
+          Sous `HKEY_CURRENT_USER\Software\Microsoft\Office\16.0\Outlook\PST`, créer les valeurs REG_DWORD `MaxLargeFileSize` (limite en Mo) et `WarnLargeFileSize` (seuil d'avertissement en Mo, inférieur à la limite), puis redémarrer Outlook.
+          > [!a-verifier]
+          > Noms et unités de ces valeurs, ainsi que la limite par défaut de 50 Go, tirés de l'article Microsoft « How to configure the size limit for both PST and OST files in Outlook » (page non relue en direct). Vérifier avant application.
+        commande:
+          langage: cmd
+          ou: Invite de commandes (session de l'utilisateur)
+          admin: false
+          code: |
+            reg add "HKCU\Software\Microsoft\Office\16.0\Outlook\PST" /v MaxLargeFileSize /t REG_DWORD /d 102400 /f
+            reg add "HKCU\Software\Microsoft\Office\16.0\Outlook\PST" /v WarnLargeFileSize /t REG_DWORD /d 97280 /f
+        avertissement:
+          type: attention
+          texte: "Un PST très gros ralentit Outlook et augmente le risque de corruption ; préférer l'archivage ou le découpage."
+verification:
+  - id: v1
+    titre: L'ajout d'éléments fonctionne
+    niveau: N1
+    graphique: "Archiver ou déplacer un élément dans le PST : plus de message de taille maximale."
+fiches_liees: [outlook-pauses-gros-fichier-de-donnees, outlook-fichier-pst-endommage-scanpst]
+tags: [outlook, pst, taille, limite, archivage, "maxlargefilesize"]
+sources:
+  - titre: "How to configure the size limit for both PST and OST files in Outlook — Microsoft Support"
+    url: https://support.microsoft.com/en-us/topic/how-to-configure-the-size-limit-for-both-pst-and-ost-files-in-outlook-2f13f558-d40e-9c2a-e3b6-02806fa535f4
+    type: officiel
+    consulte_le: 2026-10-30
+derniere_verification: 2026-10-30

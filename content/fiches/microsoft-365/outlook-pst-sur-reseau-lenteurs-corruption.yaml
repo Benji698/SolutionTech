@@ -1,0 +1,63 @@
+id: outlook-pst-sur-reseau-lenteurs-corruption
+format: express
+titre: "PST stocké sur le réseau : lenteurs, blocages et corruption"
+resume: "Un PST ou OST sur un partage réseau (LAN/WAN) n'est pas pris en charge : opérations lentes, gels d'Outlook, risque de corruption. Passer à une alternative : mode Exchange mis en cache, archive en ligne ou session distante."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: outlook
+apparait_aussi_dans: []
+niveau: N2
+temps_estime: { min: 20, max: 60 }
+critique: false
+environnements: [win11, win10, m365]
+droits: aucun
+outils: []
+acces:
+  - "Session de l'utilisateur ; accès administrateur pour migrer vers l'archive en ligne."
+symptomes:
+  - « Outlook se fige quand mon PST est sur le serveur de fichiers. »
+  - « Mon PST partagé s'abîme régulièrement. »
+messages_erreur: []
+variables: []
+causes:
+  - id: c1
+    titre: Fichier PST/OST accédé par le réseau
+    frequence: tres-frequente
+    detail: "Un PST fonctionne par accès fichier ; sur un réseau, chaque commande transite par le réseau, d'où une latence élevée (les écritures peuvent prendre environ quatre fois plus de temps que les lectures). Les partages peuvent aussi cesser de répondre (file d'attente du service Serveur)."
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Retirer le PST du réseau et adopter une alternative prise en charge
+    etapes:
+      - id: r1-e1
+        titre: Rapatrier le PST en local
+        niveau: N1
+        graphique: |
+          1. Quitter Outlook.
+          2. Copier le fichier .pst du partage vers un disque local.
+          3. Dans Outlook, **Fichier** › **Paramètres du compte** › **Fichiers de données** : supprimer l'ancien emplacement et ajouter le fichier local.
+      - id: r1-e2
+        titre: Choisir une alternative durable
+        niveau: N2
+        graphique: |
+          Alternatives recommandées par Microsoft : boîte d'archive en ligne (Microsoft 365 / Exchange), mode Exchange mis en cache avec OST local, ou Outlook exécuté en session distante (RDSH/VDI) en mode en ligne.
+          > [!a-verifier]
+          > Le seul scénario réseau pris en charge (RDSH/VDI Windows Server 2008 R2 ou ultérieur, faible latence, un seul client par fichier) ; vérifier sa pertinence avec la politique de support en vigueur.
+        avertissement:
+          type: attention
+          texte: "Faire une copie du PST avant toute manipulation : un fichier déjà corrompu doit d'abord être réparé."
+        conclusions:
+          - { si: "Le PST est corrompu", aller_a: "fiche:outlook-fichier-pst-endommage-scanpst" }
+verification:
+  - id: v1
+    titre: Outlook ne se fige plus
+    niveau: N1
+    graphique: "Ouvrir et manipuler des éléments du PST local : réactivité normale."
+fiches_liees: [outlook-pst-ost-sur-lecteur-reseau-refuse, outlook-fichier-pst-endommage-scanpst]
+tags: [outlook, pst, reseau, lenteur, corruption, "non-pris-en-charge"]
+sources:
+  - titre: "Limits to using personal folders files over LAN and WAN links — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/outlook/data-files/limits-using-pst-files-over-lan-wan
+    type: officiel
+    consulte_le: 2026-10-30
+derniere_verification: 2026-10-30

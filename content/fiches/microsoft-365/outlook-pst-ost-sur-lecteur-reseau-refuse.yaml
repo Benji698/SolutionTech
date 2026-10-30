@@ -1,0 +1,66 @@
+id: outlook-pst-ost-sur-lecteur-reseau-refuse
+format: express
+titre: "« Nom de fichier non valide » ou « Accès refusé » en ajoutant un PST/OST situé sur un lecteur réseau"
+resume: "Outlook 2016 (build 16.0.7910.1000 ou ultérieure) refuse d'ajouter un PST/OST hors disque local si Windows ne peut pas résoudre le chemin complet faute de droits sur un dossier parent. Copier le fichier en local, ou donner les droits de lecture sur l'arborescence."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: outlook
+apparait_aussi_dans: []
+niveau: N2
+temps_estime: { min: 10, max: 30 }
+critique: false
+environnements: [win11, win10]
+droits: aucun
+outils: []
+acces:
+  - "Session de l'utilisateur ; droits sur le partage pour l'option de l'administrateur."
+symptomes:
+  - « Outlook dit que le nom de fichier n'est pas valide quand j'ajoute mon PST. »
+  - « J'obtiens Accès refusé alors que je peux ouvrir le fichier dans l'Explorateur. »
+messages_erreur:
+  - texte: "Invalid file name"
+    ou: Ajout d'un fichier de données (PST/OST) sur un lecteur réseau ou amovible
+  - texte: "Access denied"
+    ou: Idem
+variables: []
+causes:
+  - id: c1
+    titre: Droits insuffisants sur un dossier parent du chemin réseau
+    frequence: tres-frequente
+    detail: "Outlook demande à Windows le chemin canonique (UNC) du fichier. Windows doit parcourir toute l'arborescence ; sans droits de liste/lecture sur un dossier parent, la résolution échoue."
+  - id: c2
+    titre: Fichier situé sur un lecteur non local (réseau ou amovible)
+    frequence: frequente
+    detail: "Un PST/OST sur un partage réseau est une configuration non prise en charge."
+resolutions:
+  - id: r1
+    causes: [c2]
+    titre: Copier le fichier sur le disque local
+    etapes:
+      - id: r1-e1
+        titre: Déplacer le fichier puis l'ajouter dans Outlook
+        niveau: N1
+        graphique: |
+          Copier le fichier .pst ou .ost sur un disque local, puis l'ajouter dans Outlook (**Fichier** › **Paramètres du compte** › onglet **Fichiers de données** › **Ajouter**).
+  - id: r2
+    causes: [c1]
+    titre: Ajouter les droits de lecture sur les dossiers parents
+    etapes:
+      - id: r2-e1
+        titre: Accorder List et Read sur le dossier parent
+        niveau: N3
+        graphique: |
+          Un administrateur du serveur de fichiers ajoute à l'utilisateur les droits **Liste** et **Lecture** (*List*, *Read*) sur les dossiers parents du chemin, puis l'utilisateur rajoute le fichier. Configuration non prise en charge : risque de lenteurs et d'instabilité.
+verification:
+  - id: v1
+    titre: Le fichier de données s'ajoute et s'ouvre
+    niveau: N1
+    graphique: "Le fichier apparaît dans le volet de dossiers d'Outlook sans erreur."
+fiches_liees: [outlook-pst-sur-reseau-lenteurs-corruption]
+tags: [outlook, pst, ost, reseau, "nom-de-fichier-non-valide", "acces-refuse"]
+sources:
+  - titre: "Error when you add a PST or OST file on a non-local drive in Outlook 2016 — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/outlook/data-files/cannot-add-pst-or-ost-file-on-non-local-drive
+    type: officiel
+    consulte_le: 2026-10-30
+derniere_verification: 2026-10-30

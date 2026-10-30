@@ -1,0 +1,75 @@
+id: outlook-deplacer-fichier-ost-impossible
+format: express
+titre: "Impossible de changer l'emplacement du fichier OST"
+resume: "Dans Outlook 2013 et ultérieur, le bouton Parcourir des paramètres du fichier de données est grisé. Contourner en créant un nouveau profil pointant vers le nouvel emplacement, ou via la valeur de registre ForceOSTPath."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: outlook
+apparait_aussi_dans: []
+niveau: N2
+temps_estime: { min: 15, max: 40 }
+critique: false
+environnements: [win11, win10]
+droits: aucun
+outils: []
+acces:
+  - "Session de l'utilisateur sur son PC."
+symptomes:
+  - "« Je veux mettre mon OST sur un autre disque car C: est plein, mais Parcourir est grisé. »"
+messages_erreur: []
+variables: []
+causes:
+  - id: c1
+    titre: Mode hors connexion classique abandonné depuis Outlook 2013
+    frequence: tres-frequente
+    detail: "Le bouton Parcourir est désactivé pour un profil existant ; il faut passer par un nouveau profil ou ForceOSTPath."
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Créer un profil avec l'OST au nouvel emplacement
+    etapes:
+      - id: r1-e1
+        titre: Préparer le fichier OST
+        niveau: N1
+        graphique: |
+          Facultatif : copier l'OST existant vers le dossier cible (sinon Outlook en crée un neuf et resynchronise).
+      - id: r1-e2
+        titre: Créer un nouveau profil et pointer vers le nouvel OST
+        niveau: N2
+        graphique: |
+          1. **Panneau de configuration** (*Control Panel*) › **Courrier** (*Mail*) › **Afficher les profils** (*Show Profiles*) › **Ajouter** (*Add*).
+          2. Nommer le profil, saisir le compte, puis cocher **Modifier les paramètres du compte** (*Change account settings*) › **Suivant**.
+          3. **Autres paramètres** (*More Settings*) › onglet **Avancé** › **Paramètres du fichier de données Outlook** (*Outlook Data File Settings*).
+          4. **Parcourir** (*Browse*) : choisir le fichier copié ou le nouvel emplacement › **Ouvrir** › **Terminer**.
+          5. Dans **Courrier**, choisir **Toujours utiliser ce profil** (*Always use this profile*) et sélectionner le nouveau profil.
+  - id: r2
+    causes: [c1]
+    titre: Alternative par la valeur de registre ForceOSTPath
+    etapes:
+      - id: r2-e1
+        titre: Définir ForceOSTPath (valable pour un nouveau profil uniquement)
+        niveau: N3
+        graphique: |
+          Sous `HKEY_CURRENT_USER\Software\Microsoft\Office\16.0\Outlook`, créer la valeur de chaîne étendue **ForceOSTPath** contenant le chemin du dossier (par exemple `D:\MyOST`), puis créer un nouveau profil.
+        commande:
+          langage: cmd
+          ou: Invite de commandes (session de l'utilisateur)
+          admin: false
+          code: |
+            reg add "HKCU\Software\Microsoft\Office\16.0\Outlook" /v ForceOSTPath /t REG_EXPAND_SZ /d "D:\MyOST" /f
+        avertissement:
+          type: attention
+          texte: "Modifier le registre avec précaution ; l'ancien OST de l'ancien profil n'est pas déplacé automatiquement."
+verification:
+  - id: v1
+    titre: Le nouvel OST est utilisé
+    niveau: N1
+    graphique: "Ouvrir Outlook avec le nouveau profil, attendre la synchronisation, puis constater la présence du fichier .ost dans le dossier choisi."
+fiches_liees: [outlook-erreurs-detectees-fichier-ost]
+tags: [outlook, ost, emplacement, forceostpath, profil, "disque-plein"]
+sources:
+  - titre: "You can't change the location of the offline Outlook Data File (.ost) — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/outlook/data-files/cannot-change-the-location-of-ost-file
+    type: officiel
+    consulte_le: 2026-10-30
+derniere_verification: 2026-10-30
