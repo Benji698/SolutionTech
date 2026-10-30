@@ -23,7 +23,7 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/error-0x8004de40-in-onedrive
       - https://techcommunity.microsoft.com/discussions/onedriveforbusiness/there-was-a-problem-connecting-to-onedrive-error-code-0x8004de40/1207767
-    etat: a-rediger
+    etat: redigee
   - id: onedrive-erreur-0x8004de85-0x8004de8a-mauvais-compte
     titre: "Erreur 0x8004de85 ou 0x8004de8a : compte introuvable ou mauvais type de compte"
     symptome: "Connexion impossible : compte manquant, licence OneDrive absente ou confusion entre compte personnel et compte professionnel."
@@ -32,7 +32,7 @@ problemes:
     format: express
     sources:
       - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/sign-into-onedrive-error-0x8004de85-or-0x8004de8a
-    etat: a-rediger
+    etat: redigee
   - id: onedrive-erreur-0x8004de80-0x8004de86-identites-multiples
     titre: "Erreur 0x8004de80 ou 0x8004de86 à la connexion à OneDrive"
     symptome: "Connexion impossible après l'ajout d'un autre compte : conflit d'identités entre plusieurs comptes."

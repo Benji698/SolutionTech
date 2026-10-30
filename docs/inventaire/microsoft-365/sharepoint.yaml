@@ -23,7 +23,7 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/sharing-and-permissions/error-403-forbidden
       - https://learn.microsoft.com/en-us/answers/questions/5839130/i-can-not-access-sharepoint
-    etat: a-rediger
+    etat: redigee
   - id: sharepoint-acces-refuse-verrouillage-acces-limite
     titre: "Accès refusé à un dossier partagé : mode de verrouillage des utilisateurs à accès limité activé"
     symptome: "Un utilisateur à qui un dossier ou fichier a été partagé obtient « Access Denied », ou les options de partage sont grisées, car la fonctionnalité de collection « Limited-access user permission lockdown mode » est active."
@@ -42,7 +42,7 @@ problemes:
     format: express
     sources:
       - https://learn.microsoft.com/en-us/answers/questions/4894353/sorry-you-dont-have-access-to-this-page-but-im-the
-    etat: a-rediger
+    etat: redigee
   - id: sharepoint-demandes-acces-desactivees
     titre: "Pas de bouton « Demander l'accès » : demandes d'accès désactivées sur le site"
     symptome: "L'utilisateur sans droits voit seulement un message de refus, sans possibilité de demander l'accès, car « Allow access requests » est décoché dans les paramètres du site."

@@ -27,7 +27,7 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/activation/another-account-already-signed-in
       - https://techcommunity.microsoft.com/discussions/microsoft365apps/sorry-another-account-from-your-organization-is-already-signed-in-on-this-comput/3794453
-    etat: a-rediger
+    etat: redigee
 
   - id: office-licence-introuvable-application
     titre: "« Office ne trouve pas votre licence pour cette application »"
@@ -38,7 +38,7 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-US/office/troubleshoot/activation/license-issue-when-start-office-application
       - https://learn.microsoft.com/en-us/answers/a/11476127
-    etat: a-rediger
+    etat: redigee
 
   - id: office-impossible-verifier-licence
     titre: "« Microsoft Office ne peut pas vérifier la licence de ce produit »"
@@ -89,7 +89,7 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/activation/reset-activation-state
       - https://github.com/MicrosoftDocs/SupportArticles-docs/blob/main/Office/Client/activation/reset-activation-state.md
-    etat: a-rediger
+    etat: redigee
 
   - id: office-mac-connexion-impossible-trousseau
     titre: "Office pour Mac : impossible de se connecter ou de s'activer (trousseau)"

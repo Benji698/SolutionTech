@@ -21,7 +21,7 @@ problemes:
     sources:
       - https://support.microsoft.com/account-billing/troubleshoot-problems-with-microsoft-authenticator-a3a74493-566b-4c2e-b949-a2789bac0fd3
       - https://learn.microsoft.com/en-us/answers/questions/1192179/authenticator-abruptly-stopped-sending-notificatio
-    etat: a-rediger
+    etat: redigee
   - id: mfa-authenticator-nombre-non-affiche
     titre: "Mise en correspondance des nombres : le nombre à saisir n'apparaît pas ou l'application ne propose pas la saisie"
     symptome: "L'écran de connexion affiche un nombre à deux chiffres mais Authenticator n'ouvre pas de champ de saisie, ou la bannière iOS masque le nombre."
@@ -32,7 +32,7 @@ problemes:
       - https://learn.microsoft.com/entra/identity/authentication/how-to-mfa-number-match
       - https://learn.microsoft.com/en-us/answers/questions/1162790/number-matching-mfa-not-working-on-iphones
       - https://learn.microsoft.com/en-us/answers/questions/1183376/catch-22-ios-ms-authenticator-prompt-blocks-the-nu
-    etat: a-rediger
+    etat: redigee
   - id: mfa-authenticator-code-refuse-horloge
     titre: "Code à 6 chiffres d'Authenticator refusé : horloge du téléphone décalée"
     symptome: "Le code TOTP saisi est systématiquement refusé alors qu'il est copié correctement ; l'heure du téléphone est réglée manuellement ou dérive."

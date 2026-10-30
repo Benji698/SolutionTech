@@ -385,7 +385,7 @@ problemes:
     sources:
       - https://support.microsoft.com/office/9581983b-c6f9-40e3-b0d8-122857972ade
       - https://maketecheasier.com/fix-microsoft-teams-camera-not-working/
-    etat: a-rediger
+    etat: redigee
 
   - id: teams-video-non-affichee-pilote-nahimic
     titre: "Le nouveau Teams n'affiche aucune vidéo (conflit avec le pilote audio Nahimic)"

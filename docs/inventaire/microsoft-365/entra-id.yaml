@@ -27,7 +27,7 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
       - https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-primary-refresh-token
-    etat: a-rediger
+    etat: redigee
   - id: entra-aadsts50055-mot-de-passe-expire
     titre: "Mot de passe expiré à la connexion Microsoft 365 (AADSTS50055)"
     symptome: "L'utilisateur est invité à changer son mot de passe ou la connexion d'une application échoue car le mot de passe cloud a expiré."
@@ -37,7 +37,7 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
       - https://login.microsoftonline.com/error?code=50055
-    etat: a-rediger
+    etat: redigee
   - id: entra-aadsts50144-mot-de-passe-ad-expire
     titre: "Mot de passe Active Directory expiré pour un compte synchronisé (AADSTS50144)"
     symptome: "Un utilisateur hybride (PTA, fédération ou PHS avec expiration activée) ne peut plus se connecter au cloud car son mot de passe AD a expiré."

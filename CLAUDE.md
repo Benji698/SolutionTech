@@ -80,6 +80,20 @@ En bref :
 - **Favoris** : écran dédié ouvert par le bouton « ★ Favoris » de l'en-tête (liste des seules fiches favorites, retrait par l'étoile, état vide expliqué). Pas de favoris sur l'accueil.
 - **Retour arrière** (demande de Benji) : glisser le doigt de gauche à droite sur téléphone, deux doigts vers la droite sur le trackpad du Mac, ⌥/Alt + ← au clavier, et un bouton « ‹ Retour » visible. Sur le site, chaque écran a sa **vraie adresse** : le geste natif du navigateur (historique) fonctionne alors sans code spécial, il ne faut pas le bloquer. Dans l'app iOS, `NavigationStack` fournit le glissement depuis le bord gauche. **L'accueil est la racine** : y revenir (logo, fil d'Ariane) vide l'historique de l'app, et aucun retour n'est possible depuis l'accueil.
 
+## Reprise de la rédaction (méthode économe en tokens)
+
+Benji a demandé de limiter la consommation : les agents en parallèle épuisaient sa limite d'utilisation très vite.
+
+1. Lire `docs/avancement.md` (où on en est) ; ne pas relire tout le dépôt.
+2. `bash scripts/docs-microsoft.sh` : télécharge la doc officielle de dépannage Microsoft dans `.cache/msdocs/` (non versionné).
+3. `node scripts/marquer-redigees.cjs` : met à jour `etat: redigee` dans les inventaires et affiche le bilan.
+4. `FORMAT=express node scripts/faire-lots.cjs microsoft-365 frequent,critique 10 <sous-domaine>` : crée des lots dans `.cache/lots/` (`FORMAT=complete` pour les fiches complètes, à faire en lots plus petits, 5 par exemple).
+5. Lancer **2 ou 3 agents au maximum à la fois**, chacun avec : « Lis et applique `docs/inventaire/brief-redaction.md`. Ton lot : `.cache/lots/<lot>.txt`. » Le brief suffit : l'agent ne relit ni CLAUDE.md, ni le guide, ni le schéma.
+   - Lots de fiches **express** : modèle **Sonnet** (paramètre `model: "sonnet"`), moins cher.
+   - Lots avec des fiches **complètes** ou **critiques** : modèle par défaut.
+6. À la fin de chaque agent : `npm run validate`, corriger les erreurs simples (`python3 scripts/guillemets-yaml.py <fichiers>`), relancer l'étape 3, commit `contenu(microsoft-365): …` et push.
+7. Ne jamais relancer automatiquement des agents interrompus par la limite d'utilisation : attendre la demande de Benji.
+
 ## Commandes
 
 ```bash
@@ -97,6 +111,6 @@ npm run sync:ios       # copie l'index dans ios/SOSAdmin/Resources/  — Phase 5
 - ✅ Phase 0 : cahier des charges validé.
 - ✅ Phase 1 : architecture validée.
 - ✅ Phase 2 : taxonomie (19 domaines), schéma final, script de build et 3 fiches exemples validés.
-- 🔄 Phase 3 (contenu, suivi dans `docs/avancement.md`) : Active Directory validé (13 fiches) ; Microsoft 365 rédigé (11 fiches), en attente de validation.
+- 🔄 Phase 3 (contenu, suivi dans `docs/avancement.md`) : Active Directory validé (13 fiches). Microsoft 365 : inventaire de 2 250 problèmes fait (Copilot incomplet), 24 fiches rédigées, rédaction en cours.
 - Phases suivantes : 4 site → 5 iOS.
 - Réseau de la session cloud : `learn.microsoft.com` et `support.microsoft.com` peuvent être bloqués en lecture directe (WebFetch) ; la recherche web fonctionne. Indiquer « à vérifier » quand une page officielle n'a pas pu être relue.
