@@ -1124,3 +1124,373 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/sending-email-by-template-fails
     etat: a-rediger
+
+  # --- Dossiers et éléments ---
+  - id: outlook-elements-disparaissent-dossier
+    titre: "Des messages disparaissent d'un dossier Outlook"
+    symptome: "Une partie ou la totalité des éléments d'un dossier disparaît, immédiatement ou après un délai régulier."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/email-management/items-disappear-not-visible-outlook-folder
+    etat: a-rediger
+  - id: outlook-elements-places-dossier-racine-perdus
+    titre: "Éléments déposés dans le dossier racine de la boîte devenus introuvables"
+    symptome: "Des messages glissés sur le nom de la boîte (dossier racine) semblent perdus."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/items-placed-in-root-folder-seem-to-be-lost
+    etat: a-rediger
+  - id: outlook-dossiers-en-double
+    titre: "Dossiers en double dans la boîte Exchange (Boîte de réception1, Calendrier1…)"
+    symptome: "Des dossiers par défaut apparaissent en double, souvent après une synchronisation mobile ou une migration."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/email-management/remove-duplicate-folders
+    etat: a-rediger
+  - id: outlook-noms-dossiers-mauvaise-langue
+    titre: "Noms des dossiers par défaut dans la mauvaise langue (Inbox au lieu de Boîte de réception)"
+    symptome: "Les dossiers système portent des noms anglais ou mélangés ; la localisation échoue dans OWA."
+    erreurs: ["Cannot localize the default folders."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/incorrect-folder-names
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-on-the-web-issues/cannot-localize-the-default-folders-error
+    etat: a-rediger
+  - id: outlook-dossier-par-defaut-manquant
+    titre: "Un dossier par défaut (Calendrier, Contacts…) a disparu dans Outlook et OWA"
+    symptome: "Le dossier système n'apparaît plus dans la liste des dossiers."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/default-folder-is-missing
+    etat: a-rediger
+  - id: outlook-messages-deplaces-vers-dossier-renomme
+    titre: "Les messages entrants partent dans un dossier renommé au lieu de la boîte de réception"
+    symptome: "Après avoir renommé la boîte de réception, les nouveaux messages vont dans l'ancien dossier."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/email-management/messages-move-from-inbox-to-renamed-folder
+    etat: a-rediger
+  - id: outlook-messages-conversation-supprimes-automatiquement
+    titre: "Les messages d'une conversation partent seuls dans les éléments supprimés (fonction Ignorer)"
+    symptome: "Les nouveaux messages d'un fil sont supprimés automatiquement après avoir cliqué sur « Ignorer »."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/email-management/message-automatically-moved-deleted-items-folder
+    etat: a-rediger
+  - id: outlook-reception-messages-non-destines
+    titre: "L'utilisateur reçoit des messages qui ne lui sont pas destinés"
+    symptome: "Des messages adressés à une autre personne arrivent dans la boîte (délégation, règles, anciennes adresses)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/email-management/unintentional-emails-received
+    etat: a-rediger
+  - id: outlook-boite-reception-prioritaire-disparait
+    titre: "La boîte de réception Prioritaire disparaît en changeant de dossier"
+    symptome: "Les onglets Prioritaire/Autres ne s'affichent plus après navigation."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/profiles-and-accounts/focused-inbox-disappears-switch-folder
+    etat: a-rediger
+  - id: outlook-dossier-historique-conversations-manquant
+    titre: "Le dossier « Historique des conversations » a disparu"
+    symptome: "Le dossier Conversation History (Skype/Teams) n'existe plus dans la boîte."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/conversation-history-folder-is-missing
+    etat: a-rediger
+  - id: outlook-copier-dossier-elements-prives
+    titre: "« Impossible de copier ce dossier car il contient peut-être des éléments privés »"
+    symptome: "Le déplacement ou la copie d'un dossier d'une autre boîte échoue."
+    erreurs: ["Cannot move the items. Cannot copy this folder because it may contain private items."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/cannot-copy-this-folder-because-it-may-contain-private-items
+    etat: a-rediger
+  - id: outlook-messages-outlook-message-manager-boite-reception
+    titre: "Messages « Outlook Message Manager (profil) (KEY: …) » dans la boîte de réception"
+    symptome: "Des messages techniques apparaissent en mode en ligne avec un compte Microsoft 365."
+    erreurs: ["Outlook Message Manager (<profil>) (KEY: <hex>)"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/messages-occur-when-connecting-to-office-365-email-account
+    etat: a-rediger
+  - id: outlook-flux-rss-supplementaires
+    titre: "Des flux RSS inconnus apparaissent après connexion sur un nouveau PC"
+    symptome: "Des abonnements RSS non demandés sont ajoutés automatiquement."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/profiles-and-accounts/additional-rss-feeds-appear
+    etat: a-rediger
+  - id: outlook-flux-rss-identifiants
+    titre: "« Outlook ne peut pas télécharger le contenu RSS » (flux nécessitant une authentification)"
+    symptome: "Un flux RSS protégé par mot de passe ne se met pas à jour."
+    erreurs: ["Outlook cannot download the RSS content from <URL> because you do not have the required credentials."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/profiles-and-accounts/error-when-subscribing-to-rss-feed-that-needs-authentication
+    etat: a-rediger
+  - id: outlook-message-osf-roaming
+    titre: "Message « Vous aurez besoin d'une nouvelle application pour ouvrir ce lien osf-roaming.16 »"
+    symptome: "Fenêtre Windows demandant une application pour un protocole osf-roaming."
+    erreurs: ["You'll need a new app to open this osf-roaming.16"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/profiles-and-accounts/you-ll-need-a-new-app-to-open-this-osf-roaming-16
+    etat: a-rediger
+  - id: outlook-quota-boite-non-affiche
+    titre: "Le quota de la boîte n'est plus affiché dans la barre d'état"
+    symptome: "La jauge d'espace utilisé de la boîte n'apparaît pas."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/mailbox-quota-information-not-displayed
+    etat: a-rediger
+  - id: outlook-archive-en-ligne-non-visible
+    titre: "La boîte d'archivage en ligne n'apparaît pas dans Outlook ou OWA"
+    symptome: "L'archive est activée côté serveur mais absente du volet de dossiers (classique, nouvel Outlook ou web)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/profiles-and-accounts/archive-mailbox-not-visible
+    etat: a-rediger
+  - id: outlook-etapes-rapides-calendrier-introuvable
+    titre: "Étapes rapides : « Le dossier Calendrier est introuvable » ou « Le dossier Tâches est introuvable »"
+    symptome: "Une étape rapide qui crée une réunion ou une tâche échoue."
+    erreurs: ["The Calendar folder cannot be found.", "The Tasks folder cannot be found."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/outlook-quick-steps-issues
+    etat: a-rediger
+
+  # --- Corps du message, affichage ---
+  - id: outlook-caracteres-etranges-message
+    titre: "Caractères bizarres ou mélange de langues dans le texte des messages"
+    symptome: "Les destinataires voient des caractères illisibles (problème d'encodage)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/message-body/strange-characters-display-message-body
+    etat: a-rediger
+  - id: outlook-destinataires-recoivent-winmail-dat
+    titre: "Les destinataires reçoivent une pièce jointe winmail.dat (format TNEF / texte enrichi)"
+    symptome: "Un correspondant externe reçoit winmail.dat au lieu des pièces jointes ou des invitations lisibles."
+    erreurs: ["winmail.dat"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/message-body/how-tnef-affects-email-messages
+    etat: a-rediger
+  - id: outlook-images-liees-croix-rouge
+    titre: "Images remplacées par une croix rouge : « L'image liée ne peut pas être affichée »"
+    symptome: "Les images (notamment HTTPS) des messages HTML ne s'affichent pas."
+    erreurs: ["The linked image cannot be displayed. The file may have been moved, renamed, or deleted. Verify that the link points to the correct file and location."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/message-body/https-linked-images-in-html-emails-show-red-x
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/message-body/the-linked-image-cannot-be-displayed-error
+    etat: a-rediger
+  - id: outlook-liens-hypertextes-ne-s-ouvrent-pas
+    titre: "Les liens dans les messages ne s'ouvrent pas : « Les stratégies de votre organisation nous empêchent… »"
+    symptome: "Un clic sur un lien affiche une erreur au lieu d'ouvrir le navigateur (navigateur par défaut, liens FQDN/IP bloqués)."
+    erreurs: ["Your organization's policies are preventing us from completing this action for you. For more info, please contact your help desk.", "Something unexpected went wrong with this URL"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/message-body/hyperlinks-not-working-in-outlook
+    etat: a-rediger
+  - id: outlook-sauts-de-ligne-supprimes-texte-brut
+    titre: "« Les sauts de ligne supplémentaires de ce message ont été supprimés » (texte brut)"
+    symptome: "Les messages en texte brut perdent leurs retours à la ligne, ce qui casse la mise en forme."
+    erreurs: ["Extra line breaks in this message were removed."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/message-body/line-breaks-are-removed-in-posts-made-in-plain-text
+    etat: a-rediger
+  - id: outlook-url-doubles-barres-obliques
+    titre: "Les doubles barres obliques d'une URL sont réduites à une seule (lien cassé)"
+    symptome: "Un lien collé contenant // au milieu devient invalide."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/message-body/url-multiple-slashes-become-single-slash
+    etat: a-rediger
+  - id: outlook-messages-automatiques-sans-objet
+    titre: "Les messages générés automatiquement depuis une application arrivent sans objet ni contenu"
+    symptome: "Un envoi via MAPI simple produit un message vide (clé Mail du registre absente)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/message-body/no-subject-content-in-automatically-email
+    etat: a-rediger
+  - id: outlook-rapport-remise-identite-invalide
+    titre: "« The Specified Message Identity is Invalid » en ouvrant un rapport de remise"
+    symptome: "L'outil de rapport de remise ne fonctionne pas depuis Outlook."
+    erreurs: ["The Specified Message Identity is Invalid"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/message-body/specified-message-identity-is-invalid-error-when-opening-delivery-reports
+    etat: a-rediger
+  - id: outlook-boutons-accepter-refuser-tache-absents
+    titre: "Les boutons Accepter et Refuser manquent dans une demande de tâche"
+    symptome: "Une demande de tâche reçue de l'extérieur s'affiche comme un simple message."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/message-body/accept-decline-buttons-missing-in-task-request
+    etat: a-rediger
+  - id: outlook-messages-actionnables-mal-affiches
+    titre: "Messages actionnables (cartes) mal affichés ou non actualisés"
+    symptome: "Une carte actionnable (approbation, formulaire) s'affiche mal ou ne se met pas à jour dans le volet de lecture."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/message-body/actionable-messages-render-incorrectly
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/message-body/actionable-message-in-reading-pane-not-refreshed
+    etat: a-rediger
+  - id: outlook-objet-message-non-modifiable
+    titre: "Impossible de modifier l'objet d'un message reçu"
+    symptome: "Le champ Objet reste verrouillé quand on essaie de le renommer."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/cannot-edit-message-subject
+    etat: a-rediger
+
+  # --- Pièces jointes ---
+  - id: outlook-taille-piece-jointe-depasse-limite
+    titre: "« La taille de la pièce jointe dépasse la limite autorisée »"
+    symptome: "Outlook refuse d'ajouter un fichier volumineux au message (limite côté client ou serveur)."
+    erreurs: ["The attachment size exceeds the allowable limit."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/message-body/attachment-size-exceeds-the-allowable-limit-error
+    etat: a-rediger
+  - id: outlook-apercu-piece-jointe-impossible
+    titre: "« Ce fichier ne peut pas être affiché en aperçu » dans le volet de lecture"
+    symptome: "L'aperçu des pièces jointes Word, Excel ou PDF échoue avec une erreur de visionneuse."
+    erreurs: ["This file cannot be previewed because of an error with the following previewer"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/cannot-preview-office-documents-in-outlook
+    etat: a-rediger
+  - id: outlook-ouverture-piece-jointe-word-excel-erreur
+    titre: "Erreur à l'ouverture d'une pièce jointe Word ou Excel depuis Outlook"
+    symptome: "Word ou Excel signale qu'il a rencontré une erreur en ouvrant le fichier joint (dossier temporaire sécurisé OLK)."
+    erreurs: ["Word experienced an error trying to open the file."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/cannot-open-word-documents-or-excel-spreadsheets
+    etat: a-rediger
+  - id: outlook-apercu-fichiers-msg-explorateur
+    titre: "Impossible d'afficher l'aperçu des fichiers .msg dans l'Explorateur Windows (Outlook 64 bits)"
+    symptome: "Le volet de visualisation de l'Explorateur affiche une erreur pour les fichiers .msg."
+    erreurs: ["This file can't be previewed"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/cannot-preview-msg-files-in-windows-file-explorer
+    etat: a-rediger
+  - id: outlook-double-clic-piece-jointe-sans-effet
+    titre: "Le double-clic sur une pièce jointe ne l'ouvre pas"
+    symptome: "Les pièces jointes ne s'ouvrent qu'avec le menu contextuel (vitesse du double-clic)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/cannot-open-attachments-by-double-clicking
+    etat: a-rediger
+  - id: outlook-deux-pieces-jointes-excel-meme-nom
+    titre: "Impossible d'ouvrir deux pièces jointes Excel portant le même nom"
+    symptome: "Excel refuse d'ouvrir la deuxième pièce jointe homonyme provenant d'un autre message."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/only-two-excel-attachments-can-open
+    etat: a-rediger
+  - id: outlook-enregistrement-pieces-jointes-comportement
+    titre: "L'enregistrement des pièces jointes ne fonctionne pas comme prévu"
+    symptome: "« Enregistrer toutes les pièces jointes » ou le glisser-déposer échoue selon la version."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/attachment-saving-scenarios-do-not-work-as-expected
+    etat: a-rediger
+  - id: outlook-image-jointe-grossit-chez-destinataire
+    titre: "Une image jointe devient beaucoup plus lourde chez le destinataire"
+    symptome: "La taille du fichier graphique augmente après envoi (mise à l'échelle DPI)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/graphics-file-attachment-grows-larger-in-recipient-email
+    etat: a-rediger
+  - id: outlook-piece-jointe-invisible-texte-brut
+    titre: "La pièce jointe n'apparaît pas dans l'en-tête d'un message en texte brut"
+    symptome: "La ligne « Pièces jointes » reste vide alors que le fichier est bien envoyé."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/message-body/attachment-does-not-appear-in-plain-text-message
+    etat: a-rediger
+  - id: outlook-copie-msg-nombreuses-pieces-jointes
+    titre: "Erreur en copiant des fichiers .msg contenant beaucoup de pièces jointes ou de destinataires"
+    symptome: "La copie ou l'enregistrement de messages au format MSG échoue."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/error-when-copying-msg-with-many-attachments-or-recipients
+    etat: a-rediger
+  - id: outlook-pieces-jointes-bloquees-par-serveur
+    titre: "« Certaines pièces jointes ont été bloquées » : téléchargement bloqué par le serveur"
+    symptome: "Les pièces jointes sont visibles mais ne peuvent pas être téléchargées (stratégie OWA, accès conditionnel, règle de flux)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/2238925/microsoft-outlook-error-some-of-attachments-are-bl
+      - https://learn.microsoft.com/en-us/answers/questions/4571526/desktop-version-blocked-pdf-attachment-but-365-ver
+    etat: a-rediger

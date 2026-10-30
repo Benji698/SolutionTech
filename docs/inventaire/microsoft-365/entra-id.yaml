@@ -1240,3 +1240,454 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-device-registration-tool-linux
     etat: a-rediger
+  # ---------------------------------------------------------------------------
+  # Entra Connect / Cloud Sync : erreurs visibles côté cloud
+  # ---------------------------------------------------------------------------
+  - id: entra-connect-synchronisation-erreur
+    titre: "Un compte AD n'est pas synchronisé vers Microsoft 365 (Entra Connect, attribut en double)"
+    symptome: "Un utilisateur créé ou modifié dans AD n'apparaît pas ou mal dans Microsoft 365 ; le rapport d'erreurs de synchronisation signale un attribut en double."
+    erreurs: ["AttributeValueMustBeUnique", "InvalidSoftMatch"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/tshoot-connect-sync-errors
+    etat: redigee
+  - id: entra-connect-invalidhardmatch
+    titre: "Erreur de synchronisation InvalidHardMatch (ancre source déjà liée à un autre objet)"
+    symptome: "Un objet AD ne se synchronise plus car son immutableId / sourceAnchor correspond déjà à un autre utilisateur cloud (compte recréé, migration de forêt)."
+    erreurs: ["InvalidHardMatch"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/tshoot-connect-sync-errors
+    etat: a-rediger
+  - id: entra-connect-objecttypemismatch
+    titre: "Erreur de synchronisation ObjectTypeMismatch (objet de type différent avec la même adresse)"
+    symptome: "Un groupe, un contact ou un utilisateur AD ne se synchronise pas car un objet cloud d'un autre type porte déjà la même adresse."
+    erreurs: ["ObjectTypeMismatch"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/tshoot-connect-sync-errors
+    etat: a-rediger
+  - id: entra-connect-datavalidationfailed-upn
+    titre: "Erreur DataValidationFailed / IdentityDataValidationFailed (UPN ou attribut invalide)"
+    symptome: "Un objet n'est pas exporté car un attribut (UPN avec caractère interdit, domaine non vérifié, valeur trop longue) ne passe pas la validation Entra."
+    erreurs: ["DataValidationFailed", "IdentityDataValidationFailed"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/tshoot-connect-sync-errors
+    etat: a-rediger
+  - id: entra-connect-deletingcloudonlyobjectnotallowed
+    titre: "Erreur DeletingCloudOnlyObjectNotAllowed (Error Type 114)"
+    symptome: "La synchronisation tente de supprimer ou modifier un objet qui est en réalité un objet cloud uniquement ; l'export est refusé."
+    erreurs: ["DeletingCloudOnlyObjectNotAllowed", "Error Type 114"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/tshoot-connect-sync-errors
+    etat: a-rediger
+  - id: entra-connect-largeobject-usercertificate
+    titre: "Erreur LargeObject / ExceededAllowedLength (trop de certificats ou d'adresses sur l'objet)"
+    symptome: "Un utilisateur ou un ordinateur n'est plus synchronisé car l'attribut userCertificate, userSMIMECertificate ou proxyAddresses dépasse la taille autorisée."
+    erreurs: ["LargeObject", "ExceededAllowedLength"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/tshoot-connect-largeobjecterror-usercertificate
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/tshoot-connect-sync-errors
+    etat: a-rediger
+  - id: entra-connect-existing-admin-role-conflict
+    titre: "Erreur Existing Admin Role Conflict : correspondance refusée avec un compte cloud administrateur"
+    symptome: "Un compte AD ne peut pas être fusionné (soft match) avec un compte cloud qui possède un rôle d'administration."
+    erreurs: ["Existing Admin Role Conflict"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/tshoot-connect-sync-errors
+    etat: a-rediger
+  - id: entra-connect-synchronisation-arretee-alerte
+    titre: "La synchronisation d'annuaire n'a pas eu lieu depuis plus d'un jour (alerte Entra / Microsoft 365)"
+    symptome: "Le centre d'administration signale que la synchronisation n'est plus enregistrée depuis 24 h : serveur arrêté, service ADSync bloqué, compte de connecteur expiré, TLS."
+    erreurs: ["Directory synchronization hasn't registered in more than a day"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/directory-sync-stop-register
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/tshoot-connect-connectivity
+    etat: a-rediger
+  - id: entra-connect-seuil-suppression-accidentelle
+    titre: "Synchronisation bloquée : seuil de suppressions accidentelles dépassé"
+    symptome: "Après un déplacement d'OU ou un changement de filtrage, la synchronisation s'arrête car le nombre de suppressions dépasse le seuil (500 par défaut)."
+    erreurs: ["stopped-deletion-threshold-exceeded"]
+    priorite: critique
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-sync-feature-prevent-accidental-deletes
+    etat: a-rediger
+  - id: entra-connect-quota-objets-depasse
+    titre: "« Cette société a dépassé le nombre d'objets pouvant être synchronisés »"
+    symptome: "Le rapport de synchronisation signale le dépassement du quota d'objets du locataire (50 000 par défaut sans domaine vérifié)."
+    erreurs: ["This company has exceeded the number of objects that can be synchronized"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/exceed-number-objects-synced
+    etat: a-rediger
+  - id: entra-connect-objet-synchronise-non-modifiable-cloud
+    titre: "Impossible de modifier ou supprimer dans le cloud un utilisateur synchronisé depuis AD"
+    symptome: "Le portail refuse de modifier le nom, l'adresse, le téléphone ou de supprimer l'objet : ses attributs sont gérés par Active Directory local."
+    erreurs: ["Unable to update this object because the following attributes associated with this object have values that may be managed by your on-premises Active Directory"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/cannot-manage-objects
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/users-groups-entra-apis/cannot-modify-user-mail-phone-attributes
+    etat: a-rediger
+  - id: entra-connect-suppressions-non-synchronisees
+    titre: "Un objet supprimé dans AD reste présent dans Entra ID"
+    symptome: "Après suppression d'un compte AD, l'utilisateur ou le groupe reste visible dans Microsoft 365 (objet hors périmètre, erreur d'export, synchronisation arrêtée)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/object-deletions-not-sync
+    etat: a-rediger
+  - id: entra-connect-objet-cloud-orphelin-desactiver-sync
+    titre: "Objet synchronisé devenu orphelin : le repasser en objet cloud ou effacer ses attributs locaux"
+    symptome: "Après l'arrêt d'Entra Connect ou la sortie d'un objet du périmètre, un compte reste « synchronisé » et non modifiable ; il faut nettoyer les attributs locaux."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/tshoot-clear-on-premises-attributes
+    etat: a-rediger
+  - id: entra-connect-chiffre-ajoute-nom-adresse
+    titre: "Un chiffre est ajouté au nom d'utilisateur ou à l'adresse lors de la synchronisation"
+    symptome: "L'UPN ou l'adresse synchronisée devient jean.dupont1234@… car la valeur est déjà prise par un autre objet (résilience des attributs en double)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/number-add-username-email-address
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-syncservice-duplicate-attribute-resiliency
+    etat: a-rediger
+  - id: entra-connect-adresses-mail-non-synchronisees
+    titre: "Adresses e-mail ou proxyAddresses non synchronisées vers Entra ID"
+    symptome: "L'adresse principale ou les alias définis dans AD n'apparaissent pas côté cloud (attribut mail vs proxyAddresses, domaine non vérifié)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/email-addresses-not-sync
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/proxyaddresses-attribute-populate
+    etat: a-rediger
+  - id: entra-connect-attribut-non-synchronise
+    titre: "Un attribut modifié dans AD n'est pas mis à jour dans Entra ID"
+    symptome: "Un changement (service, téléphone, responsable…) fait dans AD n'arrive pas dans le cloud : attribut non sélectionné, règle de synchronisation, filtrage."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/tshoot-connect-attribute-not-syncing
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/tshoot-connect-object-not-syncing
+    etat: a-rediger
+  - id: entra-connect-hachage-mot-de-passe-non-synchronise
+    titre: "Le nouveau mot de passe AD ne fonctionne pas sur Microsoft 365 : synchronisation du hachage en panne"
+    symptome: "Après un changement de mot de passe dans AD, l'ancien mot de passe reste valable dans le cloud (PHS arrêtée, événement 611, droits Replicate Directory Changes)."
+    erreurs: ["Event ID 611"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/tshoot-connect-password-hash-synchronization
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/pwd-hash-sync-stops-work
+    etat: a-rediger
+  - id: entra-connect-health-alerte-fraicheur-donnees
+    titre: "Alerte Entra Connect Health : les données ne sont plus à jour (data freshness)"
+    symptome: "Connect Health indique que l'agent n'a pas envoyé de données depuis longtemps ou affiche des informations obsolètes sur le serveur."
+    erreurs: ["Health service data is not up to date"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/ad-dmn-services/aad-connect-health-data-freshness
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/outdate-information-displays
+    etat: a-rediger
+  - id: entra-connect-tls12-requis
+    titre: "Entra Connect ou agents qui ne communiquent plus avec Entra ID : TLS 1.2 non activé"
+    symptome: "Après l'arrêt de TLS 1.0/1.1 côté Microsoft, la synchronisation, la réécriture ou les agents PTA échouent sur des serveurs anciens."
+    erreurs: []
+    priorite: critique
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/ad-dmn-services/enable-support-tls-environment
+    etat: a-rediger
+  - id: entra-connect-impossible-authentifier-service
+    titre: "Entra Connect ne peut pas s'authentifier auprès d'Entra ID"
+    symptome: "L'assistant ou le service de synchronisation affiche Unable to communicate with the Windows Azure Active Directory service ou Unable to authenticate your credentials (proxy, MFA, compte, TLS)."
+    erreurs: ["Unable to communicate with the Windows Azure Active Directory service", "Unable to authenticate your credentials"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/unable-communicate-windows-service
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/unable-authenticate-credentials
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/troubleshoot-connect-sync-application-authentication
+    etat: a-rediger
+  - id: entra-cloud-sync-aucun-agent-actif
+    titre: "Entra Cloud Sync : aucun agent actif pour le domaine (HybridIdentityServiceNoActiveAgents)"
+    symptome: "La configuration Cloud Sync est en erreur car aucun agent de provisionnement n'est actif ou attribué au domaine."
+    erreurs: ["HybridIdentityServiceNoActiveAgents", "HybridIdentityServiceNoAgentsAssigned", "We're unable to find an active agent for the domain you're trying to sync."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/cloud-sync/reference-error-codes
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/cloud-sync/how-to-troubleshoot
+    etat: a-rediger
+  - id: entra-cloud-sync-agent-installation-gmsa
+    titre: "Installation de l'agent Cloud Sync en échec (gMSA, KDS, service AADConnectProvisioningAgent)"
+    symptome: "L'agent de provisionnement ne s'installe pas ou ne démarre pas : clé racine KDS absente, droits gMSA, privilèges d'installation."
+    erreurs: ["Unable to create gMSA because KDS may not be running on domain controller", "Cannot start service AADConnectProvisioningAgent", "There is no such object on the server"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/ad-dmn-services/azure-ad-hybrid-sync-unable-create-gmsa-kds-domain-controller
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/ad-dmn-services/azure-ad-hybrid-sync-cannot-start-aadconnect-provisioning-agent
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/ad-dmn-services/azure-ad-hybrid-sync-no-such-object-on-server
+    etat: a-rediger
+  # ---------------------------------------------------------------------------
+  # Windows Hello for Business côté Entra ID
+  # ---------------------------------------------------------------------------
+  - id: entra-whfb-provisionnement-ne-demarre-pas
+    titre: "Windows Hello for Business ne propose jamais de créer le code PIN (WillNotProvision)"
+    symptome: "Après connexion, l'assistant WHfB ne se lance pas ; dsregcmd /status montre PreReqResult : WillNotProvision (pas de PRT, TPM, stratégie désactivée, session à distance)."
+    erreurs: ["PreReqResult : WillNotProvision", "NgcSet : NO"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-device-dsregcmd
+      - https://learn.microsoft.com/en-us/windows/security/identity-protection/hello-for-business/hello-deployment-issues
+    etat: a-rediger
+  - id: entra-whfb-erreur-creation-pin
+    titre: "Erreur lors de la création du code PIN Windows Hello for Business (0x801C044D, 0x80090036, 0x801c0451…)"
+    symptome: "L'assistant de création du PIN échoue avec « Un problème est survenu » et un code : jeton utilisateur non obtenu, boîte de dialogue annulée, inscription de clé refusée."
+    erreurs: ["0x801C044D", "0x80090036", "0x801c0451", "0x80090010 NTE_PERM"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/windows-client/user-profiles-and-logon/windows-hello-errors-during-pin-creation-in-windows-10
+      - https://learn.microsoft.com/en-us/windows/security/identity-protection/hello-for-business/hello-deployment-issues
+    etat: a-rediger
+  - id: entra-whfb-cle-introuvable-aadsts130004
+    titre: "Connexion par PIN refusée : clé Windows Hello introuvable dans Entra ID (AADSTS130004 et suivants)"
+    symptome: "Le PIN ne fonctionne pas pour obtenir un jeton cloud : clé NGC absente ou pas encore synchronisée (key trust), appareil désactivé ou introuvable."
+    erreurs: ["AADSTS130004: NgcKeyNotFound - The user principal doesn't have the NGC ID key configured.", "AADSTS130005: NgcInvalidSignature", "AADSTS130006: NgcTransportKeyNotFound", "AADSTS130007: NgcDeviceIsDisabled", "AADSTS130008: NgcDeviceIsNotFound"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-whfb-confiance-kerberos-cloud-ressources-locales
+    titre: "Après connexion par PIN (confiance Kerberos cloud), accès impossible aux partages et ressources locales"
+    symptome: "L'utilisateur se connecte avec Windows Hello mais ne peut pas ouvrir les partages réseau : objet serveur Kerberos Entra (krbtgt_AzureAD) absent, contrôleurs non à jour, stratégie mal configurée."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/howto-authentication-passwordless-troubleshoot
+      - https://learn.microsoft.com/en-us/answers/questions/1193002/windows-hello-for-business-cloud-kerberos-trust-de
+    etat: a-rediger
+  - id: entra-whfb-reinitialisation-pin-echoue
+    titre: "La réinitialisation du code PIN Windows Hello échoue (« Nous ne pouvons pas ouvrir cette page pour l'instant »)"
+    symptome: "Le lien « J'ai oublié mon code PIN » échoue sur un poste joint Entra : service de réinitialisation non consenti, URL du fournisseur d'identité non autorisées."
+    erreurs: ["We can't open that page right now"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/windows/security/identity-protection/hello-for-business/pin-reset
+      - https://learn.microsoft.com/en-us/windows/security/identity-protection/hello-for-business/hello-deployment-issues
+    etat: a-rediger
+  - id: entra-fido2-cle-securite-hybride-echec
+    titre: "Clé de sécurité FIDO2 refusée ou sans accès aux ressources locales sur un poste hybride"
+    symptome: "La connexion Windows par clé FIDO2 échoue juste après la jonction hybride, Windows Hello Visage passe avant la clé, ou le SSO vers les ressources NTLM ne fonctionne pas."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/howto-authentication-passwordless-troubleshoot
+    etat: a-rediger
+  - id: entra-cba-validation-certificat-echoue
+    titre: "Authentification par certificat (CBA) refusée : validation du certificat ou de la LCR impossible (AADSTS50017 / AADSTS220501)"
+    symptome: "La connexion par carte à puce ou certificat échoue : autorité de certification non déclarée, chaîne incomplète ou liste de révocation inaccessible."
+    erreurs: ["AADSTS50017: Validation of given certificate for certificate-based authentication failed.", "AADSTS220501: InvalidCrlDownload"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-code-aadsts50017-certificate-based-authentication-failed
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-code-aadsts220501-unable-to-download-certificate-revocation-list
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/certificate-based-authenticate-issue
+    etat: a-rediger
+  # ---------------------------------------------------------------------------
+  # Comptes : création, suppression, restauration, révocation
+  # ---------------------------------------------------------------------------
+  - id: entra-utilisateur-supprime-restaurer
+    titre: "Restaurer un utilisateur supprimé par erreur (corbeille Entra, 30 jours)"
+    symptome: "Un compte a été supprimé (départ anticipé, erreur) : boîte aux lettres, OneDrive et accès ont disparu ; il reste récupérable pendant 30 jours."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/fundamentals/users-restore
+    etat: a-rediger
+  - id: entra-restauration-utilisateur-conflit-adresse
+    titre: "Restauration d'un utilisateur impossible : conflit d'UPN ou de proxyAddresses"
+    symptome: "La restauration échoue car un compte actif utilise désormais le même UPN ou une des adresses du compte supprimé."
+    erreurs: ["Resolve proxy address conflict"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/fundamentals/users-restore
+      - https://learn.microsoft.com/en-us/powershell/module/microsoft.entra.directorymanagement/restore-entradeleteddirectoryobject
+    etat: a-rediger
+  - id: entra-creation-suppression-utilisateur-echoue
+    titre: "Impossible de créer ou de supprimer un utilisateur dans Entra ID"
+    symptome: "La création ou la suppression d'un compte échoue (droits insuffisants, objet synchronisé, quota d'objets, UPN déjà utilisé, rôle d'administration attribué)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/dir-dmns-obj/troubleshoot-user-creation-deletion-issues
+    etat: a-rediger
+  - id: entra-suppression-definitive-corbeille-introuvable
+    titre: "Utilisateur introuvable en voulant le supprimer définitivement de la corbeille"
+    symptome: "La suppression définitive d'un utilisateur déjà supprimé échoue avec User Not Found."
+    erreurs: ["Remove-MsolUser : User Not Found"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/dir-dmns-obj/remove-msoluser-user-not-found-recyclebin
+    etat: a-rediger
+  - id: entra-revoquer-sessions-compte-compromis
+    titre: "Compte compromis ou départ urgent : bloquer la connexion et révoquer toutes les sessions"
+    symptome: "Un compte doit perdre immédiatement tout accès, mais les applications restent connectées tant que les jetons ne sont pas révoqués."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/users/users-revoke-access
+    etat: a-rediger
+  - id: entra-changement-mot-de-passe-non-enregistre
+    titre: "Le changement de mot de passe n'est pas enregistré dans Microsoft 365"
+    symptome: "L'utilisateur change son mot de passe mais l'ancien reste valable, ou le nouveau est refusé (compte synchronisé sans réécriture, réplication)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/dir-dmns-obj/pwd-change-not-save
+    etat: a-rediger
+  - id: entra-utilisateur-introuvable-graph-upn-invite
+    titre: "Invité introuvable par son UPN dans Graph ou PowerShell (#EXT#)"
+    symptome: "Une recherche d'invité par adresse e-mail échoue car son UPN réel contient #EXT# et le domaine onmicrosoft.com."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/users-groups-entra-apis/microsoft-graph-api-query-can-not-get-business-to-business-user
+    etat: a-rediger
+  # ---------------------------------------------------------------------------
+  # UPN et domaines
+  # ---------------------------------------------------------------------------
+  - id: entra-upn-modifie-ad-non-repercute
+    titre: "Changement d'UPN dans AD non répercuté dans Entra ID"
+    symptome: "Après un changement de nom ou de suffixe UPN dans AD, l'ancien UPN reste dans Microsoft 365 (fonction SynchronizeUpnForManagedUsers désactivée, passage entre domaines fédérés)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/howto-troubleshoot-upn-changes
+      - https://learn.microsoft.com/en-us/answers/questions/2140698/user-principal-name-change-in-ad-not-syncing-to-mi
+    etat: a-rediger
+  - id: entra-upn-change-effets-postes-applications
+    titre: "Problèmes après un changement d'UPN : poste joint, Authenticator, OneDrive, applications SaaS"
+    symptome: "Après renommage d'un utilisateur, il faut se reconnecter partout ; Authenticator, l'inscription MDM, OneDrive ou des applications tierces perdent le lien avec le compte."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/howto-troubleshoot-upn-changes
+    etat: a-rediger
+  - id: entra-utilisateurs-synchronises-upn-onmicrosoft
+    titre: "Les utilisateurs synchronisés arrivent avec un UPN en @…onmicrosoft.com"
+    symptome: "Les comptes synchronisés reçoivent un UPN onmicrosoft.com car leur suffixe AD (contoso.local) n'est pas un domaine vérifié dans Entra ID."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/use-upn-matching-identity-sync
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/howto-troubleshoot-upn-changes
+    etat: a-rediger
+  - id: entra-domaine-verification-echoue
+    titre: "La vérification du domaine personnalisé échoue (enregistrement TXT ou MX introuvable)"
+    symptome: "Après ajout du TXT chez le registraire, Entra ID ne vérifie pas le domaine : propagation DNS, mauvaise zone, erreur de saisie, enregistrement sur un sous-domaine."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/fundamentals/add-custom-domain
+      - https://support.microsoft.com/kb/2812881
+    etat: a-rediger
+  - id: entra-domaine-deja-utilise-autre-locataire
+    titre: "« Ce domaine est déjà utilisé par une autre organisation » en ajoutant un domaine"
+    symptome: "Le domaine est déjà vérifié dans un autre locataire (ancien abonnement, essai, Power BI en libre-service) et doit y être supprimé ou récupéré."
+    erreurs: ["This domain has already been added to a different Microsoft 365 organization"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/previous-versions/troubleshoot/microsoft-365/admin/domain-errors-in-office-365-portal
+      - https://learn.microsoft.com/en-us/entra/identity/users/domains-manage
+    etat: a-rediger
+  - id: entra-locataire-non-gere-prise-controle
+    titre: "Domaine bloqué dans un locataire non géré (« viral ») : prise de contrôle par l'administrateur"
+    symptome: "Des utilisateurs se sont inscrits en libre-service avec l'adresse de l'entreprise, créant un locataire non géré qui détient le domaine."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/users/domains-admin-takeover
+    etat: a-rediger
+  - id: entra-domaine-suppression-impossible-references
+    titre: "Impossible de supprimer un domaine personnalisé : des objets l'utilisent encore"
+    symptome: "La suppression du domaine est refusée car des utilisateurs, groupes ou applications utilisent encore ce suffixe (option ForceDelete)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/users/domains-manage
+    etat: a-rediger
+  - id: entra-sous-domaine-ajout-impossible
+    titre: "Impossible d'ajouter un sous-domaine d'un domaine déjà vérifié"
+    symptome: "L'ajout d'un sous-domaine (ex. fr.contoso.com) échoue ou hérite des paramètres d'authentification du domaine racine."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/new-msoldomain-cmdle-add-subdomain
+      - https://learn.microsoft.com/en-us/entra/identity/users/domains-verify-custom-subdomain
+    etat: a-rediger
+  - id: entra-domaine-converti-federe-connexion-impossible
+    titre: "Plus personne ne peut se connecter après la conversion d'un domaine en fédéré"
+    symptome: "Après passage du domaine en authentification fédérée (AD FS), les connexions échouent : relation d'approbation, certificat ou point de terminaison mal configurés."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/cannot-signin-convert-domain-federated
+    etat: a-rediger
+  - id: entra-erreur-fournisseur-identite-federe
+    titre: "Erreur du fournisseur d'identité fédéré lors de la connexion (AADSTS20001, 50008, 50107, 40008…)"
+    symptome: "Les utilisateurs d'un domaine fédéré (AD FS, Okta, Ping…) obtiennent une erreur après la redirection : jeton SAML invalide, certificat, revendications manquantes."
+    erreurs: ["AADSTS20001: WsFedSignInResponseError", "AADSTS50008: InvalidSamlToken - SAML assertion is missing or misconfigured in the token.", "AADSTS40008: OAuth2IdPUnretryableServerError", "AADSTS5000819: InvalidSamlTokenEmailMissingOrInvalid"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger

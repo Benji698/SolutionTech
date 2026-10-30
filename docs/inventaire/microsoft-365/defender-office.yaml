@@ -2,12 +2,9 @@ domaine: microsoft-365
 sous_domaine: defender-office
 recense_le: 2026-10-29
 problemes:
-  # ---------------------------------------------------------------
-  # Quarantaine
-  # ---------------------------------------------------------------
   - id: defender-quarantaine-message-libere-non-recu
-    titre: "Message libéré de la quarantaine mais jamais arrivé dans la boîte"
-    symptome: "La libération indique un succès, mais le destinataire ne voit toujours pas le message dans sa boîte de réception."
+    titre: Message libéré de la quarantaine mais jamais arrivé dans la boîte
+    symptome: La libération indique un succès, mais le destinataire ne voit toujours pas le message dans sa boîte de réception.
     erreurs: []
     priorite: frequent
     format: complete
@@ -15,21 +12,20 @@ problemes:
       - https://learn.microsoft.com/en-CA/defender-office-365/quarantine-faq
       - https://learn.microsoft.com/en-us/defender-office-365/quarantine-admin-manage-messages-files
     etat: a-rediger
-
   - id: defender-quarantaine-message-remis-en-quarantaine
-    titre: "Message libéré puis remis en quarantaine par une règle de flux de messagerie"
-    symptome: "Après libération, le même message retourne aussitôt en quarantaine car une règle de transport (mail flow rule) le capture à nouveau."
+    titre: Message libéré puis remis en quarantaine par une règle de flux de messagerie
+    symptome: Après libération, le même message retourne aussitôt en quarantaine car une règle de transport (mail flow rule) le capture à nouveau.
     erreurs: []
     priorite: rare
     format: express
     sources:
       - https://learn.microsoft.com/en-CA/defender-office-365/quarantine-faq
     etat: a-rediger
-
   - id: defender-quarantaine-utilisateur-ne-peut-pas-liberer
-    titre: "L'utilisateur ne peut pas libérer son message (seulement « Demander la libération »)"
-    symptome: "Le message en quarantaine (hameçonnage à haut niveau de confiance ou programme malveillant) est visible mais grisé ; seul le bouton Demander la libération (Request release) est proposé."
-    erreurs: ["Request release"]
+    titre: L'utilisateur ne peut pas libérer son message (seulement « Demander la libération »)
+    symptome: Le message en quarantaine (hameçonnage à haut niveau de confiance ou programme malveillant) est visible mais grisé ; seul le bouton Demander la libération (Request release) est proposé.
+    erreurs:
+      - Request release
     priorite: frequent
     format: express
     sources:
@@ -37,10 +33,9 @@ problemes:
       - https://learn.microsoft.com/en-CA/defender-office-365/quarantine-faq
       - https://logios.mit.edu/confluence/display/istcontrib/Identifying+Quarantine+Messages+from+Microsoft
     etat: a-rediger
-
   - id: defender-quarantaine-demande-liberation-non-traitee
-    titre: "Demandes de libération de quarantaine non reçues ou non traitées par les administrateurs"
-    symptome: "Les utilisateurs cliquent sur Demander la libération, mais aucun administrateur n'est averti et le message reste bloqué."
+    titre: Demandes de libération de quarantaine non reçues ou non traitées par les administrateurs
+    symptome: Les utilisateurs cliquent sur Demander la libération, mais aucun administrateur n'est averti et le message reste bloqué.
     erreurs: []
     priorite: frequent
     format: complete
@@ -48,10 +43,9 @@ problemes:
       - https://learn.microsoft.com/en-us/defender-office-365/quarantine-quarantine-notifications
       - https://ccit.clemson.edu/?p=22390
     etat: a-rediger
-
   - id: defender-quarantaine-notifications-non-recues
-    titre: "Notifications de quarantaine (courrier indésirable) non reçues par les utilisateurs"
-    symptome: "Les utilisateurs ne reçoivent plus le résumé des messages mis en quarantaine envoyé par quarantine@messaging.microsoft.com."
+    titre: Notifications de quarantaine (courrier indésirable) non reçues par les utilisateurs
+    symptome: Les utilisateurs ne reçoivent plus le résumé des messages mis en quarantaine envoyé par quarantine@messaging.microsoft.com.
     erreurs: []
     priorite: frequent
     format: complete
@@ -59,19 +53,17 @@ problemes:
       - https://learn.microsoft.com/en-us/answers/questions/1326669/quarantine-email-notifications-have-stopped-as-of
       - https://learn.microsoft.com/en-us/defender-office-365/quarantine-quarantine-notifications
     etat: a-rediger
-
   - id: defender-quarantaine-notifications-inattendues-strategie-predefinie
-    titre: "Les utilisateurs reçoivent soudain des notifications de quarantaine (stratégies prédéfinies)"
-    symptome: "Après activation d'une stratégie de sécurité prédéfinie (Standard/Strict), des notifications arrivent alors que les stratégies personnalisées ne les prévoient pas."
+    titre: Les utilisateurs reçoivent soudain des notifications de quarantaine (stratégies prédéfinies)
+    symptome: Après activation d'une stratégie de sécurité prédéfinie (Standard/Strict), des notifications arrivent alors que les stratégies personnalisées ne les prévoient pas.
     erreurs: []
     priorite: rare
     format: express
     sources:
       - https://techcommunity.microsoft.com/discussions/microsoftdefenderforoffice365/preset-policies-have-suddenly-started-notifying-users-of-quarantined-messages/3773775
     etat: a-rediger
-
   - id: defender-quarantaine-message-introuvable
-    titre: "Message introuvable dans la quarantaine (recherche par ID, durée de conservation dépassée)"
+    titre: Message introuvable dans la quarantaine (recherche par ID, durée de conservation dépassée)
     symptome: "L'administrateur ne retrouve pas le message bloqué : ID de message saisi sans chevrons, filtre de dates, ou message supprimé après la durée de conservation de la quarantaine."
     erreurs: []
     priorite: frequent
@@ -80,10 +72,9 @@ problemes:
       - https://learn.microsoft.com/en-us/defender-office-365/quarantine-admin-manage-messages-files
       - https://learn.microsoft.com/en-CA/defender-office-365/quarantine-faq
     etat: a-rediger
-
   - id: defender-quarantaine-droits-insuffisants
     titre: "Impossible de libérer ou refuser un message en quarantaine : boutons grisés (rôle insuffisant)"
-    symptome: "Un technicien voit la quarantaine en lecture seule (Lecteur de sécurité / Security Reader) ; les actions Libérer ou Refuser sont grisées."
+    symptome: Un technicien voit la quarantaine en lecture seule (Lecteur de sécurité / Security Reader) ; les actions Libérer ou Refuser sont grisées.
     erreurs: []
     priorite: frequent
     format: express
@@ -92,43 +83,37 @@ problemes:
       - https://techcommunity.microsoft.com/discussions/microsoftdefenderatp/deny-option-in-quarantined-emails-grayed-out/4413993
       - https://techcommunity.microsoft.com/discussions/microsoftthreatprotection/defender-rbac---grant-at-least-priviliged-for-quarantine-handling-not-working/4044755
     etat: a-rediger
-
   - id: defender-quarantaine-mac-certificat-client
     titre: "Mac : certificat client demandé lors de la libération d'un message de quarantaine"
-    symptome: "Sur Mac, la libération depuis la notification ouvre une demande de certificat client pour le site de quarantaine."
-    erreurs: ["na01-quarantine.dataservice.protection.outlook.com requires a client certificate"]
+    symptome: Sur Mac, la libération depuis la notification ouvre une demande de certificat client pour le site de quarantaine.
+    erreurs:
+      - na01-quarantine.dataservice.protection.outlook.com requires a client certificate
     priorite: rare
     format: express
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/release-messages-prompted-client-certificate
     etat: a-rediger
-
   - id: defender-quarantaine-liberation-liste-distribution
-    titre: "Libérer un message mis en quarantaine adressé à une liste de distribution"
-    symptome: "Un message envoyé à un groupe de distribution est en quarantaine ; la libération ne le délivre pas à tous les membres."
+    titre: Libérer un message mis en quarantaine adressé à une liste de distribution
+    symptome: Un message envoyé à un groupe de distribution est en quarantaine ; la libération ne le délivre pas à tous les membres.
     erreurs: []
     priorite: rare
     format: express
     sources:
       - https://techcommunity.microsoft.com/t5/exchange/how-to-release-a-qurantined-email-sent-to-a-distribution-list/td-p/3938986
     etat: a-rediger
-
   - id: defender-quarantaine-liberation-echec-filtrage-tiers
-    titre: "Libération impossible même avec Release-QuarantineMessage -Force (filtrage tiers devant M365)"
-    symptome: "La libération échoue ou le message est rebloqué lorsque une passerelle tierce filtre aussi le courrier."
+    titre: Libération impossible même avec Release-QuarantineMessage -Force (filtrage tiers devant M365)
+    symptome: La libération échoue ou le message est rebloqué lorsque une passerelle tierce filtre aussi le courrier.
     erreurs: []
     priorite: rare
     format: express
     sources:
       - https://learn.microsoft.com/en-CA/defender-office-365/quarantine-faq
     etat: a-rediger
-
-  # ---------------------------------------------------------------
-  # Faux positifs / faux négatifs
-  # ---------------------------------------------------------------
   - id: defender-faux-positif-courrier-indesirable
-    titre: "Message légitime classé en courrier indésirable (Junk)"
-    symptome: "Des messages de partenaires ou clients arrivent dans le dossier Courrier indésirable (Junk Email) au lieu de la boîte de réception."
+    titre: Message légitime classé en courrier indésirable (Junk)
+    symptome: Des messages de partenaires ou clients arrivent dans le dossier Courrier indésirable (Junk Email) au lieu de la boîte de réception.
     erreurs: []
     priorite: frequent
     format: complete
@@ -136,31 +121,30 @@ problemes:
       - https://learn.microsoft.com/en-gb/defender-office-365/step-by-step-guides/how-to-handle-false-positives-in-microsoft-defender-for-office-365
       - https://learn.microsoft.com/de-de/archive/blogs/exovoice/basic-spam-troubleshooting-in-office-365
     etat: a-rediger
-
   - id: defender-faux-positif-quarantaine-hameconnage
-    titre: "Message légitime mis en quarantaine comme hameçonnage (phishing / high confidence phish)"
-    symptome: "Un message attendu n'arrive pas ; il est en quarantaine avec le motif Hameçonnage ou Hameçonnage à haut niveau de confiance."
-    erreurs: ["High confidence phish"]
+    titre: Message légitime mis en quarantaine comme hameçonnage (phishing / high confidence phish)
+    symptome: Un message attendu n'arrive pas ; il est en quarantaine avec le motif Hameçonnage ou Hameçonnage à haut niveau de confiance.
+    erreurs:
+      - High confidence phish
     priorite: frequent
     format: complete
     sources:
       - https://learn.microsoft.com/en-gb/defender-office-365/step-by-step-guides/how-to-handle-false-positives-in-microsoft-defender-for-office-365
       - https://techcommunity.microsoft.com/discussions/microsoftdefenderforoffice365/help-me-understand-why-this-email-was-quarantined/4427946
     etat: a-rediger
-
   - id: defender-faux-positif-mail-interne-hameconnage
-    titre: "Mail interne (entre collègues) mis en quarantaine comme hameçonnage à haut niveau de confiance"
-    symptome: "Un message envoyé d'un utilisateur à un autre du même locataire est bloqué comme high confidence phish par la stratégie anti-spam par défaut."
-    erreurs: ["High confidence phish"]
+    titre: Mail interne (entre collègues) mis en quarantaine comme hameçonnage à haut niveau de confiance
+    symptome: Un message envoyé d'un utilisateur à un autre du même locataire est bloqué comme high confidence phish par la stratégie anti-spam par défaut.
+    erreurs:
+      - High confidence phish
     priorite: rare
     format: complete
     sources:
       - https://techcommunity.microsoft.com/discussions/microsoftdefenderforoffice365/internal-user-email-quarantined-and-reason-high-confidence-phish/4171376
     etat: a-rediger
-
   - id: defender-faux-negatif-spam-phishing-recus
-    titre: "Spam ou hameçonnage qui passent quand même dans les boîtes (faux négatifs)"
-    symptome: "Les utilisateurs reçoivent régulièrement du spam ou des mails d'hameçonnage en boîte de réception malgré EOP / Defender."
+    titre: Spam ou hameçonnage qui passent quand même dans les boîtes (faux négatifs)
+    symptome: Les utilisateurs reçoivent régulièrement du spam ou des mails d'hameçonnage en boîte de réception malgré EOP / Defender.
     erreurs: []
     priorite: frequent
     format: complete
@@ -168,10 +152,9 @@ problemes:
       - https://learn.microsoft.com/de-de/archive/blogs/exovoice/basic-spam-troubleshooting-in-office-365
       - https://microsoft.github.io/zerotrustassessment/de/docs/workshop-guidance/securityoperations/SVA_MDO021
     etat: a-rediger
-
   - id: defender-scan-to-mail-classe-spam
-    titre: "Mails de numérisation (scan-to-mail) des copieurs classés en spam ou en quarantaine"
-    symptome: "Les scans envoyés par le copieur multifonction arrivent en indésirable ou en quarantaine (usurpation du domaine interne, IP non autorisée)."
+    titre: Mails de numérisation (scan-to-mail) des copieurs classés en spam ou en quarantaine
+    symptome: Les scans envoyés par le copieur multifonction arrivent en indésirable ou en quarantaine (usurpation du domaine interne, IP non autorisée).
     erreurs: []
     priorite: frequent
     format: complete
@@ -179,21 +162,20 @@ problemes:
       - https://techcommunity.microsoft.com/discussions/microsoft-365/anti-spam-protection-policy-scan2mail-false-positives/3772912
       - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/fix-issues-with-printers-scanners-and-lob-applications-that-send-email-using-off
     etat: a-rediger
-
   - id: defender-incident-service-faux-positifs-massifs
-    titre: "Nombreux messages légitimes bloqués d'un coup (incident côté Microsoft)"
-    symptome: "Du jour au lendemain, beaucoup de mails légitimes partent en indésirable ou en quarantaine dans plusieurs locataires ; un incident est publié dans l'état du service."
-    erreurs: ["EX682041"]
+    titre: Nombreux messages légitimes bloqués d'un coup (incident côté Microsoft)
+    symptome: Du jour au lendemain, beaucoup de mails légitimes partent en indésirable ou en quarantaine dans plusieurs locataires ; un incident est publié dans l'état du service.
+    erreurs:
+      - EX682041
     priorite: rare
     format: express
     sources:
       - https://borncity.com/win/2023/10/18/exchange-online-microsoft-deaktiviert-spam-regel-die-alles-als-junk-mail-betrachtet-hat-ex682041/
       - https://www.pulse.bot/cybersecurity/news/microsoft-exchange-online-flags-legitimate-emails-as-phishing-8f2e1d43-b75a-40c2-8c7a-4d2b92e7ecb2/
     etat: a-rediger
-
   - id: defender-soumission-microsoft-toujours-bloque
-    titre: "Soumission à Microsoft effectuée mais le message ou l'expéditeur reste bloqué"
-    symptome: "Après une soumission administrateur (Submissions) comme faux positif, les messages suivants du même expéditeur sont toujours filtrés."
+    titre: Soumission à Microsoft effectuée mais le message ou l'expéditeur reste bloqué
+    symptome: Après une soumission administrateur (Submissions) comme faux positif, les messages suivants du même expéditeur sont toujours filtrés.
     erreurs: []
     priorite: frequent
     format: complete
@@ -201,97 +183,95 @@ problemes:
       - https://learn.microsoft.com/en-us/training/modules/examine-microsoft-defender-office-365/7-submit-messages-urls-attachments-microsoft-analysis
       - https://microsoft.github.io/zerotrustassessment/de/docs/workshop-guidance/securityoperations/SVA_MDO021
     etat: a-rediger
-
   - id: defender-courrier-en-nombre-bcl-newsletters
-    titre: "Newsletters et mails marketing envoyés en indésirable ou en quarantaine (BCL, courrier en nombre)"
-    symptome: "Des lettres d'information attendues sont classées comme courrier en nombre (bulk) ; l'en-tête montre un BCL élevé."
-    erreurs: ["BCL:7"]
+    titre: Newsletters et mails marketing envoyés en indésirable ou en quarantaine (BCL, courrier en nombre)
+    symptome: Des lettres d'information attendues sont classées comme courrier en nombre (bulk) ; l'en-tête montre un BCL élevé.
+    erreurs:
+      - BCL:7
     priorite: frequent
     format: complete
     sources:
       - https://learn.microsoft.com/en-US/defender-office-365/anti-spam-bulk-senders-insight
       - https://o365reports.com/move-bulk-emails-to-promotions-folder-using-bulkmovesenabled/
     etat: a-rediger
-
   - id: defender-regle-scl-moins-un-ignoree
     titre: "Règle de transport « SCL -1 » (contourner le filtrage) sans effet : message quand même en quarantaine"
-    symptome: "Une règle de flux qui fixe le SCL à -1 n'empêche pas la quarantaine d'un message détecté comme hameçonnage à haut niveau de confiance ou programme malveillant."
-    erreurs: ["SCL:-1"]
+    symptome: Une règle de flux qui fixe le SCL à -1 n'empêche pas la quarantaine d'un message détecté comme hameçonnage à haut niveau de confiance ou programme malveillant.
+    erreurs:
+      - SCL:-1
     priorite: frequent
     format: express
     sources:
       - https://learn.microsoft.com/en-us/Exchange/security-and-compliance/mail-flow-rules/use-rules-to-set-scl
       - https://learn.microsoft.com/en-us/troubleshoot/exchange/antispam-and-protection/cautions-against-bypassing-spam-filters
     etat: a-rediger
-
   - id: defender-impersonation-faux-positif
-    titre: "Faux positif d'emprunt d'identité (impersonation) d'un utilisateur ou d'un domaine protégé"
-    symptome: "Des messages d'un partenaire dont le nom ou le domaine ressemble à un utilisateur ou domaine protégé sont mis en quarantaine pour usurpation d'identité."
-    erreurs: ["Impersonation user", "Impersonation domain"]
+    titre: Faux positif d'emprunt d'identité (impersonation) d'un utilisateur ou d'un domaine protégé
+    symptome: Des messages d'un partenaire dont le nom ou le domaine ressemble à un utilisateur ou domaine protégé sont mis en quarantaine pour usurpation d'identité.
+    erreurs:
+      - Impersonation user
+      - Impersonation domain
     priorite: frequent
     format: complete
     sources:
       - https://blueprint.asd.gov.au/design/shared-services/defender/anti-phishing/
       - https://techcommunity.microsoft.com/t5/microsoft-defender-xdr/managing-false-negative-and-false-positive-emails-concerning/m-p/2896434
     etat: a-rediger
-
-  # ---------------------------------------------------------------
-  # Authentification / usurpation (spoofing)
-  # ---------------------------------------------------------------
   - id: defender-usurpation-compauth-fail-expediteur-legitime
-    titre: "Expéditeur légitime bloqué pour usurpation (compauth=fail)"
-    symptome: "Les messages d'un fournisseur (ou d'un service d'envoi tiers) sont mis en quarantaine ; l'en-tête Authentication-Results montre compauth=fail reason=000 ou 001."
-    erreurs: ["compauth=fail reason=000", "compauth=fail reason=001"]
+    titre: Expéditeur légitime bloqué pour usurpation (compauth=fail)
+    symptome: Les messages d'un fournisseur (ou d'un service d'envoi tiers) sont mis en quarantaine ; l'en-tête Authentication-Results montre compauth=fail reason=000 ou 001.
+    erreurs:
+      - compauth=fail reason=000
+      - compauth=fail reason=001
     priorite: frequent
     format: complete
     sources:
       - https://learn.microsoft.com/en-us/defender-office-365/email-auth-sec-ops-guide
       - https://learn.microsoft.com/defender-office-365/tenant-allow-block-list-email-spoof-configure
     etat: a-rediger
-
   - id: defender-ndr-550-5-7-509-dmarc-reject
     titre: "Rejet DMARC : 550 5.7.509 Access denied, sending domain does not pass DMARC verification"
-    symptome: "L'expéditeur reçoit un rapport de non-remise car son domaine échoue DMARC alors que sa stratégie est p=reject."
-    erreurs: ["550 5.7.509 Access denied, sending domain [domaine] does not pass DMARC verification and has a DMARC policy of reject"]
+    symptome: L'expéditeur reçoit un rapport de non-remise car son domaine échoue DMARC alors que sa stratégie est p=reject.
+    erreurs:
+      - 550 5.7.509 Access denied, sending domain [domaine] does not pass DMARC verification and has a DMARC policy of reject
     priorite: frequent
     format: express
     sources:
       - https://techcommunity.microsoft.com/blog/exchange/announcing-new-dmarc-policy-handling-defaults-for-enhanced-email-security/3878883
       - https://techcommunity.microsoft.com/discussions/microsoftdefenderforoffice365/access-denied-sending-domain-does-not-pass-dmarc-verification-and-has-a-dmarc-po/4212076
     etat: a-rediger
-
   - id: defender-ndr-5-7-23-spf
     titre: "Rejet SPF : 550 5.7.23 The message was rejected because of Sender Policy Framework violation"
-    symptome: "Les messages d'un expéditeur sont rejetés à cause d'un échec SPF (enregistrement SPF incomplet ou serveur non autorisé)."
-    erreurs: ["550 5.7.23 The message was rejected because of Sender Policy Framework violation"]
+    symptome: Les messages d'un expéditeur sont rejetés à cause d'un échec SPF (enregistrement SPF incomplet ou serveur non autorisé).
+    erreurs:
+      - 550 5.7.23 The message was rejected because of Sender Policy Framework violation
     priorite: frequent
     format: express
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-5-7-23-in-exchange-online
     etat: a-rediger
-
   - id: defender-bandeau-rouge-fraud-detection
-    titre: "Bandeau rouge « This sender failed our fraud detection checks » sur un mail légitime"
-    symptome: "Outlook affiche un avertissement rouge de suspicion de fraude sur des messages de listes de diffusion ou de services qui envoient au nom d'un domaine."
-    erreurs: ["This sender failed our fraud detection checks and may not be who they appear to be."]
+    titre: Bandeau rouge « This sender failed our fraud detection checks » sur un mail légitime
+    symptome: Outlook affiche un avertissement rouge de suspicion de fraude sur des messages de listes de diffusion ou de services qui envoient au nom d'un domaine.
+    erreurs:
+      - This sender failed our fraud detection checks and may not be who they appear to be.
     priorite: frequent
     format: express
     sources:
       - https://learn.microsoft.com/en-gb/archive/blogs/tzink/troubleshooting-the-red-suspicious-safety-tip-for-fraud-detection-checks
       - https://it.cornell.edu/microsoft-outlook/fraud-detection-warnings-email-messages
     etat: a-rediger
-
   - id: defender-astuce-premier-contact
-    titre: "Bandeau « You don't often get email from… » (conseil de premier contact) gênant ou persistant"
-    symptome: "Un avertissement apparaît en haut des messages provenant d'expéditeurs inhabituels ; les utilisateurs demandent à le supprimer."
-    erreurs: ["You don't often get email from [adresse]. Learn why this is important"]
+    titre: Bandeau « You don't often get email from… » (conseil de premier contact) gênant ou persistant
+    symptome: Un avertissement apparaît en haut des messages provenant d'expéditeurs inhabituels ; les utilisateurs demandent à le supprimer.
+    erreurs:
+      - You don't often get email from [adresse]. Learn why this is important
     priorite: frequent
     format: express
     sources:
       - https://learn.microsoft.com/en-gb/answers/questions/1454974/how-to-disable-you-dont-often-get-email-from-notic
       - https://information-services.ed.ac.uk/computing/first-contact-safety-tips
     etat: a-rediger
-
   - id: defender-efc-passerelle-tierce-faux-positifs
     titre: "Passerelle tierce (Mimecast, Proofpoint…) devant M365 : faux positifs d'usurpation, filtrage amélioré mal configuré"
     symptome: "Avec un MX qui pointe vers une passerelle tierce, Microsoft voit l'IP de la passerelle : échecs SPF/DMARC et usurpations détectées à tort ; le filtrage amélioré des connecteurs (skip listing) ne s'applique pas."
@@ -303,13 +283,9 @@ problemes:
       - https://techcommunity.microsoft.com/discussions/microsoftdefenderforoffice365/enhanced-filtering-for-connectors-not-working/2808783
       - https://c7solutions.com/2020/09/enable-eop-enhanced-filtering-for-mimecast-users
     etat: a-rediger
-
-  # ---------------------------------------------------------------
-  # Liste d'autorisation / blocage du locataire
-  # ---------------------------------------------------------------
   - id: defender-liste-autorisation-blocage-sans-effet
-    titre: "Entrée « Autoriser » de la liste d'autorisation/blocage du locataire sans effet"
-    symptome: "Malgré une entrée d'autorisation pour un domaine ou une adresse, les messages restent bloqués (mauvais onglet, entrée de blocage prioritaire, usurpation)."
+    titre: Entrée « Autoriser » de la liste d'autorisation/blocage du locataire sans effet
+    symptome: Malgré une entrée d'autorisation pour un domaine ou une adresse, les messages restent bloqués (mauvais onglet, entrée de blocage prioritaire, usurpation).
     erreurs: []
     priorite: frequent
     format: complete
@@ -317,25 +293,22 @@ problemes:
       - https://learn.microsoft.com/defender-office-365/tenant-allow-block-list-about
       - https://techcommunity.microsoft.com/discussions/microsoftdefenderforoffice365/tenant-allow-block-lists-not-working-as-expected/4275265
     etat: a-rediger
-
   - id: defender-ndr-550-5-7-703-destinataire-bloque-liste
     titre: "550 5.7.703 : envoi bloqué vers un destinataire présent dans la liste de blocage du locataire"
-    symptome: "Un utilisateur interne reçoit une non-remise en écrivant à une adresse ou un domaine bloqué dans la liste d'autorisation/blocage du locataire."
-    erreurs: ["550 5.7.703"]
+    symptome: Un utilisateur interne reçoit une non-remise en écrivant à une adresse ou un domaine bloqué dans la liste d'autorisation/blocage du locataire.
+    erreurs:
+      - 550 5.7.703
     priorite: rare
     format: express
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-codes-550-5-7-703-550-5-7-705-550-5-7-708-550-5-7-750
       - https://support.microsoft.com/en-us/servicing/exchange/online/troubleshooting/ndr-error-codes-550-5-7-703-550-5-7-705-550-5-7-708-and-550-5-7-750
     etat: a-rediger
-
-  # ---------------------------------------------------------------
-  # Envoi bloqué (spam sortant, comptes restreints, réputation)
-  # ---------------------------------------------------------------
   - id: defender-utilisateur-restreint-550-5-1-8
     titre: "Utilisateur bloqué pour envoi de spam : 550 5.1.8 Access denied, bad outbound sender"
-    symptome: "Un utilisateur ne peut plus envoyer aucun mail (il en reçoit toujours) ; il figure dans la page Entités restreintes (Restricted entities). Souvent signe de compte compromis."
-    erreurs: ["550 5.1.8 Access denied, bad outbound sender"]
+    symptome: Un utilisateur ne peut plus envoyer aucun mail (il en reçoit toujours) ; il figure dans la page Entités restreintes (Restricted entities). Souvent signe de compte compromis.
+    erreurs:
+      - 550 5.1.8 Access denied, bad outbound sender
     priorite: critique
     format: complete
     sources:
@@ -343,76 +316,79 @@ problemes:
       - https://support.microsoft.com/en-us/topic/ndr-error-code-550-5-1-8-access-denied-bad-outbound-sender-e323f21d-4460-4be1-999c-c9c0cc6be4b4
       - https://learn.microsoft.com/et-ee/defender-office-365/outbound-spam-restore-restricted-users
     etat: a-rediger
-
   - id: defender-alerte-limite-envoi-depassee
-    titre: "Alerte « Email sending limit exceeded » / « User restricted from sending email »"
-    symptome: "Les administrateurs reçoivent une alerte Defender indiquant qu'un utilisateur a dépassé les limites d'envoi ou a été restreint."
-    erreurs: ["Email sending limit exceeded", "User restricted from sending email", "Suspicious email sending patterns detected"]
+    titre: Alerte « Email sending limit exceeded » / « User restricted from sending email »
+    symptome: Les administrateurs reçoivent une alerte Defender indiquant qu'un utilisateur a dépassé les limites d'envoi ou a été restreint.
+    erreurs:
+      - Email sending limit exceeded
+      - User restricted from sending email
+      - Suspicious email sending patterns detected
     priorite: frequent
     format: express
     sources:
       - https://learn.microsoft.com/en-us/answers/questions/1341681/defender-portal-restricted-entities-how-to-notify
       - https://learn.microsoft.com/en-us/training/modules/examine-microsoft-defender-office-365/5-configure-outbound-spam-filtering-policies
     etat: a-rediger
-
   - id: defender-ndr-550-5-7-705-locataire-bloque
     titre: "550 5.7.705 : tout le locataire est bloqué pour l'envoi (seuil de spam sortant dépassé)"
-    symptome: "Plus aucun utilisateur ne peut envoyer de mails vers l'extérieur ; le locataire a dépassé le seuil de courrier suspect."
-    erreurs: ["550 5.7.705 Access denied, tenant has exceeded threshold"]
+    symptome: Plus aucun utilisateur ne peut envoyer de mails vers l'extérieur ; le locataire a dépassé le seuil de courrier suspect.
+    erreurs:
+      - 550 5.7.705 Access denied, tenant has exceeded threshold
     priorite: critique
     format: express
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-codes-550-5-7-703-550-5-7-705-550-5-7-708-550-5-7-750
       - https://learn.microsoft.com/en-sg/answers/questions/1661880/tenant-restricted-from-sending-email
     etat: a-rediger
-
   - id: defender-ndr-550-5-7-708-ip-bloquee
-    titre: "550 5.7.708 Access denied, traffic not accepted from this IP"
-    symptome: "Les envois sortants sont refusés car le trafic du locataire est routé par une IP à mauvaise réputation (souvent nouveau locataire ou après compromission)."
-    erreurs: ["550 5.7.708 Access denied, traffic not accepted from this IP"]
+    titre: 550 5.7.708 Access denied, traffic not accepted from this IP
+    symptome: Les envois sortants sont refusés car le trafic du locataire est routé par une IP à mauvaise réputation (souvent nouveau locataire ou après compromission).
+    erreurs:
+      - 550 5.7.708 Access denied, traffic not accepted from this IP
     priorite: critique
     format: express
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-codes-550-5-7-703-550-5-7-705-550-5-7-708-550-5-7-750
       - https://learn.microsoft.com/en-us/answers/questions/5822605/outbound-emails-blocked-after-hack
     etat: a-rediger
-
   - id: defender-ndr-550-5-7-750-domaine-non-enregistre
-    titre: "550 5.7.750 Client blocked from sending from unregistered domains"
-    symptome: "Les messages envoyés avec une adresse d'un domaine non ajouté/vérifié dans le locataire sont refusés."
-    erreurs: ["550 5.7.750 Client blocked from sending from unregistered domains"]
+    titre: 550 5.7.750 Client blocked from sending from unregistered domains
+    symptome: Les messages envoyés avec une adresse d'un domaine non ajouté/vérifié dans le locataire sont refusés.
+    erreurs:
+      - 550 5.7.750 Client blocked from sending from unregistered domains
     priorite: rare
     format: express
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-codes-550-5-7-703-550-5-7-705-550-5-7-708-550-5-7-750
       - https://www.securemailmerge.com/help/mail-merge-bounce-access-denied/
     etat: a-rediger
-
   - id: defender-ip-bannie-5-7-606-portail-delist
     titre: "Expéditeur externe refusé : 550 5.7.606 Access denied, banned sending IP (portail de retrait)"
-    symptome: "Un partenaire ne peut plus écrire à des destinataires Microsoft 365 car l'IP de son serveur est sur la liste de blocage Microsoft."
-    erreurs: ["550 5.7.606 Access denied, banned sending IP"]
+    symptome: Un partenaire ne peut plus écrire à des destinataires Microsoft 365 car l'IP de son serveur est sur la liste de blocage Microsoft.
+    erreurs:
+      - 550 5.7.606 Access denied, banned sending IP
     priorite: frequent
     format: express
     sources:
       - https://learn.microsoft.com/en-us/defender-office-365/external-senders-use-the-delist-portal-to-unblock-yourself
       - https://learn.microsoft.com/en-us/archive/blogs/eopfieldnotes/take-action-yourself-on-blocked-ips-and-banned-senders
     etat: a-rediger
-
   - id: defender-expediteur-banni-5-7-511
-    titre: "550 5.7.511 Access denied, banned sender (portail de retrait inutilisable)"
-    symptome: "L'expéditeur est banni ; le portail sender.office.com ne permet pas de lever ce blocage."
-    erreurs: ["550 5.7.511 Access denied, banned sender"]
+    titre: 550 5.7.511 Access denied, banned sender (portail de retrait inutilisable)
+    symptome: L'expéditeur est banni ; le portail sender.office.com ne permet pas de lever ce blocage.
+    erreurs:
+      - 550 5.7.511 Access denied, banned sender
     priorite: rare
     format: express
     sources:
       - https://learn.microsoft.com/en-us/defender-office-365/external-senders-use-the-delist-portal-to-unblock-yourself
     etat: a-rediger
-
   - id: defender-5-7-1-client-host-blocked-blocklist
-    titre: "5.7.1 Service unavailable; Client host blocked using Blocklist 1 / Spamhaus"
-    symptome: "Les messages d'un serveur externe (ou d'un relais local) sont refusés par EOP car l'IP publique est sur une liste de blocage."
-    erreurs: ["5.7.1 Service unavailable; Client host [x.x.x.x] blocked using Blocklist 1; To request removal from this list please forward this message to delist@microsoft.com", "550 5.7.1 Service unavailable, Client host [x.x.x.x] blocked using Spamhaus"]
+    titre: 5.7.1 Service unavailable; Client host blocked using Blocklist 1 / Spamhaus
+    symptome: Les messages d'un serveur externe (ou d'un relais local) sont refusés par EOP car l'IP publique est sur une liste de blocage.
+    erreurs:
+      - 5.7.1 Service unavailable; Client host [x.x.x.x] blocked using Blocklist 1; To request removal from this list please forward this message to delist@microsoft.com
+      - 550 5.7.1 Service unavailable, Client host [x.x.x.x] blocked using Spamhaus
     priorite: frequent
     format: express
     sources:
@@ -420,35 +396,33 @@ problemes:
       - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/unable-to-relay-blocked-by-allow-list
       - https://learn.microsoft.com/en-au/answers/questions/2108626/email-is-being-blocked-by-old-spamhaus-record
     etat: a-rediger
-
   - id: defender-451-4-7-500-limitation-ip-asxxx
     titre: "451 4.7.500 Server busy (ASxxx) : limitation de l'IP d'envoi par EOP"
-    symptome: "Les messages d'un serveur sont temporairement refusés (différés) car EOP limite une IP nouvelle ou à faible réputation."
-    erreurs: ["451 4.7.500 Server busy. Please try again later from [x.x.x.x]. (AS843)"]
+    symptome: Les messages d'un serveur sont temporairement refusés (différés) car EOP limite une IP nouvelle ou à faible réputation.
+    erreurs:
+      - 451 4.7.500 Server busy. Please try again later from [x.x.x.x]. (AS843)
     priorite: rare
     format: express
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-451-4-7-500-699-asxxx-in-exchange-online
     etat: a-rediger
-
   - id: defender-outlook-com-blocage-s3150
     titre: "Envois vers Outlook.com / Hotmail refusés : IP sur liste de blocage S3150"
-    symptome: "Les messages vers des adresses grand public Microsoft (outlook.com, hotmail.com) reviennent avec un code S3150."
-    erreurs: ["part of their network is on our block list (S3150)"]
+    symptome: Les messages vers des adresses grand public Microsoft (outlook.com, hotmail.com) reviennent avec un code S3150.
+    erreurs:
+      - part of their network is on our block list (S3150)
     priorite: rare
     format: express
     sources:
       - https://learn.microsoft.com/en-us/answers/questions/4617592/what-does-error-s3150-mean
       - https://www.suped.com/learn/blocklists/what-causes-microsoft-s3150-blocklist-bounces-and-how-can-i-resolve-them
     etat: a-rediger
-
-  # ---------------------------------------------------------------
-  # Anti-malware / pièces jointes
-  # ---------------------------------------------------------------
   - id: defender-pieces-jointes-remplacees-malware-alert-text
-    titre: "Pièces jointes remplacées par « Malware Alert Text.txt » ou bloquées (filtre des pièces jointes courantes)"
-    symptome: "Un fichier légitime (.exe, .iso, .js…) est bloqué par extension ; le message arrive avec Malware Alert Text.txt ou part en quarantaine (CAT:FTBP)."
-    erreurs: ["Malware Alert Text.txt", "CAT:FTBP"]
+    titre: Pièces jointes remplacées par « Malware Alert Text.txt » ou bloquées (filtre des pièces jointes courantes)
+    symptome: Un fichier légitime (.exe, .iso, .js…) est bloqué par extension ; le message arrive avec Malware Alert Text.txt ou part en quarantaine (CAT:FTBP).
+    erreurs:
+      - Malware Alert Text.txt
+      - CAT:FTBP
     priorite: frequent
     format: express
     sources:
@@ -456,10 +430,9 @@ problemes:
       - https://techcommunity.microsoft.com/t5/microsoft-defender-for-office/email-protection-basics-in-microsoft-365-anti-malware-safe/ba-p/3791516
       - https://m365admin.handsontek.net/anti-malware-policy-common-attachment-filter-additional-file-types-block-by-default/
     etat: a-rediger
-
   - id: defender-zap-message-disparu-apres-remise
-    titre: "Message disparu de la boîte quelques heures après réception (purge automatique ZAP)"
-    symptome: "Un message déjà lu ou reçu est déplacé en quarantaine ou en indésirable sans action de l'utilisateur (Zero-hour auto purge)."
+    titre: Message disparu de la boîte quelques heures après réception (purge automatique ZAP)
+    symptome: Un message déjà lu ou reçu est déplacé en quarantaine ou en indésirable sans action de l'utilisateur (Zero-hour auto purge).
     erreurs: []
     priorite: frequent
     format: complete
@@ -468,34 +441,30 @@ problemes:
       - https://learn.microsoft.com/en-us/answers/questions/1364412/zap-(zero-autopurge)-quarantined-emails-long-delay
       - https://blog.admindroid.com/zero-hour-auto-purge-in-exchange-online/
     etat: a-rediger
-
-  # ---------------------------------------------------------------
-  # Safe Attachments (pièces jointes fiables)
-  # ---------------------------------------------------------------
   - id: defender-safe-attachments-pieces-jointes-retardees
-    titre: "Pièces jointes en attente ou retardées (remise dynamique Safe Attachments)"
-    symptome: "Le message arrive avec un espace réservé « analyse en cours » à la place de la pièce jointe, qui apparaît plusieurs minutes plus tard (ou jamais)."
-    erreurs: ["ATP Scan In Progress", "Scanning of file in progress"]
+    titre: Pièces jointes en attente ou retardées (remise dynamique Safe Attachments)
+    symptome: Le message arrive avec un espace réservé « analyse en cours » à la place de la pièce jointe, qui apparaît plusieurs minutes plus tard (ou jamais).
+    erreurs:
+      - ATP Scan In Progress
+      - Scanning of file in progress
     priorite: frequent
     format: complete
     sources:
       - https://techcommunity.microsoft.com/discussions/microsoft-365/how-dynamic-delivery-works-and-why-you-sometimes-have-to-wait-for-attachments/48019/replies/48029
       - https://support.exclaimer.com/hc/en-gb/articles/32150789885213-Dynamic-Delivery-Delays-for-Safe-Attachments-in-Microsoft-365
     etat: a-rediger
-
   - id: defender-safe-attachments-signature-tierce-messages-retardes
-    titre: "Messages avec pièces jointes retardés de plusieurs heures (remise dynamique + outil de signature tiers)"
-    symptome: "Avec Exclaimer (ou outil de signature côté serveur) et la remise dynamique, les messages avec pièce jointe arrivent très en retard ou pas du tout."
+    titre: Messages avec pièces jointes retardés de plusieurs heures (remise dynamique + outil de signature tiers)
+    symptome: Avec Exclaimer (ou outil de signature côté serveur) et la remise dynamique, les messages avec pièce jointe arrivent très en retard ou pas du tout.
     erreurs: []
     priorite: rare
     format: express
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/messages-with-attachments-are-not-delivered
     etat: a-rediger
-
   - id: defender-safe-attachments-doublons-dynamics-365
-    titre: "Pièces jointes non suivies ou messages en double dans Dynamics 365 (remise dynamique)"
-    symptome: "Après activation de Safe Attachments, les pièces jointes ne sont pas suivies dans Dynamics 365 et deux messages ont le même ID."
+    titre: Pièces jointes non suivies ou messages en double dans Dynamics 365 (remise dynamique)
+    symptome: Après activation de Safe Attachments, les pièces jointes ne sont pas suivies dans Dynamics 365 et deux messages ont le même ID.
     erreurs: []
     priorite: rare
     format: express
@@ -503,70 +472,63 @@ problemes:
       - https://learn.microsoft.com/en-us/troubleshoot/dynamics-365/sales/attachments-not-tracked-to-dynamics-365-after-office-365-atp-is-enabled
       - https://learn.microsoft.com/en-us/answers/questions/1597923/atp-dynamic-delivery-duplicate-attachment
     etat: a-rediger
-
   - id: defender-fichier-sharepoint-onedrive-bloque-malveillant
-    titre: "Fichier SharePoint / OneDrive / Teams bloqué comme malveillant (faux positif Safe Attachments)"
-    symptome: "Un fichier porte une icône de menace ; il ne peut plus être ouvert, copié, déplacé ni partagé."
-    erreurs: ["Malicious Payload"]
+    titre: Fichier SharePoint / OneDrive / Teams bloqué comme malveillant (faux positif Safe Attachments)
+    symptome: Un fichier porte une icône de menace ; il ne peut plus être ouvert, copié, déplacé ni partagé.
+    erreurs:
+      - Malicious Payload
     priorite: frequent
     format: complete
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/security/false-positive-malware-detections
       - https://support.microsoft.com/en-au/topic/26261670-db33-4c53-b125-af0662c34607
     etat: a-rediger
-
-  # ---------------------------------------------------------------
-  # Safe Links (liens fiables)
-  # ---------------------------------------------------------------
   - id: defender-safe-links-lien-usage-unique-consomme
-    titre: "Lien de réinitialisation ou lien à usage unique déjà expiré à l'ouverture (Safe Links)"
+    titre: Lien de réinitialisation ou lien à usage unique déjà expiré à l'ouverture (Safe Links)
     symptome: "L'utilisateur clique sur un lien de réinitialisation de mot de passe ou de connexion « magique » et obtient « lien expiré / déjà utilisé » : l'analyse automatique l'a consommé."
-    erreurs: ["The token has already been consumed"]
+    erreurs:
+      - The token has already been consumed
     priorite: frequent
     format: express
     sources:
       - https://oregonstate.teamdynamix.com/TDClient/1935/Portal/KB/ArticleDet?ID=138091
       - https://techcommunity.microsoft.com/t5/office-365/o365-url-scan-safe-links-impact-to-one-time-url/m-p/977132
     etat: a-rediger
-
   - id: defender-safe-links-url-reecrite-illisible
     titre: "Liens réécrits en safelinks.protection.outlook.com : URL illisible, copier-coller cassé"
-    symptome: "En copiant un lien d'un mail, on obtient une très longue adresse safelinks au lieu de l'adresse d'origine ; certains outils ou formulaires la refusent."
-    erreurs: ["safelinks.protection.outlook.com"]
+    symptome: En copiant un lien d'un mail, on obtient une très longue adresse safelinks au lieu de l'adresse d'origine ; certains outils ou formulaires la refusent.
+    erreurs:
+      - safelinks.protection.outlook.com
     priorite: frequent
     format: express
     sources:
       - https://uconn.atlassian.net/wiki/spaces/IKB/pages/10803643182
       - https://itsc2023.hkust.edu.hk/node/269
     etat: a-rediger
-
   - id: defender-safe-links-site-legitime-bloque
-    titre: "Safe Links bloque un site légitime (page d'avertissement « site malveillant »)"
-    symptome: "Un clic sur un lien vers un site connu affiche une page d'avertissement Microsoft indiquant que le site pourrait être dangereux."
-    erreurs: ["This website has been classified as malicious", "Opening this website might not be safe"]
+    titre: Safe Links bloque un site légitime (page d'avertissement « site malveillant »)
+    symptome: Un clic sur un lien vers un site connu affiche une page d'avertissement Microsoft indiquant que le site pourrait être dangereux.
+    erreurs:
+      - This website has been classified as malicious
+      - Opening this website might not be safe
     priorite: frequent
     format: complete
     sources:
       - https://bleepingcomputer.com/news/security/microsoft-defender-flags-legitimate-google-search-links-as-malicious
       - https://borncity.com/win/2023/03/30/microsoft-confirms-defender-has-flagged-legitimate-urls-or-files-as-malicious-dz534539/
     etat: a-rediger
-
   - id: defender-safe-links-liens-casses-caracteres-speciaux
-    titre: "Liens contenant des parenthèses ou caractères spéciaux cassés par la réécriture Safe Links"
-    symptome: "Après réécriture, des liens vers des applications métier (ex. JIRA) contenant ( ou ) mènent à une page d'erreur."
+    titre: Liens contenant des parenthèses ou caractères spéciaux cassés par la réécriture Safe Links
+    symptome: Après réécriture, des liens vers des applications métier (ex. JIRA) contenant ( ou ) mènent à une page d'erreur.
     erreurs: []
     priorite: rare
     format: express
     sources:
       - https://techcommunity.microsoft.com/t5/office-365/outlook-advanced-threat-protection-is-breaking-links-with-quot/td-p/3576334
     etat: a-rediger
-
-  # ---------------------------------------------------------------
-  # Signalement, simulation d'attaques
-  # ---------------------------------------------------------------
   - id: defender-bouton-signaler-absent-outlook
-    titre: "Bouton « Signaler » / « Signaler le hameçonnage » absent ou grisé dans Outlook"
-    symptome: "Les utilisateurs ne trouvent pas le bouton Report / Report phishing dans Outlook classique, le nouvel Outlook ou Outlook sur le web, ou il est grisé."
+    titre: Bouton « Signaler » / « Signaler le hameçonnage » absent ou grisé dans Outlook
+    symptome: Les utilisateurs ne trouvent pas le bouton Report / Report phishing dans Outlook classique, le nouvel Outlook ou Outlook sur le web, ou il est grisé.
     erreurs: []
     priorite: frequent
     format: complete
@@ -574,14 +536,242 @@ problemes:
       - https://learn.microsoft.com/en-us/answers/questions/5830071/i-cannot-report-phishing-email-the-button-is-missi
       - https://learn.microsoft.com/en-us/answers/questions/5548685/report-message-phish-report-button-grayed-out-in-n
     etat: a-rediger
-
   - id: defender-simulation-tierce-bloquee-advanced-delivery
-    titre: "Mails de simulation d'hameçonnage tiers (KnowBe4…) bloqués ou en quarantaine"
-    symptome: "Les campagnes de sensibilisation d'un prestataire n'arrivent pas, ou leurs liens sont réécrits/cliqués automatiquement ; la stratégie de remise avancée (Advanced delivery) n'est pas configurée."
+    titre: Mails de simulation d'hameçonnage tiers (KnowBe4…) bloqués ou en quarantaine
+    symptome: Les campagnes de sensibilisation d'un prestataire n'arrivent pas, ou leurs liens sont réécrits/cliqués automatiquement ; la stratégie de remise avancée (Advanced delivery) n'est pas configurée.
     erreurs: []
     priorite: frequent
     format: complete
     sources:
       - https://learn.microsoft.com/en-US/defender-office-365/advanced-delivery-policy-configure
       - https://c7solutions.com/?p=3469
+    etat: a-rediger
+  - id: defender-simulation-faux-clics-utilisateurs
+    titre: "Simulation d'attaque : utilisateurs comptés comme ayant cliqué alors qu'ils n'ont rien fait"
+    symptome: Le rapport de simulation (Attack simulation training) indique que de nombreux utilisateurs ont cliqué sur le lien, voire tous, à cause d'un analyseur de liens ou d'un aperçu automatique.
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1454905/microsoft-attack-simulator-simulation-report-showi
+      - https://learn.microsoft.com/en-us/answers/questions/2102003/attack-simulation-training-false-flagging
+      - https://learn.microsoft.com/en-ca/defender-office-365/attack-simulation-training-faq
+    etat: a-rediger
+  - id: defender-simulation-signalement-courrier-indesirable-compte
+    titre: "Simulation d'attaque : le signalement en « courrier indésirable » n'est pas compté comme un signalement"
+    symptome: Des utilisateurs qui ont signalé le mail de simulation comme junk apparaissent comme ayant échoué ou cliqué au lieu d'avoir signalé.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5361466/attack-simulation-training-treating-reporting-junk
+      - https://techcommunity.microsoft.com/t5/microsoft-365-defender/attack-simulation-training-report-message-not-working/m-p/3728395
+    etat: a-rediger
+  - id: defender-direct-send-usurpation-domaine-interne
+    titre: Hameçonnage qui semble venir du propre domaine de l'entreprise (abus de Direct Send)
+    symptome: "Des utilisateurs reçoivent des mails d'hameçonnage dont l'expéditeur est une adresse interne, sans qu'aucun compte ne soit compromis : envoi non authentifié directement sur le MX du locataire."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://www.bleepingcomputer.com/news/security/microsoft-365-direct-send-abused-to-send-phishing-as-internal-users/
+      - https://ironscales.com/glossary/direct-send
+    etat: a-rediger
+  - id: defender-reject-direct-send-bloque-appareils
+    titre: Copieurs ou applications qui n'envoient plus de mails après activation de « Reject Direct Send »
+    symptome: Après Set-OrganizationConfig -RejectDirectSend $true, les envois non authentifiés des imprimantes, scanners ou applications internes sont refusés.
+    erreurs:
+      - RejectDirectSend
+    priorite: frequent
+    format: express
+    sources:
+      - https://socura.co.uk/threat-alerts/direct-send-microsoft-365-feature-abused-by-threat-actors-orpj9
+      - https://cybersecuritynews.com/microsoft-365-phishing/
+    etat: a-rediger
+  - id: defender-pool-livraison-risque-eleve
+    titre: Mails sortants envoyés par le pool de remise à haut risque (HRDP) et refusés par les destinataires
+    symptome: Des messages sortants classés comme spam partent par le High Risk Delivery Pool ; ils arrivent en indésirable ou sont refusés par des listes de blocage externes.
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/ko-kr/archive/technet-wiki/36402.exchange-online-troubleshooting-high-risk-delivery-pool
+      - https://learn.microsoft.com/en-gb/defender-office-365/outbound-spam-protection-about
+    etat: a-rediger
+  - id: defender-reponses-absence-pool-risque-eleve
+    titre: Réponses automatiques d'absence envoyées par le pool à haut risque et bloquées chez les destinataires
+    symptome: Les messages d'absence du bureau (OOF) et les NDR partent par le High Risk Delivery Pool, par conception, et sont parfois rejetés.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/exchange_general/out-of-office-sent-via-high-risk-delivery-pool/3686489
+      - https://learn.microsoft.com/en-gb/defender-office-365/outbound-spam-protection-about
+    etat: a-rediger
+  - id: defender-quarantaine-boite-partagee
+    titre: "Messages en quarantaine destinés à une boîte aux lettres partagée : invisibles ou non libérables par ses membres"
+    symptome: Les membres de la boîte partagée ne voient pas les messages en quarantaine ou ne peuvent pas les libérer (accès complet manquant, groupes imbriqués, notifications désactivées).
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/defender-office-365/quarantine-shared-mailbox-messages
+      - https://utk.teamdynamix.com/TDClient/2277/OIT-Portal/KB/PrintArticle?ID=138911
+    etat: a-rediger
+  - id: defender-signalements-utilisateurs-non-recus
+    titre: Messages signalés par les utilisateurs absents de la boîte de signalement ou de l'onglet « Signalés par l'utilisateur »
+    symptome: "Les utilisateurs signalent des mails, mais l'équipe sécurité ne les reçoit pas : boîte de signalement absente ou invalide, destination mal configurée, ancienne règle de flux."
+    erreurs:
+      - We did not receive the submission, please fix the problem and resubmit
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/defender-office-365/submissions-result-definitions
+      - https://mc.merill.net/message/MC690173
+      - https://microsoft.github.io/zerotrustassessment/docs/workshop-guidance/securityoperations/SVA_MDO011
+    etat: a-rediger
+  - id: defender-soumission-administrateur-erreur
+    titre: Erreur lors d'une soumission administrateur à Microsoft (message, URL, fichier)
+    symptome: La page Soumissions (Submissions) refuse l'envoi ou renvoie un message d'erreur (élément trop ancien, limite de soumissions atteinte, message introuvable).
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/security/office-365-security/submissions-error-messages
+    etat: a-rediger
+  - id: defender-expediteurs-approuves-ignores
+    titre: Expéditeur ajouté aux expéditeurs approuvés d'Outlook mais message toujours en quarantaine
+    symptome: Malgré la liste Safe Senders de l'utilisateur ou une liste d'autorisation, le message est mis en quarantaine comme programme malveillant ou hameçonnage à haut niveau de confiance (sécurisé par défaut).
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-CA/defender-office-365/create-safe-sender-lists-in-office-365
+      - https://learn.microsoft.com/en-AU/defender-office-365/secure-by-default
+      - https://practical365.com/how-end-users-can-bypass-exchange-online-protection/
+    etat: a-rediger
+  - id: defender-alertes-sharepoint-mises-en-quarantaine
+    titre: Alertes et notifications de partage SharePoint (no-reply@sharepointonline.com) mises en quarantaine
+    symptome: Les alertes de documents ou notifications de partage SharePoint sont classées comme spam ou hameçonnage par Defender.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/microsoftthreatprotection/document-alerts-from-sharepoint-are-being-marked-as-spam-by-microsoft-365-defend/3913973
+    etat: a-rediger
+  - id: defender-hameconnage-partage-sharepoint-onedrive
+    titre: Hameçonnage par faux partage SharePoint/OneDrive (« X shared a file with you ») non bloqué
+    symptome: Des notifications de partage authentiques (SPF/DKIM/DMARC valides) venant d'un locataire compromis mènent vers une page de vol d'identifiants ; elles passent les filtres.
+    erreurs:
+      - shared a file with you
+    priorite: frequent
+    format: complete
+    sources:
+      - https://ironscales.com/threat-intelligence/sharepoint-tenant-notification-abuse-missing-ptr
+      - https://www.ncl.ac.uk/students/notices-and-events/all-notices/sharepoint-phishing-emails/
+    etat: a-rediger
+  - id: defender-partages-onedrive-non-sollicites
+    titre: Utilisateurs inondés de partages OneDrive non sollicités (spam de partage)
+    symptome: Des utilisateurs reçoivent à répétition des invitations de partage OneDrive de comptes inconnus.
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5646972/receiving-unsolicited-onedrive-file-folder-shares?page=5
+    etat: a-rediger
+  - id: defender-threat-explorer-indisponible
+    titre: Explorateur de menaces (Threat Explorer) absent ou inaccessible dans le portail Defender
+    symptome: "Le technicien ne trouve que Détections en temps réel, ou l'Explorateur refuse l'accès : licence Plan 1 au lieu de Plan 2, rôle insuffisant."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-gb/defender-office-365/threat-explorer-real-time-detections-about
+      - https://learn.microsoft.com/en-us/defender-office-365/threat-explorer-email-security
+    etat: a-rediger
+  - id: defender-air-actions-attente-ou-echec
+    titre: "Enquête automatisée (AIR) : actions de correction en attente d'approbation ou en échec"
+    symptome: Le Centre de notifications (Action center) accumule des suppressions temporaires (soft delete) en attente ou en statut Failed ; les mails malveillants restent dans les boîtes.
+    erreurs:
+      - Soft delete email
+      - Failed
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-AU/defender-office-365/air-review-approve-pending-completed-actions
+      - https://learn.microsoft.com/en-us/answers/questions/2145967/issues-with-pending-actions-in-microsoft-defender
+      - https://techcommunity.microsoft.com/discussions/microsoftthreatprotection/action-center-showing-a-lot-of-failed-status/3591151
+    etat: a-rediger
+  - id: defender-remediation-email-impossible
+    titre: Impossible de supprimer un mail malveillant déjà remis dans les boîtes (correction manuelle)
+    symptome: "La suppression depuis l'Explorateur ou la recherche échoue pour certains messages (emplacement non actionnable : supprimé définitivement, local, externe)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/defender-office-365/remediate-malicious-email-delivered-office-365
+      - https://learn.microsoft.com/en-us/defender-office-365/step-by-step-guides/search-for-emails-and-remediate-threats
+    etat: a-rediger
+  - id: defender-hameconnage-qr-code-non-detecte
+    titre: Hameçonnage par QR code (quishing) qui passe les filtres
+    symptome: Des mails contenant uniquement une image ou un PDF avec un QR code arrivent en boîte de réception et mènent vers une page de vol d'identifiants.
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/discussions/microsoftdefenderforoffice365/is-it-possible-to-block-emails-containing-qr-code/3940302/replies/3953883
+      - https://www.techradar.com/pro/security/qr-code-phishing-surges-146-percent-as-microsoft-detects-and-analyzes-8-3-billion-phishing-threats-in-q1-2026-attackers-are-changing-tactics-to-bypass-security
+    etat: a-rediger
+  - id: defender-point-interrogation-expediteur-non-verifie
+    titre: Point d'interrogation « ? » à la place de la photo de l'expéditeur / mention « Non vérifié »
+    symptome: Outlook affiche un « ? » ou la mention Unverified sur les messages d'un expéditeur, car le message ne passe ni SPF ni DKIM (ou DMARC).
+    erreurs:
+      - Unverified
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/archive/blogs/tzink/showing-a-question-mark-in-the-sender-photo-when-a-message-is-not-authenticated
+      - https://petri.com/exchange-online-protection-highlights-unauthenticated-senders
+      - https://office-watch.com/2025/what-does-unverified-mean-in-outlook/
+    etat: a-rediger
+  - id: defender-invitation-calendrier-malveillante-persiste
+    titre: Invitation de réunion malveillante mise en quarantaine mais toujours présente dans le calendrier
+    symptome: Le mail d'invitation a été supprimé ou mis en quarantaine, mais l'événement (avec le lien d'hameçonnage) reste dans le calendrier des utilisateurs.
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/blog/microsoftdefenderforoffice365blog/strengthening-calendar-security-through-enhanced-remediation/4456876
+      - https://www.helpnetsecurity.com/2026/10/20/malicious-calendar-invites/
+    etat: a-rediger
+  - id: defender-safe-links-teams-url-bloquee
+    titre: Lien bloqué dans une conversation Teams (protection des URL malveillantes / Safe Links)
+    symptome: Un lien partagé dans Teams affiche un avertissement de blocage, parfois pour un site légitime ou un lien SharePoint de canal privé.
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/microsoftteams/malicious-url-protection-teams
+      - https://office365itpros.com/2021/07/30/teams-messages-real-time-safe-links-protection-with-defender-office-365/
+    etat: a-rediger
+  - id: defender-strategie-predefinie-prioritaire-sur-personnalisee
+    titre: Paramètres de la stratégie anti-spam personnalisée ignorés (stratégie prédéfinie Standard/Strict prioritaire)
+    symptome: Une stratégie personnalisée (liste d'autorisation, seuils, actions) ne s'applique pas à certains utilisateurs couverts par une stratégie de sécurité prédéfinie.
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-my/defender-office-365/how-policies-and-protections-are-combined
+      - https://learn.microsoft.com/en-us/defender-office-365/anti-spam-policies-troubleshooting
+      - https://techcommunity.microsoft.com/discussions/exchange_general/exchange-online-custom-policies-vs-standard-preset-security-policy/3857262
+    etat: a-rediger
+  - id: defender-safe-links-applications-office-avertissement
+    titre: Avertissement Safe Links en cliquant sur un lien dans Word, Excel ou PowerPoint
+    symptome: Un lien dans un document Office ouvre une page d'avertissement (site bloqué ou analyse en cours) au lieu du site.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/defender-office-365/safe-links-about
+      - https://www.ed.ac.uk/information-services/about/news/safe-links-security-feature
     etat: a-rediger

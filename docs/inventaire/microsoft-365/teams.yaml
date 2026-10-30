@@ -1597,3 +1597,586 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/sms-calling-errors
     etat: a-rediger
+
+  # --- Teams Rooms et appareils Teams ---
+  - id: teams-rooms-ecran-noir
+    titre: "Teams Rooms : écrans noirs ou console tactile qui ne répond plus"
+    symptome: "Un ou tous les écrans (avant de salle, console) restent noirs, ou la console affiche du contenu sans réagir."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/black-blank-screen
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/display-status-unhealthy
+    etat: a-rediger
+
+  - id: teams-rooms-compte-ressource-connexion-echoue
+    titre: "Teams Rooms : le compte de ressource n'arrive pas à se connecter (bannière d'échec, réunions absentes)"
+    symptome: "La console affiche un échec de connexion ou n'affiche plus les réunions planifiées (connexion Exchange) ; signaux de connexion « Unhealthy » dans le portail Pro."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/teams-rooms-resource-account-sign-in-issues
+    etat: a-rediger
+
+  - id: teams-rooms-userinteractionrequired
+    titre: "Teams Rooms sur Windows : connexion impossible avec UserInteractionRequired (MFA, accès conditionnel)"
+    symptome: "La console indique qu'elle ne peut pas se connecter à Teams ; le compte de ressource est soumis à une étape d'authentification interactive."
+    erreurs: ["UserInteractionRequired"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/sign-in-failures-interactive-authentication
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/check-conditional-access-policies-unsupported-settings
+    etat: a-rediger
+
+  - id: teams-appareils-android-acces-conditionnel
+    titre: "Appareils Teams Android (Rooms, téléphones, panneaux) bloqués par l'accès conditionnel"
+    symptome: "Boucles de connexion ou déconnexions aléatoires sur des appareils non conformes à Intune."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/teams-android-devices-conditional-access-issues
+    etat: a-rediger
+
+  - id: teams-appareils-android-deconnectes
+    titre: "Les appareils Teams Android certifiés se déconnectent tout seuls de Teams"
+    symptome: "Teams Rooms Android, téléphones, panneaux ou écrans Teams sont déconnectés automatiquement."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/signed-out-of-teams-android-devices
+    etat: a-rediger
+
+  - id: teams-appareils-android-connexion-lente-groupes-dynamiques
+    titre: "Appareils Teams Android : connexion réussie seulement après plusieurs tentatives (groupes dynamiques)"
+    symptome: "Plusieurs échecs avant la connexion quand les stratégies de conformité Intune ciblent des groupes d'appareils dynamiques Entra."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/resolve-sign-in-delays-dynamic-device-groups
+    etat: a-rediger
+
+  - id: teams-rooms-bouton-rejoindre-absent
+    titre: "Teams Rooms : le bouton « Rejoindre » n'apparaît pas pour une réunion"
+    symptome: "Le lien de réunion a été collé à la main dans l'invitation de la salle ; la salle ne reconnaît pas la réunion."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/join-button-missing
+    etat: a-rediger
+
+  - id: teams-rooms-reunion-tierce-zoom-webex
+    titre: "Teams Rooms : impossible de rejoindre une réunion Zoom ou Webex (Direct Guest Join)"
+    symptome: "Bouton Rejoindre absent pour les réunions tierces, invitations transférées non prises en charge, caméra ou application web Webex."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/resolve-direct-guest-join-issues
+    etat: a-rediger
+
+  - id: teams-rooms-diffusion-cast-impossible
+    titre: "Impossible de diffuser (Cast) depuis Teams vers une salle Teams Rooms"
+    symptome: "La diffusion depuis le client de bureau Windows ou Mac ne démarre pas vers Teams Rooms sur Windows ou Android (Bluetooth, réseau, paramètres)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/cannot-cast-from-teams-desktop-client-to-teams-rooms-on-windows
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/cannot-cast-from-teams-desktop-client-to-teams-rooms-on-android
+    etat: a-rediger
+
+  - id: teams-rooms-powerpoint-live-cant-display-content
+    titre: "Teams Rooms : PowerPoint Live affiche « Can't display content »"
+    symptome: "Une présentation partagée en PowerPoint Live ne s'affiche pas dans la salle, souvent car des points de terminaison réseau sont bloqués."
+    erreurs: ["Can't display content. There was a problem displaying the content."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/cannot-display-powerpoint-live-content
+    etat: a-rediger
+
+  - id: teams-rooms-room-remote-failed-to-connect
+    titre: "Room Remote : « Failed to connect » ou « Can't open room remote » depuis le mobile"
+    symptome: "La télécommande de salle dans Teams mobile ne se connecte pas à Teams Rooms sur Windows (stratégie d'applications, réseau)."
+    erreurs: ["Failed to connect", "Can't open room remote"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/room-remote-app-connection-fails
+    etat: a-rediger
+
+  - id: teams-rooms-ne-demarre-pas-apres-windows-update
+    titre: "Teams Rooms ne démarre plus automatiquement après une mise à jour Windows"
+    symptome: "Après redémarrage, l'application Teams Rooms ne se lance pas car Windows Update a installé une version de Windows non prise en charge."
+    erreurs: []
+    priorite: critique
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/teams-rooms-not-auto-start-after-windows-updates
+    etat: a-rediger
+
+  - id: teams-rooms-windows-update-echoue
+    titre: "Teams Rooms Pro : Windows Update n'installe pas les mises à jour (signal Security KBs Unhealthy)"
+    symptome: "Les mises à jour échouent ou ne sont pas trouvées alors que l'appareil n'est pas à jour."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/teams-rooms-device-windows-update-issues
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/update-device-manually
+    etat: a-rediger
+
+  - id: teams-rooms-camera-unhealthy
+    titre: "Teams Rooms : statut Caméra « Unhealthy » dans le portail"
+    symptome: "La caméra de la salle n'est pas détectée ou n'est pas configurée correctement."
+    erreurs: ["Unhealthy"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/camera-status-unhealthy
+    etat: a-rediger
+
+  - id: teams-rooms-micro-haut-parleur-unhealthy
+    titre: "Teams Rooms : statut Micro ou Haut-parleur « Unhealthy »"
+    symptome: "Les périphériques audio de la salle ne sont pas détectés ou ne correspondent pas à la configuration."
+    erreurs: ["Unhealthy"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/microphone-speaker-status-unhealthy
+    etat: a-rediger
+
+  - id: teams-rooms-hdmi-ingest-unhealthy
+    titre: "Teams Rooms : entrée HDMI (partage filaire) en statut « Unhealthy »"
+    symptome: "Le partage de contenu par câble HDMI ne fonctionne pas ou l'adaptateur d'acquisition n'est pas détecté."
+    erreurs: ["Unhealthy"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/hdmi-ingest-status-unhealthy
+    etat: a-rediger
+
+  - id: teams-rooms-hors-ligne-monitored-offline
+    titre: "Teams Rooms : appareil « Offline » ou statut de surveillance « Unhealthy » dans le portail Pro"
+    symptome: "La salle n'envoie plus de signaux au portail de gestion (réseau, agent, appareil éteint)."
+    erreurs: ["Unhealthy", "Offline"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/monitored-offline-status-unhealthy
+    etat: a-rediger
+
+  - id: teams-rooms-application-reunion-unhealthy
+    titre: "Teams Rooms : statut de l'application de réunion « Unhealthy »"
+    symptome: "L'application Teams Rooms ne fonctionne pas correctement ou n'est pas à jour."
+    erreurs: ["Unhealthy"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/meeting-app-status-unhealthy
+    etat: a-rediger
+
+  - id: teams-rooms-espace-disque-unhealthy
+    titre: "Teams Rooms : espace disque insuffisant (statut Disk Space « Unhealthy »)"
+    symptome: "Le disque de l'appareil Teams Rooms est presque plein, ce qui bloque les mises à jour."
+    erreurs: ["Unhealthy"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/disk-space-status-unhealthy
+    etat: a-rediger
+
+  - id: teams-rooms-statuts-systeme-unhealthy
+    titre: "Teams Rooms : signaux système « Unhealthy » (Bluetooth, CPU, mise en veille USB, alimentation USB, édition Windows, minuteur de veille, identifiants par défaut)"
+    symptome: "Le portail Teams Rooms Pro signale une configuration Windows non conforme aux recommandations de l'appareil."
+    erreurs: ["Unhealthy"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/bluetooth-disabled-status-unhealthy
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/cpu-performance-limited-status-unhealthy
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/usb-selective-suspend-status-unhealthy
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/usb-peripheral-power-drain-status-unhealthy
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/os-edition-status-unhealthy
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/sleep-timer-status-unhealthy
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/default-credentials-status-unhealthy
+    etat: a-rediger
+
+  - id: teams-rooms-android-interface-evenement
+    titre: "Teams Rooms Android affiche une interface de type « événement » au lieu de la réunion standard"
+    symptome: "La console montre une liste de présentateurs ou des options d'événement à cause des options de la réunion."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/incorrect-events-style-meeting-interface
+    etat: a-rediger
+
+  - id: teams-rooms-clavier-virtuel-reduit
+    titre: "Teams Rooms : le clavier tactile s'affiche en taille réduite"
+    symptome: "Sur certains appareils Teams Rooms, le clavier virtuel apparaît trop petit."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/teams-rooms-device-keyboard-size-reduced
+    etat: a-rediger
+
+  - id: teams-telephone-module-extension-ecran-noir
+    titre: "Téléphone Teams : le module d'extension (sidecar) devient noir après le démarrage"
+    symptome: "L'écran du module d'extension s'éteint une fois le téléphone démarré, à cause d'une restriction Intune sur la capture d'écran."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/phone-sidecar-screen-black
+    etat: a-rediger
+
+  - id: teams-rooms-reinitialisation-outil-recuperation
+    titre: "Teams Rooms sur Windows irrécupérable : réinitialiser avec l'outil de récupération"
+    symptome: "L'appareil ne démarre plus correctement dans l'application Teams Rooms ; une réinitialisation via l'outil de récupération est nécessaire."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/reset-device-using-recovery-tool
+    etat: a-rediger
+
+  - id: teams-rooms-echo-salle
+    titre: "Écho ou larsen dans une salle Teams Rooms"
+    symptome: "Les participants distants entendent un écho provenant de la salle (acoustique, haut-parleurs, plusieurs appareils connectés dans la salle)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/625236/microsoft-teams-room-repeat-echo-issue
+    etat: a-rediger
+
+  # --- Enregistrement, transcription, webinaires ---
+  - id: teams-bouton-enregistrement-absent
+    titre: "Le bouton « Enregistrer » est absent ou verrouillé dans une réunion Teams"
+    symptome: "Impossible de lancer l'enregistrement : licence, stratégie de réunion, rôle de participant, options de réunion, appel 1:1 (AllowCloudRecordingForCalls), invité ou anonyme."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/troubleshoot-meeting-recording-issues
+    etat: a-rediger
+
+  - id: teams-enregistrement-introuvable-apres-reunion
+    titre: "Enregistrement de réunion introuvable (absent du récapitulatif ou de la conversation)"
+    symptome: "L'enregistrement est terminé mais le lien n'apparaît pas ; il se trouve dans le OneDrive de l'organisateur ou le SharePoint du canal."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/troubleshoot-meeting-recording-issues
+    etat: a-rediger
+
+  - id: teams-transcription-introuvable-ou-vide
+    titre: "Transcription de réunion introuvable, vide ou non téléchargeable"
+    symptome: "La transcription n'apparaît pas dans le récapitulatif ou est vide : lancée trop tard, participant resté connecté, URL bloquée par le filtrage web, stratégie."
+    erreurs: ["No Meeting Transcript"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/4415002/teams-transcription-runs-fine-during-meeting-cant
+      - https://learn.microsoft.com/en-us/answers/questions/1696811/transcript-is-blank-help
+    etat: a-rediger
+
+  - id: teams-transcription-bloquee-filtrage-web
+    titre: "Transcriptions impossibles à afficher : URL de service bloquée par le filtrage web"
+    symptome: "Les transcriptions ne se chargent pas dans Teams car un proxy ou un filtre web bloque un domaine nécessaire (api.cortana.ai)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/4432606/cannot-download-transcript-of-video-recordings-how
+    etat: a-rediger
+
+  - id: teams-transcription-perdue-modification-serie
+    titre: "Transcription perdue après modification d'une réunion périodique"
+    symptome: "Après avoir changé l'horaire de la série, l'ancienne transcription n'est plus visible ; le fichier VTT reste dans le OneDrive de l'organisateur."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5810124/loss-of-meeting-transcript-after-editing-recurring
+    etat: a-rediger
+
+  - id: teams-option-transcrire-absente
+    titre: "L'option « Démarrer la transcription » est absente ou grisée"
+    symptome: "La transcription est désactivée par la stratégie de réunion ou les options « Qui peut enregistrer et transcrire »."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/4426932/record-and-transcribe-option-not-showing-up-in-tea
+      - https://learn.microsoft.com/en-us/answers/questions/5926467/cant-access-the-teams-transcribe-function
+    etat: a-rediger
+
+  - id: teams-lien-enregistrement-invisible-grande-conversation
+    titre: "Le lien d'enregistrement n'apparaît pas dans une conversation très active"
+    symptome: "Problème connu dans les conversations à fort volume ; faire défiler vers le haut puis le bas peut le faire réapparaître."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/troubleshoot-meeting-recording-issues
+    etat: a-rediger
+
+  - id: teams-webinaire-option-absente
+    titre: "L'option « Webinaire » est absente dans le calendrier Teams"
+    symptome: "L'utilisateur ne peut pas créer de webinaire : stratégie d'événements (Allow webinars), cache, ou nouveau Teams en VDI."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/issues-with-webinars
+    etat: a-rediger
+
+  - id: teams-webinaire-inscription-pour-tous-grisee
+    titre: "Webinaire : l'inscription « Pour tout le monde » (For everyone) est grisée"
+    symptome: "Après une modification de stratégie, le paramètre WhoCanRegister empêche l'inscription publique."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/issues-with-webinars
+    etat: a-rediger
+
+  - id: teams-webinaire-ecran-vide
+    titre: "Écran vide en rejoignant un webinaire Teams"
+    symptome: "Après l'authentification, la page reste blanche quand l'inscription a été réglée sur « Aucune »."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/issues-with-webinars
+    etat: a-rediger
+
+  - id: teams-webinaire-mails-inscription-non-recus
+    titre: "Les participants ne reçoivent pas les invitations ou confirmations d'inscription au webinaire"
+    symptome: "Les e-mails envoyés par le service Dynamics 365 sont mis en quarantaine par le filtre anti-spam, ou l'inscription est en attente d'approbation."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/issues-with-webinars
+    etat: a-rediger
+
+  - id: teams-boite-partagee-reunion-limitations
+    titre: "Réunions Teams organisées depuis une boîte aux lettres partagée : fonctions indisponibles"
+    symptome: "Webinaires, town halls et certaines options ne fonctionnent pas pour une boîte partagée sans licence."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/teams-meeting-with-shared-mailboxes
+    etat: a-rediger
+
+  - id: teams-cvi-meet-now-non-renseigne
+    titre: "Les coordonnées CVI ne se remplissent pas dans une réunion « Démarrer une réunion » (Meet Now)"
+    symptome: "Les informations d'interopérabilité vidéo cloud ne sont pas générées pour Meet Now (scénario non pris en charge)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-conferencing/cvi-info-does-not-populate-in-meet-now
+    etat: a-rediger
+
+  - id: teams-id-conference-statique-non-pris-en-charge
+    titre: "Teams tente d'utiliser un ID de conférence statique (non pris en charge)"
+    symptome: "Les réunions Teams ne prennent pas en charge les ID de conférence statiques hérités de Skype for Business."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-conferencing/static-conference-id-not-supported
+    etat: a-rediger
+
+  - id: teams-rejoindre-depuis-ie-edge-impossible
+    titre: "Impossible de rejoindre Teams depuis Internet Explorer ou l'ancien Edge"
+    symptome: "La participation web échoue dans IE/Edge hérité à cause des zones de sécurité (sites de confiance)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/authentication/teams-stops-working-when-joining-from-edge
+    etat: a-rediger
+
+  # --- Teams en VDI / RDS ---
+  - id: teams-vdi-non-optimise-slimcore
+    titre: "Teams en VDI (AVD, Windows 365, Citrix) non optimisé : audio et vidéo traités sur le serveur"
+    symptome: "Paramètres > À propos n'affiche pas « SlimCore » mais « Media Not Connected » ou l'ancienne optimisation WebRTC ; appels saccadés."
+    erreurs: ["Azure Virtual Desktop SlimCore Media Not Connected", "Citrix SlimCore Media Not Connected", "AVD Media Optimized"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/microsoftteams/vdi-2-troubleshooting
+      - https://learn.microsoft.com/en-us/microsoftteams/vdi-2
+    etat: a-rediger
+
+  - id: teams-vdi-plugin-absent-erreur-2000-2003
+    titre: "Teams VDI : repli sur la pile héritée avec les erreurs 2000 (No Plugin) ou 2003 (Virtual Channel not allowed)"
+    symptome: "Le plugin Teams n'est pas déployé sur le poste client (MsTeamsPluginAvd.dll) ou le canal virtuel est interdit par stratégie Citrix."
+    erreurs: ["2000", "2003", "No Plugin", "Virtual Channel not allowed"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoftteams/vdi-2-troubleshooting
+    etat: a-rediger
+
+  - id: teams-citrix-hdx-not-connected
+    titre: "Teams sous Citrix affiche « Citrix HDX Not Connected » (optimisation HDX perdue)"
+    symptome: "Après déconnexion/reconnexion de session ou à cause d'une stratégie Studio « Microsoft Teams redirection » désactivée, Teams n'est plus optimisé."
+    erreurs: ["Citrix HDX Not Connected"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.citrix.com/external/article/CTX253754/troubleshooting-hdx-optimization-for-mic.html
+      - https://docs.citrix.com/en-us/citrix-virtual-apps-desktops/2402-ltsr/multimedia/opt-ms-teams-new/hdx-optimization.html
+    etat: a-rediger
+
+  - id: teams-vdi-cle-iswvdenvironment
+    titre: "Nouveau Teams en VDI non détecté comme environnement virtuel (clé IsWVDEnvironment)"
+    symptome: "Le nouveau Teams ne s'optimise pas car la clé de registre IsWVDEnvironment manque sur le bureau virtuel."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoftteams/new-teams-vdi-requirements-deploy
+    etat: a-rediger
+
+  - id: teams-rds-nouveau-teams-ne-demarre-pas
+    titre: "Nouveau Teams sur serveur RDS : ne démarre pas dans la session utilisateur"
+    symptome: "Sur Windows Server multisession, le nouveau Teams ne se lance pas ou boucle (disques de profil utilisateur, Server 2016 non pris en charge)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/t5/microsoft-teams/teams-new-not-starting-in-rdp-user-session/td-p/4046082
+      - https://techcommunity.microsoft.com/t5/microsoft-teams/new-teams-on-terminal-servers/m-p/4017214
+    etat: a-rediger
+
+  - id: teams-rds-complement-outlook-erreur-1625
+    titre: "RDS : complément Teams pour Outlook absent, installation MSI en échec (erreur 1625)"
+    symptome: "Sur Server 2019 RDSH, le complément de réunion tente de s'installer en contexte utilisateur et échoue avec 1625."
+    erreurs: ["1625"]
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/microsoftteams/new-teams--meeting-addin-missing-on-windows-server-2019-rdsh--autostart-issue/4086205/replies/4183739
+    etat: a-rediger
+
+  - id: teams-rds-optimisation-redemarre-en-boucle
+    titre: "Teams sur RDS 2022 : optimisé, demande à redémarrer puis n'est plus optimisé"
+    symptome: "Teams tente de passer à SlimCore (non pris en charge sur RDS local) et perd l'optimisation après redémarrage."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/2240057/teams-with-vdi-optimiziation-is-optimized-wants-to
+    etat: a-rediger
+
+  - id: teams-fslogix-reconnexion-chaque-session
+    titre: "VDI avec FSLogix : Teams redemande la connexion à chaque session"
+    symptome: "En bureau non persistant, le nouveau Teams n'est pas réenregistré ou son cache n'est pas conservé dans le conteneur de profil."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/fslogix/troubleshooting-known-issues
+      - https://learn.microsoft.com/en-us/fslogix/overview-release-notes
+    etat: a-rediger
+
+  - id: teams-fslogix-nouveau-teams-non-enregistre
+    titre: "VDI non persistant : le nouveau Teams n'apparaît pas pour l'utilisateur (paquet AppX non enregistré)"
+    symptome: "Avec FSLogix, le paquet MSTeams n'est pas enregistré à l'ouverture de session pour les profils existants."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/t5/fslogix/new-teams-not-loading-with-fslogix-2210-hf4-horizon-non/m-p/4195033
+    etat: a-rediger
+
+  # --- Teams sur mobile ---
+  - id: teams-mobile-notifications-absentes
+    titre: "Teams sur iPhone ou Android : notifications de messages absentes"
+    symptome: "Notifications désactivées dans le système ou Teams, optimisation de la batterie Android, démarrage auto bloqué par le fabricant, profil professionnel."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/en-us/office/troubleshoot-notifications-for-teams-mobile-apps-6d125ac2-e440-4fab-8e4c-2227a52d460c
+      - https://learn.microsoft.com/answers/a/12370174
+    etat: a-rediger
+
+  - id: teams-mobile-appels-ne-sonnent-pas
+    titre: "Les appels Teams ne sonnent pas sur le mobile"
+    symptome: "Les appels arrivent sur le PC mais pas sur le téléphone : session à renouveler, autorisations, incident de service des notifications d'appel iOS."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/t5/microsoft-teams/team-calls-not-ringing-on-mobile-app-anymore/m-p/2712641
+    etat: a-rediger
+
+  - id: teams-mobile-portail-entreprise-requis
+    titre: "Teams mobile exige l'installation du Portail d'entreprise (Company Portal) ou d'Authenticator"
+    symptome: "Au premier lancement, Teams demande une application broker : stratégie de protection d'applications Intune (Android) ou accès conditionnel par application (iOS)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/mem/intune/apps/manage-microsoft-teams
+      - https://support.uidaho.edu/TDClient/40/Portal/KB/ArticleDet?ID=3580
+    etat: a-rediger
+
+  - id: teams-mobile-acces-conditionnel-require-app-protection
+    titre: "Teams mobile bloqué par l'accès conditionnel « Exiger une stratégie de protection des applications »"
+    symptome: "Le contrôle d'octroi choisi n'est pas pris en charge par Teams ; l'utilisateur ne peut pas se connecter."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+
+  - id: teams-mobile-canaux-favoris-absents
+    titre: "Les canaux ajoutés automatiquement aux favoris n'apparaissent pas sur le mobile"
+    symptome: "Les membres doivent d'abord se connecter au client de bureau ou web pour voir ces canaux sur mobile."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/mobile/cant-see-auto-favorited-channels-in-mobile
+    etat: a-rediger
+
+  - id: teams-mobile-carplay-ne-fonctionne-pas
+    titre: "Appels Teams via Apple CarPlay impossibles sur un iPhone géré par Intune"
+    symptome: "Siri bloqué par un profil de configuration ou transfert de données limité par la protection d'applications."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/mobile/settings-teams-calls-carplay
+    etat: a-rediger
+
+  # --- Teams sur Linux ---
+  - id: teams-linux-problemes-connus
+    titre: "Teams sur Linux : problèmes connus (micro sans entrée, conflit VMware Workstation, notifications KDE)"
+    symptome: "Comportements connus du client Linux : pas d'entrée micro après changement de périphérique en réunion, problèmes avec VMware Workstation."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-on-linux/linux-known-issues
+    etat: a-rediger

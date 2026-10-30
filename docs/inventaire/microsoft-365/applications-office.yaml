@@ -1338,3 +1338,331 @@ problemes:
       - https://support.microsoft.com/en-us/kb/2749199
       - https://helpdeskgeek.com/how-to-fix-the-word-experienced-an-error-trying-to-open-the-file-error/
     etat: a-rediger
+
+  # ─────────────── Visio et Project ───────────────
+
+  - id: office-visio-project-installation-incompatible
+    titre: "Impossible d'installer Visio ou Project à côté d'Office (MSI et Click-to-Run, versions différentes)"
+    symptome: "L'installation de Visio ou Project est refusée car Office est installé avec une autre technologie (MSI / Click-to-Run), une autre version ou une autre architecture."
+    erreurs: ["We're sorry, but we can't continue because the following Office programs are using a different installation technology"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/deployoffice/install-different-office-visio-and-project-versions-on-the-same-computer
+      - https://techcommunity.microsoft.com/t5/office-365-proplus/incompatibility-between-windows-installer-and-click-to-run/td-p/571129
+    etat: a-rediger
+
+  - id: visio-fichier-bloque-strategie
+    titre: "Visio : « Votre administrateur a bloqué ce type de fichier » à l'ouverture d'un .vsd"
+    symptome: "Des fichiers Visio anciens ne s'ouvrent plus à cause d'une stratégie de blocage des fichiers."
+    erreurs: ["Security Policy: Your admin has blocked this kind of file."]
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/microsoft-365/visio-2019-failed-to-open-vsd-files/1830678
+    etat: a-rediger
+
+  - id: visio-vsdx-ne-s-ouvre-pas-ancienne-version
+    titre: "Visio : un fichier .vsdx ou .vsdm ne s'ouvre pas dans une ancienne version de Visio"
+    symptome: "Visio 2010 ou 2007 refuse d'ouvrir les fichiers enregistrés au format récent."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://support.microsoft.com/en-ca/help/2844302/you-cannot-open-vsdx-or-vsdm-files-in-visio-2010
+    etat: a-rediger
+
+  - id: visio-erreur-enregistrement
+    titre: "Visio : « Une erreur s'est produite lors de l'enregistrement »"
+    symptome: "Visio n'arrive pas à enregistrer le dessin (OneDrive, SharePoint ou dossier local)."
+    erreurs: ["An error occurred while saving"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5350171/visio-error-message-an-error-occurred-while-saving
+      - https://techcommunity.microsoft.com/t5/microsoft-365/visio-files-saved-in-onedrive-cause-upload-blocked-error/m-p/2154498
+    etat: a-rediger
+
+  - id: project-connexion-project-web-app-impossible
+    titre: "Project : le client de bureau ne se connecte pas à Project Web App (Project Online)"
+    symptome: "Project Professionnel ne parvient pas à établir la connexion avec PWA ; mauvais compte, URL, droits, session de délégué ou confusion avec Project for the web."
+    erreurs: ["Project was unable to establish a connection with Project Web App."]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/office/troubleshoot/project/error-accessing-project-web-app
+      - https://techcommunity.microsoft.com/discussions/project/cannot-connect-to-pwa/2688329
+    etat: a-rediger
+
+  # ─────────────── Access (suite) ───────────────
+
+  - id: access-format-base-non-reconnu
+    titre: "Access : « Format de base de données non reconnu »"
+    symptome: "La base .mdb ou .accdb refuse de s'ouvrir : corruption, version d'Access ou runtime incompatible."
+    erreurs: ["Unrecognized database format '<path>'.", "This database is in an unrecognized format."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/en-us/access/access-error-this-database-is-in-an-unrecognized-format-when-opening-access-runtime-application-accd
+      - https://windowsreport.com/unrecognized-database-format/
+    etat: a-rediger
+
+  - id: access-corruption-detectee-compacter-reparer
+    titre: "Access : « Microsoft Access a détecté une corruption dans ce fichier »"
+    symptome: "La base est endommagée (coupure réseau, arrêt brutal) ; compacter et réparer, importer dans une base vide."
+    erreurs: ["Microsoft Access has detected corruption in this file. To try to repair the corruption, first make a backup copy of the file."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://www.techrepublic.com/forums/discussions/access-has-detected-corruption-in-this-file/
+      - https://stellarinfo.com/article/compact-and-repair-corrupt-access-database.php
+    etat: a-rediger
+
+  - id: access-ace-oledb-non-inscrit
+    titre: "« Le fournisseur Microsoft.ACE.OLEDB.12.0 n'est pas inscrit sur l'ordinateur local »"
+    symptome: "Une application, SSMS ou un script ne peut pas lire un fichier Access ou Excel : moteur Access Database Engine absent ou d'architecture différente."
+    erreurs: ["The 'Microsoft.ACE.OLEDB.12.0' provider is not registered on the local machine."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/a/634155
+      - https://www.mikesdotnetting.com/article/280/solved-the-microsoft-ace-oledb-12-0-provider-is-not-registered-on-the-local-mac
+    etat: a-rediger
+
+  # ─────────────── Canaux, désinstallation, langues, stratégies ───────────────
+
+  - id: office-changement-canal-non-applique
+    titre: "Microsoft 365 Apps : le changement de canal de mise à jour ne s'applique pas"
+    symptome: "Après une GPO, Intune ou ODT, Office reste sur l'ancien canal ; UpdateChannel et CDNBaseUrl diffèrent, tâche planifiée désactivée."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-gb/intune/device-configuration/settings-catalog/update-office
+      - https://learn.microsoft.com/en-us/answers/questions/623233/office-365-registry-question-about-update-channel
+    etat: a-rediger
+
+  - id: office-desinstallation-complete-echec
+    titre: "Office ne se désinstalle pas complètement (restes d'installation, outil de désinstallation)"
+    symptome: "La désinstallation échoue ou laisse des restes qui bloquent la réinstallation ; utiliser l'utilitaire de désinstallation de Get Help (ex-SaRA) ou les scripts de nettoyage."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5707649/microsoft-support-and-recovery-assistant-redirects
+      - https://support.microsoft.com/en-US/servicing/os/windows/docs/2026/03/microsoft-support-and-recovery-assistant-sara-command-line-utility-removal-from-windows
+      - https://woshub.com/complete-uninstall-previous-office-versions/
+    etat: a-rediger
+
+  - id: office-verification-orthographique-ne-fonctionne-pas
+    titre: "Word ou Outlook : la vérification orthographique ne fonctionne plus (outils de vérification linguistique manquants)"
+    symptome: "Les fautes ne sont plus soulignées ; langue de vérification incorrecte, outils de vérification absents ou complément perturbateur."
+    erreurs: ["Missing proofing tools"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/4934424/office-2016-missing-proofing-tools
+      - https://learn.microsoft.com/en-us/answers/questions/5791542/spellcheck-aint-working-on-ms-word
+    etat: a-rediger
+
+  - id: office-module-linguistique-installation-echec
+    titre: "Échec d'installation d'un module linguistique Office (Language Accessory Pack)"
+    symptome: "Le pack de langue refuse de s'installer, souvent à cause d'une installation Office MSI ou de droits insuffisants."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/4888249/problem-installing-language-accessory-pack-for-off
+    etat: a-rediger
+
+  - id: office-fonctionnalite-desactivee-administrateur
+    titre: "Office : « Cette fonctionnalité a été désactivée par votre administrateur » (expériences connectées)"
+    symptome: "Connexion, insertion d'images en ligne, aide ou autres fonctions cloud indisponibles ; stratégies de confidentialité (expériences connectées) désactivées."
+    erreurs: ["This feature has been disabled by your administrator."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/office365/troubleshoot/access-management/office-feature-disabled
+      - https://learn.microsoft.com/en-us/microsoft-365-apps/privacy/manage-privacy-controls
+    etat: a-rediger
+
+  # ─────────────── Démarrage des applications, problèmes connus ───────────────
+
+  - id: office-erreur-0xc0000142-demarrage
+    titre: "Office : « L'application n'a pas réussi à démarrer correctement (0xc0000142) »"
+    symptome: "Word, Excel ou Outlook refusent de démarrer avec ce code ; réparer Office, mettre à jour, puis réinstaller si l'erreur revient après redémarrage."
+    erreurs: ["The application was unable to start correctly (0xc0000142). Click OK to close the application."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/help/64b3a500-ee74-4b66-b370-9d607ef92b6c
+      - https://learn.microsoft.com/en-us/answers/questions/1036950/office-2019-pro-the-application-was-unable-to-star
+    etat: a-rediger
+
+  - id: office-applications-se-ferment-apres-ouverture
+    titre: "Les applications Microsoft 365 se ferment quelques secondes après leur ouverture"
+    symptome: "Word, Excel, PowerPoint se lancent puis se ferment ; souvent après une mise à jour ou à cause d'un complément."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5811561/microsoft-365-applications-close-moments-after-ope
+      - https://learn.microsoft.com/en-us/answers/questions/5937183/urgent-microsoft-365-application-crashes-across-en
+    etat: a-rediger
+
+  - id: office-plantages-windows-server-2016
+    titre: "Outlook classique et applications Microsoft 365 plantent sur Windows Server 2016 (RDS)"
+    symptome: "Plantages des applications Office sur des serveurs Windows Server 2016 après une mise à jour d'Office (problème connu)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://support.microsoft.com/office/classic-outlook-and-microsoft-365-applications-crashing-on-windows-server-2016-856d4ee3-5fc4-4ae4-b8e4-81625d703b8d
+      - https://office-watch.com/2025/fixed-microsoft-365-crashes-on-windows-server-systems/
+    etat: a-rediger
+
+  - id: word-plantage-complement-imanage
+    titre: "Word plante avec le complément iManage Work Desktop (problème connu)"
+    symptome: "Word plante après une mise à jour lorsque le complément iManage Work Desktop for Windows est activé."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://support.microsoft.com/en-us/support/known-issues/word-might-crash-with-imanage-work-desktop-for-windows-wdw-add-in-enabled
+    etat: a-rediger
+
+  - id: word-plantage-modeles-logiciels-tiers
+    titre: "Word plante quand un logiciel tiers remplit un modèle (assemblage de documents)"
+    symptome: "Depuis une version récente, Word se ferme quand un logiciel métier génère un document à partir d'un modèle."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://office-watch.com/2026/word-365-crashing-third-party-templates-version-2608-fix/
+    etat: a-rediger
+
+  - id: office-installation-autre-installation-en-cours
+    titre: "« Une autre installation est en cours » (0-1018, 17003-2031, 2035-0)"
+    symptome: "L'installation d'Office refuse de démarrer car une mise à jour ou une autre installation tourne en arrière-plan."
+    erreurs: ["0-1018", "17003-2031", "2035-0", "Another installation is in progress"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/office/-another-installation-is-in-progress-or-error-code-0-1018-17003-2031-or-2035-0-when-installing-office-73502d75-517c-4e46-ab87-848e144328cc
+    etat: a-rediger
+
+  - id: office-installation-erreur-0-2031
+    titre: "Installation d'Office : erreur 0-2031"
+    symptome: "L'installation échoue avec 0-2031 (restes d'une installation précédente ou conflit)."
+    erreurs: ["0-2031"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5525770/office-installation-failed-with-error-code-0-2031
+    etat: a-rediger
+
+  - id: office-2016-2019-fin-de-support
+    titre: "Office 2016 ou 2019 n'est plus pris en charge (fin de support le 14 octobre 2025)"
+    symptome: "Plus de correctifs de sécurité ; fonctions Microsoft 365 (étiquettes, DLP, accès conditionnel) de moins en moins compatibles ; migration vers Microsoft 365 Apps ou LTSC 2024."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://support.microsoft.com/KB/5002369
+      - https://mc.merill.net/message/MC1176302
+    etat: a-rediger
+
+  - id: office-macros-bloquees-partage-reseau
+    titre: "Macros bloquées sur un partage réseau ou un emplacement approuvé non pris en compte"
+    symptome: "Les macros d'un fichier sur \\\\serveur\\partage restent bloquées : accès par adresse IP ou nom complet hors zone Intranet, emplacement réseau non autorisé."
+    erreurs: ["SECURITY RISK Microsoft has blocked macros from running because the source of this file is untrusted."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5817890/unable-to-run-excel-vba-macros-in-a-file-on-a-trus
+      - https://docs.microsoft.com/en-us/deployoffice/security/internet-macros-blocked
+    etat: a-rediger
+
+  - id: office-macros-desactivees-strategie
+    titre: "Les macros VBA sont désactivées et ne peuvent pas être activées (stratégie de l'organisation)"
+    symptome: "Aucune option pour activer le contenu ; les paramètres de macros sont imposés par GPO ou Intune."
+    erreurs: ["Microsoft has blocked macros from running.", "Macros have been disabled."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5294891/vba-macros-has-been-disabled-and-cannot-work-even
+      - https://td.usd.edu/TDClient/33/Portal/KB/Article/8808/Macro-Enabled-Files-Not-Working
+    etat: a-rediger
+
+  # ─────────────── Lecture seule, récupération, ouverture depuis SharePoint ───────────────
+
+  - id: office-fichier-s-ouvre-lecture-seule
+    titre: "Un document Word ou Excel s'ouvre en lecture seule sans raison apparente"
+    symptome: "Attribut lecture seule, mode protégé, verrou orphelin (fichier ~$), extraction obligatoire ou brouillons SharePoint, document marqué comme final."
+    erreurs: ["READ-ONLY", "This file is read-only."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/office/office-2016-files-open-as-read-only-unexpectedly-0303de63-32cb-4188-bb78-50c673cf40c3
+      - https://techcommunity.microsoft.com/discussions/microsoftlearn/office-documents-in-a-sharepoint-library-opens-in-read-only-mode-when-opened-wit/1528812
+      - https://learn.microsoft.com/en-us/answers/questions/5674895/my-document-is-showing-read-only
+    etat: a-rediger
+
+  - id: office-recuperer-document-non-enregistre
+    titre: "Récupérer un document Word ou un classeur Excel fermé sans enregistrer (récupération automatique)"
+    symptome: "L'utilisateur a perdu son travail après un plantage ou une fermeture ; rechercher les fichiers de récupération automatique (.asd, .xlsb) et les versions non enregistrées."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/cs-cz/archive/blogs/emeaoffice/autorecovery-in-word-2010
+      - https://td.wku.edu/TDClient/34/Portal/KB/ArticleDet?ID=3054
+    etat: a-rediger
+
+  - id: office-ouvrir-dans-application-bureau-ne-fonctionne-pas
+    titre: "« Ouvrir dans l'application de bureau » ne fonctionne pas depuis SharePoint, OneDrive ou Teams"
+    symptome: "Les fichiers s'ouvrent toujours dans le navigateur ou rien ne se passe ; gestionnaire de protocole Office bloqué, réglage de la bibliothèque, association de fichiers."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5122413/sharepoint-documents-are-not-opening-in-desktop-ap
+      - https://learn.microsoft.com/en-gb/answers/questions/1615306/need-to-stop-office-apps-from-ever-opening-in-a-br
+    etat: a-rediger
+
+  # ─────────────── Affichage ───────────────
+
+  - id: office-scintillement-ecran-acceleration-graphique
+    titre: "Word ou Excel : scintillement, écran noir ou saisie qui traîne (accélération graphique)"
+    symptome: "L'affichage clignote, devient noir ou les caractères apparaissent en retard ; pilote graphique, accélération matérielle ou mise à l'échelle DPI."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://woshub.com/office-disable-hardware-graphic-acceleration
+      - https://learn.microsoft.com/en-us/answers/questions/5097199/screen-flickering-when-using-ms-office
+    etat: a-rediger
+
+  # ─────────────── Connexion des applications ───────────────
+
+  - id: office-connexion-erreur-caa20003-caa70007
+    titre: "Connexion aux applications Microsoft 365 impossible : erreurs CAA20003, CAA70007 ou CAA90049"
+    symptome: "Word, Excel ou Teams refusent la connexion avec un code CAAxxxxx ; jeton d'appareil, inscription Entra, cache d'identité ou heure système."
+    erreurs: ["CAA20003", "CAA70007", "CAA90049"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5137706/error-code-caa20003
+      - https://windowsreport.com/caa70007/
+    etat: a-rediger
+
+  - id: office-diagnostic-authentification-msoaid
+    titre: "Problème de connexion Office non résolu : collecter les journaux d'authentification (MSOAID)"
+    symptome: "Les demandes d'authentification en boucle ou les échecs de connexion persistent ; l'outil MSOAID collecte les journaux pour analyse."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/activation/use-msoaid-tool-for-authentication-issues
+      - https://github.com/MicrosoftDocs/SupportArticles-docs/blob/main/Office/Client/activation/use-msoaid-tool-for-authentication-issues.md
+    etat: a-rediger

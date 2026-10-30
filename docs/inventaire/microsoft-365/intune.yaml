@@ -1293,3 +1293,480 @@ problemes:
       - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/known-issues
       - https://techcommunity.microsoft.com/t5/intune-customer-success/known-issue-status-reporting-for-app-install-lifecycle-and-app/ba-p/2147870
     etat: a-rediger
+  # --- Actions à distance : mise hors service, effacement, verrouillage ---
+  - id: intune-effacement-mise-hors-service-en-attente
+    titre: "Effacement (Wipe) ou mise hors service (Retire) bloqué « En attente » indéfiniment"
+    symptome: "L'action reste « Retire/Wipe Pending » : appareil hors ligne (attente jusqu'à expiration du certificat MDM) ou appareil réinitialisé sans remonter son état."
+    erreurs: ["Retire/Wipe Pending"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-management/troubleshoot-device-actions
+    etat: a-rediger
+  - id: intune-effacement-windows-ne-redemarre-plus
+    titre: "Poste Windows (ou chiffré BitLocker) qui ne redémarre plus après une réinitialisation Intune"
+    symptome: "Après l'effacement avec l'option « continuer même en cas de coupure d'alimentation », le poste ne démarre plus et doit être réinstallé depuis un média."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-management/troubleshoot-device-actions
+    etat: a-rediger
+  - id: intune-effacement-remotewipe-winre-desactive
+    titre: "L'effacement à distance ne fait rien sur Windows : événement 400, WinRE désactivé"
+    symptome: "La commande doWipe (RemoteWipe CSP) échoue sans réinitialiser le poste ; l'environnement de récupération Windows est désactivé."
+    erreurs: ["Event ID 400", "MDM ConfigurationManager: Command failure status."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-management/remotewipe-fails-sending-dowipe-command
+    etat: a-rediger
+  - id: intune-mise-hors-service-office-toujours-accessible
+    titre: "Après mise hors service, l'utilisateur peut encore se connecter aux applications Office"
+    symptome: "La mise hors service ne révoque pas les jetons d'accès ; utiliser l'accès conditionnel et la révocation des sessions."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-management/troubleshoot-device-actions
+    etat: a-rediger
+  - id: intune-mise-hors-service-application-non-desinstallee
+    titre: "Mise hors service : une application n'a pas été désinstallée de l'appareil"
+    symptome: "L'application installée hors Intune n'est pas considérée comme gérée et reste sur l'appareil."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-management/troubleshoot-device-actions
+    etat: a-rediger
+  - id: intune-qui-a-lance-effacement-audit
+    titre: "Retrouver qui a lancé un effacement ou une mise hors service d'appareil"
+    symptome: "Un appareil a été réinitialisé sans explication ; consulter les journaux d'audit (Initiated By) ou l'action de l'utilisateur via le Portail d'entreprise."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-management/troubleshoot-device-actions
+    etat: a-rediger
+  - id: intune-ios-verrouillage-activation-desactivation
+    titre: "iOS : l'action « Désactiver le verrou d'activation » ne fait rien ou le code n'apparaît pas"
+    symptome: "Le code de contournement n'est pas visible ou l'action est grisée ; appareil non supervisé ou stratégie n'autorisant pas le verrou d'activation."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-management/troubleshoot-device-actions
+    etat: a-rediger
+  - id: intune-ios-reinitialisation-code-jeton
+    titre: "iOS 13+ : la suppression/réinitialisation du code d'accès échoue (jeton de déverrouillage)"
+    symptome: "L'action de code d'accès ne fonctionne pas sur certains iPhone inscrits ; problème connu lié au jeton, script PowerShell fourni par Microsoft."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/known-issues
+      - https://techcommunity.microsoft.com/t5/intune-customer-success/support-tip-powershell-script-now-available-for-ios-passcode/ba-p/1250875
+    etat: a-rediger
+  - id: intune-appareil-utilisateur-supprime-upn-none
+    titre: "Appareil Intune avec UPN « None » (utilisateur supprimé d'Entra ID avant l'appareil)"
+    symptome: "L'appareil orphelin ne peut plus être géré normalement ; suppression via script Graph."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-management/orphaned-device-upn-shown-as-none
+    etat: a-rediger
+  - id: intune-appareils-doublons-entra
+    titre: "Appareils en double dans Intune / Entra ID après réinscription"
+    symptome: "Plusieurs objets pour le même appareil faussent les rapports et la conformité ; nettoyer les objets obsolètes."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-management/remove-duplicate-mobile-device-management
+    etat: a-rediger
+  # --- Windows LAPS via Intune ---
+  - id: intune-laps-mot-de-passe-non-sauvegarde-entra
+    titre: "Windows LAPS via Intune : le mot de passe n'apparaît pas dans Entra ID / Intune (événement 10028)"
+    symptome: "Aucun mot de passe administrateur local consultable ; LAPS n'est pas activé dans les paramètres d'appareil Entra, appareil supprimé ou désactivé."
+    erreurs: ["Event ID 10028", "LAPS failed to update Azure Active Directory with the new password"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/windows-server/windows-security/windows-laps-troubleshooting-guidance
+    etat: a-rediger
+  - id: intune-laps-azure-failure-code-10059
+    titre: "Windows LAPS : événement 10059 « Azure returned a failure code »"
+    symptome: "La sauvegarde vers Entra ID échoue avec une erreur HTTP ; problème de connexion à enterpriseregistration.windows.net ou d'état d'inscription de l'appareil (dsregcmd /status)."
+    erreurs: ["Event ID 10059", "Azure returned a failure code"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/windows-server/windows-security/windows-laps-troubleshooting-guidance
+    etat: a-rediger
+  - id: intune-laps-authentification-azure-10026-10032
+    titre: "Windows LAPS : « LAPS was unable to authenticate to Azure using the device identity » (10026 / 10032)"
+    symptome: "LAPS ne peut pas s'authentifier avec l'identité de l'appareil ; jonction Entra rompue ou PRT absent."
+    erreurs: ["Event ID 10026", "Event ID 10032", "LAPS was unable to authenticate to Azure using the device identity"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/windows-server/windows-security/windows-laps-troubleshooting-guidance
+    etat: a-rediger
+  - id: intune-laps-decouverte-azure-10025
+    titre: "Windows LAPS : événement 10025 « Azure discovery failed »"
+    symptome: "Le client LAPS ne trouve pas les points de terminaison Entra ID (réseau, proxy)."
+    erreurs: ["Event ID 10025", "Azure discovery failed"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/windows-server/windows-security/windows-laps-troubleshooting-guidance
+    etat: a-rediger
+  - id: intune-laps-compte-admin-introuvable-10013
+    titre: "Windows LAPS : événement 10013 « LAPS failed to find the currently configured local administrator account »"
+    symptome: "Le compte administrateur ciblé par la stratégie Intune n'existe pas (nom personnalisé non créé ou mal orthographié)."
+    erreurs: ["Event ID 10013", "LAPS failed to find the currently configured local administrator account"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/windows-server/windows-security/windows-laps-troubleshooting-guidance
+    etat: a-rediger
+  - id: intune-laps-complexite-incompatible-10027
+    titre: "Windows LAPS : événement 10027 (mot de passe généré non conforme à la stratégie locale)"
+    symptome: "LAPS ne peut pas créer de mot de passe acceptable ; longueur/complexité incompatibles avec la stratégie de mot de passe locale ou de domaine."
+    erreurs: ["Event ID 10027", "LAPS was unable to create an acceptable new password."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/windows-server/windows-security/windows-laps-troubleshooting-guidance
+    etat: a-rediger
+  - id: intune-laps-mise-a-jour-compte-local-10019
+    titre: "Windows LAPS : événement 10019 « LAPS failed to update the local admin account with the new password »"
+    symptome: "La rotation du mot de passe échoue sur le poste lui-même."
+    erreurs: ["Event ID 10019"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/windows-server/windows-security/windows-laps-troubleshooting-guidance
+    etat: a-rediger
+  - id: intune-laps-action-post-authentification-10048-10049
+    titre: "Windows LAPS : action post-authentification (réinitialisation/redémarrage) en échec (10048 / 10049)"
+    symptome: "Après utilisation du mot de passe, la rotation ou le redémarrage prévus ne se font pas."
+    erreurs: ["Event ID 10048", "Event ID 10049"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/windows-server/windows-security/windows-laps-troubleshooting-guidance
+    etat: a-rediger
+  # --- Mises à jour Windows gérées par Intune ---
+  - id: intune-anneau-mise-a-jour-non-applique
+    titre: "Anneau de mises à jour Windows (Update ring) Intune non appliqué ou en erreur"
+    symptome: "Les reports et échéances ne s'appliquent pas ; édition non prise en charge, conflit GPO/WSUS, télémétrie désactivée, charge de travail co-gestion non basculée."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/troubleshoot-update-rings
+    etat: a-rediger
+  - id: intune-mises-a-jour-dualscan-wsus
+    titre: "Postes gérés par Intune qui interrogent encore WSUS (UpdateServiceUrl, DisableDualScan)"
+    symptome: "Les mises à jour Windows Update for Business ne sont pas proposées car une ancienne GPO WSUS reste dans le registre."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/troubleshoot-update-rings
+    etat: a-rediger
+  - id: intune-mise-a-jour-fonctionnalite-jamais-proposee-80070426
+    titre: "Mise à jour de fonctionnalité Windows jamais proposée (0x80070426, service wlidsvc désactivé)"
+    symptome: "Les mises à jour qualité s'installent mais jamais la mise à jour de fonctionnalité ; le service Assistant Connexion avec un compte Microsoft (wlidsvc) est désactivé."
+    erreurs: ["Exit code = 0x80070426", "WU_E_NO_USERTOKEN"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/windows-feature-updates-never-offered
+    etat: a-rediger
+  - id: intune-mise-a-jour-version-cible-conflit
+    titre: "Poste bloqué sur une ancienne version de Windows (TargetReleaseVersion en conflit)"
+    symptome: "Le poste ne monte pas de version malgré la stratégie de mise à jour de fonctionnalité ; une valeur TargetReleaseVersion d'une GPO ou d'un autre profil l'en empêche."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/troubleshoot-update-rings
+    etat: a-rediger
+  - id: intune-portail-entreprise-message-remediation-builds
+    titre: "Portail d'entreprise Windows : le message de correction ne liste pas toutes les versions valides"
+    symptome: "Problème connu : l'utilisateur non conforme pour version d'OS ne voit pas toutes les builds acceptées."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/known-issues
+      - https://techcommunity.microsoft.com/t5/intune-customer-success/known-issue-remediation-message-doesn-t-list-all-valid-builds-in/ba-p/3622082
+    etat: a-rediger
+  # --- Déploiement d'applications (Win32, Store, iOS, macOS) ---
+  - id: intune-win32-installation-echoue-diagnostic
+    titre: "Application Win32 Intune qui ne s'installe pas : diagnostic (IME, IntuneManagementExtension.log)"
+    symptome: "L'application reste « Installation en attente » ou « Échec » ; commande d'installation non silencieuse, règle de détection erronée, prérequis ou dépendance manquante."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/troubleshoot-win32-app-install
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/develop-deliver-working-win32-app-via-intune
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/troubleshoot-app-install
+    etat: a-rediger
+  - id: intune-app-0x87d1041c-non-detectee-apres-installation
+    titre: "Application en échec 0x87D1041C « The application was not detected after installation completed successfully »"
+    symptome: "L'installation se termine mais la règle de détection ne trouve pas l'application (mauvais chemin, version ou code produit MSI), ou l'utilisateur l'a désinstallée."
+    erreurs: ["0x87D1041C", "-2016345060", "The application was not detected after installation completed successfully."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/app-install-error-codes
+    etat: a-rediger
+  - id: intune-app-0x8000ffff-erreur-inattendue
+    titre: "Installation d'application Windows en échec 0x8000FFFF (erreur inattendue)"
+    symptome: "Erreur générique pendant l'installation ; consulter les journaux d'installation de l'application."
+    erreurs: ["0x8000FFFF", "-2147418113"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/app-install-error-codes
+    etat: a-rediger
+  - id: intune-appx-msix-0x80073cff-sideloading
+    titre: "Application MSIX/APPX en échec 0x80073CFF / 0x80CF201C (chargement indépendant non autorisé)"
+    symptome: "Le package LOB ne s'installe pas : signature non approuvée ou chargement indépendant (sideloading) non activé."
+    erreurs: ["0x80073CFF", "0x80CF201C"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/app-install-error-codes
+    etat: a-rediger
+  - id: intune-appx-msix-0x80073cf0-0x80073cf3-package
+    titre: "Application MSIX/APPX en échec 0x80073CF0, 0x80073CF3 ou 0x80073CFB (package non signé, conflit, version)"
+    symptome: "Package non signé ou éditeur différent du certificat, conflit avec un package installé, dépendance absente ou numéro de version à incrémenter."
+    erreurs: ["0x80073CF0", "0x80073CF3", "0x80073CFB"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/app-install-error-codes
+    etat: a-rediger
+  - id: intune-app-disponible-absente-portail-entreprise
+    titre: "Application « Disponible » qui n'apparaît pas dans le Portail d'entreprise"
+    symptome: "L'utilisateur ne voit pas l'application : affectation à un groupe d'appareils au lieu d'utilisateurs, type d'appareil non pris en charge, compte professionnel absent ou limite d'appareils Entra."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/troubleshoot-app-install
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/apps-appear-unavailable
+    etat: a-rediger
+  - id: intune-app-arm64-non-proposee
+    titre: "Application non proposée ou non installée sur un PC Windows ARM64"
+    symptome: "Les types d'applications et architectures pris en charge sur ARM64 diffèrent ; l'application x86/x64 ne cible pas l'appareil."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/troubleshoot-app-install
+    etat: a-rediger
+  - id: intune-store-region-selection-indisponible
+    titre: "Applications Microsoft Store : sélection régionale temporairement indisponible (problème connu)"
+    symptome: "Impossible de choisir la région lors de l'ajout d'une application du nouveau Microsoft Store dans Intune."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/known-issues
+    etat: a-rediger
+  - id: intune-portail-entreprise-apps-configmgr-lentes
+    titre: "Portail d'entreprise Windows : les applications déployées par Configuration Manager mettent longtemps à s'afficher"
+    symptome: "La page Applications du Portail d'entreprise met de quelques secondes à plusieurs minutes à charger (problème connu)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/known-issues
+    etat: a-rediger
+  - id: intune-portail-entreprise-apps-entreprise-azure-absentes
+    titre: "Les applications d'entreprise Entra ID ne s'affichent pas dans le Portail d'entreprise"
+    symptome: "Problème connu : applications d'entreprise absentes du Portail d'entreprise Windows et du site web."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/known-issues
+    etat: a-rediger
+  - id: intune-portail-entreprise-erreurs-connexion-serveur
+    titre: "Portail d'entreprise : « Can't connect to server », « Temporarily unavailable » ou « Something went wrong »"
+    symptome: "Le Portail d'entreprise n'arrive pas à joindre le service (erreurs HTTP 400/500/503 ou connexion sécurisée impossible)."
+    erreurs: ["Can't connect to server", "Temporarily unavailable", "Internal server issue", "Something went wrong. The Company Portal client couldn't load."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/general/troubleshoot-company-resource-access-problems
+    etat: a-rediger
+  - id: intune-ios-vpp-licence-introuvable
+    titre: "iOS : application VPP non installée, licence introuvable (0x87D1313D, 0x87D13B95)"
+    symptome: "L'application achetée en volume ne s'installe pas ; jeton VPP à synchroniser ou licence à réattribuer."
+    erreurs: ["0x87D1313D", "Could not retrieve license for the app with iTunes Store ID", "0x87D13B95", "Can't find VPP license for app."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/app-install-error-codes
+    etat: a-rediger
+  - id: intune-ios-vpp-plus-de-licences
+    titre: "iOS : « License Assignment failed with Apple error 'No VPP licenses remaining' » (0x87D13B7E)"
+    symptome: "Plus de licences disponibles dans Apple Business Manager pour l'application."
+    erreurs: ["0x87d13b7e", "No VPP licenses remaining"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/app-install-error-codes
+    etat: a-rediger
+  - id: intune-ios-vpp-jeton-expire-erreur-inconnue
+    titre: "iOS : installation d'application « Unknown error » 0x87D13B7D (souvent jeton VPP expiré)"
+    symptome: "Les applications Apple achetées en volume échouent avec une erreur inconnue ; vérifier l'état du jeton d'emplacement (VPP)."
+    erreurs: ["0x87D13B7D", "Unknown error."]
+    priorite: critique
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/app-install-error-codes
+    etat: a-rediger
+  - id: intune-ios-app-licence-appareil-user-enrollment
+    titre: "iOS : application VPP en échec « ErrorUserEnrollmentUnsupported » (0x87D13BA9)"
+    symptome: "Application en licence appareil déployée sur un appareil personnel inscrit en User Enrollment, qui n'accepte que la licence utilisateur."
+    erreurs: ["0x87D13BA9", "ErrorUserEnrollmentUnsupported"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/app-install-error-codes
+    etat: a-rediger
+  - id: intune-ios-app-refusee-utilisateur
+    titre: "iOS : l'utilisateur a refusé l'installation ou la mise à jour de l'application (0x87D13B62 / 0x87D13B63)"
+    symptome: "L'application disponible ou requise n'est pas installée car l'invite iOS a été annulée."
+    erreurs: ["0x87D13B62", "The user rejected the offer to install the app.", "0x87D13B63"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/app-install-error-codes
+    etat: a-rediger
+  - id: intune-ios-app-installee-non-geree
+    titre: "iOS : « The application is installed on the device but is unmanaged » (0x87D13B8F) ou gestion refusée (0x87D13B68)"
+    symptome: "L'application déjà installée hors Intune ne peut pas devenir gérée ; l'utilisateur doit accepter la gestion ou la désinstaller."
+    erreurs: ["0x87d13b8f", "The application is installed on the device but is unmanaged.", "0x87d13b68", "User declined app management"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/app-install-error-codes
+    etat: a-rediger
+  - id: intune-ios-app-store-desactive-mode-perdu-kiosque
+    titre: "iOS : application non installable (App Store désactivé, mode Perdu, mode kiosque, connexion App Store requise)"
+    symptome: "Codes 0x87D13B94, 0x87D13B97, 0x87D13B98 ou 0x87D13B99 selon l'état de l'appareil."
+    erreurs: ["0x87D13B94", "Can't install apps when App Store is disabled.", "0x87D13B97", "0x87D13B98", "0x87D13B99", "User must sign in to the App Store."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/app-install-error-codes
+    etat: a-rediger
+  - id: intune-ios-app-erreurs-reseau-manifeste
+    titre: "iOS : installation d'application en échec réseau (0x87D13B6F, 0x87D13B70, 0x87D13B77, 0x87D13B80)"
+    symptome: "La validation du manifeste échoue : délai dépassé, hôte introuvable, connexion sécurisée échouée ou App Store injoignable."
+    erreurs: ["0x87D13B6F", "Your connection to Intune timed out.", "0x87D13B70", "You lost connection to the Internet.", "0x87D13B77", "0x87D13B80", "CannotConnectToITunesStoreError"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/app-install-error-codes
+    etat: a-rediger
+  - id: intune-ios-app-configuration-requise-absente
+    titre: "iOS : « Needed app configuration policy not present » (0x87D13B7F)"
+    symptome: "L'application exige une stratégie de configuration qui n'est pas ciblée sur les mêmes groupes."
+    erreurs: ["0x87d13b7f", "Needed app configuration policy not present, ensure policy is targeted to same groups."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/app-install-error-codes
+    etat: a-rediger
+  - id: intune-ios-app-desinstallation-impossible
+    titre: "iOS : impossible de désinstaller via Intune une application installée depuis l'App Store"
+    symptome: "Intune ne peut supprimer que les applications déployées par le canal MDM ; comportement attendu."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/cannot-uninstall-apple-app-store-apps
+    etat: a-rediger
+  - id: intune-ios-web-app-adresse-invalide
+    titre: "iOS : « Safari cannot open the page because the address is invalid » à l'ouverture d'une application web"
+    symptome: "Le lien web exige un navigateur géré qui n'est pas installé."
+    erreurs: ["Safari cannot open the page because the address is invalid"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/invalid-address-open-web-app
+    etat: a-rediger
+  - id: intune-macos-pkg-lob-non-deploye
+    titre: "Mac : application LOB .pkg non installée, sans message d'erreur"
+    symptome: "Le package ne contient pas la version, le CFBundleVersion ou l'emplacement d'installation requis par Intune."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/macos-lob-apps-not-deployed
+    etat: a-rediger
+  - id: intune-macos-0x87d13ba2-bundleid-invalide
+    titre: "Mac : « One or more apps contain invalid bundleIDs » (0x87D13BA2) alors que l'application est installée"
+    symptome: "Le statut d'installation est en échec à cause des identifiants de bundle déclarés dans le package (exemple : Teams)."
+    erreurs: ["0x87D13BA2", "One or more apps contain invalid bundleIDs."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/error-0x87d13ba2-deploy-macos-lob-app
+    etat: a-rediger
+  - id: intune-macos-agent-intune-scripts-installation-pending
+    titre: "Mac : applications « Install Pending » indéfiniment et scripts shell qui ne s'exécutent pas (agent Intune non installé)"
+    symptome: "L'agent de gestion Intune pour macOS ne s'installe pas ; observé de façon sporadique sur macOS 11.2."
+    erreurs: ["Install Pending"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/cannot-install-macos-apps-and-run-shell-scripts
+    etat: a-rediger
+  - id: intune-macos-m365-ferme-reinstalle
+    titre: "Mac : Teams/Outlook se ferment sans prévenir et se réinstallent (déploiements Microsoft 365 requis multiples)"
+    symptome: "Les applications Microsoft 365 se ferment pendant l'utilisation puis redémarrent ; plusieurs déploiements requis ou suite Microsoft 365 Apps for macOS en requis."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/no-notification-microsoft365-apps-macos-reinstall
+    etat: a-rediger
+  - id: intune-app-modification-droits-insuffisants
+    titre: "« Save application failed. You don't have enough permissions to update this application »"
+    symptome: "Un administrateur avec rôle personnalisé ne peut pas modifier l'application ; les groupes ciblés ne sont pas dans l'étendue (Scope Groups) du rôle."
+    erreurs: ["Save application failed.", "You don't have enough permissions to update this application, contact your administrator."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/save-application-failed-error
+    etat: a-rediger
+  - id: intune-edge-plusieurs-strategies-une-seule-appliquee
+    titre: "Microsoft Edge : une seule stratégie de configuration d'application appliquée sur plusieurs"
+    symptome: "Les profils de configuration Edge/Managed Browser ne fusionnent pas ; seul l'un d'eux s'applique."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/only-one-app-policy-applied-edge-managed-browser
+    etat: a-rediger
+  - id: intune-managed-browser-0x87d1fde8
+    titre: "Stratégie d'URL autorisées/bloquées du navigateur géré en erreur 0x87D1FDE8"
+    symptome: "La stratégie apparaît en erreur dans la console selon le contenu de la liste d'autorisation ou si elle a été appliquée pendant l'installation."
+    erreurs: ["An error occurred: 0x87D1FDE8"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/managed-browser-policy-triggers-error-0x87d1fde8
+    etat: a-rediger

@@ -1,0 +1,323 @@
+domaine: microsoft-365
+sous_domaine: centre-administration
+recense_le: 2026-10-30
+problemes:
+  # --- PowerShell : Exchange Online ---
+  - id: exchange-powershell-access-denied-connexion
+    titre: "Exchange Online PowerShell : « Access is denied » à la connexion"
+    symptome: "La connexion au module Exchange Online échoue (mauvais identifiants, compte sans accès Exchange, paramètres de sécurité par défaut)."
+    erreurs: ["Access is denied"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/exchange/troubleshoot/administration/access-denied-connect-powershell
+    etat: a-rediger
+
+  - id: exchange-powershell-bad-request-remotepowershell
+    titre: "Exchange Online PowerShell : « Bad Request » (RemotePowerShellEnabled à False)"
+    symptome: "La session distante ne s'ouvre pas car l'accès PowerShell est désactivé pour le compte administrateur."
+    erreurs: ["Connecting to remote server outlook.office365.com failed with the following error message: Bad Request"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/exchange/troubleshoot/administration/bad-request-error-when-connecting-to-exchange-online-powershell
+    etat: a-rediger
+
+  - id: exchange-powershell-connect-ippssession-echec
+    titre: "Connexion impossible à Security & Compliance PowerShell (Connect-IPPSSession)"
+    symptome: "Connect-IPPSSession échoue après redirection vers ps.compliance.protection.outlook.com (version 3.1.0 du module en cause)."
+    erreurs: ["Your connection has been redirected to the following URI", "PSRemotingDataStructureException"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/exchange/troubleshoot/administration/cannot-connect-to-security-compliance-powershell
+    etat: a-rediger
+
+  - id: exchange-powershell-window-handle-wam
+    titre: "Connect-ExchangeOnline : « A window handle must be configured » (authentification WAM)"
+    symptome: "Depuis les versions 3.5/3.7 du module, la fenêtre de connexion ne s'ouvre pas dans ISE ou certains hôtes PowerShell."
+    erreurs: ["A window handle must be configured"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/exchange_general/windows-handle-error-when-using-connect-exchange-onlinew-module-version-3-7-/4372328
+      - https://learn.microsoft.com/en-ie/answers/questions/2127369/when-i-run-the-connect-exchangeonline-to-connect-i
+    etat: a-rediger
+
+  - id: exchange-eac-lent-transcription-powershell
+    titre: "Centre d'administration Exchange très lent à afficher les destinataires (transcription PowerShell activée)"
+    symptome: "La liste des boîtes met plusieurs minutes à s'afficher dans le CAE."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/exchange/troubleshoot/administration/eac-slow-to-display-recipients-if-powershell-transcription-is-turned-on
+    etat: a-rediger
+
+  - id: m365-powershell-conflit-assemblies-modules
+    titre: "Conflit de DLL entre modules PowerShell Microsoft 365 (Graph, Exchange, Teams, PnP) dans la même session"
+    symptome: "Erreur de chargement d'assembly ou « Method not found » selon l'ordre de connexion des modules."
+    erreurs: ["Could not load file or assembly 'Microsoft.Identity.Client'", "Method not found"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://office365itpros.com/2025/09/24/assembly-clash-microsoft-365-ps/
+      - https://office365itpros.com/2023/10/20/powershell-module-clash-exo/
+      - https://github.com/pnp/powershell/issues/488
+    etat: a-rediger
+
+  # --- PowerShell : Microsoft Graph et anciens modules ---
+  - id: graph-powershell-insufficient-privileges
+    titre: "Microsoft Graph PowerShell : « Insufficient privileges to complete the operation » (Authorization_RequestDenied)"
+    symptome: "Une commande Mg* échoue même avec un administrateur général : étendues (scopes) non demandées à Connect-MgGraph ou consentement manquant."
+    erreurs: ["Authorization_RequestDenied", "Insufficient privileges to complete the operation"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1463186/get-mgsubscribedsku-insufficient-privileges-to-com
+      - https://github.com/microsoftgraph/msgraph-sdk-powershell/issues/856
+    etat: a-rediger
+
+  - id: m365-msonline-azuread-modules-retires
+    titre: "Scripts MSOnline / AzureAD qui ne fonctionnent plus (Connect-MsolService, Connect-AzureAD retirés)"
+    symptome: "Les anciens scripts échouent depuis le retrait des modules en 2025 ; migration vers Microsoft Graph PowerShell ou Entra PowerShell."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://office365itpros.com/2025/01/15/msonline-module-retirement/
+      - https://lazyadmin.nl/powershell/azuread-and-msonline-module-retirement-what-you-need-to-know/
+      - https://practical365.com/march-2024-retirement-old-azure-ad-modules/
+    etat: a-rediger
+
+  - id: m365-connect-msolservice-access-denied
+    titre: "Connect-MsolService : « Access Denied. You do not have permissions to call this cmdlet »"
+    symptome: "Ancien module MSOnline : connexion refusée ou exception MicrosoftOnlineException."
+    erreurs: ["Connect-MsolService : Access Denied. You do not have permissions to call this cmdlet.", "Exception of type 'Microsoft.Online.Administration.Automation.MicrosoftOnlineException' was thrown."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/mfa/cannot-connect-cloud-services-powershell
+    etat: a-rediger
+
+  - id: m365-module-azuread-ne-s-ouvre-pas
+    titre: "Le module Azure Active Directory pour PowerShell ne s'ouvre pas ou ne s'installe pas"
+    symptome: "Erreurs de chargement à l'ouverture (.NET 3.5 absent) ou installation refusée (version de PowerShell)."
+    erreurs: ["In order to install Windows Azure Active Directory module for PowerShell, you must have Windows PowerShell 2.0 or greater installed on this computer."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/dir-dmns-obj/cant-open-aad-module-powershell
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/unable-install-aad-module-powershell
+    etat: a-rediger
+
+  - id: powershell-execution-scripts-desactivee
+    titre: "« running scripts is disabled on this system » : stratégie d'exécution PowerShell"
+    symptome: "Un script d'administration Microsoft 365 refuse de se lancer (stratégie Restricted, script non signé)."
+    erreurs: ["cannot be loaded because running scripts is disabled on this system", "is not digitally signed. The script will not execute on the system."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/cannot-run-scripts-powershell
+    etat: a-rediger
+
+  - id: powershell-install-module-psgallery-tls
+    titre: "Install-Module échoue : « No match was found » / « Unable to resolve package source » (TLS 1.2, NuGet)"
+    symptome: "Impossible d'installer ExchangeOnlineManagement, Microsoft.Graph ou MicrosoftTeams depuis la PowerShell Gallery."
+    erreurs: ["No match was found for the specified search criteria and module name", "Unable to resolve package source 'https://www.powershellgallery.com/api/v2'"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://woshub.com/unable-resolve-package-source-powershell/
+      - https://learn.microsoft.com/en-us/answers/questions/134203/cannot-install-powershell-modules?page=1
+    etat: a-rediger
+
+  # --- PowerShell : SharePoint / PnP / Teams ---
+  - id: sharepoint-connect-sposervice-pas-site-admin
+    titre: "Connect-SPOService : « Current site is not a tenant administration site »"
+    symptome: "La connexion SharePoint Online Management Shell échoue car l'URL n'est pas celle du centre d'administration (-admin)."
+    erreurs: ["Current site is not a tenant administration site"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://cloudinfra.net/connect-sposervice-current-site-is-not-a-tenant-administration-site/
+      - https://morgantechspace.com/2019/07/fix-connect-sposervice-current-site-is-not-a-admin-site.html
+    etat: a-rediger
+
+  - id: sharepoint-powershell-cmdlet-non-reconnue
+    titre: "Commande SharePoint Online PowerShell non reconnue ou sans résultat (plusieurs versions du module)"
+    symptome: "« The term ... is not recognized » ou commande sans effet."
+    erreurs: ["The term '<command>' is not recognized as the name of the cmdlet"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/administration/sharepoint-online-powershell-command-does-not-work-correctly
+    etat: a-rediger
+
+  - id: pnp-powershell-aadsts700016-app-supprimee
+    titre: "Connect-PnPOnline : AADSTS700016 depuis la suppression de l'application « PnP Management Shell »"
+    symptome: "Depuis septembre 2024, PnP PowerShell exige une inscription d'application propre au tenant (-ClientId)."
+    erreurs: ["AADSTS700016: Application with identifier '31359c7f-bd7e-475c-86db-fdb8c937548e' was not found in the directory"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://rakhesh.com/azure/breaking-changes-in-pnp-management-shell-registration/
+      - https://learn.microsoft.com/en-za/answers/questions/2046326/aadsts700016-application-with-identifier-(id)-was
+    etat: a-rediger
+
+  - id: pnp-powershell-aadsts65001-consentement
+    titre: "Connect-PnPOnline : AADSTS65001, consentement administrateur manquant"
+    symptome: "L'utilisateur ou l'administrateur n'a pas consenti à l'application utilisée par PnP PowerShell."
+    erreurs: ["AADSTS65001: The user or administrator has not consented to use the application"]
+    priorite: rare
+    format: express
+    sources:
+      - https://techpress.net/fix-connect-pnponline-aadsts65001-error/
+    etat: a-rediger
+
+  - id: teams-powershell-module-erreur-assembly
+    titre: "Connect-MicrosoftTeams échoue après mise à jour du module (assembly introuvable)"
+    symptome: "Une nouvelle version du module MicrosoftTeams casse l'authentification ; retour à la version précédente."
+    erreurs: ["Could not load file or assembly 'Microsoft.IdentityModel.JsonWebTokens'"]
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/microsoftteams/microsoft-teams-powershell-module-7-6-0-is-broken/4489428
+    etat: a-rediger
+    # > [!a-verifier] lié à une version précise du module (7.6.0)
+
+  - id: teams-centre-admin-failed-to-auto-discover-domain
+    titre: "Centre d'administration Teams : erreur « FAILED_TO_AUTO_DISCOVER_DOMAIN »"
+    symptome: "Le centre d'administration Teams ne se charge pas : domaine SIP non activé, aucun utilisateur licencié Teams, URL bloquées."
+    erreurs: ["FAILED_TO_AUTO_DISCOVER_DOMAIN"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/failed-to-auto-discover-domain-error-teams-admin-center
+    etat: a-rediger
+
+  # --- Domaines personnalisés ---
+  - id: m365-domaine-verification-txt-echoue
+    titre: "Vérification du domaine personnalisé impossible (enregistrement TXT MS=)"
+    symptome: "Microsoft 365 ne trouve pas l'enregistrement TXT : valeur incomplète, zone non enregistrée, propagation DNS."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/admin/get-help-with-domains/find-and-fix-issues
+      - https://learn.microsoft.com/en-us/microsoft-365/admin/get-help-with-domains/information-for-dns-records
+    etat: a-rediger
+
+  - id: m365-domaine-trop-de-domaines-non-verifies
+    titre: "« Number of unverified domains exceeded » à l'ajout d'un domaine"
+    symptome: "Ajout de domaine refusé : limite de domaines non vérifiés atteinte, ou domaine déjà présent."
+    erreurs: ["Number of unverified domains exceeded.", "Before you continue, you'll need to verify or delete one of your unverified domains.", "Registering domain failed"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/admin/domain-management/administrator-failed-adding-domain
+    etat: a-rediger
+
+  - id: m365-domaine-sous-domaine-n-herite-pas
+    titre: "Un sous-domaine n'hérite pas des modifications du domaine parent (vérifié avant lui)"
+    symptome: "Fédération, authentification ou vérification du domaine parent non répercutées sur le sous-domaine."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/admin/domain-management/child-domain-fails-inherit-parent-domain-changes
+    etat: a-rediger
+
+  - id: m365-domaine-sous-domaine-authentification-differente
+    titre: "Ajout d'un sous-domaine refusé : type d'authentification différent du domaine racine fédéré"
+    symptome: "Le sous-domaine d'un domaine fédéré ne peut pas être ajouté en authentification managée."
+    erreurs: ["Unable to add this domain. It is a subdomain and its authentication type is different from the authentication type of the root domain."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/new-msoldomain-cmdle-add-subdomain
+    etat: a-rediger
+
+  - id: m365-domaine-suppression-impossible
+    titre: "Impossible de supprimer un domaine de Microsoft 365"
+    symptome: "Erreur à la suppression : domaine par défaut, domaine initial, sous-domaines, objets (utilisateurs, groupes, alias) qui l'utilisent encore."
+    erreurs: ["You cannot delete the default domain", "Cannot Remove Domain", "Unable to remove this domain", "You cannot remove a domain that has subdomains", "You cannot remove the initial domain"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/admin/domain-management/error-remove-domain-from-office-365
+      - https://learn.microsoft.com/en-us/microsoft-365/admin/get-help-with-domains/remove-a-domain
+    etat: a-rediger
+
+  - id: m365-domaine-federe-non-attribuable
+    titre: "Impossible d'attribuer un domaine fédéré à un utilisateur dans le centre d'administration"
+    symptome: "Le domaine fédéré n'est pas proposé pour un utilisateur cloud ni comme domaine par défaut ; les comptes doivent venir de la synchronisation."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/admin/domain-management/cannot-assign-federated-domain-to-user
+    etat: a-rediger
+
+  - id: m365-domaine-redelegation-ns-spf-permerror
+    titre: "Domaine en redélégation complète (NS chez Microsoft) : envois refusés « 550 SPF MAIL FROM check failed (PermError) »"
+    symptome: "Certains messages ne partent pas depuis un domaine dont les serveurs de noms pointent vers Microsoft 365."
+    erreurs: ["550 SPF MAIL FROM check failed (PermError)"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/admin/domain-management/send-email-full-redelegation-domain
+    etat: a-rediger
+
+  - id: exchange-hybride-domaine-impossible-a-verifier
+    titre: "Domaine impossible à ajouter et vérifier en environnement hybride (ApplicationUri de l'approbation de fédération)"
+    symptome: "Le domaine est déjà utilisé comme identifiant de l'organisation dans l'approbation de fédération Exchange local."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/exchange/troubleshoot/administration/cannot-add-and-verify-domain
+    etat: a-rediger
+
+  - id: m365-domaine-tout-le-courrier-bascule
+    titre: "Après ajout du domaine, tout le courrier de l'entreprise arrive dans Microsoft 365 (MX modifié trop tôt)"
+    symptome: "Les utilisateurs encore chez l'ancien hébergeur ne reçoivent plus leurs mails."
+    erreurs: []
+    priorite: critique
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/admin/get-help-with-domains/find-and-fix-issues
+    etat: a-rediger
+
+  - id: m365-domaine-etat-enregistrements-dns-manquants
+    titre: "Domaine en état « Enregistrements DNS manquants » ou services qui ne fonctionnent pas avec le domaine"
+    symptome: "La colonne État signale des problèmes ; « Vérifier l'intégrité » liste les enregistrements MX, CNAME, TXT à corriger."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/admin/get-help-with-domains/find-and-fix-issues
+      - https://learn.microsoft.com/en-us/microsoft-365/admin/get-help-with-domains/create-dns-records-at-any-dns-hosting-provider
+    etat: a-rediger
+
+  - id: m365-domaine-site-web-inaccessible-apres-ajout
+    titre: "Site web de l'entreprise inaccessible après l'ajout du domaine à Microsoft 365"
+    symptome: "Les enregistrements A/CNAME du site ont été modifiés ou supprimés lors de la configuration."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/admin/get-help-with-domains/find-and-fix-issues
+      - https://learn.microsoft.com/en-us/microsoft-365/admin/dns/update-dns-records-to-retain-current-hosting-provider
+    etat: a-rediger
+
+  - id: m365-domaine-hebergeur-dns-limites
+    titre: "Hébergeur DNS qui ne gère pas certains enregistrements (SRV, CNAME, TXT long) requis par Microsoft 365"
+    symptome: "Impossible de créer un enregistrement demandé chez certains registraires."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/admin/get-help-with-domains/domain-registrar-setup-limitations
+      - https://learn.microsoft.com/en-us/microsoft-365/admin/setup/domains-faq
+    etat: a-rediger

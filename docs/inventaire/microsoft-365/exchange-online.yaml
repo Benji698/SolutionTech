@@ -1330,3 +1330,496 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/cannot-access-shared-calendar-for-hidden-mailbox
     etat: a-rediger
+  # ---------- Salles, ressources et disponibilités ----------
+  - id: exchange-salle-ne-traite-pas-demande-reunion
+    titre: "La salle de réunion n'accepte ni ne refuse les demandes (aucune réponse automatique)"
+    symptome: "Les réservations de salle restent « provisoires » ou sans réponse : traitement automatique désactivé, réunion créée directement dans le calendrier de la salle, délégués de ressource."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/room-mailbox-not-process-meeting-request
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/resource-doesnt-respond-to-meeting-requests-when-using-booking
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/use-resource-booking-attendant-logs
+    etat: a-rediger
+  - id: exchange-salle-passerelle-tierce-pas-de-traitement
+    titre: "La salle ne traite pas les demandes de réunion qui passent par un service tiers (connecteur)"
+    symptome: "Les invitations routées par une passerelle externe via connecteurs arrivent comme externes et ne sont pas traitées automatiquement par la boîte de ressource."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/meeting-requests-routed-through-third-party-service-not-auto-processed
+    etat: a-rediger
+  - id: exchange-salle-double-reservation-conflit
+    titre: "Une salle déjà réservée accepte quand même une réunion en conflit (double réservation)"
+    symptome: "L'assistant de calendrier ne refuse pas les demandes en conflit : réservation possible malgré une réunion existante."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/you-still-can-reserve-a-meeting-room-even-if-it-is-reserved
+    etat: a-rediger
+  - id: exchange-salle-reponse-de-la-part-du-delegue
+    titre: "La salle répond « de la part de » son délégué au lieu de répondre automatiquement"
+    symptome: "L'organisateur reçoit une acceptation envoyée par un délégué de la ressource, ou les demandes atterrissent dans le calendrier du délégué."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/on-behalf-of-reply-from-resource-delegate-to-meeting-organizer
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/meeting-requests-sent-to-resource-mailbox-added-to-resource-delegate-calendar
+    etat: a-rediger
+  - id: exchange-salle-pas-de-confirmation-reservation
+    titre: "Aucune confirmation reçue après la réservation d'une salle"
+    symptome: "La réunion est bien planifiée mais l'organisateur ne reçoit jamais de réponse d'acceptation de la salle."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/not-receive-confirmation-after-booking-meeting
+    etat: a-rediger
+  - id: exchange-salle-delegue-boite-partagee-calendrier-inaccessible
+    titre: "« Cannot open the Calendar folder for user » en acceptant une demande pour une salle (délégué = boîte partagée)"
+    symptome: "L'utilisateur qui gère une salle via une boîte partagée déléguée ne peut pas accepter la demande de réunion dans Outlook."
+    erreurs: ["Cannot open the Calendar folder for user \"room alias\". The operation failed."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/cannot-accept-meeting-invitation-for-room-mailbox
+    etat: a-rediger
+  - id: exchange-salles-absentes-room-finder
+    titre: "Aucune salle n'apparaît dans la recherche de salles (Room Finder)"
+    symptome: "En créant une réunion, la recherche de salles est vide : aucune liste de salles (room list) ou salles sans attributs de lieu."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/conference-rooms-not-displayed
+    etat: a-rediger
+  - id: exchange-liste-salles-invisible
+    titre: "Une liste de salles (room list) n'est pas visible dans Outlook ou Outlook sur le web"
+    symptome: "La liste de salles créée par l'administrateur n'apparaît pas dans le carnet d'adresses ni dans l'assistant de planification."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/room-list-not-viewable-in-outlook
+    etat: a-rediger
+  - id: exchange-ressource-creation-gestion-erreurs
+    titre: "Boîte de ressource (salle, équipement) mal configurée : capacité, réservation, droits de réservation"
+    symptome: "Une salle ou un équipement se comporte mal (refus systématique, réservation par tous, capacité absente) car ses options de réservation sont incorrectes."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/create-and-manage-resource-mailboxes
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/use-resource-booking-attendant-logs
+    etat: a-rediger
+  - id: exchange-participants-invitations-multiples
+    titre: "Les participants reçoivent plusieurs invitations pour la même réunion"
+    symptome: "Plusieurs participants reçoivent des invitations en double pour différentes occurrences d'une réunion périodique."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/attendees-receive-multiple-meeting-invitations
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/cdl/use-calendar-diagnostic-logs
+    etat: a-rediger
+  - id: exchange-calendrier-evenement-disparu-diagnostic-cdl
+    titre: "Réunion disparue, modifiée ou annulée sans explication : analyser les journaux de diagnostic du calendrier"
+    symptome: "Un rendez-vous a disparu ou changé d'heure ; il faut retrouver quel client ou quel délégué l'a modifié avec Get-CalendarDiagnosticLog."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/cdl/use-calendar-diagnostic-logs
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/cdl/get-calendar-diagnostic-logs
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/cdl/analyze-calendar-diagnostic-logs
+    etat: a-rediger
+  - id: exchange-suppression-impossible-store-maximum-size
+    titre: "« The message store has reached its maximum size » en supprimant un élément"
+    symptome: "L'utilisateur ne peut plus supprimer un rendez-vous ou un message : le dossier Éléments récupérables est plein (souvent avec une conservation)."
+    erreurs: ["The message store has reached its maximum size. To reduce the amount of data in this message store, select some items that you no longer need, permanently (Shift + Del) delete them."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/store-reached-maximum-size
+    etat: a-rediger
+  - id: exchange-disponibilites-utilisateur-invisibles
+    titre: "Impossible de voir les disponibilités (libre/occupé) d'un utilisateur précis"
+    symptome: "L'assistant de planification affiche des hachures ou « Aucune information » pour un utilisateur Exchange Online, alors que les autres s'affichent."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/cannot-view-another-user-calendar-free-busy-information
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/cannot-view-freebusy-information
+    etat: a-rediger
+  - id: exchange-disponibilites-autre-organisation-errormailrecipientnotfound
+    titre: "Disponibilités d'une autre organisation : ErrorMailRecipientNotFound / relation d'organisation invalide"
+    symptome: "Les informations libre/occupé d'un partenaire ne s'affichent pas : relation d'organisation absente ou mal configurée."
+    erreurs: ["ErrorMailRecipientNotFound", "InvalidOrganizationRelationshipForRequestDispatcherException"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/no-free-busy-information-retrieved
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/cannot-view-freebusy-info-after-setting-organization-relationship
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/create-organization-relationships-error
+    etat: a-rediger
+  - id: exchange-hybride-disponibilites-hachures
+    titre: "Hybride : les disponibilités entre boîtes locales et cloud s'affichent en hachures"
+    symptome: "Les utilisateurs cloud ne voient pas le libre/occupé des utilisateurs locaux (ou l'inverse) : relation d'organisation, OAuth, Autodiscover ou EWS publiés incorrectement."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/troubleshoot-freebusy-issues-in-exchange-hybrid
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/free-busy-lookups-return-hash-marks-in-hybrid
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/hybird-free-busy-diagnostic
+    etat: a-rediger
+  - id: exchange-disponibilites-apres-migration
+    titre: "Les disponibilités ne s'affichent plus après la migration d'une boîte vers Microsoft 365"
+    symptome: "Après le déplacement d'une boîte vers Exchange Online, ses collègues encore locaux (ou elle-même) ne voient plus les disponibilités."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-or-migrate-mailboxes/cannot-see-free-busy-information
+    etat: a-rediger
+  - id: exchange-hybride-partage-calendrier-policy-permissions
+    titre: "« Policy does not allow granting permissions at this level » en partageant un calendrier"
+    symptome: "Le partage de calendrier avec un utilisateur d'un autre environnement (hybride, externe) est refusé par la stratégie de partage."
+    erreurs: ["Policy does not allow granting permissions at this level to one or more of the recipient(s). Please select another permission level and send the sharing invite again."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/policy-permissions-issue
+    etat: a-rediger
+  - id: exchange-calendrier-boite-partagee-publication-http-500
+    titre: "Erreur HTTP 500 en publiant le calendrier d'une boîte partagée vers l'extérieur"
+    symptome: "La publication du calendrier d'une boîte partagée pour des personnes extérieures échoue avec une erreur HTTP 500."
+    erreurs: ["HTTP 500"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/http-500-error-when-publishing-calendar-of-shared-mailbox
+    etat: a-rediger
+  - id: exchange-fuseau-horaire-boites-incorrect
+    titre: "Fuseau horaire incorrect ou manquant sur plusieurs boîtes (heures de réunion décalées)"
+    symptome: "Les réunions apparaissent décalées ou Outlook sur le web demande le fuseau horaire : les paramètres régionaux des boîtes ne sont pas définis."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/incorrect-missing-time-zone-settings
+    etat: a-rediger
+  # ---------- Groupes de distribution, groupes Microsoft 365, groupes dynamiques ----------
+  - id: exchange-groupe-membres-ne-recoivent-pas
+    titre: "Un message envoyé à une liste de distribution ou à un groupe Microsoft 365 n'arrive pas chez tous les membres"
+    symptome: "Certains membres ne reçoivent pas les messages du groupe : abonnement au groupe M365 désactivé, membre masqué, règle, modération, boîte pleine ou délai de mise à jour."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/groups-and-distribution-lists/member-did-not-receive-email-sent-group
+    etat: a-rediger
+  - id: exchange-groupe-destinataires-externes-ne-recoivent-pas
+    titre: "Les membres externes d'une liste de distribution ne reçoivent pas les messages (sans NDR)"
+    symptome: "Les contacts externes membres d'un groupe ne reçoivent rien et l'expéditeur n'a pas de rapport de non-remise (envoi « en tant que » le groupe, propriétaires)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/external-recipients-not-receiving-distribution-group-emails
+    etat: a-rediger
+  - id: exchange-groupe-dynamique-membres-ne-recoivent-pas
+    titre: "Les membres d'un groupe de distribution dynamique ne reçoivent pas les messages"
+    symptome: "Le groupe dynamique ne remet à personne ou à une partie seulement des membres : filtre de destinataires incorrect, attributs non synchronisés, filtre remplacé lors d'une modification."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/groups-and-distribution-lists/dynamic-distribution-group-members-not-receive-emails
+    etat: a-rediger
+  - id: exchange-groupe-m365-absent-outlook
+    titre: "Un groupe Microsoft 365 (ou son calendrier) n'apparaît pas dans Outlook ou Outlook sur le web"
+    symptome: "L'utilisateur membre ne voit pas le groupe dans le volet Groupes : groupe masqué des clients, appartenance récente, profil Outlook ou hybride."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/groups-and-distribution-lists/microsoft-365-group-does-not-appear-in-outlook
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/groups-and-distribution-lists/cannot-access-office-365-groups-in-outlook
+    etat: a-rediger
+  - id: exchange-groupe-m365-restaure-ndr
+    titre: "Les messages vers un groupe Microsoft 365 restauré reviennent en 550 5.1.10"
+    symptome: "Après restauration d'un groupe supprimé, les messages qui lui sont adressés sont rejetés car l'adresse n'est pas encore résolue."
+    erreurs: ["550 5.1.10 RESOLVER.ADR.RecipientNotFound; Recipient not found by SMTP address lookup"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/email-to-restored-group-fails-with-error
+    etat: a-rediger
+  - id: exchange-groupe-ajout-invite-erreur
+    titre: "« There was a problem adding one or more people to the group » en ajoutant un invité à un groupe Microsoft 365"
+    symptome: "L'ajout d'un utilisateur invité (B2B) à un groupe Microsoft 365 échoue : accès invités désactivé au niveau du tenant ou du groupe."
+    erreurs: ["There was a problem adding one or more people to the group. For help, contact your administrator."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/groups-and-distribution-lists/problem-adding-guest-user-to-group
+    etat: a-rediger
+  - id: exchange-liste-distribution-mise-a-niveau-groupe-m365-impossible
+    titre: "Impossible de mettre à niveau une liste de distribution vers un groupe Microsoft 365"
+    symptome: "L'option de mise à niveau est grisée ou échoue : liste synchronisée depuis le local, imbriquée, avec membres non éligibles ou propriétaire manquant."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/groups-and-distribution-lists/cannot-upgrade-distribution-lists-to-office-365-groups
+    etat: a-rediger
+  - id: exchange-groupe-synchronise-non-modifiable
+    titre: "Groupe synchronisé depuis l'AD local : modification impossible dans Exchange Online"
+    symptome: "Le propriétaire ou l'administrateur ne peut pas modifier les membres d'une liste : l'objet est synchronisé depuis l'organisation locale et doit être modifié côté AD."
+    erreurs: ["The action '<cmdlet>', '<property>', can't be performed on the object '<name>' because the object is being synchronized from your on-premises organization."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/groups-and-distribution-lists/cannot-manage-dg
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/groups-and-distribution-lists/cannot-manage-group-synced-from-on-premises
+    etat: a-rediger
+  - id: exchange-groupe-permissions-insuffisantes-modifier
+    titre: "« You don't have sufficient permissions » en supprimant ou modifiant une liste de distribution"
+    symptome: "Un administrateur ou un utilisateur ne peut pas supprimer ou modifier un groupe car il n'en est pas propriétaire (ManagedBy) ou n'a pas le rôle requis."
+    erreurs: ["You don't have sufficient permissions. This operation can only be performed by a manager of the group."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/groups-and-distribution-lists/no-sufficient-permissions-moving-dg
+    etat: a-rediger
+  - id: exchange-groupe-masque-gal-non-gerable
+    titre: "Le propriétaire ne peut plus gérer un groupe masqué de la liste d'adresses globale"
+    symptome: "Les propriétaires de listes de distribution ou de groupes de sécurité masqués de la GAL ne les voient plus dans Outlook pour les gérer."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/groups-and-distribution-lists/cannot-manage-hidden-group
+    etat: a-rediger
+  - id: exchange-groupe-retrait-membres-eac-impossible
+    titre: "Impossible de retirer des membres d'une grande liste de distribution dans le centre d'administration"
+    symptome: "Le centre d'administration Exchange ne permet pas de retirer des membres d'un groupe dont le nombre de membres dépasse la limite d'affichage."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/groups-and-distribution-lists/cannot-remove-members-exceeding-limit
+    etat: a-rediger
+  - id: exchange-groupe-info-courrier-nombre-destinataires-faux
+    titre: "L'info-courrier (MailTip) affiche un mauvais nombre de destinataires pour un grand groupe"
+    symptome: "Outlook annonce un nombre de membres incorrect en écrivant à une grande liste de distribution."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/groups-and-distribution-lists/mailtip-shows-wrong-number-of-recipients
+    etat: a-rediger
+  - id: exchange-groupe-m365-elements-supprimes-non-vidables
+    titre: "Impossible de vider le dossier Éléments supprimés d'un groupe Microsoft 365"
+    symptome: "Les conversations supprimées d'un groupe restent dans Éléments supprimés et le dossier ne peut pas être vidé."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/groups-and-distribution-lists/cannot-empty-deleted-items-folder-in-groups
+    etat: a-rediger
+  - id: exchange-groupe-conversion-liste-salles-erreur
+    titre: "« Cannot determine group type » après conversion d'un groupe en liste de salles"
+    symptome: "Le centre d'administration Microsoft 365 affiche une erreur sur un groupe converti en liste de salles avec Set-DistributionGroup."
+    erreurs: ["Cannot determine group type"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/groups-and-distribution-lists/cannot-determine-group-type-error
+    etat: a-rediger
+  - id: exchange-groupes-messagerie-non-synchronises
+    titre: "Les groupes à extension messagerie locaux ne sont pas synchronisés vers Microsoft 365"
+    symptome: "Un groupe de distribution ou de sécurité à extension messagerie créé dans l'AD local n'apparaît pas dans Exchange Online."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/groups-and-distribution-lists/mail-enabled-groups-not-synchronized
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/groups-and-distribution-lists/on-premises-security-groups-not-synced-to-exchange-online
+    etat: a-rediger
+  - id: exchange-groupe-securite-messagerie-non-masque
+    titre: "Hybride : un groupe de sécurité à extension messagerie reste visible dans la GAL"
+    symptome: "Le masquage du groupe dans la liste d'adresses n'est pas appliqué après synchronisation d'annuaire."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/groups-and-distribution-lists/mail-enabled-security-group-not-hidden
+    etat: a-rediger
+  - id: exchange-utilisateurs-creent-listes-distribution
+    titre: "Des utilisateurs créent ou gèrent eux-mêmes des listes de distribution"
+    symptome: "Des listes non souhaitées apparaissent : la stratégie d'attribution de rôles par défaut permet aux utilisateurs de créer et gérer des groupes."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/groups-and-distribution-lists/prevent-users-create-manage-dg
+    etat: a-rediger
+  - id: exchange-groupe-m365-calendrier-notifications
+    titre: "Calendrier de groupe Microsoft 365 : membres non invités, notifications ou visibilité incorrectes"
+    symptome: "Les événements du calendrier du groupe n'arrivent pas dans le calendrier des membres ou le calendrier n'est pas visible."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/groups-and-distribution-lists/group-calendar-tasks
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/groups-and-distribution-lists/o365-group-tasks
+    etat: a-rediger
+  # ---------- Adresses proxy, alias, carnet d'adresses ----------
+  - id: exchange-adresse-proxy-deja-utilisee
+    titre: "« The proxy address ... is already being used » en ajoutant une adresse e-mail"
+    symptome: "L'ajout d'un alias ou d'une adresse principale échoue car un autre objet (boîte, groupe, contact, groupe M365 supprimé, utilisateur supprimé) porte déjà cette adresse."
+    erreurs: ["The proxy address \"SMTP:<conflicting SMTP address>\" is already being used by \"<domain>.prod.outlook.com/Microsoft Exchange Hosted Organizations/contoso.onmicrosoft.com/<forest>\". Choose another proxy address."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-alias/proxy-address-being-used
+    etat: a-rediger
+  - id: exchange-alias-suppression-impossible
+    titre: "Impossible de supprimer un alias d'un utilisateur, d'une boîte partagée, d'un groupe ou d'un contact"
+    symptome: "L'alias réapparaît ou sa suppression échoue : objet synchronisé depuis l'AD local, alias en onmicrosoft.com obligatoire, adresse principale."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-alias/remove-an-email-alias
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-alias/remove-an-alias-from-a-shared-mailbox
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-alias/remove-an-alias-from-a-distribution-list
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-alias/remove-an-alias-from-a-group
+    etat: a-rediger
+  - id: exchange-trop-adresses-proxy-300
+    titre: "« There are too many proxy addresses » : limite de 300 adresses proxy dépassée"
+    symptome: "Impossible d'ajouter ou de retirer des adresses sur un destinataire qui a accumulé plus de 300 adresses proxy (souvent des X500 de migrations successives)."
+    erreurs: ["There are too many proxy addresses: <X>, and maximum supported number of recipient proxy addresses is 300"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/too-many-proxy-addresses-error
+    etat: a-rediger
+  - id: exchange-hybride-adresse-principale-ecrasee-targetaddress
+    titre: "Hybride : l'adresse SMTP principale d'une boîte est remplacée par la targetAddress"
+    symptome: "Après synchronisation, l'adresse principale de l'utilisateur change de façon inattendue pour celle définie dans l'attribut targetAddress."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/primary-smtp-address-is-overwritten-by-targetaddress
+    etat: a-rediger
+  - id: exchange-utilisateur-messagerie-domaine-non-verifie-non-synchronise
+    titre: "Utilisateur de messagerie non synchronisé : adresses proxy dans un domaine non vérifié"
+    symptome: "Un utilisateur ou contact local dont certaines adresses utilisent un domaine non ajouté à Microsoft 365 n'apparaît pas dans Exchange Online."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/mail-user-who-has-proxy-addresses-that-use-non-verified-domains-not-synced
+    etat: a-rediger
+  - id: exchange-alias-mailnickname-different-local
+    titre: "L'alias (MailNickname) dans Exchange Online ne correspond pas à celui de l'AD local"
+    symptome: "Pour un utilisateur synchronisé, l'alias affiché dans Exchange Online diffère de la valeur définie sur site."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/mailnickname-alias-exchange-online-not-match-on-premises
+    etat: a-rediger
+  - id: exchange-masquage-gal-non-applique
+    titre: "Destinataire toujours visible (ou invisible) dans la GAL malgré la modification de msExchHideFromAddressLists"
+    symptome: "Le masquage d'un destinataire de la liste d'adresses globale n'est pas répercuté dans Exchange Online (attribut synchronisé mal positionné, délai, OAB)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/changes-to-msexchangehiddenfromaddresslist-not-updated-against-recipient
+    etat: a-rediger
+  - id: exchange-liste-adresses-incomplete
+    titre: "Une nouvelle liste d'adresses ne contient pas tous les destinataires attendus"
+    symptome: "Après création d'une liste d'adresses ou d'une stratégie de carnet d'adresses, des destinataires existants n'y figurent pas tant qu'ils ne sont pas modifiés."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/new-address-lists-not-contains-all-recipients
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/view-update-address-list-membership
+    etat: a-rediger
+  - id: exchange-saisie-semi-automatique-abp
+    titre: "Saisie semi-automatique et suggestions absentes pour des destinataires internes (stratégie de carnet d'adresses)"
+    symptome: "Un utilisateur soumis à une stratégie de carnet d'adresses (ABP) ne voit pas certains collègues proposés à la saisie."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-alias/address-not-autocompleted-or-suggested
+    etat: a-rediger
+  - id: exchange-owa-parcourir-groupes-absent
+    titre: "L'option « Parcourir les groupes » est absente dans Outlook sur le web"
+    symptome: "Les utilisateurs ne peuvent pas parcourir les groupes dans OWA car la stratégie de carnet d'adresses ne contient pas de liste de groupes."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/cannot-browse-groups-in-owa
+    etat: a-rediger
+  - id: exchange-hybride-adresses-au-lieu-noms-champ-de
+    titre: "Hybride : les messages venant du local affichent l'adresse au lieu du nom dans le champ De"
+    symptome: "Après migration de boîtes, les messages envoyés depuis le local vers Microsoft 365 n'affichent plus le nom complet de l'expéditeur."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/send-emails/emails-show-addresses-not-display-names-in-from
+    etat: a-rediger
+  # ---------- Autodiscover et connexion au service ----------
+  - id: exchange-autodiscover-hybride-delai-outlook
+    titre: "Hybride : Outlook met longtemps à récupérer les informations Autodiscover d'une boîte Exchange Online"
+    symptome: "La création de profil ou l'ouverture d'Outlook est lente ou se comporte mal car Autodiscover interroge d'abord le serveur local avant d'être redirigé."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/delay-when-outlook-retrieves-autodiscover-information
+    etat: a-rediger
+  - id: exchange-connexion-port-443-bloque-profil
+    titre: "Impossible de se connecter à Exchange Online ou de créer un profil : réseau bloquant le port 443"
+    symptome: "Dans un réseau restreint (proxy, pare-feu), Outlook ne trouve pas la boîte ou ne crée pas le profil car les points de terminaison Microsoft 365 ne sont pas joignables."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/cannot-connect-to-exchange-online-or-create-new-profiles
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/incorrect-settings
+    etat: a-rediger
+  - id: exchange-autodiscover-pox-oauth-application
+    titre: "Application : Autodiscover POX non pris en charge avec l'authentification OAuth client credentials"
+    symptome: "Une application qui utilise OAuth (identifiants client) échoue à interroger l'Autodiscover POX d'Exchange Online."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/development/pox-autodiscover-not-supported-oauth-client-credentials-grant
+    etat: a-rediger
+  - id: exchange-modification-provision-delai
+    titre: "Création d'utilisateur, de boîte ou modification non visible dans Exchange Online (délai de provisionnement)"
+    symptome: "Une nouvelle boîte, une licence ou une modification (alias, membre) n'apparaît pas tout de suite dans Exchange Online ; un diagnostic peut forcer la resynchronisation."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/delays-provision-mailbox-sync-changes
+    etat: a-rediger

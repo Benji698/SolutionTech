@@ -1066,3 +1066,162 @@ problemes:
       - https://learn.microsoft.com/entra/identity/authentication/how-to-mfa-additional-context
       - https://learn.microsoft.com/en-us/answers/questions/5836217/incorrect-public-ip-location-on-microsoft-entra
     etat: a-rediger
+  # --- Divers : Windows Hello, MFA Server, protection des jetons, App Lock, PowerShell ---
+  - id: mfa-windows-hello-pin-mfa-echoue
+    titre: "Création du code PIN Windows Hello for Business impossible car la MFA échoue ou est bloquée (0x801c0451)"
+    symptome: "Le provisionnement Windows Hello exige une MFA récente ; si elle est refusée, bloquée par l'accès conditionnel ou impossible, la création du PIN échoue."
+    erreurs: ["0x801c0451"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/windows-client/user-profiles-and-logon/windows-hello-errors-during-pin-creation-in-windows-10
+      - https://learn.microsoft.com/en-us/answers/a/300287
+    etat: a-rediger
+  - id: mfa-serveur-mfa-hors-service
+    titre: "Serveur Azure MFA (MFA Server) local hors service depuis le 30 septembre 2024 : authentifications en échec"
+    symptome: "Les applications (VPN, AD FS, RADIUS) encore reliées au serveur MFA local n'obtiennent plus de deuxième facteur."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/entra/identity/authentication/how-to-migrate-mfa-server-to-azure-mfa
+      - https://dirteam.com/sander/2023/01/20/existing-azure-mfa-server-deployments-stop-working-starting-september-30-2024/
+    etat: a-rediger
+  - id: ca-protection-jetons-client-bloque
+    titre: "Protection des jetons (token protection) : Outlook classique, PowerShell ou navigateur bloqués"
+    symptome: "Après activation de la protection des jetons, les clients non pris en charge (Office perpétuel, PowerShell, applications web) sont refusés ; codes 1002/1003 dans le journal."
+    erreurs: ["AADSTS53003"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity/conditional-access/concept-token-protection
+      - https://learn.microsoft.com/en-us/entra/identity/conditional-access/deployment-guide-token-protection-windows
+    etat: a-rediger
+  - id: mfa-authenticator-app-lock-biometrie
+    titre: "Authenticator : l'approbation échoue ou redemande Face ID / empreinte (verrouillage d'application)"
+    symptome: "L'approbation depuis l'écran de verrouillage ne passe pas, ou l'application exige la biométrie qui échoue."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/681496/can-no-longer-approve-sign-in-from-lockscreen-noti
+      - https://support.microsoft.com/topic/a3a74493-566b-4c2e-b949-a2789bac0fd3
+    etat: a-rediger
+  - id: ca-powershell-admin-bloque
+    titre: "PowerShell d'administration (Graph, Exchange Online) bloqué par l'accès conditionnel"
+    symptome: "Connect-MgGraph ou Connect-ExchangeOnline échoue avec 53003/53000 depuis un poste non conforme ou via un flux non autorisé."
+    erreurs: ["AADSTS53003", "AADSTS53000"]
+    priorite: rare
+    format: express
+    sources:
+      - https://inventivehq.com/knowledge-base/microsoft-365/aadsts53003-blocked-by-conditional-access-fix
+      - https://lazyadmin.nl/powershell/connect-mggraph/
+    etat: a-rediger
+  - id: ca-force-authentification-admin-hameconnage
+    titre: "Administrateur bloqué par une force d'authentification « résistante au hameçonnage » sans passkey enregistrée"
+    symptome: "Après activation d'une stratégie exigeant une MFA résistante au hameçonnage pour les rôles d'administration, l'admin sans clé FIDO2 ni Windows Hello ne peut plus se connecter."
+    erreurs: ["Another sign-in method is required to access this resource."]
+    priorite: critique
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity/conditional-access/policy-admin-phish-resistant-mfa
+      - https://learn.microsoft.com/entra/identity/authentication/concept-authentication-strengths
+    etat: a-rediger
+  - id: ca-mode-rapport-seul-active-sans-test
+    titre: "Stratégie passée de « rapport seul » à « activée » sans analyse : blocages en masse"
+    symptome: "Après activation, de nombreux utilisateurs sont bloqués ; le rapport seul montrait déjà des échecs non analysés."
+    erreurs: ["AADSTS53003"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/entra/identity/conditional-access/concept-conditional-access-report-only
+      - https://learn.microsoft.com/entra/identity/conditional-access/troubleshoot-policy-changes-audit-log
+    etat: a-rediger
+  - id: ca-blocage-authentification-heritee-imap-smtp
+    titre: "Blocage de l'authentification héritée : imprimantes, scanners et anciens clients IMAP/POP/SMTP refusés"
+    symptome: "Après une stratégie bloquant les « autres clients », les envois SMTP authentifiés et les anciens clients de messagerie échouent."
+    erreurs: ["AADSTS53003"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/entra/identity/conditional-access/block-legacy-authentication
+      - https://learn.microsoft.com/entra/identity/conditional-access/policy-block-legacy-authentication
+    etat: a-rediger
+  - id: ca-teams-rooms-appareil-partage-bloque
+    titre: "Salles Teams et appareils Teams Android bloqués par l'accès conditionnel (MFA ou conformité non prise en charge)"
+    symptome: "Les comptes de ressources des salles ne se connectent plus après une stratégie MFA ou appareil conforme non adaptée."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoftteams/rooms/supported-ca-and-compliance-policies
+    etat: a-rediger
+  - id: ca-appareil-desactive-135011
+    titre: "AADSTS135011 : l'appareil utilisé pour l'authentification est désactivé dans Entra"
+    symptome: "L'utilisateur ne peut plus se connecter depuis son poste car l'objet appareil a été désactivé (nettoyage, appareil perdu)."
+    erreurs: ["AADSTS135011: Device used during the authentication is disabled."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  # --- Compléments mobiles et appareils ---
+  - id: mfa-authenticator-action-requise-apres-restauration
+    titre: "Authenticator restauré sur un nouveau téléphone : « Action required » sur chaque compte professionnel"
+    symptome: "Après restauration iCloud ou Google, les comptes professionnels sont présents mais inutilisables tant que l'utilisateur ne s'est pas reconnecté sur chacun."
+    erreurs: ["Action required"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1524152/transfer-ms-authenticator-from-old-to-new-iphone-a
+      - https://docs.azure.cn/en-us/entra/identity/authentication/how-to-transfer-authenticator-new-phone
+    etat: a-rediger
+  - id: ca-broker-authenticator-boucle-mobile
+    titre: "Outlook ou Teams mobile en boucle de connexion : courtier (Authenticator / Company Portal) en mauvais état"
+    symptome: "Avec une stratégie de protection d'application, l'application redemande sans fin le mot de passe ou l'inscription de l'appareil."
+    erreurs: ["MSALErrorDomain"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/discussions/microsoft-intune/intune-mobile-outlook-asking-password-again-and-again/3704847/replies/3704917
+      - https://techcommunity.microsoft.com/t5/microsoft-intune/app-protection-ios-amp-android-the-operation-couldn-t-be/m-p/3039115
+    etat: a-rediger
+  - id: mfa-authenticator-inscription-bloquee-ca-tous-services
+    titre: "Premier enregistrement d'Authenticator impossible : une stratégie « toutes les ressources » bloque Authenticator lui-même"
+    symptome: "L'enregistrement expire ou échoue car la stratégie exige une passkey ou un appareil conforme y compris pour Authenticator et l'enregistrement des appareils."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5853711/initial-authenticator-registration-fails
+    etat: a-rediger
+  - id: mfa-50097-authentification-appareil-requise
+    titre: "AADSTS50097 : « Device authentication is required » (appareil non inscrit dans Entra)"
+    symptome: "L'application ne peut pas prouver l'identité de l'appareil alors que l'accès conditionnel exige un appareil géré."
+    erreurs: ["AADSTS50097: Device authentication is required."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/msal/dotnet/advanced/exceptions/device-authentication-errors
+      - https://learn.microsoft.com/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: ca-teams-android-appareils-acces-conditionnel
+    titre: "Téléphones Teams, panneaux et salles Android : déconnexions ou blocages liés à l'accès conditionnel"
+    symptome: "Les appareils Teams Android perdent la session ou ne se connectent plus (fréquence de connexion, MFA, conformité, emplacement)."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/microsoftteams/troubleshoot/teams-rooms-and-devices/teams-android-devices-conditional-access-issues
+      - https://learn.microsoft.com/en-us/microsoftteams/rooms/conditional-access-and-compliance-for-devices
+    etat: a-rediger
+  - id: mfa-qr-code-pin-premiere-ligne
+    titre: "Authentification par QR code (travailleurs de première ligne) : « Incorrect QR code » ou « Invalid PIN »"
+    symptome: "Sur un appareil partagé, la connexion par QR code et PIN échoue : première connexion sans autre méthode, PIN temporaire perdu, code supprimé ou plateforme non prise en charge."
+    erreurs: ["Incorrect QR code", "Invalid PIN"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity/authentication/concept-authentication-qr-code
+      - https://c7solutions.com/2025/11/easy-sign-in-to-entra-id-applications-for-frontline-workers-with-qr-codes
+    etat: a-rediger

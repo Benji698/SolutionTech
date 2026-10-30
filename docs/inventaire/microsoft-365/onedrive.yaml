@@ -1159,3 +1159,264 @@ problemes:
     sources:
       - https://www.dell.com/support/kbdoc/en-us/000184809/troubleshoot-onedrive-for-ios-app-problems
     etat: a-rediger
+
+  # --- Démarrage, installation, réinitialisation ---
+  - id: onedrive-ne-demarre-pas-icone-absente
+    titre: "OneDrive ne démarre pas ou l'icône a disparu de la zone de notification"
+    symptome: "Plus de nuage OneDrive près de l'horloge : démarrage automatique désactivé, icône masquée, GPO DisableFileSyncNGSC, installation abîmée."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://www.thewindowsclub.com/fix-onedrive-icon-missing-from-taskbar-in-windows-10
+      - https://techcommunity.microsoft.com:443/t5/onedrive/onedrive-disappears-from-start-menu-and-also-stops-syncing/m-p/3132682
+    etat: a-rediger
+  - id: onedrive-reset-windows-ne-trouve-pas-onedrive-exe
+    titre: "La commande onedrive.exe /reset renvoie « Windows cannot find… »"
+    symptome: "La réinitialisation échoue car OneDrive est installé par machine (Program Files) ou est la version Store, ou n'est pas installé."
+    erreurs: ["Windows cannot find '%localappdata%\\Microsoft\\OneDrive\\onedrive.exe'. Make sure you typed the name correctly, and then try again."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/en-us/help/34701e00-bf7b-42db-b960-84905399050c
+    etat: a-rediger
+  - id: onedrive-exe-point-entree-introuvable
+    titre: "« OneDrive.exe - Entry Point Not Found » au démarrage"
+    symptome: "Au lancement, Windows signale qu'un point d'entrée de procédure est introuvable dans une DLL OneDrive."
+    erreurs: ["OneDrive.exe - Entry Point Not Found"]
+    priorite: rare
+    format: express
+    sources:
+      - https://windowsreport.com/onedrive-entry-point-not-found/
+      - https://thegeekpage.com/how-to-solve-onedrive-exe-entry-point-not-found-in-windows-10-11/
+    etat: a-rediger
+  - id: onedrive-plantages-a-repetition
+    titre: "OneDrive se ferme ou plante à répétition"
+    symptome: "Le client s'arrête quelques secondes après son lancement ou plante pendant la synchronisation."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://thegeekpage.com/fix-onedrive-crashing-problem-in-windows-10/
+    etat: a-rediger
+  - id: onedrive-installation-par-machine-rds-multisession
+    titre: "OneDrive sur serveur RDS / bureau virtuel multisession : synchronisation qui ne fonctionne pas"
+    symptome: "Sur un hôte multisession, OneDrive ne se connecte pas ou ne synchronise pas (installation par utilisateur, sessions multiples, RemoteApp)."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/training/modules/install-configure-apps-session-host/5-onedrive-sync-app-virtual-desktops
+      - https://techcommunity.microsoft.com/t5/azure-virtual-desktop/start-onedrive-when-using-a-remoteapp-in-wvd/m-p/877358
+    etat: a-rediger
+  - id: onedrive-windows-server-connexion-en-boucle
+    titre: "OneDrive sur Windows Server reste bloqué sur « Connexion en cours »"
+    symptome: "Sur un serveur (ex. 2012 R2), la connexion ne se termine jamais."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1684982/onedrive-on-my-2012r2-server-keeps-signing-in-neve
+    etat: a-rediger
+
+  # --- Performances ---
+  - id: onedrive-synchronisation-lente-bande-passante
+    titre: "Synchronisation OneDrive très lente (limitation de bande passante, nombre de fichiers)"
+    symptome: "Les envois prennent des heures : débit limité dans les paramètres Réseau, très nombreux petits fichiers, proxy ou limitation côté service."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/2006896/why-is-onedrive-for-business-syncing-so-slow
+      - https://windowscentral.com/tips-help-you-fix-onedrive-sync-problems-windows-10/10
+    etat: a-rediger
+  - id: onedrive-consommation-cpu-memoire-elevee
+    titre: "OneDrive consomme beaucoup de processeur ou de mémoire"
+    symptome: "Le processus OneDrive.exe sature le CPU ou la RAM, souvent en boucle d'analyse de dossiers très actifs."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/discussions/onedriveforbusiness/onedrive-taking-too-much-resources/1775296
+      - https://allthings.how/how-to-fix-high-cpu-or-memory-usage-when-using-microsoft-onedrive/
+    etat: a-rediger
+
+  # --- Restrictions d'administration ---
+  - id: onedrive-synchronisation-bloquee-domaine-non-autorise
+    titre: "Synchronisation bloquée sur les PC non joints au domaine autorisé"
+    symptome: "« Sync blocked » ou « Sorry, OneDrive can't add your folder right now » sur un PC personnel ou joint uniquement à Entra ID, à cause de la restriction par GUID de domaine."
+    erreurs: ["Sorry, OneDrive can't add your folder right now."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/sharepoint/allow-syncing-only-on-specific-domains
+      - https://techcommunity.microsoft.com/t5/sharepoint/onedrive-sync-for-azure-ad-joined-computers/m-p/3370661
+    etat: a-rediger
+  - id: onedrive-types-fichiers-bloques-ou-exclus
+    titre: "Certains types de fichiers ne se synchronisent pas (.pst, extensions bloquées par l'administrateur)"
+    symptome: "Des fichiers affichent une icône d'interdiction ou un message de type bloqué : liste d'exclusion GPO/Intune ou blocage côté tenant."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5636321/is-there-a-way-to-ignore-instead-of-block-files-ty
+      - https://its.uiowa.edu/services/onedrive-business/blocked-files-onedrive-sync
+    etat: a-rediger
+  - id: onedrive-acces-refuse-apres-activation-pim
+    titre: "Accès refusé à OneDrive/SharePoint après activation d'un rôle via PIM"
+    symptome: "Un administrateur SharePoint activé par PIM pour les groupes reçoit « Access denied »."
+    erreurs: ["Access denied"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/administration/access-denied-to-pim-user-accounts
+    etat: a-rediger
+
+  # --- Fichiers verrouillés ---
+  - id: onedrive-fichier-verrouille-ouvert-ailleurs
+    titre: "Fichier OneDrive verrouillé : « locked for editing » ou « open in another application »"
+    symptome: "Un fichier Excel/Word synchronisé est bloqué (fichier ~$ restant, autre utilisateur, application qui garde le fichier ouvert), la synchronisation est en attente."
+    erreurs: ["File is locked for editing", "The file is open in another application"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/en-au/excel/excel-file-is-locked-for-editing
+      - https://learn.microsoft.com/en-us/answers/questions/4976710/file-is-open-in-another-application-error
+    etat: a-rediger
+
+  # --- Coffre-fort personnel ---
+  - id: onedrive-coffre-fort-personnel-ne-se-deverrouille-pas
+    titre: "Le coffre-fort personnel (Personal Vault) ne se déverrouille pas (0x8004db93, 0x8004db90, 0x80004005)"
+    symptome: "Le coffre-fort s'ouvre sur le web mais pas dans l'Explorateur ; erreur de configuration ou fichier encore ouvert."
+    erreurs: ["0x8004db93", "0x8004db90", "0x80004005"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5387782/onedrive-cannot-unlock-personal-vault-error-code-0
+      - https://www.thewindowsclub.com/0x80004005-unable-to-unlock-personal-vault-in-windows-10
+    etat: a-rediger
+
+  # --- Divers synchronisation ---
+  - id: onedrive-ce-fichier-ne-peut-pas-etre-synchronise
+    titre: "« This file can't be synced » / « Ce fichier ne peut pas être synchronisé »"
+    symptome: "Un fichier précis reste en erreur : droits NTFS insuffisants, fichier ouvert, nom ou type non pris en charge."
+    erreurs: ["This file can't be synced"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/en-us/onedrive/troubleshoot-onedrive-error-this-file-can-t-be-synced
+    etat: a-rediger
+  - id: onedrive-bouton-synchroniser-teams-sans-effet
+    titre: "Le bouton « Synchroniser » d'un canal Teams ne fait rien ou ne synchronise pas tous les fichiers"
+    symptome: "Le clic sur Synchroniser dans l'onglet Fichiers de Teams ne lance pas OneDrive, ou certains fichiers n'arrivent jamais sur le PC."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/t5/microsoft-teams/sync-button-on-channel-not-working-anymore/td-p/1600873
+      - https://learn.microsoft.com/en-us/answers/questions/5651230/teams-sync-file-button-doesnt-sync-all-files-to-co
+    etat: a-rediger
+  - id: onedrive-onenote-bloc-notes-dans-dossier-onedrive
+    titre: "Bloc-notes OneNote déplacé dans OneDrive via l'Explorateur : synchronisation cassée"
+    symptome: "OneNote signale qu'un autre programme synchronise les fichiers du bloc-notes ; erreurs .one, 0x2BDF5F après déplacement."
+    erreurs: ["This notebook may not sync correctly because another program is syncing its files", "0x2BDF5F"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/help/299495ef-66d1-448f-90c1-b785a6968d45
+      - https://learn.microsoft.com/en-us/answers/questions/5165415/one-note-sync-error
+    etat: a-rediger
+  - id: onedrive-web-something-went-wrong-comptes-melanges
+    titre: "OneDrive web : « Something went wrong » à l'ouverture du OneDrive professionnel"
+    symptome: "Le site OneDrive affiche une erreur inconnue, souvent quand un compte personnel et un compte professionnel coexistent dans le navigateur."
+    erreurs: ["Something went wrong", "Sorry, something went wrong"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/discussions/onedriveforbusiness/forcing-share-to-onedrive-business/4448975/replies/4449815
+      - https://learn.microsoft.com/en-us/answers/questions/5843431/onedrive-error
+    etat: a-rediger
+  - id: onedrive-erreur-connexion-1200
+    titre: "Erreur 1200 à la connexion à OneDrive Entreprise"
+    symptome: "La connexion web ou client affiche « Something went wrong [1200] » (cache navigateur ou identités)."
+    erreurs: ["Something went wrong [1200]"]
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/t5/office-365/onedrive-for-business-sign-in-error-1200/td-p/3542542
+    etat: a-rediger
+  - id: onedrive-erreur-0x8004deb2-connexion
+    titre: "Erreur 0x8004deb2 à la connexion à OneDrive"
+    symptome: "Le client refuse la connexion avec ce code (identité ou réseau)."
+    erreurs: ["0x8004deb2"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/4950138/error-code-0x8004deb2-while-logging-into-onedrive
+    etat: a-rediger
+  - id: onedrive-erreur-2147483661-correlation-id
+    titre: "Erreur OneDrive 2147483661 avec un Correlation ID"
+    symptome: "OneDrive affiche un code numérique et un identifiant de corrélation : souvent un problème côté service à remonter au support."
+    erreurs: ["2147483661"]
+    priorite: rare
+    format: express
+    sources:
+      - https://www.wps.com/office-quick-solution/error-codes/how-to-fix-onedrive-error-code-2147483661-and-understand-correlation-ids/
+    etat: a-rediger
+  - id: onedrive-fichiers-supprimes-detection-logiciel-malveillant
+    titre: "Fichier OneDrive bloqué comme logiciel malveillant (faux positif)"
+    symptome: "Un fichier est bloqué au téléchargement avec un avertissement de malware détecté par Defender pour Office 365."
+    erreurs: ["This file is malicious"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/security/false-positive-malware-detections
+    etat: a-rediger
+  - id: onedrive-ne-peut-pas-se-connecter-a-windows
+    titre: "« OneDrive cannot connect to Windows » : Fichiers à la demande indisponibles"
+    symptome: "OneDrive n'arrive pas à afficher les fichiers à la demande (pilote cldflt.sys arrêté, ancien pilote de filtre) et propose de tout télécharger."
+    erreurs: ["OneDrive cannot connect to Windows. Files On-Demand requires a connection to Windows in order to show your files without taking up space on this device."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/en-us/onedrive/onedrive-cannot-connect-to-windows-error-when-accessing-files-in-onedrive
+      - https://support.microsoft.com/en-us/help/4570135/
+    etat: a-rediger
+  - id: onedrive-synchronisation-en-pause-automatique
+    titre: "Synchronisation mise en pause automatiquement (économiseur de batterie, réseau limité)"
+    symptome: "OneDrive indique que la synchronisation est en pause car le PC est sur batterie ou sur une connexion limitée (Wi-Fi, VPN marqué comme limité)."
+    erreurs: ["Your files are not currently syncing", "OneDrive sync is paused because this PC is on a metered network"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/en-au/onedrive/how-to-pause-and-resume-onedrive-sync
+      - https://td.byui.edu/TDClient/79/ITHelpCenter/KB/PrintArticle?ID=17394
+    etat: a-rediger
+  - id: onedrive-dossier-utilisateur-ne-peut-etre-deplace
+    titre: "« The folder can't be moved here » : impossible de remettre Documents/Bureau hors de OneDrive"
+    symptome: "L'onglet Emplacement refuse de déplacer un dossier redirigé dans OneDrive (synchronisation active, sauvegarde des dossiers, stratégie)."
+    erreurs: ["The folder can't be moved here", "Access is denied"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://www.elevenforum.com/t/onedrive-the-folder-cant-be-moved-here.30230/post-522499
+      - https://learn.microsoft.com/answers/a/8046305
+    etat: a-rediger
+  - id: onedrive-dissocie-raccourcis-dans-documents
+    titre: "Après dissociation de OneDrive, seuls des raccourcis restent dans Documents"
+    symptome: "En dissociant le PC, les dossiers locaux contiennent des raccourcis vers OneDrive au lieu des fichiers (fichiers en ligne seulement)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1195747/disabled-the-link-to-my-onedrive-and-onedrive-made
+    etat: a-rediger
+  - id: onedrive-rapports-sante-synchronisation-vides
+    titre: "Rapports de santé de synchronisation OneDrive vides dans le centre d'administration des applications"
+    symptome: "Le tableau de bord de santé de synchronisation ne montre aucun appareil (stratégie EnableSyncAdminReports absente, délai de 3 jours, clé de tenant)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/onedrive/sync-health
+    etat: a-rediger
