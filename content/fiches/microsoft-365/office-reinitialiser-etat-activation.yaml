@@ -1,0 +1,280 @@
+id: office-reinitialiser-etat-activation
+titre: Office reste activé avec l'ancien compte ou l'ancien tenant (réinitialiser l'activation)
+resume: "Après une migration de tenant, la réattribution d'un PC à un autre utilisateur ou un changement de mode de licence, Office garde l'ancienne licence ou l'ancien compte. Remettre l'activation à zéro : licences en cache, identités enregistrées, comptes WAM et appareil enregistré, puis réactiver avec le bon compte."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: applications-office
+apparait_aussi_dans: [logiciels-metier/microsoft-office]
+niveau: N2
+temps_estime: { min: 20, max: 60 }
+critique: false
+environnements: [win11, win10]
+droits: admin-local
+outils: []
+acces:
+  - Session de l'utilisateur sur son PC et un compte administrateur local (console élevée).
+  - Toutes les applications Office fermées (Outlook et Teams compris).
+
+symptomes:
+  - « Depuis la migration, Office affiche toujours l'ancienne adresse de l'entreprise. »
+  - « J'ai récupéré le PC d'un collègue, Word est encore à son nom. »
+  - « On est passé en activation d'ordinateur partagé mais Office garde l'ancienne licence. »
+  - « Je me déconnecte d'Office mais l'ancien compte revient tout seul. »
+
+messages_erreur:
+  - texte: "Sorry, another account from your organization is already signed in on this computer."
+    ou: Fenêtre de connexion Office, quand l'ancien compte est du même tenant
+  - texte: "No installed product keys detected"
+    ou: Sortie de `cscript ospp.vbs /dstatus` (aucune licence en volume, c'est normal pour Microsoft 365 Apps)
+
+variables:
+  - { nom: CinqDerniersCaracteres, libelle: "5 derniers caractères de la clé affichés par ospp.vbs /dstatus", exemple: 2WC00 }
+
+causes:
+  - id: c1
+    titre: Identités de l'ancien compte enregistrées dans le profil (registre et Gestionnaire d'identification)
+    frequence: tres-frequente
+    detail: "Office mémorise les comptes connectés dans `HKCU\\Software\\Microsoft\\Office\\16.0\\Common\\Identity` et dans le Gestionnaire d'identification Windows. Se déconnecter dans **Fichier › Compte** ne suffit pas toujours à les effacer."
+  - id: c2
+    titre: Jetons de licence de l'ancien tenant ou de l'ancien mode de licence restés sur le poste
+    frequence: frequente
+    detail: "Les licences Microsoft 365 Apps (dites *vNext*) sont stockées dans `%localappdata%\\Microsoft\\Office\\Licenses` ; celles de l'activation d'ordinateur partagé dans `%localappdata%\\Microsoft\\Office\\16.0\\Licensing`."
+  - id: c3
+    titre: Comptes WAM (gestionnaire de comptes web) encore associés à Office sur un PC joint à Entra ID
+    frequence: frequente
+    detail: "Sur un PC joint à Microsoft Entra ID ou joint en hybride, Office passe par WAM (*Web Account Manager*), qui conserve ses propres jetons. Ils ne peuvent pas être effacés à la main : Microsoft fournit un script."
+  - id: c4
+    titre: Le PC est encore « enregistré » (Workplace Joined) dans l'ancien tenant
+    frequence: occasionnelle
+    detail: "Un compte professionnel ajouté dans **Accès Professionnel ou Scolaire** (appareil *Microsoft Entra registered*) ramène l'ancien compte à chaque connexion."
+  - id: c5
+    titre: Une ancienne licence en volume (clé KMS ou MAK) est encore installée
+    frequence: rare
+    detail: "Restes d'une installation Office 2016/2019/2021 en licence en volume, visibles avec le script `ospp.vbs`."
+
+diagnostic:
+  - id: d1
+    titre: Regarder le compte et le produit affichés dans Office
+    niveau: N1
+    graphique: |
+      Ouvrir Word › **Fichier** › **Compte** (*Account*) :
+
+      - **Informations utilisateur** : quelle adresse est connectée (et dans **Changer de compte**, quels autres comptes sont mémorisés) ;
+      - **Informations sur le produit** : le nom du produit et l'état d'activation.
+
+      Noter les adresses et le produit avant toute manipulation.
+    conclusions:
+      - { si: "L'ancien compte ou l'ancien tenant apparaît dans Office", cause: c1, aller_a: d2 }
+      - { si: "Le produit affiché n'est pas Microsoft 365 Apps (Office 2019, LTSC, licence en volume)", cause: c5, aller_a: d3 }
+
+  - id: d2
+    titre: Vérifier l'état de l'appareil (joint, hybride ou enregistré)
+    niveau: N2
+    graphique: |
+      **Paramètres** › **Comptes** › **Accès Professionnel ou Scolaire** (*Access work or school*) :
+
+      - « Connecté à Microsoft Entra ID de … » (ou « Azure AD ») : PC **joint** à Entra ID ;
+      - un compte professionnel simplement ajouté, d'un **autre tenant** que celui de l'utilisateur : PC **enregistré** dans l'ancien tenant.
+
+      Pour une lecture précise, utiliser la commande ci-dessous.
+    commande:
+      langage: cmd
+      admin: true
+      code: dsregcmd /status
+    astuce: "Dans la section **Device State** : `AzureAdJoined : YES` et `DomainJoined : NO` = joint à Entra ID ; `AzureAdJoined : YES` et `DomainJoined : YES` = joint en hybride. Dans la section **User State** : `WorkplaceJoined : YES` = appareil enregistré."
+    conclusions:
+      - { si: "PC joint ou joint en hybride (AzureAdJoined : YES)", cause: c3, aller_a: r1 }
+      - { si: "WorkplaceJoined : YES avec un compte de l'ancien tenant", cause: c4, aller_a: r1 }
+      - { si: "PC ni joint ni enregistré", cause: c2, aller_a: r1 }
+
+  - id: d3
+    titre: Lister les licences en volume installées
+    niveau: N2
+    commande:
+      langage: cmd
+      admin: true
+      code: |
+        rem Office 64 bits (adapter le chemin pour Office 32 bits : C:\Program Files (x86)\...)
+        cd "C:\Program Files\Microsoft Office\Office16"
+        cscript ospp.vbs /dstatus
+    astuce: "La sortie liste chaque licence avec **Last 5 characters of installed product key**. Le message `No installed product keys detected` signifie qu'il n'y a pas de licence en volume : c'est le cas normal pour Microsoft 365 Apps."
+    conclusions:
+      - { si: "Une ou plusieurs clés sont listées et ne doivent plus servir", cause: c5, aller_a: r4 }
+      - { si: "No installed product keys detected", aller_a: r1 }
+
+resolutions:
+  - id: r1
+    causes: [c1, c2]
+    titre: Effacer les licences et les identités Office en cache
+    etapes:
+      - id: r1-e1
+        titre: "Méthode rapide : utilitaire de résolution des problèmes d'activation"
+        niveau: N1
+        graphique: |
+          1. Fermer toutes les applications Office.
+          2. Sur le PC concerné (Windows 10 ou 11), ouvrir le lien officiel du **dépanneur d'activation Microsoft 365** (*Microsoft 365 activation troubleshooter*) : `https://aka.ms/SaRA-OfficeActivation-sarahome`.
+          3. Si le navigateur indique « Ce site tente d'ouvrir Obtenir de l'aide », choisir **Ouvrir**, puis suivre les instructions de l'application **Obtenir de l'aide** (*Get Help*).
+        commande:
+          langage: cmd
+          admin: true
+          ou: "Version en ligne de commande de « Obtenir de l'aide » (GetHelpCmd), à télécharger depuis https://aka.ms/SaRA_EnterpriseVersionFiles"
+          code: GetHelpCmd.exe -S ResetOfficeActivation -AcceptEula -CloseOffice
+        astuce: "La version en ligne de commande est faite pour traiter plusieurs postes ou un poste distant. Le code `80` en sortie signifie que la remise à zéro a réussi ; `72` qu'il faut une console administrateur."
+        conclusions:
+          - { si: "L'outil a réussi", aller_a: v1 }
+          - { si: "L'outil échoue ou n'est pas utilisable", aller_a: r1-e2 }
+
+      - id: r1-e2
+        titre: "Méthode manuelle : supprimer les jetons de licence"
+        niveau: N2
+        graphique: |
+          1. Fermer toutes les applications Office.
+          2. Dans l'Explorateur de fichiers, coller dans la barre d'adresse `%localappdata%\Microsoft\Office\` puis supprimer, s'ils existent :
+             - le dossier `Licenses` (Microsoft 365 Apps version 1909 et ultérieures) ;
+             - le dossier `16.0\Licensing` (activation d'ordinateur partagé).
+        commande:
+          langage: powershell
+          code: |
+            Remove-Item "$env:LOCALAPPDATA\Microsoft\Office\Licenses" -Recurse -Force -ErrorAction SilentlyContinue
+            Remove-Item "$env:LOCALAPPDATA\Microsoft\Office\16.0\Licensing" -Recurse -Force -ErrorAction SilentlyContinue
+        avertissement:
+          type: destructif
+          texte: "Office sera sans licence jusqu'à la prochaine connexion avec un compte qui en possède une. Vérifier avant que l'utilisateur a bien une licence active dans le nouveau tenant."
+
+      - id: r1-e3
+        titre: Supprimer les identités Office du registre
+        niveau: N2
+        graphique: |
+          1. Exporter d'abord les clés (clic droit › **Exporter**) pour pouvoir revenir en arrière.
+          2. Dans l'**Éditeur du Registre** (`regedit`), **dans la session de l'utilisateur**, supprimer :
+             - `HKEY_CURRENT_USER\Software\Microsoft\Office\16.0\Common\Licensing`
+             - `HKEY_CURRENT_USER\Software\Microsoft\Office\16.0\Common\Identity`
+        commande:
+          langage: cmd
+          ou: Dans la session de l'utilisateur (ruche HKCU), console non élevée
+          code: |
+            reg export "HKCU\Software\Microsoft\Office\16.0\Common\Identity" "%USERPROFILE%\Desktop\Office-Identity.reg"
+            reg delete "HKCU\Software\Microsoft\Office\16.0\Common\Licensing" /f
+            reg delete "HKCU\Software\Microsoft\Office\16.0\Common\Identity" /f
+        avertissement:
+          type: destructif
+          texte: "Une erreur dans le registre peut empêcher Windows ou Office de fonctionner. Exporter la clé avant de la supprimer et ne supprimer que les clés indiquées. La clé `HKCU` doit être celle de l'utilisateur : lancer `regedit` dans sa session, pas dans celle de l'administrateur."
+        astuce: "En activation d'ordinateur partagé, supprimer la clé `Identity` sous `HKEY_USERS\\<SID de l'utilisateur>\\Software\\Microsoft\\Office\\16.0\\Common`. La commande `whoami /user` (console non élevée) donne le SID de l'utilisateur connecté."
+
+      - id: r1-e4
+        titre: Vider les identifiants Office du Gestionnaire d'identification
+        niveau: N1
+        graphique: |
+          1. **Panneau de configuration** › **Gestionnaire d'identification** (*Credential Manager*) › **Informations d'identification Windows** (*Windows Credentials*).
+          2. Pour chaque entrée liée à Office (par exemple `MicrosoftOffice16_Data:…`), déplier avec la flèche › **Supprimer** (*Remove*).
+          3. Dans le registre, supprimer s'il en contient les valeurs présentes sous `HKEY_CURRENT_USER\Software\Microsoft\Protected Storage System`.
+          4. Redémarrer le PC.
+        avertissement:
+          type: destructif
+          texte: "Ne supprimer que les entrées Office : les autres identifiants (lecteurs réseau, VPN, applications métier) seraient à ressaisir."
+
+      - id: r1-e5
+        titre: "Variante automatisée : scripts Microsoft"
+        niveau: N2
+        graphique: |
+          Microsoft fournit les scripts qui font les étapes précédentes, à lancer en administrateur depuis l'article « Reset activation state for Microsoft 365 Apps for enterprise » (voir les sources) :
+
+          - `OLicenseCleanup.vbs` : supprime licences et comptes en cache ;
+          - `signoutofwamaccounts.ps1` : déconnecte les comptes WAM d'Office (s'il est dans le même dossier que `OLicenseCleanup.vbs`, il est lancé automatiquement) ;
+          - `WPJCleanUp.cmd` : uniquement si l'appareil est enregistré (Workplace Joined).
+
+  - id: r2
+    causes: [c3]
+    titre: Déconnecter les comptes WAM d'Office (PC joint ou joint en hybride)
+    etapes:
+      - id: r2-e1
+        titre: Lancer le script signoutofwamaccounts.ps1
+        niveau: N2
+        graphique: |
+          Il n'existe **aucune manipulation manuelle** pour vider les comptes WAM d'Office sur un PC joint ou joint en hybride.
+
+          1. Télécharger `signoutofwamaccounts.zip` depuis l'article officiel « Reset activation state for Microsoft 365 Apps for enterprise » (lien dans les sources), et l'extraire.
+          2. Ouvrir **Windows PowerShell** en administrateur, se placer dans le dossier extrait et lancer le script (commande ci-dessous).
+          3. Rouvrir Word et se connecter avec le compte de l'utilisateur.
+        commande:
+          langage: powershell
+          admin: true
+          code: |
+            Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+            .\signoutofwamaccounts.ps1
+        astuce: "Selon Microsoft, ce script ne touche ni à l'authentification unique (SSO) des autres applications, ni à l'état de jonction du PC. Il demande Windows 10 version 1803 ou ultérieure."
+
+  - id: r3
+    causes: [c4]
+    titre: Retirer l'enregistrement de l'appareil dans l'ancien tenant
+    etapes:
+      - id: r3-e1
+        titre: Déconnecter le compte professionnel de l'ancien tenant
+        niveau: N1
+        graphique: |
+          1. **Paramètres** › **Comptes** › **Accès Professionnel ou Scolaire** (*Access work or school*).
+          2. Sélectionner le compte professionnel de l'**ancien** tenant › **Déconnecter** (*Disconnect*).
+          3. Redémarrer, puis se reconnecter dans Office avec le nouveau compte.
+        avertissement:
+          type: attention
+          texte: "Retirer un compte enregistré supprime l'authentification unique de toutes les applications de la session et désinscrit le poste des outils de gestion de cet ancien tenant (Intune). Ne jamais déconnecter le compte qui joint le PC au tenant **actuel**."
+
+  - id: r4
+    causes: [c5]
+    titre: Désinstaller les anciennes clés de licence en volume
+    etapes:
+      - id: r4-e1
+        titre: Supprimer chaque clé avec ospp.vbs
+        niveau: N2
+        commande:
+          langage: cmd
+          admin: true
+          code: |
+            cd "C:\Program Files\Microsoft Office\Office16"
+            cscript ospp.vbs /unpkey:<CinqDerniersCaracteres>
+        avertissement:
+          type: destructif
+          texte: "Le produit concerné ne sera plus activé. Ne retirer que les clés devenues inutiles (par exemple une ancienne clé Office 2019 sur un poste passé à Microsoft 365 Apps)."
+        astuce: "Le message `Product key uninstall successful` confirme la suppression. Répéter la commande pour chaque clé listée par `/dstatus`, puis supprimer la clé `HKCU\\Software\\Microsoft\\Office\\16.0\\Common\\Licensing` (Résolution 1)."
+
+verification:
+  - id: v1
+    titre: Office est activé avec le nouveau compte
+    niveau: N1
+    graphique: |
+      1. Ouvrir Word : Office demande de se connecter. Se connecter avec le compte de l'utilisateur dans le nouveau tenant.
+      2. **Fichier** › **Compte** : seule la nouvelle adresse apparaît, et **Informations sur le produit** indique **Produit activé** (*Product Activated*).
+      3. Fermer et rouvrir Word : l'ancien compte ne revient pas.
+    commande:
+      langage: cmd
+      admin: true
+      code: dsregcmd /status
+    astuce: "Après une migration de tenant, penser aussi à OneDrive et Teams, qui gardent leurs propres comptes."
+
+prevention:
+  - Intégrer la remise à zéro de l'activation (outil Obtenir de l'aide ou scripts Microsoft) dans la procédure de réattribution d'un PC et dans le plan de migration de tenant.
+  - Réinitialiser complètement (Autopilot ou réinstallation) un PC qui change d'utilisateur plutôt que de réutiliser l'ancien profil.
+  - Retirer l'ancien compte de **Accès Professionnel ou Scolaire** avant de rendre un PC.
+  - Ne pas mélanger, sur un même poste, Office en licence en volume et Microsoft 365 Apps.
+
+comprendre: |
+  Office conserve son activation à quatre endroits : les **jetons de licence** (dossier `Licenses` du profil), les **identités** mémorisées (registre `Common\Identity`), les **identifiants** du Gestionnaire d'identification, et, sur un PC joint ou enregistré dans Entra ID, les **comptes WAM** gérés par Windows. Tant qu'un seul de ces endroits garde l'ancien compte, Office peut le réutiliser. La remise à zéro les vide tous ; Office redemande alors une connexion et récupère la licence du nouveau compte.
+
+fiches_liees: [office-autre-compte-organisation-deja-connecte, office-produit-sans-licence, office-licence-introuvable-application, office-activation-ordinateur-partage-echec]
+tags: [reinitialiser activation, reset activation, migration tenant, tenant to tenant, ancien compte, olicensecleanup, signoutofwamaccounts, wpjcleanup, ospp.vbs, unpkey, wam, licence office, get help, obtenir de l'aide, dsregcmd, activation ordinateur partage, shared computer activation]
+
+sources:
+  - titre: "Reset activation state for Microsoft 365 Apps for enterprise — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/activation/reset-activation-state
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "Reset activation state for Microsoft 365 Apps for enterprise — dépôt MicrosoftDocs/SupportArticles-docs"
+    url: https://github.com/MicrosoftDocs/SupportArticles-docs/blob/main/Office/Client/activation/reset-activation-state.md
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "Scenario: Reset Office Activation (command line version of Get Help) — dépôt MicrosoftDocs/SupportArticles-docs"
+    url: https://github.com/MicrosoftDocs/SupportArticles-docs/blob/main/Microsoft365/admin/admin/miscellaneous/get-help-reset-office-activation.md
+    type: officiel
+    consulte_le: 2026-10-30
+
+derniere_verification: 2026-10-30

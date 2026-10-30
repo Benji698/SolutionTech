@@ -1,0 +1,138 @@
+id: entra-aadsts50034-compte-inexistant-annuaire
+format: express
+titre: "Le compte n'existe pas dans l'annuaire (AADSTS50034)"
+resume: "La connexion échoue car Entra ID ne trouve aucun compte avec l'identifiant saisi dans ce locataire : faute de frappe, adresse e-mail différente de l'UPN, compte pas encore synchronisé, supprimé, ou application qui vise le mauvais locataire. Retrouver l'UPN exact du compte, puis le créer, le restaurer ou l'inviter."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: entra-id
+apparait_aussi_dans: [active-directory/entra-connect]
+niveau: N1
+temps_estime: { min: 5, max: 30 }
+critique: false
+environnements: [m365]
+droits: admin-m365
+outils: []
+acces:
+  - "Rôle Entra **Lecteur global** (*Global Reader*) pour rechercher le compte ; **Administrateur d'utilisateurs** (*User Administrator*) pour le restaurer ou inviter un compte externe."
+
+symptomes:
+  - « On me dit que mon compte n'existe pas, alors que je travaille ici depuis des années. »
+  - « Le nouvel arrivant n'arrive pas à se connecter le premier jour. »
+  - « Ça marche avec mon adresse habituelle sur le web, mais pas dans cette application. »
+
+messages_erreur:
+  - texte: "AADSTS50034: The user account {identifier} does not exist in the {tenant} directory. To sign into this application, the account must be added to the directory."
+    code: "AADSTS50034"
+    ou: Page de connexion Microsoft, ou journal de connexion Entra (motif UserAccountNotFound)
+  - texte: "Ce compte Microsoft n'existe pas. Entrez un autre compte ou obtenez-en un nouveau."
+    ou: "Page de connexion (formulation proche, à vérifier : elle varie selon que l'adresse est reconnue ou non)"
+
+variables:
+  - { nom: UPN, libelle: "Identifiant saisi par l'utilisateur", exemple: jean.dupont@contoso.fr }
+
+causes:
+  - id: c1
+    titre: Identifiant mal saisi, ou adresse e-mail différente de l'UPN
+    frequence: tres-frequente
+    detail: "Faute de frappe, ancien nom après un mariage ou un changement d'UPN, ou alias e-mail utilisé à la place de l'UPN (l'identifiant de connexion). En hybride, l'UPN peut encore être en `@contoso.onmicrosoft.com` si le suffixe local (`contoso.local`) n'est pas routable."
+  - id: c2
+    titre: Le compte n'est pas (encore) dans Entra ID
+    frequence: frequente
+    detail: "Compte AD créé il y a moins d'un cycle de synchronisation (30 minutes par défaut), placé dans une OU hors du périmètre d'Entra Connect, en erreur de synchronisation, ou supprimé (corbeille de 30 jours)."
+  - id: c3
+    titre: L'utilisateur appartient à un autre locataire
+    frequence: occasionnelle
+    detail: "L'application (ou le lien partagé) est rattachée à un locataire dont l'utilisateur ne fait pas partie : partenaire, prestataire, filiale séparée. Il doit y être invité comme invité (B2B)."
+
+resolutions:
+  - id: r1
+    causes: [c1, c2]
+    titre: Retrouver le compte et son UPN exact
+    etapes:
+      - id: r1-e1
+        titre: Rechercher l'utilisateur dans Entra ID
+        niveau: N1
+        graphique: |
+          1. **Centre d'administration Microsoft Entra** (*entra.microsoft.com*) › **Identité** (*Identity*) › **Utilisateurs** (*Users*) › **Tous les utilisateurs** (*All users*).
+          2. Rechercher par nom, prénom ou adresse e-mail (pas seulement par l'identifiant saisi).
+          3. Ouvrir le compte et noter son **Nom d'utilisateur principal** (*User principal name*) : c'est l'identifiant exact à saisir à la connexion.
+          4. S'il diffère de ce que tape l'utilisateur, lui donner le bon identifiant ; dans Office ou Windows, supprimer l'ancien compte mémorisé et se reconnecter.
+        commande:
+          langage: powershell
+          ou: Microsoft Graph PowerShell (Connect-MgGraph -Scopes 'User.Read.All')
+          code: |
+            # Recherche par UPN exact
+            Get-MgUser -Filter "userPrincipalName eq '<UPN>'" | Select-Object DisplayName, UserPrincipalName, Mail, UserType
+            # Recherche par adresse e-mail (si l'utilisateur tape son adresse et non son UPN)
+            Get-MgUser -Filter "mail eq '<UPN>'" | Select-Object DisplayName, UserPrincipalName, Mail, UserType
+        conclusions:
+          - { si: "Le compte existe avec un autre UPN", cause: c1 }
+          - { si: "Aucun compte trouvé, l'utilisateur est un compte AD synchronisé", cause: c2, aller_a: r1-e2 }
+          - { si: "Aucun compte, l'utilisateur fait partie d'une autre organisation", cause: c3, aller_a: r2 }
+      - id: r1-e2
+        titre: Vérifier la synchronisation ou la corbeille
+        niveau: N2
+        graphique: |
+          1. **Utilisateurs** › **Utilisateurs supprimés** (*Deleted users*) : si le compte y figure (moins de 30 jours), le sélectionner › **Restaurer les utilisateurs** (*Restore users*), après accord du responsable.
+          2. Sinon, côté AD : vérifier que le compte est dans une OU synchronisée et attendre le prochain cycle Entra Connect (30 minutes), ou lancer une synchronisation delta.
+          3. Si le compte reste absent, consulter les erreurs de synchronisation (fiche liée).
+        commande:
+          langage: powershell
+          ou: "Sur le serveur Entra Connect (console élevée) pour la synchronisation ; Microsoft Graph PowerShell pour la corbeille"
+          admin: true
+          code: |
+            # Sur le serveur Entra Connect : lancer une synchronisation delta
+            Start-ADSyncSyncCycle -PolicyType Delta
+            # Comptes supprimés depuis moins de 30 jours (Graph, scope User.Read.All)
+            Get-MgDirectoryDeletedItemAsUser -All | Where-Object UserPrincipalName -like '*<UPN>*' | Select-Object Id, DisplayName, UserPrincipalName, DeletedDateTime
+        astuce: "Le nom d'un compte supprimé peut apparaître sous une forme modifiée dans la corbeille : rechercher aussi par nom affiché."
+        conclusions:
+          - { si: "Le compte est en erreur de synchronisation", aller_a: "fiche:entra-connect-synchronisation-erreur" }
+          - { si: "Le compte supprimé doit être récupéré", aller_a: "fiche:entra-utilisateur-supprime-restaurer" }
+
+  - id: r2
+    causes: [c3]
+    titre: Inviter l'utilisateur externe dans le locataire
+    etapes:
+      - id: r2-e1
+        titre: Créer un compte invité (B2B)
+        niveau: N2
+        graphique: |
+          1. Vérifier avec le propriétaire de l'application que l'accès de cette personne extérieure est autorisé.
+          2. **Centre d'administration Microsoft Entra** › **Utilisateurs** › **Tous les utilisateurs** › **Nouvel utilisateur** (*New user*) › **Inviter un utilisateur externe** (*Invite external user*).
+          3. Saisir son adresse e-mail professionnelle, puis l'ajouter au groupe ou à l'application nécessaire.
+          4. L'utilisateur accepte l'invitation reçue par e-mail, puis se connecte avec **son propre** compte.
+        conclusions:
+          - { si: "L'invitation échoue ou l'invité reçoit une autre erreur", aller_a: "fiche:entra-aadsts50020-invite-inexistant-locataire" }
+
+verification:
+  - id: v1
+    titre: La connexion aboutit
+    niveau: N1
+    graphique: "L'utilisateur se connecte avec l'UPN exact. Dans **Entra** › **Surveillance et intégrité** (*Monitoring & health*) › **Journaux de connexion** (*Sign-in logs*), la dernière tentative est en **Réussite** (*Success*)."
+
+comprendre: |
+  L'erreur AADSTS50034 (UserAccountNotFound) signifie que le locataire interrogé ne connaît pas l'identifiant fourni. Entra ID cherche l'UPN : une adresse e-mail secondaire (alias) ne suffit pas toujours. Un compte AD n'existe dans le cloud qu'une fois synchronisé, et un compte supprimé reste 30 jours dans la corbeille avant d'être définitif.
+
+fiches_liees: [m365-connexion-refusee-aadsts, entra-connect-synchronisation-erreur, entra-utilisateur-supprime-restaurer, entra-aadsts50020-invite-inexistant-locataire]
+tags: [AADSTS50034, "50034", UserAccountNotFound, compte inexistant, compte introuvable, user account does not exist, upn, identifiant, nom d'utilisateur, alias, synchronisation, entra connect, utilisateur supprime, invite, b2b, connexion impossible]
+
+sources:
+  - titre: "Microsoft Entra authentication and authorization error codes — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "Troubleshoot primary refresh token issues on Windows devices — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-primary-refresh-token
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "OneDrive migration failing because of AADSTS50034 — Quest Community"
+    url: https://www.quest.com/community/on-demand/f/forum/32753/onedrive-migration-failing-because-of-aadsts50034
+    type: forum
+    consulte_le: 2026-10-30
+  - titre: "What to do when you encounter error code AADSTS50034 in Microsoft 365 — Guiding Tech"
+    url: https://www.guidingtech.com/what-to-do-when-you-encounter-error-code-aadsts50034-in-microsoft-365/
+    type: blog
+    consulte_le: 2026-10-30
+
+derniere_verification: 2026-10-30

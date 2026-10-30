@@ -1,0 +1,399 @@
+domaine: microsoft-365
+sous_domaine: copilot
+recense_le: 2026-10-30
+# Périmètre qui évolue très vite : la plupart des entrées portent sur des fonctions récentes.
+# Les points datés ou susceptibles de changer sont signalés par un commentaire « a-verifier ».
+problemes:
+  # --- Licence et activation ---
+  - id: copilot-absent-apps-office-apres-licence
+    titre: "Bouton Copilot absent dans Word, Excel, PowerPoint ou Outlook malgré la licence Microsoft 365 Copilot"
+    symptome: "La licence est attribuée mais l'icône Copilot n'apparaît pas dans les applications de bureau."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-requirements
+      - https://learn.microsoft.com/en-us/answers/questions/5656567/how-to-get-the-m365-copilot-icon-function-in-word
+      - https://techcommunity.microsoft.com/discussions/microsoft365copilot/copilot-missing-in-word-excel-and-powerpoint-desktop-apps/4044536
+    etat: a-rediger
+
+  - id: copilot-canal-mise-a-jour-semi-annuel
+    titre: "Copilot indisponible car Microsoft 365 Apps est sur le canal semi-annuel (Semi-Annual Enterprise Channel)"
+    symptome: "Copilot n'apparaît pas sur les postes restés sur un canal de mise à jour non pris en charge ou une version trop ancienne."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-setup
+      - https://learn.microsoft.com/en-us/answers/questions/5615184/copilot-is-missing-in-my-excel
+    etat: a-rediger
+    # > [!a-verifier] canaux pris en charge susceptibles d'évoluer
+
+  - id: copilot-mettre-a-jour-licence-office
+    titre: "Copilot n'apparaît qu'après « Mettre à jour la licence » (Update License) dans Fichier > Compte"
+    symptome: "La nouvelle licence n'est pas encore prise en compte par les applications ; délai de provisionnement jusqu'à 24 h."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/a/11975735
+      - https://learn.microsoft.com/en-us/answers/questions/5844890/cannot-see-copilot-button-in-excel
+    etat: a-rediger
+
+  - id: copilot-plans-service-desynchronises
+    titre: "Plans de service Copilot attribués mais non reconnus (outil de diagnostic désynchronisé)"
+    symptome: "Le centre d'administration montre le plan de service, l'outil de diagnostic non ; décocher puis recocher les plans."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-service-plans
+    etat: a-rediger
+
+  - id: copilot-licence-par-appareil-non-supportee
+    titre: "Copilot indisponible avec une licence Microsoft 365 Apps attribuée par appareil"
+    symptome: "Sur les postes en licence par appareil (device-based licensing), Copilot ne fonctionne pas."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-requirements
+    etat: a-rediger
+
+  - id: copilot-activation-ordinateurs-partages
+    titre: "Copilot et l'activation sur ordinateur partagé (RDS, VDI)"
+    symptome: "Copilot absent ou instable sur des postes en Shared Computer Activation."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/copilot-business-faq
+    etat: a-rediger
+    # > [!a-verifier] prise en charge SCA à confirmer dans la FAQ Copilot Business
+
+  - id: copilot-business-eligibilite-300-utilisateurs
+    titre: "Copilot Business : achat refusé ou formule inadaptée (plus de 300 utilisateurs, mélange de licences)"
+    symptome: "Impossible d'acheter ou de convertir vers Copilot Business selon la taille et les licences de base du tenant."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/copilot-business-faq
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-licensing
+    etat: a-rediger
+    # > [!a-verifier] offre récente (2025-2026), conditions susceptibles d'évoluer
+
+  - id: copilot-chat-ou-copilot-licence-confusion
+    titre: "Copilot Chat gratuit ou Microsoft 365 Copilot payant : l'utilisateur n'a pas accès à ses données de travail"
+    symptome: "Copilot répond depuis le web mais ne voit pas les e-mails, fichiers ou réunions : il n'a que Copilot Chat sans licence Microsoft 365 Copilot."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-licensing
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/which-copilot-for-your-organization
+    etat: a-rediger
+
+  # --- Prérequis techniques ---
+  - id: copilot-outlook-boite-locale-hybride
+    titre: "Copilot ne fonctionne pas dans Outlook : boîte aux lettres locale ou hybride (non Exchange Online)"
+    symptome: "Résumés et brouillons Copilot indisponibles car la boîte principale n'est pas dans Exchange Online."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-minimum-requirements
+    etat: a-rediger
+
+  - id: copilot-boite-partagee-archive-non-supportee
+    titre: "Copilot indisponible dans une boîte partagée, déléguée, de groupe ou dans l'archive"
+    symptome: "Copilot fonctionne dans la boîte principale mais pas dans les boîtes partagées ou l'archive en ligne."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-requirements
+    etat: a-rediger
+    # > [!a-verifier] la prise en charge des boîtes partagées peut évoluer
+
+  - id: copilot-office-web-cookies-tiers
+    titre: "Copilot ne se charge pas dans Word, Excel ou PowerPoint pour le web (cookies tiers bloqués)"
+    symptome: "Le volet Copilot reste vide ou en erreur dans les applications web."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-requirements
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-minimum-requirements
+    etat: a-rediger
+
+  - id: copilot-experiences-connectees-desactivees
+    titre: "Copilot absent car les expériences connectées (confidentialité Office) sont désactivées par stratégie"
+    symptome: "La stratégie « expériences connectées qui analysent votre contenu » ou « expériences connectées facultatives » désactivée masque Copilot."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-privacy
+    etat: a-rediger
+
+  - id: copilot-tache-office-feature-updates-bloquee
+    titre: "Fonctions Copilot manquantes car la tâche planifiée « Office Feature Updates » ne s'exécute pas"
+    symptome: "Copilot incomplet dans Word, PowerPoint, Excel ou OneNote sur des postes où la tâche est désactivée ou bloquée."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-requirements
+    etat: a-rediger
+
+  - id: copilot-websockets-proxy-inspection-tls
+    titre: "Copilot échoue ou se coupe derrière un proxy ou un pare-feu (WebSockets, inspection TLS)"
+    symptome: "Réponses interrompues, volet Copilot qui ne charge pas : WSS bloqué vers *.cloud.microsoft et *.office.com, inspection TLS, délais d'expiration du proxy."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-requirements
+    etat: a-rediger
+
+  - id: copilot-teams-reunion-sans-transcription
+    titre: "Copilot dans une réunion Teams ne fonctionne pas après la réunion (transcription ou enregistrement désactivé)"
+    symptome: "Copilot ne peut pas résumer la réunion une fois terminée car aucune transcription n'a été générée."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-requirements
+    etat: a-rediger
+
+  - id: copilot-teams-phone-appels-pstn
+    titre: "Copilot indisponible pendant les appels Teams Phone (PSTN)"
+    symptome: "Copilot fonctionne en VoIP mais pas sur les appels téléphoniques externes : licence Teams Phone, forfait d'appels et transcription requis."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-requirements
+    etat: a-rediger
+
+  - id: copilot-loop-whiteboard-desactives
+    titre: "Copilot dans Loop ou Whiteboard indisponible (service désactivé dans le tenant)"
+    symptome: "Les pages Copilot ou Copilot dans Whiteboard ne fonctionnent pas car Loop ou Whiteboard est désactivé."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-requirements
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-page
+    etat: a-rediger
+
+  # --- Application Microsoft 365 Copilot ---
+  - id: copilot-app-installation-0x80131500
+    titre: "Installation de l'application Microsoft 365 Copilot en échec : 0x80131500 « The specified blob doesn't exist »"
+    symptome: "L'installateur échoue ; contournement par l'installation du Windows App SDK 1.7."
+    erreurs: ["0x80131500", "The specified blob doesn't exist."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/faq-deploy-microsoft-365-copilot-app
+    etat: a-rediger
+    # > [!a-verifier] problème connu en cours d'investigation au moment du recensement
+
+  - id: copilot-app-installation-automatique-indesirable
+    titre: "Application Microsoft 365 Copilot installée automatiquement sur les postes : empêcher ou retirer"
+    symptome: "L'application s'installe avec Microsoft 365 Apps ; l'administrateur veut bloquer l'installation automatique (Microsoft 365 Apps admin center)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/deploy-microsoft-365-copilot-app
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/faq-deploy-microsoft-365-copilot-app
+    etat: a-rediger
+    # > [!a-verifier] installation automatique temporairement suspendue selon la FAQ
+
+  - id: copilot-app-installation-sans-microsoft-store
+    titre: "Installer ou mettre à jour l'application Microsoft 365 Copilot sans accès au Microsoft Store"
+    symptome: "Le Store est bloqué dans l'entreprise ; l'application ne s'installe pas ou ne se met pas à jour."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/faq-deploy-microsoft-365-copilot-app
+    etat: a-rediger
+
+  - id: copilot-epingler-barre-taches-reglage-grise
+    titre: "Épingler Copilot / applications compagnons : réglage absent ou grisé dans le centre d'administration"
+    symptome: "Le réglage nécessite Intune ; grisé si la disposition de Démarrer est déjà gérée dans Intune ou si les stratégies sont trop nombreuses."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/pin-copilot-taskbar
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/pin-copilot-chat-navbar
+    etat: a-rediger
+
+  # --- Copilot Chat et Edge ---
+  - id: copilot-edge-icone-absente-barre-laterale
+    titre: "Icône Copilot absente de la barre latérale Microsoft Edge"
+    symptome: "Barre latérale désactivée, Copilot désactivé dans les paramètres, stratégie de groupe, Edge trop ancien, compte ou région non éligible."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-edge/experience/copilot-icon-missing-sidebar
+    etat: a-rediger
+
+  - id: copilot-edge-volet-vide-connexion
+    titre: "Copilot Chat dans Edge : volet vide, bouton « Refresh », « Sign in » ou « Try again »"
+    symptome: "Le volet s'ouvre mais ne charge pas : service injoignable, jeton d'authentification invalide, URL internes bloquées par EdgeSidebarAppUrlHostBlockList."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-edge/experience/copilot-chat-loading-issues
+    etat: a-rediger
+
+  - id: copilot-chat-something-went-wrong
+    titre: "Copilot Chat : « Something went wrong » à chaque requête"
+    symptome: "Les invites échouent avec une erreur générique ; vérifier l'état du service (incident) puis cache et session."
+    erreurs: ["Something went wrong"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5920839/copilot-something-went-wrong-error
+      - https://learn.microsoft.com/en-us/answers/questions/5920522/problem-with-copilot
+    etat: a-rediger
+
+  # --- Réponses incomplètes : indexation, autorisations, contenu exclu ---
+  - id: copilot-ne-trouve-pas-fichiers-mails
+    titre: "Copilot ne trouve pas un fichier, un e-mail ou une conversation que l'utilisateur connaît"
+    symptome: "Réponse « je n'ai pas trouvé » : contenu non encore indexé, droits de l'utilisateur, fichier chiffré, archive, taille ou emplacement non pris en charge."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5765166/copilot-cannot-access-any-onedrive-files-onedrive
+      - https://techcommunity.microsoft.com/discussions/copilotforsmallandmediumbusiness/why-can%E2%80%99t-copilot-find-my-files-here%E2%80%99s-what-you-need-to-know/4487819
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-architecture-data-protection-auditing
+    etat: a-rediger
+
+  - id: copilot-indexation-delai-nouvelle-licence
+    titre: "Juste après l'attribution de la licence, Copilot ne connaît pas encore les données de l'utilisateur"
+    symptome: "Index sémantique en cours de constitution : quelques heures à plusieurs jours avant des réponses complètes."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/a/12618335
+    etat: a-rediger
+    # > [!a-verifier] délais d'indexation non garantis officiellement
+
+  - id: copilot-fichiers-chiffres-etiquette-sensibilite
+    titre: "Copilot ne peut pas lire un document protégé par une étiquette de confidentialité (chiffrement)"
+    symptome: "Le fichier est ignoré ou Copilot refuse de le résumer : l'utilisateur n'a pas le droit d'extraction (EXTRACT/VIEW) sur le contenu chiffré."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-architecture-data-protection-auditing
+      - https://knostic.ai/blog/file-permissions-copilot
+    etat: a-rediger
+
+  - id: copilot-fichiers-serveur-local-non-indexes
+    titre: "Copilot ignore les fichiers des serveurs de fichiers locaux ou d'outils tiers (connecteur absent)"
+    symptome: "Les données hors Microsoft 365 n'apparaissent pas dans les réponses sans connecteur Copilot (Graph connector)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://www.myworkdrive.com/blog/microsoft-365-copilot-oversharing
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-search-faq
+    etat: a-rediger
+
+  - id: copilot-mode-contenu-personnel-restreint
+    titre: "Copilot ne voit que les fichiers personnels de l'utilisateur (Personal Content Mode activé)"
+    symptome: "Copilot ignore des sites SharePoint pourtant accessibles : le plan de service « Graph-grounded » est désactivé et le mode contenu personnel s'applique."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-personal-content-mode
+    etat: a-rediger
+
+  - id: copilot-restricted-content-discovery-site-exclu
+    titre: "Copilot n'utilise pas le contenu d'un site SharePoint (Restricted Content Discovery activé)"
+    symptome: "Les documents du site restent accessibles mais n'apparaissent plus dans Copilot ni dans la recherche à l'échelle du tenant."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/restricted-content-discovery
+    etat: a-rediger
+
+  - id: copilot-restricted-sharepoint-search-liste-autorisee
+    titre: "Copilot limité à une liste de sites (Restricted SharePoint Search) : réponses incomplètes"
+    symptome: "Seuls les sites de la liste autorisée (100 max) sont utilisés ; fonction en cours de retrait au profit de Restricted Content Discovery."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/sharepoint/sharepoint-copilot-best-practices
+      - https://techcommunity.microsoft.com/blog/microsoft365copilotblog/mitigate-oversharing-to-govern-microsoft-365-copilot-and-agents/4448744
+    etat: a-rediger
+    # > [!a-verifier] calendrier de retrait de Restricted SharePoint Search
+
+  # --- Surpartage de données ---
+  - id: copilot-surpartage-donnees-sensibles
+    titre: "Copilot fait remonter des documents confidentiels (salaires, RH) à des utilisateurs : surpartage SharePoint"
+    symptome: "Liens « Tout le monde », groupe « Tout le monde sauf les utilisateurs externes », sites publics ou héritage cassé donnent un accès trop large que Copilot révèle."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/sharepoint/sharepoint-copilot-best-practices
+      - https://techcommunity.microsoft.com/blog/microsoft365copilotblog/mitigate-oversharing-to-govern-microsoft-365-copilot-and-agents/4448744
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-architecture-data-protection-auditing
+    etat: a-rediger
+
+  - id: copilot-rapports-gouvernance-acces-donnees
+    titre: "Identifier les sites surpartagés avant Copilot : rapports de gouvernance d'accès aux données (SharePoint Advanced Management)"
+    symptome: "Rapports indisponibles ou incomplets (collecte non activée, licence SAM absente, limite de 10 000 sites)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/sharepoint/sharepoint-copilot-best-practices
+      - https://learn.microsoft.com/en-us/training/modules/govern-sharepoint-onedrive-copilot/12-summary
+    etat: a-rediger
+
+  # --- Restrictions par l'administrateur ---
+  - id: copilot-recherche-web-desactivee
+    titre: "Copilot ne cherche plus sur le web : bouton « Contenu web » grisé (stratégie « Allow web search in Copilot »)"
+    symptome: "La stratégie Cloud Policy ou la désactivation des expériences connectées facultatives coupe la recherche web, y compris pour Researcher."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/manage-public-web-access
+    etat: a-rediger
+
+  - id: copilot-televersement-fichiers-desactive
+    titre: "Impossible de joindre un fichier à Copilot Chat (téléversement désactivé)"
+    symptome: "L'onglet Fichiers n'apparaît pas ; le contrôle est configuré par le support Microsoft et met jusqu'à 24 h à s'appliquer."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/microsoft-365-copilot-file-upload-control
+    etat: a-rediger
+
+  - id: copilot-acces-multi-comptes-licence-personnelle
+    titre: "Un utilisateur utilise sa licence Copilot personnelle sur des documents professionnels (accès multi-comptes)"
+    symptome: "Copilot fonctionne sur des fichiers de travail sans licence d'entreprise, ou au contraire est bloqué si l'accès multi-comptes est désactivé."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/multiple-account-access
+    etat: a-rediger

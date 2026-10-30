@@ -1,0 +1,111 @@
+id: office-autre-compte-organisation-deja-connecte
+format: express
+titre: "« Un autre compte de votre organisation est déjà connecté sur cet ordinateur »"
+resume: "À la connexion dans Word, Excel ou Outlook, Office refuse le compte de l'utilisateur car un autre compte du même tenant (ancien utilisateur du PC, collègue, compte invité) y est déjà enregistré. Déconnecter ce compte d'Office et de Windows, puis se reconnecter avec le bon."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: applications-office
+apparait_aussi_dans: [logiciels-metier/microsoft-office]
+niveau: N1
+temps_estime: { min: 10, max: 30 }
+critique: false
+environnements: [win11, win10]
+droits: admin-local
+outils: []
+acces:
+  - Session de l'utilisateur sur son PC (droits administrateur local pour la dernière étape).
+
+symptomes:
+  - « Word me dit qu'un autre compte de l'entreprise est déjà connecté, je ne peux pas mettre le mien. »
+  - « J'ai récupéré le PC d'un collègue et Office reste à son nom. »
+  - « Je n'arrive pas à activer Office avec mon adresse pro. »
+
+messages_erreur:
+  - texte: "Sorry, another account from your organization is already signed in on this computer."
+    ou: Fenêtre de connexion des applications Office (Word, Excel, Outlook…)
+  - texte: "Désolé, un autre compte de votre organisation est déjà connecté sur cet ordinateur."
+    ou: Version française du message (formulation à confirmer)
+
+causes:
+  - id: c1
+    titre: Un autre compte professionnel du même tenant est déjà connecté dans Office ou dans Windows
+    frequence: tres-frequente
+    detail: "Office n'accepte qu'un seul compte professionnel par organisation sur un même profil Windows. C'est typique d'un PC réattribué, d'un poste partagé, ou d'un compte invité (*guest*) du même annuaire enregistré auparavant."
+  - id: c2
+    titre: Jetons d'identité ou licence de l'ancien compte restés en cache
+    frequence: occasionnelle
+    detail: Même après déconnexion, des informations de l'ancien compte restent dans le Gestionnaire d'identification, le registre ou le dossier des licences Office.
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Déconnecter l'autre compte d'Office et de Windows
+    etapes:
+      - id: r1-e1
+        titre: Se déconnecter du compte affiché dans Office
+        niveau: N1
+        graphique: |
+          1. Ouvrir Word ou Excel › **Fichier** › **Compte** (*Account*).
+          2. Sous **Informations utilisateur** (*User Information*), noter le compte affiché, puis cliquer sur **Se déconnecter** (*Sign out*) et confirmer.
+          3. Fermer **toutes** les applications Office, y compris Outlook et Teams (vérifier la zone de notification).
+          4. Rouvrir Word, **Fichier** › **Compte** › **Se connecter** avec l'adresse professionnelle de l'utilisateur.
+        conclusions:
+          - { si: "La connexion fonctionne", aller_a: v1 }
+          - { si: "Le message revient", aller_a: r1-e2 }
+      - id: r1-e2
+        titre: Retirer l'ancien compte professionnel de Windows
+        niveau: N1
+        graphique: |
+          1. **Paramètres** › **Comptes** › **Accès Professionnel ou Scolaire** (*Access work or school*) : si un compte professionnel **autre que celui de l'utilisateur** apparaît, le sélectionner › **Déconnecter** (*Disconnect*).
+          2. **Paramètres** › **Comptes** › **E-mail et comptes** (*Email & accounts*) : sous **Comptes utilisés par d'autres applications** (*Accounts used by other apps*), supprimer l'ancien compte professionnel.
+          3. Redémarrer le PC, puis se reconnecter dans Office.
+        avertissement:
+          type: attention
+          texte: "Ne jamais déconnecter le compte qui sert à **joindre le PC à Entra ID** (mention « Connecté à Azure AD / Microsoft Entra ID de Contoso ») : le poste quitterait la gestion de l'entreprise. Ne retirer qu'un compte simplement **ajouté** (enregistré) qui n'est pas celui de l'utilisateur."
+
+  - id: r2
+    causes: [c2]
+    titre: Effacer les identifiants Office en cache
+    etapes:
+      - id: r2-e1
+        titre: Vider le Gestionnaire d'identification
+        niveau: N1
+        graphique: |
+          1. Fermer toutes les applications Office.
+          2. **Panneau de configuration** › **Gestionnaire d'identification** (*Credential Manager*) › **Informations d'identification Windows** (*Windows Credentials*).
+          3. Supprimer les entrées dont le nom commence par `MicrosoftOffice16_Data` ou qui contiennent l'adresse de l'ancien compte (**Supprimer** / *Remove*).
+          4. Redémarrer le PC et se reconnecter dans Office.
+
+          > [!a-verifier]
+          > Le nom exact des entrées Office (`MicrosoftOffice16_Data:…`, `msteams_adalsso…`) varie selon la version d'Office.
+        conclusions:
+          - { si: "Le message persiste malgré tout", aller_a: "fiche:office-reinitialiser-etat-activation" }
+
+verification:
+  - id: v1
+    titre: Office est activé avec le bon compte
+    niveau: N1
+    graphique: Dans **Fichier** › **Compte**, l'adresse de l'utilisateur apparaît sous **Informations utilisateur** et **Informations sur le produit** indique **Produit activé** (*Product Activated*).
+
+fiches_liees: [office-reinitialiser-etat-activation, office-produit-sans-licence, office-mac-connexion-impossible-trousseau]
+tags: [another account, autre compte, deja connecte, already signed in, organisation, activation, office, connexion, compte professionnel, poste reattribue, acces professionnel ou scolaire, access work or school, gestionnaire d'identification]
+
+sources:
+  - titre: "\"Sorry, another account from your organization is already signed in on this computer\" — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/activation/another-account-already-signed-in
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "Reset activation state for Microsoft 365 Apps for enterprise — Microsoft Learn (dépôt SupportArticles-docs)"
+    url: https://github.com/MicrosoftDocs/SupportArticles-docs/blob/main/Office/Client/activation/reset-activation-state.md
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "Sorry, another account from your organization is already signed in on this computer — Microsoft Tech Community"
+    url: https://techcommunity.microsoft.com/discussions/microsoft365apps/sorry-another-account-from-your-organization-is-already-signed-in-on-this-comput/3794453
+    type: forum
+    consulte_le: 2026-10-30
+  - titre: "Another account from your organization is already signed in — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/5156342/another-account-from-your-organization-is-already
+    type: forum
+    consulte_le: 2026-10-30
+
+derniere_verification: 2026-10-30
