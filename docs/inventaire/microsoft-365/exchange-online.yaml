@@ -1964,3 +1964,328 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/item-count-from-get-mailboxstatistics-shows-more-than-mailboxfolderstatistics
     etat: a-rediger
+  # ---------- Départs, licences, boîtes inactives et supprimées ----------
+  - id: exchange-boite-utilisateur-sans-licence-inaccessible
+    titre: "Boîte d'un utilisateur sans licence inaccessible ou supprimée après 30 jours"
+    symptome: "Après retrait de la licence d'un utilisateur, sa boîte devient inaccessible puis est supprimée à l'issue du délai de grâce ; aucune boîte supprimée récupérable n'apparaît."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/no-soft-deleted-mailbox-after-license-removal
+    etat: a-rediger
+  - id: exchange-licence-retiree-boite-en-conservation-erreurs
+    titre: "Erreurs après retrait de la licence d'un utilisateur dont la boîte est en conservation"
+    symptome: "La boîte d'un utilisateur sous conservation (litige, rétention) ne devient pas inactive comme prévu après retrait de la licence, et des erreurs apparaissent."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/litigation-hold-mailbox-not-turn-into-inactive
+    etat: a-rediger
+  - id: exchange-boite-inactive-recuperation-shards
+    titre: "Récupération d'une boîte inactive impossible : « the mailbox has additional shards that need recovery »"
+    symptome: "New-Mailbox -InactiveMailbox échoue sur une boîte inactive possédant des fragments d'archive supplémentaires (archive à extension automatique)."
+    erreurs: ["The inactive mailbox '<identity of the inactive mailbox>' cannot be recovered because the mailbox has additional shards that need recovery."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/recover-inactive-mailboxes-error
+    etat: a-rediger
+  - id: exchange-hybride-boite-non-reconnectee-apres-resynchro
+    titre: "Hybride : la boîte d'origine n'est pas reconnectée quand Entra Connect resynchronise le compte"
+    symptome: "Un compte sorti puis remis dans le périmètre de synchronisation récupère une boîte vide ou aucune boîte ; les données de l'ancienne boîte doivent être récupérées."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/reconnect-inactive-or-soft-deleted-mailboxes-to-ad
+    etat: a-rediger
+  - id: exchange-hybride-boite-existe-cloud-et-local
+    titre: "Hybride : un utilisateur a une boîte à la fois dans Exchange Online et en local"
+    symptome: "Les messages arrivent dans l'une ou l'autre boîte selon l'expéditeur : une boîte cloud a été créée alors que la boîte locale existait (licence attribuée avant migration)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/mailbox-exists-exo-onpremises
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/still-can-access-mailbox-after-moved
+    etat: a-rediger
+  - id: exchange-hybride-litigationhold-different
+    titre: "Hybride : la propriété LitigationHoldEnabled diffère entre le local et Exchange Online"
+    symptome: "Après migration d'une boîte, la conservation pour litige apparaît activée d'un côté et pas de l'autre."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/litigationholdenabled-property-differs-onpremises-cloud
+    etat: a-rediger
+  - id: m365-licence-boite-non-creee
+    titre: "Nouvel utilisateur sans boîte mail (licence non attribuée ou en erreur)"
+    symptome: "Un nouvel utilisateur existe dans Microsoft 365 mais n'a pas de boîte aux lettres : licence absente, emplacement d'utilisation manquant, attribution par groupe en erreur."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/delays-provision-mailbox-sync-changes
+    etat: redigee
+  # ---------- Migrations (cutover, staged, IMAP, Google, hybride) ----------
+  - id: exchange-migration-hybride-depannage-general
+    titre: "Déplacement de boîte hybride vers Exchange Online en échec ou bloqué"
+    symptome: "Un lot de migration hybride échoue, reste bloqué ou en attente : point de terminaison MRS Proxy, certificat, autorisations, éléments trop volumineux ou limitation."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-or-migrate-mailboxes/troubleshoot-migration-issues-in-exchange-hybrid
+    etat: a-rediger
+  - id: exchange-migration-mrsproxy-access-denied
+    titre: "Migration hybride : « The call to 'https://<serveur>/EWS/mrsproxy.svc' failed. Error details: Access is denied »"
+    symptome: "La création du lot de migration ou du point de terminaison échoue car le compte utilisé n'a pas les droits ou l'authentification sur MRS Proxy échoue."
+    erreurs: ["The call to 'https://<ServerName>/EWS/mrsproxy.svc' failed. Error details: Access is denied."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-mailboxes/access-is-denied-error-when-moving-mailboxes
+    etat: a-rediger
+  - id: exchange-migration-mrsproxy-timeout
+    titre: "Migration hybride : « The call to '.../EWS/mrsproxy.svc' timed out »"
+    symptome: "Le déplacement de boîte échoue sur un délai d'attente lors de l'appel au service MRS Proxy publié (pare-feu, proxy inverse, latence)."
+    erreurs: ["The call to 'https://webmail.domain.com/EWS/mrsproxy.svc' timed out."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-mailboxes/operation-has-timed-out-error-when-moving-mailbox
+    etat: a-rediger
+  - id: exchange-migration-403-forbidden
+    titre: "Migration hybride : 403 Forbidden lors du déplacement de boîtes vers Exchange Online"
+    symptome: "Le serveur distant renvoie une erreur 403 au moment du déplacement (MRS Proxy désactivé, publication incorrecte)."
+    erreurs: ["The remote server returned an error: (403) Forbidden."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-mailboxes/remote-server-returned-error-403-forbidden
+    etat: a-rediger
+  - id: exchange-migration-communicationerrortransient
+    titre: "Migration : CommunicationErrorTransientException / RestartMoveCorruptSyncStateTransientException répétées"
+    symptome: "Le rapport de déplacement montre des erreurs transitoires en boucle ; la migration ralentit ou ne termine pas."
+    erreurs: ["Transient error CommunicationErrorTransientException has occurred. The system will retry", "RestartMoveCorruptSyncStateTransientException"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-mailboxes/mailbox-move-to-cloud-fail-with-error
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-or-migrate-mailboxes/transientexception-errors-when-moving-mailboxes
+    etat: a-rediger
+  - id: exchange-migration-stalledduetotarget
+    titre: "Migration ralentie : StalledDueToTarget_Processor / MapiFxProxyTransientException"
+    symptome: "La migration est mise en pause par Microsoft 365 à cause de la charge des serveurs cibles ; l'état indique Stalled."
+    erreurs: ["StalledDueToTarget_Processor", "MapiFxProxyTransientException"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-or-migrate-mailboxes/stalledduetotarget-processor-error-during-migration
+    etat: a-rediger
+  - id: exchange-migration-toomanylargeitems
+    titre: "Migration en échec : TooManyLargeItemsPermanentException (éléments trop volumineux)"
+    symptome: "La boîte contient des éléments dépassant la taille maximale autorisée ; la migration échoue au-delà du nombre toléré d'éléments volumineux."
+    erreurs: ["FailureType : TooManyLargeItemsPermanentException"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-or-migrate-mailboxes/mailbox-exceeded-maximum-number-of-large-itmes
+    etat: a-rediger
+  - id: exchange-migration-toomanybaditems
+    titre: "Migration en échec : le nombre d'éléments endommagés dépasse la limite (TooManyBadItemsPermanentException)"
+    symptome: "La migration s'arrête car trop d'éléments corrompus ont été détectés dans la boîte source."
+    erreurs: ["TooManyBadItemsPermanentException"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/toomanybaditemspermanentexception-during-migration
+    etat: a-rediger
+  - id: exchange-migration-storagepermanentexception
+    titre: "Migration en échec : StoragePermanentException (défaillances transitoires de stockage)"
+    symptome: "Le déplacement d'une boîte échoue de façon répétée avec des exceptions de stockage."
+    erreurs: ["StoragePermanentException"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-or-migrate-mailboxes/storagepermanentexception-during-mailbox-migration
+    etat: a-rediger
+  - id: exchange-migration-pas-de-proxy-mail-onmicrosoft
+    titre: "Migration hybride : « The target mailbox doesn't have an smtp proxy matching '<domaine>.mail.onmicrosoft.com' »"
+    symptome: "Le déplacement est refusé car l'utilisateur local n'a pas d'adresse dans le domaine de routage du tenant (stratégie d'adresses non appliquée)."
+    erreurs: ["The target mailbox doesn't have an smtp proxy matching '<domain>.mail.onmicrosoft.com'"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-or-migrate-mailboxes/no-smtp-proxy-matching
+    etat: a-rediger
+  - id: exchange-migration-utilisateur-deja-en-cours
+    titre: "Migration : UserAlreadyBeingMigratedException (une demande est déjà en cours pour l'utilisateur)"
+    symptome: "Impossible d'ajouter l'utilisateur à un nouveau lot car une demande de déplacement existante n'a pas été supprimée."
+    erreurs: ["UserAlreadyBeingMigratedException: The user 'Name' already has a pending request. Please remove the existing request and resume the current batch or start a new batch for this user."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-mailboxes/user-is-already-being-moved-error
+    etat: a-rediger
+  - id: exchange-migration-matches-multiple-entries
+    titre: "Migration : « The operation couldn't be performed because '<nom>' matches multiple entries »"
+    symptome: "Le déplacement échoue car l'adresse indiquée ne désigne pas un objet unique (doublon de proxy, contact, ancien objet)."
+    erreurs: ["The operation couldn't be performed because '<mailbox display name>' matches multiple entries."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-mailboxes/migration-fails-multiple-entries-error
+    etat: a-rediger
+  - id: exchange-migration-mrs-maximum-connexions
+    titre: "Migration : MRS Proxy a atteint le nombre maximal de connexions actives"
+    symptome: "Les déplacements échouent car le service de réplication de boîte local est saturé (limite de connexions MRS)."
+    erreurs: ["The Mailbox Replication Proxy Service can't process this request because it has reached the maximum number of active MRS connections allowed."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-mailboxes/mailbox-migration-reached-maximum-number
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-or-migrate-mailboxes/how-to-manage-maximum-concurrent-migration-batches
+    etat: a-rediger
+  - id: exchange-migration-grandes-boites-lentes
+    titre: "Migration hybride très lente des grandes boîtes (latence réseau)"
+    symptome: "Le déplacement de boîtes volumineuses avance très lentement à cause de la latence entre le local et Microsoft 365."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-mailboxes/large-mailbox-migrations-are-slow-due-to-network-latency
+    etat: a-rediger
+  - id: exchange-migration-donnees-dossiers-manquantes
+    titre: "Dossiers ou données manquants après une migration (remote move)"
+    symptome: "Après un déplacement hybride, des dossiers ou éléments manquent dans la boîte Exchange Online ; la boîte locale désactivée permet de les restaurer."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-or-migrate-mailboxes/restore-missing-folder-data-after-migration
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-or-migrate-mailboxes/favorites-folders-missing-after-migration
+    etat: a-rediger
+  - id: exchange-migration-acces-boite-apres-deplacement
+    titre: "L'utilisateur ne peut plus ouvrir sa boîte dans Outlook après le déplacement vers Microsoft 365"
+    symptome: "Après la fin du déplacement hybride, Outlook ne se connecte plus à la boîte ou reste connecté à l'ancienne (Autodiscover, cache, profil)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/cannot-access-mailbox-after-remote-mailbox-moves-to-office-365
+    etat: a-rediger
+  - id: exchange-migration-cutover-adresse-smtp-invalide
+    titre: "Migration cutover : « ... is not a valid SMTP address » (adresse X500/legacyDN)"
+    symptome: "Certains objets (contacts, groupes) ne migrent pas car leur adresse est au format /o=…/cn=… au lieu d'une adresse SMTP."
+    erreurs: ["\"/o=NT5/ou=.../cn=...\" is not a valid SMTP address"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-or-migrate-mailboxes/cutover-migration-invalid-smtp-address
+    etat: a-rediger
+  - id: exchange-migration-objet-ad-different-existe
+    titre: "Migration : « A different type of Active Directory object already exists » pour l'adresse"
+    symptome: "Un utilisateur n'est pas migré car un objet d'un autre type (contact, groupe) porte déjà son adresse dans le tenant."
+    erreurs: ["A different type of Active Directory object already exists for \"<user>@<domainname>.com\" in the target forest. Please verify that the SMTP address is correct."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-or-migrate-mailboxes/different-type-of-active-directory-object-already-exists-error
+    etat: a-rediger
+  - id: exchange-migration-staged-erreurs-boites
+    titre: "Migration intermédiaire (staged) : « The mailboxes listed ... can't be migrated because they contain errors »"
+    symptome: "Le lot de migration intermédiaire refuse certaines boîtes signalées en erreur dans le fichier CSV ou la synchronisation."
+    erreurs: ["The mailboxes listed in the following table can't be migrated because they contain errors."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-or-migrate-mailboxes/cannot-perform-stage-migration
+    etat: a-rediger
+  - id: exchange-migration-point-terminaison-connexion-impossible
+    titre: "Création du point de terminaison de migration : « We weren't able to connect to the remote server »"
+    symptome: "Le point de terminaison cutover ou intermédiaire ne se crée pas : Outlook Anywhere, certificat, Autodiscover ou identifiants incorrects côté source."
+    erreurs: ["MigrationTransientException: We weren't able to connect to the remote server. Please verify that the migration endpoint settings are correct and your certificate is valid"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-or-migrate-mailboxes/we-werent-able-to-connect-to-the-remote-server-error
+    etat: a-rediger
+  - id: exchange-migration-imap-echec
+    titre: "Migration IMAP vers Exchange Online en échec (point de terminaison, identifiants, dossiers)"
+    symptome: "La migration IMAP échoue à la création du point de terminaison ou pendant la synchronisation ; après migration, des dossiers sont invisibles."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-or-migrate-mailboxes/troubleshoot-issues-with-imap-mailbox-migration
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-or-migrate-mailboxes/imap-mailbox-migration-fails
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-or-migrate-mailboxes/cannot-view-mailbox-folders-after-imap-migration
+    etat: a-rediger
+  - id: exchange-migration-google-mot-de-passe-application
+    titre: "Migration Google Workspace : « Special credentials are required in order to access this IMAP account »"
+    symptome: "La migration depuis Google Workspace échoue car les comptes n'ont pas de mot de passe d'application (ou la méthode IMAP est inadaptée)."
+    erreurs: ["MigrationPermanentException: Special credentials are required in order to access this IMAP account."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-or-migrate-mailboxes/google-workspace-mailbox-migration-fail
+    etat: a-rediger
+  - id: exchange-migration-google-permanentwebexception
+    titre: "Migration Google Workspace : GooglePermanentWebException (erreur 403 de l'API Google)"
+    symptome: "Le lot de migration Google échoue car l'API Google refuse l'accès (API non activée, délégation à l'échelle du domaine incomplète)."
+    erreurs: ["GooglePermanentWebException: The API call to Google ended in the error"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-or-migrate-mailboxes/googlepermanentwebexception-in-google-workspace-migration
+    etat: a-rediger
+  - id: exchange-offboarding-version-non-supportee
+    titre: "Retour d'une boîte vers le local refusé : version d'Exchange Server non prise en charge"
+    symptome: "Le déplacement d'une boîte Exchange Online vers un serveur local ancien échoue."
+    erreurs: ["MigrationPermanentException: Moving mailbox to Exchange version <version number> is not supported."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-mailboxes/cannot-offboard-mailboxes-to-unsupported-exchange-server-versions
+    etat: a-rediger
+  - id: exchange-offboarding-guid-introuvable
+    titre: "Retour vers le local : « Cannot find a recipient that has mailbox GUID » (boîte créée dans le cloud)"
+    symptome: "Une boîte créée directement dans Exchange Online ne peut pas être déplacée vers le local car l'objet local n'a pas l'ExchangeGuid correspondant."
+    erreurs: ["MigrationPermanentException: Cannot find a recipient that has mailbox GUID '<GUID>'."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-mailboxes/migrationpermanentexception-when-moving-mailboxes
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-mailboxes/hybrid-move-fails
+    etat: a-rediger
+  - id: exchange-migration-primaryonly-archive
+    titre: "Migration de la seule boîte principale refusée (archive déjà dans le cloud, paramètre PrimaryOnly)"
+    symptome: "Le déplacement d'une boîte locale dont l'archive est déjà dans Exchange Online échoue faute de paramètre ou de base d'archive définie."
+    erreurs: ["The archive database is not explicitly set on the mailbox. Hence a primary only move cannot be allowed for this user."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-mailboxes/cannot-migrate-on-premises-primary-mailbox
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-mailboxes/you-must-specify-the-primaryonly-parameter-error
+    etat: a-rediger
+  - id: exchange-migration-avertissement-unlock-non-replique
+    titre: "Avertissement après migration : « Target mailbox unlock operation was not replicated »"
+    symptome: "Le rapport de migration terminée contient cet avertissement sur le déverrouillage de la boîte cible."
+    erreurs: ["Warning: Target mailbox unlock operation was not replicated. If a lossy failover occurs after the target mailbox was unlocked, the target mailbox could remain inaccessible."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-or-migrate-mailboxes/target-mailbox-unlock-operation-was-not-replicated-error
+    etat: a-rediger
+  - id: exchange-add-recipientpermission-domaine-non-accepte
+    titre: "Add-RecipientPermission : « You can't use the domain because it's not an accepted domain »"
+    symptome: "L'attribution du droit Envoyer en tant que échoue car une adresse proxy du destinataire utilise un domaine non accepté dans le tenant (après migration)."
+    erreurs: ["You can't use the domain because it's not an accepted domain for your organization."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-or-migrate-mailboxes/issue-with-add-recipientpermission-cmdlet
+    etat: a-rediger

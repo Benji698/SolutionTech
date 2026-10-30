@@ -1991,3 +1991,296 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/known-issues
     etat: a-rediger
+  # --- Certificats SCEP / PKCS, connecteur de certificats ---
+  - id: intune-scep-certificat-non-delivre
+    titre: "Certificat SCEP Intune non délivré aux appareils (profil en échec ou en attente)"
+    symptome: "Le profil SCEP échoue ; diagnostic de bout en bout : profil de certificat racine, communication appareil vers NDES, module de stratégie, autorité de certification, livraison."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/troubleshoot-scep-certificate-profiles
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/troubleshoot-scep-certificate-profile-deployment
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/troubleshoot-scep-certificate-delivery
+    etat: a-rediger
+  - id: intune-scep-ndes-http-500
+    titre: "SCEP : URL NDES en « 500 - Internal server error » (compte de service NDES verrouillé ou expiré)"
+    symptome: "Les requêtes SCEP échouent ; la page mscep.dll renvoie une erreur 500 ; compte de service NDES bloqué, mot de passe expiré ou CertificateRegistrationSvc/VerifyRequest en 500."
+    erreurs: ["500 - Internal server error", "POST /CertificateRegistrationSvc/Certificate/VerifyRequest - 500"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/troubleshoot-scep-certificate-device-to-ndes
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/certificateregistrationsvc-verify-request-error
+    etat: a-rediger
+  - id: intune-scep-ndes-http-503
+    titre: "SCEP : URL NDES en « HTTP Error 503. The service is unavailable » (pool SCEP arrêté)"
+    symptome: "Le pool d'applications SCEP d'IIS est arrêté sur le serveur NDES."
+    erreurs: ["HTTP Error 503. The service is unavailable."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/troubleshoot-scep-certificate-device-to-ndes
+    etat: a-rediger
+  - id: intune-scep-ndes-http-414
+    titre: "SCEP : « HTTP 414 Request-URI Too Long » sur le serveur NDES"
+    symptome: "Le filtrage des requêtes IIS n'accepte pas les longues URL envoyées par les appareils."
+    erreurs: ["HTTP 414 Request-URI Too Long"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/troubleshoot-scep-certificate-device-to-ndes
+    etat: a-rediger
+  - id: intune-scep-proxy-application-gatewaytimeout
+    titre: "SCEP via proxy d'application Entra : « GatewayTimeout » ou « This page can't be displayed »"
+    symptome: "Le connecteur de proxy d'application est arrêté ou l'URL externe SCEP est incorrecte."
+    erreurs: ["GatewayTimeout", "This page can't be displayed"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/troubleshoot-scep-certificate-device-to-ndes
+    etat: a-rediger
+  - id: intune-scep-modele-non-supporte-0x80094800
+    titre: "SCEP : « The requested certificate template is not supported by this CA » (0x80094800, événement 31)"
+    symptome: "NDES ne peut pas soumettre la demande ; nom de modèle de certificat incorrect dans le registre NDES ou modèle non publié sur l'autorité."
+    erreurs: ["0x80094800", "CERTSRV_E_UNSUPPORTED_CERT_TYPE", "The Network Device Enrollment Service cannot submit the certificate request"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/devices-receive-scep-certificates-error-0x80094800
+    etat: a-rediger
+  - id: intune-scep-echec-apres-renouvellement-ca
+    titre: "SCEP vers Windows en échec après renouvellement de l'autorité de certification (800B0109)"
+    symptome: "Les certificats RA du serveur NDES référencent encore l'ancien certificat d'autorité ; événements 32/307 et CAPI2 30."
+    erreurs: ["A certificate chain processed, but terminated in a root certificate which is not trusted by the trust provider. 800B0109"]
+    priorite: critique
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/scep-deployment-to-win10-devices-fails
+    etat: a-rediger
+  - id: intune-scep-ios-pas-de-getcacaps
+    titre: "SCEP iOS : « The Registration Authority's response is invalid » (aucune requête GetCACaps)"
+    symptome: "Les iPhone ne récupèrent pas leur certificat ; chaîne de certificats SSL du serveur NDES non approuvée par l'appareil."
+    erreurs: ["The Registration Authority's response is invalid", "Cannot retrieve SCEP identity"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/ios-scep-failure-no-getcacaps
+    etat: a-rediger
+  - id: intune-scep-module-strategie-ndes-erreurs
+    titre: "NDESPlugin.log : erreur 12175, « 403 – Forbidden » ou défi (challenge) refusé"
+    symptome: "Le module de stratégie Intune sur NDES ne valide pas les demandes ; problème TLS, proxy ou certificat client du connecteur."
+    erreurs: ["12175", "403 – Forbidden: Access is denied"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/troubleshoot-scep-certificate-ndes-policy-module
+    etat: a-rediger
+  - id: intune-scep-defi-expire-0x00000411
+    titre: "Connecteur de certificats : « Request denied due to expired certificate challenge » (0x00000411)"
+    symptome: "La demande SCEP est rejetée car le défi a expiré ; l'appareil doit en obtenir un nouveau."
+    erreurs: ["0x00000411", "CRPSCEPChallenge_Expired"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/troubleshoot-certificate-connector-events
+    etat: a-rediger
+  - id: intune-scep-crp-m-safecertcontext
+    titre: "SCEP : demande en échec à la vérification (« m_safeCertContext is an invalid handle »)"
+    symptome: "Le point d'enregistrement de certificats (CRP) ne trouve pas son certificat ; journaux CertificateRegistrationPoint en erreur."
+    erreurs: ["System.Security.Cryptography.CryptographicException: m_safeCertContext is an invalid handle."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/scep-certificate-request-fails
+    etat: a-rediger
+  - id: intune-scep-certificat-hors-periode-validite
+    titre: "Ancien connecteur NDES : « A required certificate is not within its validity period »"
+    symptome: "Les certificats SCEP ne peuvent pas être attribués ; certificat du connecteur expiré (ancien connecteur Microsoft Intune)."
+    erreurs: ["A required certificate is not within its validity period when verifying against the current system clock or the timestamp in the signed file."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/cannot-assign-scep-certificates
+    etat: a-rediger
+  - id: intune-pkcs-certificat-non-delivre
+    titre: "Certificat PKCS (PFX) Intune non délivré : profil en attente ou en échec"
+    symptome: "Le certificat racine arrive mais pas le PFX ; diagnostic via les journaux du connecteur de certificats et de l'autorité."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/troubleshoot-pkcs-certificate-profiles
+    etat: a-rediger
+  - id: intune-pkcs-rpc-server-unavailable-0x800706ba
+    titre: "PKCS : « The RPC server is unavailable 0x800706ba » lors de l'émission du PFX"
+    symptome: "Le connecteur ne joint pas l'autorité de certification (pare-feu, nom d'autorité incorrect, service arrêté)."
+    erreurs: ["CCertRequest::Submit: The RPC server is unavailable. 0x800706ba"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/troubleshoot-pkcs-certificate-profiles
+    etat: a-rediger
+  - id: intune-pkcs-enrollment-policy-server-0x80094015
+    titre: "PKCS : « An enrollment policy server cannot be located 0x80094015 »"
+    symptome: "Le connecteur ne trouve pas le serveur de stratégie d'inscription ; nom de l'autorité mal saisi dans le profil."
+    erreurs: ["An enrollment policy server cannot be located 0x80094015"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/troubleshoot-pkcs-certificate-profiles
+    etat: a-rediger
+  - id: intune-pkcs-parametre-incorrect-0x80070057
+    titre: "PKCS : « The parameter is incorrect 0x80070057 », « Denied by Policy Module » ou demande en attente"
+    symptome: "L'autorité refuse ou met en attente la demande PFX (modèle mal nommé, approbation manuelle, droits manquants)."
+    erreurs: ["The parameter is incorrect 0x80070057", "Denied by Policy Module", "The submission is pending"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/troubleshoot-pkcs-certificate-profiles
+    etat: a-rediger
+  - id: intune-pkcs-email-sujet-requis
+    titre: "PKCS : erreur -2146875374 CERTSRV_E_SUBJECT_EMAIL_REQUIRED"
+    symptome: "Le modèle exige une adresse e-mail dans le sujet que l'utilisateur n'a pas ou que le profil ne fournit pas."
+    erreurs: ["-2146875374", "CERTSRV_E_SUBJECT_EMAIL_REQUIRED"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/troubleshoot-pkcs-certificate-profiles
+    etat: a-rediger
+  - id: intune-connecteur-certificats-ca-indisponible-0x400
+    titre: "Connecteur de certificats Intune : 0x00000400 « Certification authority is not valid or is unreachable » (événement 20102)"
+    symptome: "L'émission PKCS échoue ; l'autorité est injoignable ou mal renseignée."
+    erreurs: ["0x00000400", "PKCS_Issue_CA_Unavailable", "Event ID 20102"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/troubleshoot-certificate-connector-events
+    etat: a-rediger
+  - id: intune-connecteur-certificats-renouvellement-echoue
+    titre: "Connecteur de certificats Intune : renouvellement de son certificat en échec (événement 10102, 0x00000405)"
+    symptome: "Le certificat d'inscription du connecteur a expiré ; réinstaller ou réinscrire le connecteur."
+    erreurs: ["Event ID 10102", "CertificateRenewal_Failure", "0x00000405", "Certificate_Expired"]
+    priorite: critique
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/troubleshoot-certificate-connector-events
+    etat: a-rediger
+  - id: intune-connecteur-certificats-revocation-acces-refuse
+    titre: "Connecteur de certificats : révocation impossible (0x00000402 RevokeCert_AccessDenied)"
+    symptome: "Le compte du connecteur n'a pas le droit de révoquer les certificats sur l'autorité."
+    erreurs: ["0x00000402", "RevokeCert_AccessDenied", "Event ID 20202"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/troubleshoot-certificate-connector-events
+    etat: a-rediger
+  - id: intune-connecteur-installation-arret-premature
+    titre: "« Microsoft Intune Connector Setup Wizard ended prematurely because of an error » (1603)"
+    symptome: "L'installation du connecteur NDES échoue ; site web IIS par défaut absent (0x80070002) ou erreur de configuration IIS."
+    erreurs: ["Microsoft Intune Connector Setup Wizard ended prematurely because of an error.", "WriteIIS7ConfigChanges: Error 0x80070002: Site not found for create application", "returned actual error code 1603"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/connector-setup-wizard-ends-prematurely
+    etat: a-rediger
+  - id: intune-connecteur-ndes-0x80090014-cle-privee
+    titre: "Installation du connecteur NDES : « Error 0x80090014: CryptAcquireContext failed »"
+    symptome: "L'accès à la clé privée du certificat échoue ; modèle de certificat incompatible (fournisseur de chiffrement)."
+    erreurs: ["AddNDESToCertPrivKey: Error 0x80090014: CryptAcquireContext failed."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/error-0x80090014-installing-ndes-certificate
+    etat: a-rediger
+  - id: intune-connecteur-ndes-connexion-0x80004003
+    titre: "Connexion à l'interface du connecteur NDES : « NDES Connector certificate could not be found » (0x80004003)"
+    symptome: "La connexion échoue ; compte sans rôle administrateur Intune ou certificat du connecteur introuvable."
+    erreurs: ["An unexpected error has occurred", "NDES Connector certificate could not be found", "0x80004003"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/ndes-connector-signin-error-80004003
+    etat: a-rediger
+  - id: intune-connecteur-ad-odj-non-visible
+    titre: "Connecteur Intune pour Active Directory (ODJ) installé mais absent de la console"
+    symptome: "Le connecteur utilisé pour Autopilot hybride n'apparaît pas ; proxy non configuré (erreur 0x0FFFFFFF dans ODJConnectorService)."
+    erreurs: ["DiagnosticException: 0x0FFFFFFF. We are unable to complete your request because a server-side error occurred."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/intune-connector-for-ad-not-appear
+    etat: a-rediger
+  - id: intune-connecteur-ad-connexion-erreur-inattendue
+    titre: "Connecteur Intune pour Active Directory : « An unexpected error has occurred » à la connexion"
+    symptome: "Le compte utilisé pour configurer le connecteur n'a pas de licence Intune ou Office."
+    erreurs: ["An unexpected error has occurred. An error occurred while processing your request. View Service Status"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/intune-connector-signin-unexpected-error
+    etat: a-rediger
+  - id: intune-certificat-racine-baltimore-connectivite
+    titre: "Problèmes de connexion à Intune : certificat racine non à jour (mise à jour automatique des racines désactivée)"
+    symptome: "Les appareils ne joignent plus le service car la racine requise n'est pas installée et la mise à jour automatique des certificats racines est désactivée."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/certificates/fix-connectivity-issues
+    etat: a-rediger
+  # --- Wi-Fi et VPN déployés ---
+  - id: intune-wifi-profil-non-deploye
+    titre: "Profil Wi-Fi Intune non déployé sur l'appareil (en attente des certificats)"
+    symptome: "Le profil Wi-Fi n'arrive pas : mauvais groupe, appareil qui ne se synchronise pas, ou profils racine/SCEP liés non installés (« pending certificates »)."
+    erreurs: ["Skipping Wifi profile <profile ID> because it is pending certificates."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/troubleshoot-wi-fi-profiles
+    etat: a-rediger
+  - id: intune-wifi-profil-deploye-connexion-impossible
+    titre: "Profil Wi-Fi déployé mais l'appareil ne se connecte pas au réseau (802.1X / EAP-TLS)"
+    symptome: "Le profil est présent mais l'authentification échoue : certificat client, racine du serveur RADIUS, SSID ou paramètres EAP incorrects."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/troubleshoot-wi-fi-profiles
+    etat: a-rediger
+  - id: intune-wifi-nouveau-mot-de-passe-non-recu
+    titre: "Profil Wi-Fi : les utilisateurs ne reçoivent pas le nouveau profil après changement de la clé"
+    symptome: "Modifier la clé pré-partagée d'un profil existant ne met pas à jour les appareils."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/troubleshoot-wi-fi-profiles
+    etat: a-rediger
+  - id: intune-wifi-profil-en-echec-mais-fonctionne
+    titre: "Profils Wi-Fi tous en échec ou en échec alors qu'ils fonctionnent"
+    symptome: "Le rapport signale des échecs alors que la connexion fonctionne, ou tous les profils échouent (problème de rapport ou de certificat commun)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/troubleshoot-wi-fi-profiles
+    etat: a-rediger
+  - id: intune-vpn-profil-non-deploye
+    titre: "Profil VPN Intune non déployé sur l'appareil"
+    symptome: "Le profil VPN n'est pas appliqué : application VPN absente, groupes incohérents entre profils racine/SCEP/VPN ou certificats manquants."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/troubleshoot-vpn-profiles
+    etat: a-rediger
+  - id: intune-vpn-profil-deploye-connexion-impossible
+    titre: "Profil VPN déployé mais la connexion VPN échoue"
+    symptome: "Le profil est présent mais l'authentification par certificat ou la configuration du serveur VPN bloque la connexion."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/troubleshoot-vpn-profiles
+    etat: a-rediger

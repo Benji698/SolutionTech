@@ -723,3 +723,222 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/email-received-via-eop-not-journaled
     etat: a-rediger
+  - id: purview-document-chiffre-externe-ne-peut-pas-ouvrir
+    titre: Destinataire externe incapable d'ouvrir un document chiffré par une étiquette de confidentialité
+    symptome: Un partenaire reçoit un fichier Word/Excel/PDF étiqueté et chiffré mais obtient un message indiquant que son compte n'a pas l'autorisation (compte invité absent, domaine non listé, client non compatible).
+    erreurs:
+      - You are not signed in to Office with an account that has permission to open this document
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/discussions/microsoft-365/external-people-cant-open-files-with-sensitivity-label-encryption-/4459871
+      - https://learn.microsoft.com/purview/encryption-sensitivity-labels
+      - https://learn.microsoft.com/en-us/answers/questions/5541952/how-non-microsoft-365-recipients-decrypt-documents
+    etat: a-rediger
+  - id: purview-ome-code-usage-unique-non-recu
+    titre: "Mail chiffré : le code à usage unique (one-time passcode) n'arrive pas chez le destinataire externe"
+    symptome: Le destinataire choisit « Se connecter avec un code à usage unique » mais ne reçoit jamais le code, ou l'option n'est pas proposée (code en quarantaine chez lui, OTP désactivé dans la configuration OME).
+    erreurs:
+      - OTPEnabled
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/purview/manage-office-365-message-encryption
+      - https://techcommunity.microsoft.com/t5/microsoft-365/external-users-cannot-open-encrypted-email/td-p/1430361
+      - https://theitbros.com/unable-to-open-encrypted-email-in-microsoft-365/
+    etat: a-rediger
+  - id: purview-ome-piece-jointe-chiffree-externe
+    titre: Pièces jointes d'un mail chiffré illisibles pour les destinataires externes
+    symptome: Le destinataire externe lit le corps du message chiffré mais ne peut pas ouvrir les pièces jointes Office qui restent protégées après téléchargement.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/t5/microsoft-security-community/why-external-users-can-t-open-encrypted-attachments-in-certain/ba-p/4510644
+    etat: a-rediger
+  - id: purview-dlp-mail-bloque-ndr-politique
+    titre: "Mail bloqué par une stratégie DLP : « Your email message conflicts with a policy in your organization »"
+    symptome: L'expéditeur reçoit une non-remise indiquant que son message enfreint une stratégie de l'organisation ; il faut retrouver la règle DLP (ou de flux) en cause.
+    erreurs:
+      - Your email message conflicts with a policy in your organization. The message wasn't delivered to all recipients.
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/purview/use-notifications-and-policy-tips
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+    etat: a-rediger
+  - id: purview-dlp-conseil-strategie-retarde
+    titre: Conseil de stratégie DLP affiché avec retard dans Outlook
+    symptome: Le conseil de stratégie DLP n'apparaît que plusieurs secondes après la saisie du destinataire ou du contenu sensible.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://support.microsoft.com/en-au/topic/dlp-policy-tip-display-is-delayed-611e196f-3ce3-307f-9b60-675765360469
+    etat: a-rediger
+  - id: purview-audit-journal-unifie-desactive
+    titre: "Recherche dans le journal d'audit sans résultat : journalisation unifiée désactivée"
+    symptome: La page Audit affiche « Start recording user and admin activity » ou les recherches ne renvoient rien ; UnifiedAuditLogIngestionEnabled vaut False.
+    erreurs:
+      - Start recording user and admin activity
+      - UnifiedAuditLogIngestionEnabled
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/fr-fr/training/modules/configure-microsoft-365-experience/8-enable-unified-audit-logging
+      - https://learn.microsoft.com/nl-nl/purview/audit-search
+    etat: a-rediger
+  - id: purview-audit-evenements-boite-manquants
+    titre: "Journal d'audit : activités de boîte aux lettres absentes (MailItemsAccessed, licence, audit de boîte)"
+    symptome: Les recherches d'audit ne remontent pas les actions dans les boîtes (lecture, suppression) pour certains utilisateurs.
+    erreurs:
+      - MailItemsAccessed
+    priorite: frequent
+    format: complete
+    sources:
+      - https://practical365.com/mailitemsaccessed-slow-progress/
+      - https://techcommunity.microsoft.com/discussions/exchange_general/search-unifiedauditlogs-for-mailbox---problems/4372963
+    etat: a-rediger
+  - id: purview-audit-recherche-zero-resultat-service
+    titre: Recherche d'audit qui renvoie zéro résultat alors que l'audit est activé (incident côté service)
+    symptome: Toutes les recherches d'audit restent vides ou échouent alors que la configuration est correcte.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://dotnet.territoriali.olinfo.it/en-us/answers/questions/5845038/unified-audit-log-backend-failure
+      - https://practical365.com/mailitemsaccessed-slow-progress/
+    etat: a-rediger
+  - id: purview-ediscovery-outil-export-ne-demarre-pas
+    titre: Outil d'export eDiscovery qui ne s'installe pas ou ne démarre pas (ClickOnce dans Edge)
+    symptome: "Le clic sur Télécharger les résultats ne lance pas l'outil d'export : ClickOnce est désactivé dans Edge ou bloqué par stratégie (ancienne expérience eDiscovery)."
+    erreurs:
+      - edge://flags/#edge-click-once
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/purview/ediscovery-configure-edge-to-export-search-results
+      - https://learn.microsoft.com/en-us/answers/a/177279
+    etat: a-rediger
+  - id: purview-bibliotheque-conservation-quota-site
+    titre: Site SharePoint ou OneDrive plein à cause de la bibliothèque de conservation (Preservation Hold Library)
+    symptome: "Le quota du site est presque atteint alors que les utilisateurs suppriment des fichiers : les copies conservées par la rétention s'accumulent dans la Preservation Hold Library."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://www.petri.com/how-retention-impacts-office-365-storage
+      - https://blog.admindroid.com/preservation-hold-library-in-sharepoint-online-and-onedrive/
+      - https://office365itpros.com/2021/10/07/retention-changing-sharepoint-onlines-preservation-hold-library/
+    etat: a-rediger
+  - id: purview-bibliotheque-conservation-suppression-impossible
+    titre: Impossible de vider ou supprimer des éléments de la Preservation Hold Library
+    symptome: L'administrateur tente de supprimer des fichiers de la bibliothèque de conservation pour libérer de l'espace, mais l'action est refusée tant qu'une rétention ou une conservation s'applique.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://blog.admindroid.com/preservation-hold-library-in-sharepoint-online-and-onedrive/
+      - https://practical365.com/priority-cleanup-for-sharepoint/
+    etat: a-rediger
+  - id: purview-delay-hold-elements-non-purges
+    titre: Éléments toujours conservés après retrait d'une conservation (DelayHoldApplied / délai de 30 jours)
+    symptome: "Après suppression d'une conservation pour litige ou d'une stratégie, le dossier Éléments récupérables ne se vide pas : un délai de conservation de 30 jours (DelayHoldApplied, DelayReleaseHoldApplied) s'applique."
+    erreurs:
+      - DelayHoldApplied
+      - DelayReleaseHoldApplied
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/purview/edisc-hold-delete-recoverable-items
+      - https://learn.microsoft.com/en-us/answers/questions/983610/how-to-remove-delayhold-and-delayreleasehold-for-a
+    etat: a-rediger
+  - id: purview-conservations-obsoletes-bloquent-purge
+    titre: Anciennes conservations eDiscovery oubliées qui empêchent la suppression de données
+    symptome: Des données ne peuvent pas être purgées car d'anciennes conservations (holds) de cas eDiscovery, parfois inconnues, s'appliquent encore aux boîtes ou sites.
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://practical365.com/invoke-holdremovalaction-remove-holds/
+      - https://techcommunity.microsoft.com/discussions/exchange_general/need-to-purge-discoveryholds-data-from-archive-mailbox-in-exchange-online/4475560
+    etat: a-rediger
+  - id: purview-boite-inactive-retirer-conservations
+    titre: Impossible de supprimer définitivement une boîte inactive (conservations multiples)
+    symptome: Une boîte inactive reste en place malgré le retrait de la conservation pour litige ; d'autres conservations (stratégies de rétention, eDiscovery) la maintiennent.
+    erreurs:
+      - ExcludeFromAllHolds
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/ro-RO/purview/delete-an-inactive-mailbox
+      - https://techcommunity.microsoft.com/blog/exchange/using-excludefromallholds-to-remove-holds-from-inactive-mailboxes/4476933
+    etat: a-rediger
+  - id: purview-suppression-boite-en-conservation-refusee
+    titre: Suppression d'une boîte aux lettres refusée car elle est en conservation pour litige
+    symptome: Remove-Mailbox ou la suppression définitive d'un utilisateur échoue (ValidationException) parce que la boîte est en conservation.
+    erreurs:
+      - ValidationException
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5865638/getting-a-validationexception-when-permanently-del
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/litigation-hold-mailbox-not-turn-into-inactive
+    etat: a-rediger
+  - id: purview-purge-recherche-conformite-10-elements
+    titre: "Purge d'un mail malveillant dans toutes les boîtes : seuls 10 éléments supprimés par boîte (New-ComplianceSearchAction -Purge)"
+    symptome: La purge par recherche de conformité ne supprime pas tous les exemplaires, échoue si la recherche inclut des sites, ou refuse une nouvelle action tant que la précédente existe.
+    erreurs:
+      - New-ComplianceSearchAction -Purge -PurgeType HardDelete
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/purview/edisc-search-mailbox-data
+      - https://office365itpros.com/2019/03/20/compliance-search-purge/
+      - https://learn.microsoft.com/en-us/answers/questions/5869008/purview-just-not-deleting-searched-data
+    etat: a-rediger
+  - id: purview-search-mailbox-retire
+    titre: Search-Mailbox ne fonctionne plus (cmdlet retirée d'Exchange Online)
+    symptome: Les anciens scripts qui utilisaient Search-Mailbox -DeleteContent pour supprimer ou copier des messages échouent.
+    erreurs:
+      - Search-Mailbox
+    priorite: rare
+    format: express
+    sources:
+      - https://petri.com/microsoft-deprecating-search-mailbox-cmdlet/
+      - https://office365itpros.com/2024/01/05/search-mailbox-retirement/amp/
+    etat: a-rediger
+  - id: purview-enregistrement-fichier-verrouille
+    titre: "Fichier SharePoint impossible à modifier ou supprimer : « élément déclaré comme enregistrement » (record)"
+    symptome: "Un document porte une étiquette de rétention qui le déclare enregistrement : il est verrouillé (cadenas), ne peut pas être supprimé et parfois pas modifié."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/purview/record-versioning
+    etat: a-rediger
+  - id: purview-boite-inactive-restauration-contenu
+    titre: Récupérer le contenu de la boîte d'un ancien employé (boîte inactive) dans une autre boîte
+    symptome: La boîte d'un utilisateur supprimé doit être consultée ; Get-Mailbox -InactiveMailboxOnly ne la trouve pas ou New-MailboxRestoreRequest échoue (identité ambiguë, boîte purgée).
+    erreurs:
+      - Get-Mailbox -InactiveMailboxOnly
+      - New-MailboxRestoreRequest
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/purview/restore-an-inactive-mailbox
+      - https://learn.microsoft.com/en-us/powershell/module/exchangepowershell/new-mailboxrestorerequest
+    etat: a-rediger
+  - id: purview-recuperer-elements-supprimes-boite
+    titre: Récupérer des messages supprimés définitivement par un utilisateur (Éléments récupérables)
+    symptome: Des messages ont été vidés de Éléments supprimés ; l'utilisateur ne les trouve plus dans « Récupérer les éléments supprimés » ; l'administrateur doit les restaurer (Restore-RecoverableItems) avant la fin des 14/30 jours.
+    erreurs:
+      - Restore-RecoverableItems
+      - Get-RecoverableItems
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/powershell/module/exchange/restore-recoverableitems
+      - https://petri.com/recovering-deleted-items-new-exchange-admin-center
+      - https://learn.microsoft.com/en-us/answers/questions/2086282/how-to-check-and-restore-items-from-recoverable-it
+    etat: a-rediger

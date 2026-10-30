@@ -2069,3 +2069,458 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/outlook/Installation/installing-calendar-printing-assistant-fails
     etat: a-rediger
+
+  # --- Règles (suite) ---
+  - id: outlook-regles-desactivees-quota-depasse
+    titre: "« Une ou plusieurs règles n'ont pas pu être chargées sur Exchange et ont été désactivées »"
+    symptome: "Certaines règles sont désactivées et impossibles à réactiver : espace de stockage des règles insuffisant."
+    erreurs: ["One or more rules couldn't be uploaded to Exchange server and have been deactivated. This could be because some of the parameters aren't supported or there's insufficient space to store all your rules."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/email-management/rules-not-be-uploaded-to-exchange-server
+    etat: a-rediger
+  - id: outlook-regle-owa-absente-outlook-classique
+    titre: "Une règle créée dans Outlook sur le web n'apparaît pas dans Outlook classique"
+    symptome: "Le gestionnaire de règles indique que des règles créées avec une autre version ne sont pas affichées."
+    erreurs: ["There are rules created with a different version of Outlook or Outlook Web Access that are not shown."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/email-management/inbox-rule-does-not-appear-in-outlook-client
+    etat: a-rediger
+  - id: outlook-regle-client-20-personnes-erreur
+    titre: "Erreur en créant une règle côté client portant sur 20 expéditeurs ou plus"
+    symptome: "La règle « de la part de » avec une longue liste de personnes ne peut pas être enregistrée."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/email-management/create-modify-client-only-rule-with-error
+    etat: a-rediger
+  - id: outlook-executer-regle-maintenant-grise
+    titre: "« Exécuter la règle maintenant » grisé pour certaines règles"
+    symptome: "Certaines règles ne peuvent pas être lancées manuellement."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/6002339/run-rule-now-option-greyed-out-for-certain-rules
+    etat: a-rediger
+  - id: outlook-web-regle-participant-adresse
+    titre: "OWA : « Participant must have email address and routing type for use in rules »"
+    symptome: "La création d'une règle dans Outlook sur le web échoue à cause d'un destinataire invalide."
+    erreurs: ["Participant must have email address and routing type for use in rules."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-on-the-web-issues/participant-must-have-email-address-and-routing-type-for-user-in-rules-error
+    etat: a-rediger
+  - id: outlook-web-regle-plusieurs-destinataires-identite
+    titre: "OWA : « There are multiple recipients matching the identity » en créant une règle"
+    symptome: "La règle ne s'enregistre pas car l'adresse correspond à plusieurs objets."
+    erreurs: ["There are multiple recipients matching the identity \"<User>\". Please specify a unique value"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-on-the-web-issues/there-are-multiple-recipients-matching-the-identity-error
+    etat: a-rediger
+  - id: outlook-etiquettes-retention-regle
+    titre: "Les étiquettes de rétention personnelles ne s'appliquent pas via une règle"
+    symptome: "Une règle de boîte de réception censée appliquer une étiquette personnelle n'a pas d'effet."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/security/personal-policy-tag-not-work-correctly
+    etat: a-rediger
+
+  # --- Courrier indésirable ---
+  - id: outlook-limite-liste-courrier-indesirable
+    titre: "« Vous avez dépassé la limite de la liste du courrier indésirable »"
+    symptome: "Impossible d'ajouter un expéditeur approuvé ou bloqué : la liste est pleine."
+    erreurs: ["You are over Junk E-mail list limit"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/junk-email/outlook-error-over-junk-emial-list-limit
+    etat: a-rediger
+  - id: outlook-courrier-indesirable-supprime-definitivement
+    titre: "Le courrier indésirable est supprimé définitivement au lieu d'aller dans le dossier"
+    symptome: "Les messages classés indésirables disparaissent sans passer par le dossier Courrier indésirable."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/junk-email/junk-emails-are-permanently-deleted
+    etat: a-rediger
+  - id: outlook-nouveaux-messages-vont-dans-indesirables
+    titre: "Tous les nouveaux messages vont automatiquement dans le courrier indésirable"
+    symptome: "Les messages légitimes arrivent dans « Courrier indésirable » ou un dossier « Unwanted » créé tout seul."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/junk-email/new-emails-automatically-move-to-junk-folder
+    etat: a-rediger
+  - id: outlook-bloquer-domaine-expediteur-absent
+    titre: "Pas de commande pour bloquer le domaine d'un expéditeur"
+    symptome: "Le menu contextuel ne propose que l'ajout du domaine aux expéditeurs approuvés."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/security/no-shortcut-menu-command-to-add-senders-domain-to-blocked
+    etat: a-rediger
+
+  # --- Sécurité, chiffrement ---
+  - id: outlook-message-chiffre-boite-partagee-illisible
+    titre: "Message chiffré ou à accès restreint illisible dans une boîte partagée"
+    symptome: "Les messages protégés (OME, IRM) envoyés à une boîte partagée ne s'ouvrent pas dans Outlook classique."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/encrypted-restricted-message-shared-mailbox
+    etat: a-rediger
+  - id: outlook-destinataire-externe-message-chiffre
+    titre: "Un destinataire externe n'arrive pas à ouvrir un message chiffré (Purview Message Encryption)"
+    symptome: "Le correspondant reçoit le message protégé mais ne peut pas le lire."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/security/external-recipient-can't-open-encrypted-email
+    etat: a-rediger
+  - id: outlook-smime-avertissement-certificats-destinataires
+    titre: "S/MIME : « Outlook a rencontré des problèmes pour chiffrer ce message »"
+    symptome: "Avertissement à l'envoi d'un message chiffré : certificats manquants, invalides ou capacités incompatibles."
+    erreurs: ["Microsoft Outlook had problems encrypting this message because the following recipients had missing or invalid certificates, or conflicting or unsupported capabilities."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/security/outlook-warning-dialog-when-sending-smime-messages
+    etat: a-rediger
+  - id: outlook-dechiffrement-certificat-3des
+    titre: "Erreur au déchiffrement d'un message chiffré avec un certificat 3DES"
+    symptome: "Un message S/MIME ancien ne peut plus être ouvert."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/security/error-when-decrypting-message-via-3des-certificate
+    etat: a-rediger
+  - id: outlook-conseils-strategie-dlp-absents
+    titre: "Les conseils de stratégie DLP ne s'affichent pas dans Outlook pour Windows"
+    symptome: "Aucun avertissement DLP à la rédaction (y compris pour les pièces jointes PDF), alors qu'OWA les montre."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/security/can't-display-dlp-policytip
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/security/dlp-policy-tips-for-pdf-attachments-not-displayed
+    etat: a-rediger
+
+  # --- Interface et divers ---
+  - id: outlook-notifications-bureau-absentes
+    titre: "Plus de notifications de nouveau message sur le bureau"
+    symptome: "Les alertes (toasts) de nouveaux messages n'apparaissent plus (raccourci du menu Démarrer manquant)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/no-desktop-alerts-(toast-notifications)-if-missing-start-menu-shortcut
+    etat: a-rediger
+  - id: outlook-icone-barre-taches-absente
+    titre: "L'icône d'Outlook n'apparaît pas dans la barre des tâches"
+    symptome: "Outlook est ouvert mais son icône est absente de la barre des tâches Windows."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/outlook-application-icon-missing-from-windows-taskbar
+    etat: a-rediger
+  - id: outlook-reponses-automatiques-ne-fonctionnent-pas
+    titre: "Les réponses automatiques (absence du bureau) ne fonctionnent pas"
+    symptome: "Le message d'absence ne s'enregistre pas, n'est pas envoyé ou une ancienne version part."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/out-of-office-feature-not-working-correctly
+    etat: a-rediger
+  - id: outlook-historique-conversations-messagerie-vocale-indisponible
+    titre: "« Le serveur Exchange refuse la connexion » : historique et messagerie vocale indisponibles"
+    symptome: "Le client de messagerie instantanée indique que l'historique des conversations ne peut pas être enregistré."
+    erreurs: ["The Exchange server won't let us connect. We're working on fixing the connection. Your history, voice mail and Outlook features might be unavailable."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/cannot-save-conversation-history-or-show-voice-mail
+    etat: a-rediger
+  - id: outlook-categories-couleur-imap
+    titre: "Impossible d'attribuer des catégories de couleur sur un compte IMAP"
+    symptome: "Le menu Catégoriser est grisé ou sans effet sur les messages IMAP."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/cannot-assign-color-categories-for-imap-accounts
+    etat: a-rediger
+  - id: outlook-navigation-compacte-non-enregistree
+    titre: "Les options de navigation compacte ne sont pas conservées"
+    symptome: "Le choix d'affichage des modules (Courrier, Calendrier…) revient au réglage par défaut."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/compact-navigation-options-not-saved
+    etat: a-rediger
+  - id: outlook-barre-meteo-absente
+    titre: "La barre météo du calendrier a disparu"
+    symptome: "La météo et ses paramètres ne sont plus affichés dans le calendrier."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/weather-bar-and-weather-settings-are-missing
+    etat: a-rediger
+  - id: outlook-impression-ajuster-indisponible
+    titre: "L'option « Ajuster à la page » n'existe pas pour l'impression des messages"
+    symptome: "Les messages larges sont coupés à l'impression."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/shrink-to-fit-not-available-for-printing-emails
+    etat: a-rediger
+  - id: outlook-acces-dossier-autre-boite-refuse
+    titre: "« Impossible d'ouvrir les dossiers par défaut : vous n'avez pas l'autorisation d'ouvrir une session »"
+    symptome: "Ouverture du dossier d'un autre utilisateur impossible malgré des autorisations accordées."
+    erreurs: ["Unable to open default folders-you do not have permissions to logon"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-issues/cannot-access-another-mailbox-folder
+    etat: a-rediger
+  - id: exchange-boite-partagee-acces
+    titre: "La boîte partagée (accès total) n'est pas ajoutée automatiquement au profil Outlook (automapping)"
+    symptome: "La boîte partagée n'apparaît pas dans le volet de dossiers malgré l'autorisation d'accès total."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/profiles-and-accounts/full-access-mailbox-not-automapped-outlook-profile
+    etat: redigee
+
+  # --- Comptes POP / IMAP ---
+  - id: outlook-imap-dossiers-sans-messages
+    titre: "Compte IMAP : les dossiers se téléchargent mais aucun message"
+    symptome: "La hiérarchie des dossiers IMAP apparaît mais les messages ne sont jamais récupérés (connexion fermée après UID SEARCH)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/outlook-imap-account-cannot-download-messages
+    etat: a-rediger
+  - id: outlook-pop-imap-connexion-exchange-online-impossible
+    titre: "Impossible de connecter Outlook à une boîte Exchange Online en POP ou IMAP"
+    symptome: "La configuration POP/IMAP échoue (protocole désactivé, authentification, paramètres de serveur)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/cannot-connect-mailbox-pop-imap-outlook
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/pop3-imap-owa-activesync-office-365
+    etat: a-rediger
+  - id: outlook-activesync-serveur-introuvable
+    titre: "Compte Exchange ActiveSync dans Outlook : « Le serveur est introuvable »"
+    symptome: "Outlook ne peut pas se connecter à Exchange via un compte de type ActiveSync."
+    erreurs: ["Log onto Exchange ActiveSync mail server (EAS): The server cannot be found."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/profiles-and-accounts/outlook-cannot-use-activesync-connect-exchange
+    etat: a-rediger
+
+  # --- Outlook sur le web (OWA) ---
+  - id: outlook-web-403-acces-refuse
+    titre: "Outlook sur le web : « 403 Sorry! Access denied » à la connexion"
+    symptome: "L'utilisateur se connecte à OWA et obtient une page d'erreur 403."
+    erreurs: ["403 Sorry! Access denied"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-on-the-web-issues/403-sorry-access-denied-error-when-sign-in-owa
+    etat: a-rediger
+  - id: outlook-web-pieces-jointes-impossibles-ouvrir
+    titre: "Outlook sur le web : impossible d'ouvrir ou d'afficher les pièces jointes"
+    symptome: "Les pièces jointes ne s'ouvrent pas, ne s'affichent pas en aperçu ou le téléchargement est bloqué."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-on-the-web-issues/cannot-open-attachments
+    etat: a-rediger
+  - id: outlook-web-nouveau-message-ne-s-ouvre-pas
+    titre: "Outlook sur le web : la fenêtre de nouveau message ne s'ouvre pas"
+    symptome: "Le bouton Nouveau message n'ouvre aucune fenêtre de rédaction."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-on-the-web-issues/cannot-create-new-message-in-owa
+    etat: a-rediger
+  - id: outlook-web-saisie-texte-impossible
+    titre: "Outlook sur le web : impossible de taper du texte dans le corps du message"
+    symptome: "Le curseur n'écrit rien dans le message (extension antivirus du navigateur)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-on-the-web-issues/cannot-enter-text-in-emails-in-outlook-on-the-web
+    etat: a-rediger
+  - id: outlook-web-modifier-document-joint-impossible
+    titre: "Outlook sur le web : impossible de modifier directement un document Office joint"
+    symptome: "L'option de modification en ligne du fichier joint est absente ou échoue."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-on-the-web-issues/cannot-edit-attached-document-directly-from-message
+    etat: a-rediger
+  - id: outlook-web-documents-partage-reseau
+    titre: "Outlook sur le web : impossible d'ouvrir un document situé sur un partage réseau"
+    symptome: "Les liens vers des fichiers \\\\serveur\\partage ne s'ouvrent pas depuis OWA."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-on-the-web-issues/cannot-open-documents-on-network-file-share
+    etat: a-rediger
+  - id: outlook-web-modele-trop-volumineux
+    titre: "Outlook sur le web : « Ce modèle est trop volumineux pour être enregistré »"
+    symptome: "Impossible d'enregistrer un modèle dans Mes modèles."
+    erreurs: ["This template is too large to save. Please make it smaller, then try to save it again."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-on-the-web-issues/cannot-save-template-in-owa
+    etat: a-rediger
+  - id: outlook-web-partager-calendrier-autre-boite
+    titre: "Outlook sur le web : impossible de partager le calendrier d'une autre boîte"
+    symptome: "Avec l'accès total à une boîte, le partage de son calendrier échoue dans OWA."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-on-the-web-issues/cannot-share-calendar-from-another-mailbox
+    etat: a-rediger
+  - id: outlook-web-bouton-accepter-partage-absent
+    titre: "Outlook sur le web : bouton Accepter absent sur une invitation de partage de calendrier"
+    symptome: "L'invitation de partage s'ouvre sans permettre d'ajouter le calendrier."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-on-the-web-issues/cannot-open-calendar-from-sharing-invitation
+    etat: a-rediger
+  - id: outlook-web-adresse-de-secondaire
+    titre: "Outlook sur le web : l'adresse « De » par défaut est une adresse secondaire"
+    symptome: "Les nouveaux messages partent avec un alias au lieu de l'adresse principale."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-on-the-web-issues/default-from-address-is-secondary-email
+    etat: a-rediger
+  - id: outlook-web-version-allegee
+    titre: "Outlook sur le web s'ouvre en version allégée (light)"
+    symptome: "L'interface simplifiée s'affiche alors que le navigateur est compatible."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-on-the-web-issues/outlook-web-app-unexpectedly-opens-in-the-light-version
+    etat: a-rediger
+  - id: outlook-web-publier-calendrier-absent
+    titre: "Outlook sur le web : l'option « Publier un calendrier » est absente"
+    symptome: "Le partage public du calendrier (HTML/ICS) n'est pas proposé dans les paramètres."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-on-the-web-issues/publish-calendar-option-missing-from-calendar-settings
+    etat: a-rediger
+  - id: outlook-web-accuse-lecture-mauvais-fuseau
+    titre: "Accusé de lecture avec un mauvais fuseau horaire"
+    symptome: "L'heure de lecture affichée dans l'accusé est décalée."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-on-the-web-issues/read-receipt-incorrect-timezone
+    etat: a-rediger
+  - id: outlook-web-fuseau-horaire-boite-partagee
+    titre: "Fuseau horaire incorrect pour une boîte partagée dans Outlook sur le web"
+    symptome: "Les réunions de la boîte partagée s'affichent décalées ; son fuseau n'a jamais été défini."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-on-the-web-issues/shared-mailboxes-time-zone-setting
+    etat: a-rediger
+  - id: outlook-web-dossiers-non-visibles
+    titre: "Certains dossiers ne sont pas visibles dans Outlook sur le web"
+    symptome: "Des dossiers présents dans Outlook classique n'apparaissent pas dans OWA."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-on-the-web-issues/some-folders-not-visible-in-outlook-on-the-web
+    etat: a-rediger
+  - id: outlook-web-calendrier-non-disponible
+    titre: "Outlook sur le web : « Ce calendrier n'est pas disponible. Réessayez plus tard »"
+    symptome: "Le module Calendrier d'OWA refuse de s'afficher."
+    erreurs: ["This calendar isn't available. Please try again later."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-on-the-web-issues/this-calendar-not-available-error-when-accessing-calendar
+    etat: a-rediger
+  - id: outlook-web-participant-fuseau-incorrect
+    titre: "Un participant apparaît dans un mauvais fuseau horaire (OWA et nouvel Outlook)"
+    symptome: "Le planificateur indique qu'un collègue est dans un autre fuseau horaire alors que c'est faux."
+    erreurs: ["<Attendee> is in a different time zone. Use the Scheduling Assistant to select times across time zones."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-on-the-web-issues/meeting-attendee-has-an-incorrect-time-zone
+    etat: a-rediger
+  - id: outlook-web-ajout-complements-impossible
+    titre: "Outlook sur le web : impossible d'ajouter de nouveaux compléments"
+    symptome: "Le bouton d'obtention des compléments est absent ou refuse l'installation."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/office-365-users-cannot-add-new-apps-to-outlook-web-app
+    etat: a-rediger
+  - id: outlook-web-parcourir-groupes-impossible
+    titre: "Outlook sur le web : impossible de parcourir les groupes"
+    symptome: "La découverte des groupes Microsoft 365 ne fonctionne pas dans OWA."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/cannot-browse-groups-in-owa
+    etat: a-rediger
+  - id: outlook-web-delegue-accepter-reunion
+    titre: "Outlook sur le web : un délégué ne peut pas accepter une demande de réunion"
+    symptome: "Le délégué voit l'invitation du responsable dans OWA mais ne peut pas y répondre."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/delegate-cannot-accept-meeting-request-using-owa
+    etat: a-rediger

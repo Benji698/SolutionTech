@@ -2180,3 +2180,111 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-on-linux/linux-known-issues
     etat: a-rediger
+
+  # --- Compléments : téléphonie avancée, fonctions de réunion, performances ---
+  - id: teams-file-attente-agents-ne-sonnent-pas
+    titre: "File d'attente d'appels Teams : les agents ne reçoivent pas les appels"
+    symptome: "Les appels de la file ne sonnent pas chez les agents : agents désinscrits ou hors ligne, occupé si occupé (busy-on-busy), licence Teams Phone, compte de ressource, mode autre que Teams uniquement."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1276721/teams-phone-call-queue-wont-ring-call-agents-consi
+      - https://answers.uillinois.edu/49501
+    etat: a-rediger
+
+  - id: teams-standard-automatique-horaires-jours-feries
+    titre: "Standard automatique Teams : horaires d'ouverture ou jours fériés non respectés"
+    symptome: "Les appels hors horaires sonnent quand même chez les utilisateurs, ou le planning de jours fériés ne s'applique pas (fuseau horaire, planning, file cible)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/t5/microsoft-teams/teams-call-notifications-outside-business-hours/td-p/2620553
+      - https://techcommunity.microsoft.com/discussions/microsoftteams/autoattendant-weekend-closed-not-working-in-business-hours/3498501/replies/3569041
+    etat: a-rediger
+
+  - id: teams-standard-automatique-touches-ignorees
+    titre: "Standard automatique Teams : les touches du clavier téléphonique (DTMF) ne sont pas prises en compte"
+    symptome: "L'appelant appuie sur les options du menu mais le standard ne réagit pas."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-gb/answers/questions/1806857/teams-calling-auto-attendant-not-responding-to-pho
+    etat: a-rediger
+
+  - id: teams-centre-admin-we-cant-create-business-hours
+    titre: "Centre d'administration Teams : erreur « We can't create business hours » sur un standard automatique"
+    symptome: "L'enregistrement des horaires d'ouverture d'un standard automatique échoue dans le centre d'administration."
+    erreurs: ["We can't create business hours"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1223669/teams-admin-error-we-cant-create-business-hours-at
+    etat: a-rediger
+
+  - id: teams-adresse-urgence-introuvable-attribution-numero
+    titre: "Impossible d'attribuer ou d'acquérir un numéro : adresse d'urgence introuvable (Location not found)"
+    symptome: "La recherche de l'adresse d'urgence ne renvoie rien, alors qu'elle est obligatoire pour obtenir ou attribuer un numéro de forfait d'appels."
+    erreurs: ["No results were found", "e911a"]
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/t5/microsoft-teams/cannot-add-number-in-teams-location-not-found/td-p/1009611
+      - https://techcommunity.microsoft.com/t5/microsoft-teams/adding-voice-to-teams-error-e911a/m-p/1741487
+    etat: a-rediger
+
+  - id: teams-invitation-sans-numero-acces-telephonique
+    titre: "L'invitation de réunion ne contient pas de numéro d'accès téléphonique (audioconférence)"
+    symptome: "Pas de numéro ni d'ID de conférence dans l'invitation : organisateur sans licence Audioconférence, pas de numéro de service, stratégie, lien copié à la main."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/374227/ms-teams-dial-in-numbers-not-showing-up
+      - https://teamdynamix.umich.edu/TDClient/30/Portal/KB/ArticleDet?ID=4789
+    etat: a-rediger
+
+  - id: teams-salles-petit-groupe-absentes
+    titre: "L'option « Salles pour petit groupe » (Breakout rooms) est absente dans la réunion"
+    symptome: "L'utilisateur n'est pas organisateur ou gestionnaire des salles, utilise le web ou le mobile, ou la stratégie de réunion désactive les salles pour petit groupe."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/en-us/teams/meetings/breakout-rooms-troubleshooting-guide-in-microsoft-teams
+    etat: a-rediger
+
+  - id: teams-effets-arriere-plan-absents
+    titre: "Les effets d'arrière-plan (flou, image de fond) sont absents dans Teams"
+    symptome: "Option de flou ou d'arrière-plan introuvable : client web limité, accélération matérielle, stratégie de réunion, VDI optimisé ou Linux."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/microsoftteams/teams-no-longer-showing-options-to-choose-a-background-or-blur-the-background/4077936
+      - https://learn.microsoft.com/en-us/answers/questions/1380801/basic-m365-teams-version-1-6-00-26474-no-option-to
+    etat: a-rediger
+
+  - id: teams-sous-titres-en-direct-indisponibles
+    titre: "Les sous-titres en direct (live captions) ne fonctionnent pas en réunion"
+    symptome: "Option absente ou zone de sous-titres vide : stratégie LiveCaptionsEnabledType, langue parlée, traduction réservée à Teams Premium, incident de service."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/t5/microsoft-teams/live-captions-not-working/m-p/1246159
+      - https://techcommunity.microsoft.com/t5/microsoft-teams/live-captions-not-working-in-teams-potentially-widespread-issue/m-p/3718948
+    etat: a-rediger
+
+  - id: teams-consommation-memoire-cpu-elevee
+    titre: "Teams consomme beaucoup de mémoire ou de processeur (ms-teams.exe, msedgewebview2.exe)"
+    symptome: "Le PC ralentit quand Teams est ouvert ; nombreux processus WebView2, onglet ou application gourmande, ms-teams_modulehost.exe à autoriser dans l'antivirus."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://thewindowsclub.com/msedgewebview2-exe-high-cpu-and-memory-usage
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/include-exclude-teams-from-antivirus-dlp
+    etat: a-rediger

@@ -1338,7 +1338,7 @@ problemes:
   - id: entra-connect-objet-synchronise-non-modifiable-cloud
     titre: "Impossible de modifier ou supprimer dans le cloud un utilisateur synchronisé depuis AD"
     symptome: "Le portail refuse de modifier le nom, l'adresse, le téléphone ou de supprimer l'objet : ses attributs sont gérés par Active Directory local."
-    erreurs: ["Unable to update this object because the following attributes associated with this object have values that may be managed by your on-premises Active Directory"]
+    erreurs: []
     priorite: frequent
     format: express
     sources:
@@ -1638,7 +1638,7 @@ problemes:
   - id: entra-domaine-deja-utilise-autre-locataire
     titre: "« Ce domaine est déjà utilisé par une autre organisation » en ajoutant un domaine"
     symptome: "Le domaine est déjà vérifié dans un autre locataire (ancien abonnement, essai, Power BI en libre-service) et doit y être supprimé ou récupéré."
-    erreurs: ["This domain has already been added to a different Microsoft 365 organization"]
+    erreurs: []
     priorite: frequent
     format: complete
     sources:
@@ -1894,7 +1894,7 @@ problemes:
   - id: entra-journaux-connexion-licence-premium-requise
     titre: "Journaux de connexion inaccessibles via Graph : licence Premium requise"
     symptome: "La lecture des journaux de connexion par Graph ou PowerShell échoue car le locataire n'a pas de licence Entra ID P1/P2."
-    erreurs: ["Tenant does not have a B2C or premium license"]
+    erreurs: ["Neither tenant is B2C or tenant doesn't have premium license"]
     priorite: rare
     format: express
     sources:
