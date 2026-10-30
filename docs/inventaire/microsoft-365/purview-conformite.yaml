@@ -942,3 +942,164 @@ problemes:
       - https://petri.com/recovering-deleted-items-new-exchange-admin-center
       - https://learn.microsoft.com/en-us/answers/questions/2086282/how-to-check-and-restore-items-from-recoverable-it
     etat: a-rediger
+  - id: purview-dlp-faux-positifs-donnees-sensibles
+    titre: Stratégie DLP qui se déclenche à tort (faux positifs sur numéros de carte, IBAN, numéros d'identité)
+    symptome: Des mails ou fichiers sans donnée sensible réelle sont bloqués ou signalés par la DLP (suites de chiffres prises pour des numéros de carte bancaire, etc.).
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/nl-be/Purview/deploymentmodels/depmod-reduce-false-positives
+      - https://learn.microsoft.com/en-us/answers/questions/874586/dlp-reporting-false-positive-and-overrides
+    etat: a-rediger
+  - id: purview-dlp-message-teams-bloque
+    titre: Message Teams bloqué par la DLP (« Ce message a été bloqué »)
+    symptome: L'expéditeur voit son message Teams marqué comme bloqué avec un lien « Que puis-je faire ? » ; le destinataire ne voit qu'un avis générique.
+    erreurs:
+      - This message was blocked
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/purview/dlp-microsoft-teams
+      - https://practical365.com/configuring-and-using-data-loss-prevention-in-microsoft-teams/
+    etat: a-rediger
+  - id: purview-dlp-endpoint-copie-usb-bloquee
+    titre: Copie de fichiers vers une clé USB bloquée par la DLP point de terminaison
+    symptome: Une notification Windows signale que la copie vers un support amovible est bloquée par l'organisation (DLP ou protection juste-à-temps).
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/da-dk/purview/endpoint-dlp-learn-about
+      - https://learn.microsoft.com/en-us/purview/endpoint-dlp-learn-about-jit
+    etat: a-rediger
+  - id: purview-etiquetage-obligatoire-invites-repetees
+    titre: "Étiquetage obligatoire : invite à choisir une étiquette à chaque enregistrement, étiquette impossible à retirer"
+    symptome: Word, Excel ou Outlook demandent une étiquette avant d'enregistrer ou d'envoyer ; l'étiquette ne peut pas être supprimée, l'abaisser exige une justification ; l'impression PDF est indisponible.
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/office/apply-sensitivity-labels-to-your-files-2f96e7cd-d5a4-403b-8bd7-4cc636bae0f9
+      - https://support.microsoft.com/office/known-issues-with-sensitivity-labels-in-office-b169d687-2bbd-4e21-a440-7da1b2743edc
+    etat: a-rediger
+  - id: purview-etiquettes-conteneurs-indisponibles
+    titre: Étiquettes de confidentialité indisponibles pour les équipes Teams, groupes Microsoft 365 et sites SharePoint
+    symptome: "Le champ Confidentialité n'apparaît pas lors de la création d'une équipe ou d'un site : EnableMIPLabels non activé, portée Groupes et sites absente, délai de synchronisation."
+    erreurs:
+      - EnableMIPLabels
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-ca/entra/identity/users/groups-assign-sensitivity-labels
+      - https://learn.microsoft.com/en-au/purview/migrate-aad-classification-sensitivity-labels
+      - https://techcommunity.microsoft.com/discussions/azurepurview/groups-and-sites-option-is-disabled-with-e3-license/4270255
+    etat: a-rediger
+  - id: purview-pdf-protege-adobe-ne-s-ouvre-pas
+    titre: PDF protégé par une étiquette de confidentialité impossible à ouvrir dans Adobe Acrobat / Reader
+    symptome: "Le PDF chiffré affiche une erreur ou demande un plug-in : version d'Acrobat trop ancienne, plug-in MIP absent, chiffrement à double clé (DKE) ou PDF issu d'un scan."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://office365itpros.com/2022/06/20/protected-pdfs-microsoft-365-easier/
+      - https://learn.microsoft.com/en-us/answers/questions/1105298/aip-viewer-cannot-open-pdf
+      - https://community.adobe.com/t5/acrobat-discussions/acrobat-microsoft-information-protection-mip-double-key-encryption-dke/m-p/15160869
+    etat: a-rediger
+  - id: purview-etiquette-absente-pdf-acrobat
+    titre: Étiquettes de confidentialité non affichées dans Adobe Acrobat
+    symptome: Les utilisateurs ne voient pas les étiquettes de l'organisation dans Acrobat pour classer un PDF.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://community.adobe.com/t5/acrobat-discussions/sensitivity-labels-not-showing-in-pdf/m-p/13965307
+    etat: a-rediger
+  - id: purview-ome-revocation-impossible
+    titre: Impossible de révoquer un mail chiffré envoyé par erreur (OME avancé)
+    symptome: "L'option de révocation n'est pas proposée ou échoue : licence Advanced Message Encryption absente, ou destinataire ayant reçu le message en mode natif (Outlook) au lieu du portail."
+    erreurs:
+      - The message has been revoked by the sender
+      - Set-OMEMessageRevocation
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/purview/revoke-ome-encrypted-mail
+      - https://learn.microsoft.com/powershell/module/exchange/Set-OMEMessageRevocation
+    etat: a-rediger
+  - id: purview-message-rpmsg-illisible-mobile-gmail
+    titre: Mail chiffré reçu sous forme de pièce jointe message.rpmsg illisible (Gmail, Mail iOS, Android)
+    symptome: Le destinataire ne voit qu'une pièce jointe message.rpmsg qu'il ne peut pas ouvrir dans son application de messagerie.
+    erreurs:
+      - message.rpmsg
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/147572/sending-an-encrypted-email-from-outlook-desktop-cl
+      - https://techcommunity.microsoft.com/discussions/microsoft-security/message-rpmsg/134251
+    etat: a-rediger
+  - id: purview-journalisation-rapports-perdus-ndr
+    titre: Rapports de journal perdus ou non remis (adresse JournalingReportNdrTo absente ou destination Exchange Online)
+    symptome: L'archivage tiers ne reçoit plus certains rapports de journal ; aucune non-remise n'est visible car l'adresse des rapports non remis n'est pas définie, ou la destination est une boîte Exchange Online (non prise en charge).
+    erreurs:
+      - JournalingReportNdrTo
+    priorite: rare
+    format: complete
+    sources:
+      - https://technet.microsoft.com/EN-US/library/dn781273(v=exchg.150).aspx
+      - https://support.microsoft.com/help/2829319/transport-and-mailbox-rules-in-exchange-online-or-in-on-premises-excha
+      - https://c7solutions.com/2013/08/journal-alternative-mailbox-and-no-html
+    etat: a-rediger
+  - id: purview-journalisation-501-5-1-8-sans-expediteur
+    titre: Erreur 501 5.1.8 « the email has no mail from address » liée à la journalisation
+    symptome: Des non-remises 501 5.1.8 apparaissent pour des rapports de journal ou messages sans adresse d'expéditeur, même sans règle de journal configurée.
+    erreurs:
+      - 501 5.1.8 Your message couldn't be delivered because the email has no mail from address
+    priorite: rare
+    format: express
+    sources:
+      - https://support.exclaimer.com/hc/en-gb/articles/6205657851421-Error-501-5-1-8-Your-message-couldn-t-be-delivered-because-the-email-has-no-mail-from-address
+    etat: a-rediger
+  - id: purview-ediscovery-permissions-insuffisantes
+    titre: "eDiscovery : cas ou recherches invisibles, aperçu ou export refusé (rôles manquants)"
+    symptome: "Un administrateur général ou de conformité ne voit pas les cas eDiscovery, ne peut pas prévisualiser ou exporter : il n'est pas membre du groupe eDiscovery Manager / eDiscovery Administrator ou du cas."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/purview/ediscovery-assign-permissions
+      - https://learn.microsoft.com/en-us/answers/questions/4379053/microsoft-purview-case-and-search
+      - https://learn.microsoft.com/en-us/purview/edisc-permissions
+    etat: a-rediger
+  - id: purview-ediscovery-export-erreur-500
+    titre: Export des résultats d'une recherche de contenu en erreur 500
+    symptome: Le lancement de l'export d'une recherche de contenu échoue avec une erreur 500.
+    erreurs:
+      - Error 500
+    priorite: rare
+    format: express
+    sources:
+      - https://support.bemopro.com/hc/en-us/articles/11642637401491-Error-500-when-exporting-Content-Search-results
+    etat: a-rediger
+  - id: purview-onedrive-utilisateur-supprime-recuperer
+    titre: Récupérer le OneDrive d'un ancien employé (supprimé après la durée de conservation)
+    symptome: Le OneDrive d'un utilisateur supprimé devient inaccessible ou disparaît après 30 jours ; il faut le restaurer ou ajuster la durée de conservation ou la stratégie de rétention.
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/OneDrive/retention-and-deletion
+      - https://learn.microsoft.com/en-gb/onedrive/restore-deleted-onedrive
+      - https://learn.microsoft.com/en-us/answers/questions/5881858/deleted-user-unable-to-retrieve-documents
+    etat: a-rediger
+  - id: purview-ediscovery-elements-partiellement-indexes
+    titre: "eDiscovery : éléments non trouvés car partiellement indexés (pièces jointes, fichiers chiffrés ou trop gros)"
+    symptome: La recherche ne remonte pas des éléments pourtant présents ; les statistiques indiquent des éléments non indexés (Unindexed Items.csv).
+    erreurs:
+      - Unindexed Items.csv
+    priorite: rare
+    format: complete
+    sources:
+      - https://support.office.com/en-us/article/4e8ff113-6361-41e2-915a-6338a7e2a1ed
+      - https://learn.microsoft.com/purview/edisc-search-results
+    etat: a-rediger

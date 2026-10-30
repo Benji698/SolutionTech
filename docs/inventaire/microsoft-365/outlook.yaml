@@ -2524,3 +2524,506 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/delegate-cannot-accept-meeting-request-using-owa
     etat: a-rediger
+
+  # --- Outlook mobile (iOS / Android) et protection d'applications Intune ---
+  - id: outlook-mobile-strategie-protection-non-appliquee
+    titre: "Outlook mobile : la stratégie de protection d'applications Intune ne s'applique pas"
+    symptome: "Le code PIN, les restrictions de copie ou d'enregistrement ne sont pas appliqués dans Outlook pour iOS/Android."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-app-protection-policy-deployment
+    etat: a-rediger
+  - id: outlook-mobile-app-non-configuree
+    titre: "Outlook mobile : « App Not Set Up » / « Cette application n'a pas été configurée pour vous »"
+    symptome: "À la connexion du compte professionnel, Outlook mobile refuse de s'ouvrir faute de stratégie de protection ciblée."
+    erreurs: ["App Not Set Up: This app has not been set up for you to use. Contact your IT administrator for help."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+  - id: outlook-mobile-compte-non-configure-licence-intune
+    titre: "Outlook mobile : « Account Not Set Up » (licence Intune manquante)"
+    symptome: "L'organisation n'a pas configuré le compte pour accéder aux données professionnelles."
+    erreurs: ["Account Not Set Up: Your organization has not set up your account to access work or school data. Contact your IT administrator for help."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+  - id: outlook-mobile-action-non-autorisee-transfert-donnees
+    titre: "Outlook mobile : « Action Not Allowed » en ouvrant ou partageant une pièce jointe"
+    symptome: "Impossible d'ouvrir une pièce jointe dans une autre application ou d'enregistrer un fichier : seules les applications gérées sont autorisées."
+    erreurs: ["Action Not Allowed: Your organization only allows you to transfer its data to other managed apps.", "Action Not Allowed: Your organization only allows you to open work or school data in this app."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-data-transfer
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-data-transfer-exemptions
+    etat: a-rediger
+  - id: outlook-mobile-copier-coller-bloque
+    titre: "Outlook mobile : copier-coller bloqué vers ou depuis une autre application"
+    symptome: "Le texte copié dans Outlook ne peut pas être collé ailleurs (ou l'inverse), ou au contraire la restriction ne fonctionne pas."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-cut-copy-paste
+    etat: a-rediger
+  - id: outlook-mobile-portail-entreprise-requis-android
+    titre: "Outlook pour Android exige l'installation du Portail d'entreprise (Company Portal)"
+    symptome: "Message demandant d'installer Intune Company Portal alors que l'appareil n'est pas inscrit."
+    erreurs: ["Company Portal required: To use your work or school account with this app, you must install the Intune Company Portal app."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+  - id: outlook-mobile-authenticator-requis-ios
+    titre: "Outlook pour iOS demande d'installer Microsoft Authenticator"
+    symptome: "La connexion est bloquée tant que Microsoft Authenticator n'est pas installé (accès conditionnel par application approuvée)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+  - id: outlook-mobile-echec-connexion-mam
+    titre: "Outlook mobile : « Sign-in Failed » ou « Unable to register the app » (inscription MAM)"
+    symptome: "La connexion du compte professionnel échoue lors de l'inscription au service de protection d'applications."
+    erreurs: ["Sign-in Failed: We can't sign you in right now. Please try again later.", "Unable to register the app: This app must be managed by Microsoft Intune, but we were unable to register this app at this time."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+  - id: outlook-mobile-deuxieme-compte-professionnel-refuse
+    titre: "Outlook mobile : un second compte professionnel est refusé"
+    symptome: "L'ajout d'un compte d'une autre organisation est bloqué : un seul compte géé par MAM est autorisé."
+    erreurs: ["Accessing Your Organization's Data: The work or school account you specified does not have access to this app. You may have to sign in with a different account."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+  - id: outlook-mobile-appareil-non-conforme-jailbreak-root
+    titre: "Outlook mobile : « Device Non-Compliant » (appareil jailbreaké ou rooté)"
+    symptome: "L'application refuse de fonctionner car Intune détecte un appareil modifié."
+    erreurs: ["Device Non-Compliant: This app cannot be used because you are using a jailbroken device."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+  - id: outlook-mobile-effacement-selectif-redemarrage
+    titre: "Outlook mobile : « Wipe Alert » ou « Restart Required » (données professionnelles effacées)"
+    symptome: "Les messages professionnels disparaissent de l'application après un effacement sélectif ou une nouvelle stratégie."
+    erreurs: ["Wipe Alert: Your organization has removed its data associated with this app. To continue, restart the app.", "Restart Required: Your organization is now protecting its data in this app. You need to restart the app to continue."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+  - id: outlook-mobile-echec-lancement-android
+    titre: "Outlook pour Android : « Failed app launch » au démarrage"
+    symptome: "L'application plante pendant l'initialisation de la protection Intune."
+    erreurs: ["Failed app launch: There was an issue launching your app. Try updating the app or the Intune Company Portal app."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+  - id: outlook-mobile-pdf-action-non-autorisee-acrobat
+    titre: "Outlook pour iOS : ouverture des PDF dans Acrobat Reader refusée (« Action Not Allowed »)"
+    symptome: "Les pièces jointes PDF ne s'ouvrent pas dans Acrobat géré par Intune."
+    erreurs: ["Action Not Allowed"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+  - id: outlook-mobile-connexion-non-securisee-exchange
+    titre: "Outlook mobile : « Insecure connection » en se connectant à Exchange sur site"
+    symptome: "Outlook pour iOS/Android signale une connexion non sécurisée ou indisponible avec le serveur Exchange."
+    erreurs: ["Insecure connection. Would you like to log in anyway?", "Secure connection unavailable"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/client-connectivity/insecure-connection-secure-connection-unavailable-outlook-ios-android
+    etat: a-rediger
+  - id: outlook-mobile-contacts-en-double-ios
+    titre: "Contacts Outlook en double dans l'application Contacts d'iOS"
+    symptome: "Avec l'option « Enregistrer les contacts », chaque contact apparaît plusieurs fois sur l'iPhone."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/mobile-devices/duplicate-contacts-in-ios-contacts-app
+    etat: a-rediger
+  - id: mobile-activesync-connexion-impossible
+    titre: "Smartphone : l'application Mail native ne se connecte pas à la boîte (Exchange ActiveSync)"
+    symptome: "Le compte Exchange ne se synchronise pas sur l'application Mail d'iOS ou d'Android (bloqué, mis en quarantaine, mauvais serveur)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/mobile-device-cannot-connect-via-activesync
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/mobile-devices/issues-for-mobile-devices
+    etat: a-rediger
+  - id: mobile-calendrier-non-synchronise
+    titre: "Smartphone : le calendrier ne se synchronise pas avec la boîte en ligne"
+    symptome: "Les rendez-vous créés sur le téléphone n'apparaissent pas dans Outlook, ou l'inverse."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/calendar-on-mobile-device-not-synced-to-online-mailbox
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/activesync-not-downloading-attachments-to-calendar-items
+    etat: a-rediger
+  - id: mobile-elements-manquants-activesync
+    titre: "Smartphone : des éléments manquent sur l'appareil ActiveSync"
+    symptome: "Certains messages ou dossiers ne sont pas synchronisés sur le mobile."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/items-missing-on-exchange-activesync-client
+    etat: a-rediger
+  - id: mobile-ios-profil-mail-autodiscover-echec
+    titre: "iPhone : impossible de configurer automatiquement le compte Exchange (Autodiscover)"
+    symptome: "L'application Mail d'iOS ne trouve pas les paramètres du serveur et demande la saisie manuelle."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/mobile-devices/cannot-create-mail-profile-on-ios-device-via-autodiscover
+    etat: a-rediger
+  - id: mobile-appareils-non-mis-en-quarantaine
+    titre: "Appareils mobiles supprimés qui se reconnectent sans être mis en quarantaine"
+    symptome: "Un appareil retiré dans le centre d'administration Exchange se resynchronise sans contrôle."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/mobile-devices/mobile-devices-not-quarantined-as-expected
+    etat: a-rediger
+  - id: mobile-partenariat-appareil-suppression-impossible
+    titre: "Impossible de supprimer un partenariat d'appareil mobile"
+    symptome: "La suppression d'un ancien téléphone de la boîte échoue."
+    erreurs: ["The items you're trying to open couldn't be found"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/mobile-devices/cannot-remove-mobile-device-partnership
+    etat: a-rediger
+
+  # --- Outlook pour Mac ---
+  - id: outlook-mac-identifiants-demandes-en-boucle
+    titre: "Outlook pour Mac redemande les identifiants en boucle"
+    symptome: "Fenêtres de connexion répétées sur Mac avec une boîte Microsoft 365 ou Exchange (authentification moderne, trousseau)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/send-receive-emails/prompted-for-credentials-modern-authentication
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/sign-in/repeated-prompts-authentication
+    etat: a-rediger
+  - id: outlook-mac-messages-bloques-boite-envoi
+    titre: "Outlook pour Mac : messages bloqués dans la boîte d'envoi"
+    symptome: "Les messages restent dans Outbox sur Mac et ne partent pas."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/send-receive-emails/email-stuck-in-outbox-outlook-2016-mac
+    etat: a-rediger
+  - id: outlook-mac-envoi-en-tant-que-groupe-impossible
+    titre: "Outlook pour Mac : impossible d'envoyer depuis un groupe de sécurité, une liste ou un dossier public"
+    symptome: "L'envoi en tant que groupe ou dossier public à extension messagerie échoue sur Mac."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/send-receive-emails/outlook-mac-security-groups-cannot-send-emails
+    etat: a-rediger
+  - id: outlook-mac-plante-au-demarrage
+    titre: "Outlook pour Mac plante dès le démarrage"
+    symptome: "L'application se ferme immédiatement après son ouverture."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/installation/outlook-2016-for-mac-crashes-immediately-after-startup
+    etat: a-rediger
+  - id: outlook-mac-plante-fichier-pac
+    titre: "Outlook pour Mac plante avec un fichier de configuration automatique de proxy (PAC)"
+    symptome: "Plantages répétés quand le Mac utilise un script PAC."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/connectivity/outlook-2016-for-mac-crashes-using-proxy-auto-configuration-file
+    etat: a-rediger
+  - id: outlook-mac-fige-dossiers
+    titre: "Outlook pour Mac se fige en parcourant les dossiers de courrier"
+    symptome: "L'interface se bloque lors du changement de dossier."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/files-and-folders/outlook-2016-for-mac-freezes-on-email-folders
+    etat: a-rediger
+  - id: outlook-mac-calendrier-partage-ouverture-impossible
+    titre: "Outlook pour Mac : impossible d'ouvrir un calendrier partagé"
+    symptome: "L'option d'ouverture est grisée, ou un message indique que l'utilisateur n'a pas l'autorisation."
+    erreurs: ["You do not have permission"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendars/cannot-open-shared-calendar
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendars/you-do-not-have-permission-error
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendars/cannot-open-a-shared-calendar-in-outlook-2016
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendars/cannot-open-another-calendar-with-freebusy-permission
+    etat: a-rediger
+  - id: outlook-mac-modifier-autorisations-calendrier-erreur
+    titre: "Outlook pour Mac : erreur en modifiant les autorisations d'un calendrier partagé"
+    symptome: "Le changement d'autorisations échoue avec un accès refusé."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendars/access-denied-change-shared-calendar-permissions
+    etat: a-rediger
+  - id: outlook-mac-proposer-nouvel-horaire-impossible
+    titre: "Outlook pour Mac : impossible de proposer ou d'accepter un nouvel horaire de réunion"
+    symptome: "La fonction de proposition d'horaire est absente ou les propositions reçues ne peuvent pas être acceptées."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendars/cannot-propose-a-new-time-for-a-meeting
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendars/cannot-accept-new-meeting-time-proposals
+    etat: a-rediger
+  - id: outlook-mac-deplacer-reunions-entre-calendriers
+    titre: "Outlook pour Mac : impossible de déplacer une réunion vers un autre calendrier"
+    symptome: "Le glisser-déposer d'une réunion entre calendriers est refusé."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendars/cannot-move-meetings-between-calendars
+    etat: a-rediger
+  - id: outlook-mac-reunion-brouillon-impossible
+    titre: "Outlook pour Mac : impossible d'enregistrer une réunion comme brouillon"
+    symptome: "La réunion non envoyée ne peut pas être sauvegardée pour plus tard."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendars/cannot-save-meeting-as-draft-in-outlook-for-mac
+    etat: a-rediger
+  - id: outlook-mac-fuseau-utc-monrovia
+    titre: "Outlook pour Mac : réunions affichées dans le fuseau « (UTC) Monrovia, Reykjavik »"
+    symptome: "Les réunions reçues apparaissent avec un fuseau horaire erroné."
+    erreurs: ["(UTC) Monrovia, Reykjavik"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendars/meetings-incorrectly-display-utc-timezone
+    etat: a-rediger
+  - id: outlook-mac-rappels-delegues-absents
+    titre: "Outlook pour Mac : pas de rappels de réunion pour les délégués"
+    symptome: "Le délégué ne reçoit pas les rappels des réunions du responsable."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendars/no-meeting-reminders-for-delegates
+    etat: a-rediger
+  - id: outlook-mac-informations-delegues-erreur
+    titre: "Outlook pour Mac : « Impossible d'obtenir les informations de délégué du serveur »"
+    symptome: "L'onglet Délégués ne se charge pas."
+    erreurs: ["Could not get delegate information from the server"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/delegation/could-not-get-delegate-information-from-the-server-error
+    etat: a-rediger
+  - id: outlook-mac-delegue-supprime-definitivement
+    titre: "Outlook pour Mac : un délégué supprime définitivement les messages du responsable"
+    symptome: "Les messages supprimés par le délégué ne vont pas dans les éléments supprimés du responsable."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/delegation/delegate-permanently-deletes-emails-from-manager-inbox
+    etat: a-rediger
+  - id: outlook-mac-enregistrer-piece-jointe-jpg
+    titre: "Outlook pour Mac : impossible d'enregistrer une pièce jointe JPEG"
+    symptome: "Erreur indiquant que le document ne peut pas être enregistré avec l'extension .jpg."
+    erreurs: ["You cannot save this document with extension .jpg"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/attachments/you-cannot-save-this-document-with-extension-jpg-error
+    etat: a-rediger
+  - id: outlook-mac-spotlight-ouvrir-message
+    titre: "Outlook pour Mac : impossible d'ouvrir un message depuis les résultats Spotlight"
+    symptome: "Les messages trouvés par Spotlight ne s'ouvrent pas dans Outlook."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/search/cannot-open-email-from-sportlight-search-results
+    etat: a-rediger
+  - id: outlook-mac-avertissement-redirection-autodiscover
+    titre: "Outlook pour Mac : avertissement de redirection Autodiscover Microsoft 365"
+    symptome: "Outlook pour Mac demande d'autoriser un serveur à configurer le compte."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/connectivity/suppress-autodiscover-redirect-warning-mac
+    etat: a-rediger
+  - id: outlook-mac-dossiers-publics-inaccessibles-hybride
+    titre: "Outlook pour Mac : dossiers publics inaccessibles en environnement hybride"
+    symptome: "Les utilisateurs migrés vers Exchange Online ne voient pas les dossiers publics sur site."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/public-folders/outlook-for-mac-unable-access-public-folders
+    etat: a-rediger
+  - id: outlook-mac-suggestions-destinataires
+    titre: "Outlook pour Mac : les destinataires suggérés (saisie semi-automatique) ne fonctionnent pas"
+    symptome: "Aucune adresse n'est proposée en tapant le nom d'un destinataire."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5659128/outlook-for-mac-2024-suggested-recipients-not-work
+    etat: a-rediger
+  - id: outlook-mac-import-identite-2011-autorisations
+    titre: "Outlook pour Mac : erreur d'autorisations en important une identité Outlook 2011"
+    symptome: "La migration d'une ancienne identité échoue."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/import-and-export/permissions-error-when-importing-outlook-2011-identity
+    etat: a-rediger
+
+  # --- Nouvel Outlook pour Windows ---
+  - id: nouvel-outlook-installation-echoue
+    titre: "Le nouvel Outlook pour Windows ne s'installe pas"
+    symptome: "L'installation (MSIX, NewOutlookInstaller.exe, Microsoft Store) échoue : stratégie, pare-feu, Store bloqué."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/Installation/resolve-installation-issues
+    etat: a-rediger
+  - id: nouvel-outlook-bascule-absente-ou-inactive
+    titre: "Le bouton « Essayer le nouvel Outlook » est absent ou ne fonctionne pas"
+    symptome: "La bascule depuis Outlook classique n'apparaît pas ou ne lance pas le nouvel Outlook (registre, stratégie cloud)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/deployment/resolve-deployment-issues
+    etat: a-rediger
+  - id: nouvel-outlook-strategies-classiques-non-appliquees
+    titre: "Les GPO d'Outlook classique ne s'appliquent pas au nouvel Outlook"
+    symptome: "Les réglages imposés par stratégie de groupe sont ignorés après migration vers le nouvel Outlook."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/installation/map-classic-outlook-policies-to-new-outlook
+    etat: a-rediger
+  - id: nouvel-outlook-complements-com-mode-sans-echec
+    titre: "Nouvel Outlook : compléments COM indisponibles et pas de mode sans échec"
+    symptome: "Les compléments COM/VSTO (CRM, archivage, signature) ne fonctionnent pas ; outlook.exe /safe n'existe pas dans le nouvel Outlook."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://ablebits.com/office-addins-blog/open-outlook-safe-mode
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/outlook-not-responding-error-or-outlook-freezes
+    etat: a-rediger
+  - id: nouvel-outlook-notifications-absentes
+    titre: "Nouvel Outlook : aucune notification de message ou de rappel"
+    symptome: "Ni alerte Windows ni rappel de réunion dans le nouvel Outlook (style de notification sur « Aucun »)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5492144/new-outlook-notifications-not-appearing
+      - https://learn.microsoft.com/en-us/answers/questions/1299541/new-outlook-no-windows-notifications-for-calendar
+    etat: a-rediger
+  - id: nouvel-outlook-signatures-disparaissent
+    titre: "Nouvel Outlook : les signatures disparaissent ou ne sont pas migrées"
+    symptome: "Les signatures créées dans Outlook classique n'apparaissent pas ou disparaissent régulièrement."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/4673509/signatures-keep-disappearing-in-new-outlook-deskto?page=3
+    etat: a-rediger
+  - id: nouvel-outlook-saisie-semi-automatique-contacts
+    titre: "Nouvel Outlook : les contacts ne sont pas proposés par leur nom (saisie semi-automatique)"
+    symptome: "La saisie d'un nom ne propose pas le contact ; pas de cache de saisie semi-automatique à vider."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5644109/autofill-contacts-not-detected-by-name-in-new-outl
+    etat: a-rediger
+  - id: nouvel-outlook-mauvais-fuseau-horaire
+    titre: "Nouvel Outlook : calendrier affiché dans un mauvais fuseau horaire"
+    symptome: "Le calendrier revient en UTC ou décale les réunions malgré un Windows correctement réglé."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/4616575/new-outlook-wrong-time-zone
+    etat: a-rediger
+  - id: nouvel-outlook-fuseaux-multiples-decalage-heure-ete
+    titre: "Fuseaux horaires supplémentaires décalés d'une heure au changement d'heure"
+    symptome: "Avec plusieurs fuseaux affichés, l'écart est faux le premier ou le dernier jour de l'heure d'été."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/additional-time-zone-shows-one-hour-offset-on-dst
+    etat: a-rediger
+  - id: nouvel-outlook-calendrier-anniversaires
+    titre: "Impossible d'activer ou désactiver globalement le calendrier des anniversaires"
+    symptome: "Le calendrier des anniversaires apparaît chez tous les utilisateurs sans réglage global."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/cannot-globally-disable-birthday-calendar
+    etat: a-rediger
+  - id: nouvel-outlook-lent
+    titre: "Le nouvel Outlook pour Windows est lent ou se bloque"
+    symptome: "Lenteurs à l'ouverture des messages ou du calendrier ; une trace de performance est demandée par le support."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/collect-performance-trace
+    etat: a-rediger
+  - id: nouvel-outlook-regles-client-non-prises-en-charge
+    titre: "Nouvel Outlook et OWA : règles « client uniquement » non prises en charge"
+    symptome: "Les règles qui déplacent vers un PST ou dépendent du poste ne fonctionnent plus après passage au nouvel Outlook."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-gb/answers/questions/5510107/why-my-rules-aren-t-running-automatically
+    etat: a-rediger

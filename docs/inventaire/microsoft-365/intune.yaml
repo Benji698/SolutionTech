@@ -2284,3 +2284,169 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/troubleshoot-vpn-profiles
     etat: a-rediger
+  # --- Co-gestion avec Configuration Manager ---
+  - id: intune-cogestion-inscription-automatique-echoue
+    titre: "Co-gestion : les postes Configuration Manager ne s'inscrivent pas automatiquement dans Intune"
+    symptome: "Le client ConfigMgr est installé, le poste est (ou non) joint à Entra ID hybride mais l'inscription Intune n'a pas lieu ; consulter CoManagementHandler.log."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/comanage-configmgr/troubleshoot-co-management-auto-enrolling
+    etat: a-rediger
+  - id: intune-cogestion-file-attente-inscription
+    titre: "Co-gestion : CoManagementHandler.log bloqué sur « Queuing enrollment timer to fire at… »"
+    symptome: "L'inscription est reportée en boucle ; jeton utilisateur Entra absent ou utilisateur non découvert."
+    erreurs: ["Queuing enrollment timer to fire at"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/comanage-configmgr/troubleshoot-co-management-bootstrap
+    etat: a-rediger
+  - id: intune-cogestion-agent-configmgr-non-sain
+    titre: "Co-gestion : état de l'agent Configuration Manager « non sain » (unhealthy) dans Intune"
+    symptome: "Intune signale un client ConfigMgr en mauvaise santé ; synchronisation de l'état client non remontée."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/comanage-configmgr/troubleshoot-co-management-bootstrap
+    etat: a-rediger
+  - id: intune-cogestion-cmg-403-certificat-client
+    titre: "Co-gestion : clients incapables de joindre le point de gestion via la CMG (403 CMGConnector_Clientcertificaterequired)"
+    symptome: "Les clients Internet ne trouvent pas le point de gestion ; la passerelle de gestion cloud exige un certificat client ou un jeton."
+    erreurs: ["StatusCode= 403 StatusText=CMGConnector_Clientcertificaterequired"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/comanage-configmgr/troubleshoot-co-management-bootstrap
+    etat: a-rediger
+  - id: intune-cogestion-cmg-deconnectee
+    titre: "Co-gestion : point de connexion CMG affiché « déconnecté »"
+    symptome: "Le point de connexion de la passerelle de gestion cloud n'arrive pas à joindre la boîte de réception du site (« Cannot connect to the inbox source »)."
+    erreurs: ["ERROR: Cannot connect to the inbox source, sleep 30 seconds and try again."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/comanage-configmgr/troubleshoot-co-management-bootstrap
+    etat: a-rediger
+  - id: intune-cogestion-installation-client-depuis-intune-echoue
+    titre: "Co-gestion : le client Configuration Manager déployé depuis Intune ne s'installe pas"
+    symptome: "La ligne de commande copiée depuis la console ne fonctionne pas ou les enregistrements Entra ne sont pas créés dans la base ConfigMgr (découverte utilisateur manquante)."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/comanage-configmgr/troubleshoot-co-management-bootstrap
+    etat: a-rediger
+  - id: intune-cogestion-charge-travail-non-basculee
+    titre: "Co-gestion : après bascule de la charge de travail vers Intune, le poste garde les stratégies Configuration Manager"
+    symptome: "Ex. Endpoint Protection basculé vers Intune mais les paramètres ConfigMgr restent ; ou onglet Client apps introuvable, message « Please ensure the proper prerequisites are installed »."
+    erreurs: ["Please ensure the proper prerequisites are installed."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/comanage-configmgr/troubleshoot-co-management-workloads
+    etat: a-rediger
+  - id: intune-cogestion-script-error-installation
+    titre: "Configuration Manager : « Script Error… Unable to get property 'Content' » pendant la configuration d'Intune"
+    symptome: "La connexion échoue lors de l'installation de la liaison Intune ; le compte a une administration déléguée sur plusieurs abonnements."
+    erreurs: ["Script Error", "Unable to get property 'Content' of undefined or null reference"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/general/script-error-intune-setup
+    etat: a-rediger
+  # --- Connecteurs, intégrations et administration ---
+  - id: intune-connecteur-exchange-erreurs-configuration
+    titre: "Connecteur Exchange Intune (on-premises) : « Configuration failed » 0x0000001, 0x000000b ou 0x0000006"
+    symptome: "La configuration du connecteur Exchange (déprécié) échoue ; compte, droits ou URL Exchange incorrects ; service qui ne démarre pas (événements 7000/7041)."
+    erreurs: ["Configuration failed and returned error code 0x0000001", "0x000000b", "0x0000006", "Event 7000", "Event 7041"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/troubleshoot-exchange-connector-common-errors
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/troubleshoot-exchange-connector
+    etat: a-rediger
+  - id: intune-exchange-appareil-bloque-sans-mail-quarantaine
+    titre: "Appareil ActiveSync bloqué sans recevoir l'e-mail de quarantaine"
+    symptome: "L'appareil n'est pas découvert par le connecteur Exchange, était hors ligne ou le client mail est en mode Push."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/troubleshoot-conditional-access
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/troubleshoot-exchange-connector
+    etat: a-rediger
+  - id: intune-alerte-regles-acces-exchange
+    titre: "Alerte « Saving of Access Rules to Exchange has Failed »"
+    symptome: "Des stratégies Exchange on-premises sont configurées alors que la messagerie est dans Microsoft 365."
+    erreurs: ["Saving of Access Rules to Exchange has Failed"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/troubleshoot-policies-in-microsoft-intune
+    etat: a-rediger
+  - id: intune-jamf-mac-enregistrement-echoue
+    titre: "Jamf Pro + Intune : les Mac ne s'enregistrent pas dans Intune (« Unable to connect to Microsoft Intune »)"
+    symptome: "Permissions Jamf, mauvais tenant, licence manquante, Self Service non utilisé, intégration désactivée ou appareil déjà inscrit dans Intune."
+    erreurs: ["Unable to connect to Microsoft Intune. Check your Microsoft Intune Integration configuration.", "Registration-only command line flag (-r) can only be used when partner management is enabled in Intune."]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/troubleshoot-jamf
+    etat: a-rediger
+  - id: intune-jamf-trousseau-workplace-join-key
+    titre: "Mac géré par Jamf : demande du mot de passe du trousseau pour « Microsoft Workplace Join Key »"
+    symptome: "À l'ouverture d'une application Microsoft, macOS demande le mot de passe du trousseau de session."
+    erreurs: ["Microsoft Teams wants to sign using key \"Microsoft Workplace Join Key\" in your keychain."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/troubleshoot-jamf
+    etat: a-rediger
+  - id: intune-graph-explorer-403
+    titre: "Graph Explorer : « Failure - Status Code 403 » sur les objets Intune (deviceManagement)"
+    symptome: "Les requêtes Graph sur Intune échouent faute de consentement aux permissions DeviceManagement ou de rôle adapté."
+    erreurs: ["Failure - Status Code 403. Looks like you may not have the permissions for this call."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/general/403-error-graph-explorer-query
+    etat: a-rediger
+  - id: intune-data-warehouse-aadsts50011
+    titre: "Intune Data Warehouse : AADSTS50011 « The reply url specified in the request does not match »"
+    symptome: "La requête PowerShell ou applicative échoue car l'URI de redirection par défaut de l'inscription d'application a été supprimée."
+    erreurs: ["AADSTS50011: The reply url specified in the request does not match the reply urls configured for the application"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/general/error-query-intune-data-warehouse
+    etat: a-rediger
+  - id: intune-volet-aide-support-ne-charge-pas
+    titre: "Centre d'administration Intune : le volet « Aide et support » ne se charge pas (login.microsoftonline.com refused to connect)"
+    symptome: "Le volet reste vide ou affiche un refus de connexion, même avec un administrateur général (cookies tiers bloqués)."
+    erreurs: ["login.microsoftonline.com refused to connect"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/get-support/cannot-load-help-and-support-blade
+    etat: a-rediger
+  - id: intune-volet-depannage-operateur-helpdesk
+    titre: "Opérateur du support technique : le volet « Dépannage + support » ne se charge pas"
+    symptome: "Un membre du rôle Help Desk Operator ne peut pas ouvrir le volet de dépannage car il n'a pas de licence Intune."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/get-support/troubleshooting-blade-fails-loading
+    etat: a-rediger
+  - id: intune-filtres-affectation-comportement
+    titre: "Filtres d'affectation Intune : stratégie ou application appliquée (ou non) de façon inattendue"
+    symptome: "Les filtres d'appareils ne donnent pas le résultat attendu (propriétés non encore remontées, syntaxe de règle, plateformes non prises en charge) ; problèmes connus de filtres."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/known-issues
+    etat: a-rediger

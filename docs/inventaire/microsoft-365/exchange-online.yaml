@@ -2289,3 +2289,231 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/exchange/move-or-migrate-mailboxes/issue-with-add-recipientpermission-cmdlet
     etat: a-rediger
+  # ---------- Dossiers publics (côté service) ----------
+  - id: exchange-dossier-public-envoi-impossible
+    titre: "Impossible d'envoyer des messages à un dossier public à extension messagerie"
+    symptome: "Les messages vers un dossier public à extension messagerie sont rejetés ou n'arrivent pas : autorisation Contributeur manquante pour Anonyme/Par défaut, synchronisation MEPF, migration récente."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/public-folders/cannot-send-emails-to-mail-enabled-public-folder
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/public-folders/send-emails-to-mail-enabled-public-folder-error
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/public-folders/mepf-sync-failures-script
+    etat: a-rediger
+  - id: exchange-dossier-public-autorisations
+    titre: "Autorisations de dossier public non appliquées ou incohérentes"
+    symptome: "Un utilisateur ou un groupe de sécurité n'a pas l'accès attendu à un dossier public, ou les autorisations ne se propagent pas aux sous-dossiers."
+    erreurs: ["The operation couldn't be performed because '<public folder>' couldn't be found."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/public-folders/public-folder-permission-issues
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/public-folders/permissions-settings-not-propagate-eac
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/public-folders/security-group-cannot-access-public-folder
+    etat: a-rediger
+  - id: exchange-dossier-public-aucune-boite-active
+    titre: "« No active public folder mailboxes were found » dans le centre d'administration"
+    symptome: "La page Dossiers publics de l'EAC affiche une erreur d'exécution de cmdlet : aucune boîte de dossiers publics n'est provisionnée ou elles sont verrouillées pour migration."
+    erreurs: ["No active public folder mailboxes were found for organization <organization identity>."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/public-folders/error-executing-cmdlet-message-in-eac
+    etat: a-rediger
+  - id: exchange-dossier-public-creation-boite-impossible
+    titre: "Impossible de créer une boîte de dossiers publics (limite d'objets Mailbox atteinte)"
+    symptome: "La création d'une boîte de dossiers publics échoue avec une erreur de l'agent de stratégie de provisionnement."
+    erreurs: ["The following error occurred during Validation in agent \"Provisioning Policy Agent\""]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/public-folders/cannot-create-public-folder-mailbox
+    etat: a-rediger
+  - id: exchange-dossier-public-expansion-limite-elements
+    titre: "« Your server administrator has limited the number of items you can open simultaneously » en dépliant les dossiers publics"
+    symptome: "Outlook ou OWA refuse de déplier l'arborescence des dossiers publics, trop de dossiers étant ouverts en même temps."
+    erreurs: ["Your server administrator has limited the number of items you can open simultaneously. Try closing messages you have opened or removing attachments and images from unsent messages you are composing."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/public-folders/unable-expand-public-folder-tree
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/public-folders/cannot-expand-add-public-folder
+    etat: a-rediger
+  - id: exchange-dossier-public-suppression-impossible-mepf
+    titre: "Impossible de supprimer un dossier public depuis Outlook (dossier à extension messagerie)"
+    symptome: "La suppression d'un dossier public est refusée car il est à extension messagerie ; il faut d'abord désactiver la messagerie."
+    erreurs: ["Cannot delete this folder. Right-click the folder, and then click Properties to check your permissions for this folder."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/public-folders/cannot-delete-public-folder
+    etat: a-rediger
+  - id: exchange-dossier-public-reste-dans-gal
+    titre: "Des dossiers publics supprimés restent visibles dans la liste d'adresses globale"
+    symptome: "Après nettoyage, des dossiers publics à extension messagerie orphelins apparaissent toujours dans la GAL."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/public-folders/public-folders-display-gal-clean-up
+    etat: a-rediger
+  - id: exchange-dossier-public-copie-import-1000-elements
+    titre: "Impossible de copier, déplacer ou importer plus de 1 000 éléments dans un dossier public"
+    symptome: "L'opération de copie ou d'import massif vers un dossier public échoue dans Outlook au-delà de 1 000 éléments."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/public-folders/cannot-copy-move-import-items
+    etat: a-rediger
+  - id: exchange-migration-dossiers-publics-erreurs
+    titre: "Migration des dossiers publics vers Exchange Online en échec"
+    symptome: "Le lot de migration des dossiers publics échoue : dossier non activable pour la messagerie, quota dépassé, dossiers restaurés pendant la migration, plus de 100 boîtes, finalisation impossible."
+    erreurs: ["PublicFolderSizeExceedsTargetQuotaException", "ErrorFoldersRestoredDuringMigrationPermanentException", "Number of public folder mailboxes cannot exceed more than 100 for modern public folder migration."]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/public-folders/public-folder-migration-errors
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/public-folders/public-folder-size-exceeds
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/public-folders/public-folder-migration-batch-error
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/public-folders/migration-batch-error-too-many-public-folders
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/public-folders/cannot-finalize-migration-batch
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/public-folders/public-folder-not-be-mail-enabled
+    etat: a-rediger
+  - id: exchange-dossier-public-reponse-auto-mauvaise-adresse
+    titre: "Les réponses automatiques d'un dossier public partent d'une mauvaise adresse"
+    symptome: "Les correspondants reçoivent la réponse automatique du dossier public depuis une adresse inattendue (adresse de la boîte de dossiers publics ou proxy)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/public-folders/public-folder-auto-replies-incorrect-email-address
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/public-folders/public-folder-not-send-read-receipt
+    etat: a-rediger
+  # ---------- Authentification du domaine (SPF, DKIM, DMARC) et réputation ----------
+  - id: exchange-spf-dkim-dmarc-echec-messages-sortants
+    titre: "Les messages du domaine échouent SPF, DKIM ou DMARC chez les destinataires (configuration Microsoft 365)"
+    symptome: "Les messages sortants arrivent en indésirable ou sont rejetés : enregistrement SPF incomplet ou à plus de 10 recherches DNS, DKIM non activé pour le domaine personnalisé, DMARC mal aligné."
+    erreurs: ["spf=fail", "dkim=none", "dmarc=fail"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/defender-office-365/email-authentication-troubleshoot
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-5-7-23-in-exchange-online
+    etat: a-rediger
+  - id: exchange-application-tierce-echec-dmarc-domaine
+    titre: "Une application tierce qui envoie au nom du domaine échoue DMARC et est rejetée (scanner, ERP, PaperCut, marketing)"
+    symptome: "Les messages d'un service externe utilisant l'adresse du domaine sont rejetés ou mis en quarantaine depuis que Microsoft applique la politique DMARC reject/quarantine de l'expéditeur."
+    erreurs: ["550 5.7.509 Access denied, sending domain [contoso.com] does not pass DMARC verification and has a DMARC policy of reject"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/blog/exchange/announcing-new-dmarc-policy-handling-defaults-for-enhanced-email-security/3878883
+      - https://yomotherboard.com/?p=547459
+    etat: a-rediger
+  - id: exchange-utilisateur-restreint-envoi-deblocage
+    titre: "Débloquer un utilisateur restreint pour envoi de spam (portail Utilisateurs restreints)"
+    symptome: "Un compte compromis a été bloqué en envoi par la stratégie anti-spam sortante ; après sécurisation, l'administrateur doit le retirer de la liste des utilisateurs restreints."
+    erreurs: ["550 5.1.8 Access denied, bad outbound sender"]
+    priorite: critique
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-550-5-1-8
+      - https://learn.microsoft.com/en-us/archive/blogs/eopfieldnotes/take-action-yourself-on-blocked-ips-and-banned-senders
+    etat: a-rediger
+  - id: exchange-contournement-filtrage-spam-risques
+    titre: "Messages légitimes filtrés : contourner le filtre anti-spam sans ouvrir de faille"
+    symptome: "Pour faire passer un expéditeur bloqué, une règle de transport de contournement (SCL -1) ou une liste verte de domaines est créée, ce qui laisse passer usurpation et hameçonnage."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/antispam-and-protection/cautions-against-bypassing-spam-filters
+    etat: a-rediger
+  - id: exchange-quarantaine-liberation-certificat-client-mac
+    titre: "Libération d'un message en quarantaine : le site demande un certificat client (Mac)"
+    symptome: "Un utilisateur Mac qui tente de libérer un message en quarantaine obtient une demande de certificat client du site de quarantaine."
+    erreurs: ["The website \"na01-quarantine.dataservice.protection.outlook.com\" requires a client certificate."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/release-messages-prompted-client-certificate
+    etat: a-rediger
+  # ---------- Administration Exchange Online (PowerShell, EAC) ----------
+  - id: exchange-powershell-connexion-access-denied
+    titre: "Exchange Online PowerShell : accès refusé à la connexion"
+    symptome: "Connect-ExchangeOnline échoue avec un accès refusé : mauvais identifiants, compte sans rôle d'administration Exchange ou accès PowerShell désactivé pour l'utilisateur."
+    erreurs: ["Access is denied"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/access-denied-connect-powershell
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/troubleshoot-windows-powershell-issues-for-exchange-online
+    etat: a-rediger
+  - id: exchange-powershell-bad-request-remotepowershellenable
+    titre: "Exchange Online PowerShell : « Bad Request » (RemotePowerShellEnabled désactivé)"
+    symptome: "La connexion PowerShell échoue avec Bad Request car l'accès PowerShell à distance est désactivé pour le compte."
+    erreurs: ["Connecting to remote server outlook.office365.com failed with the following error message: Bad Request"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/bad-request-error-when-connecting-to-exchange-online-powershell
+    etat: a-rediger
+  - id: exchange-powershell-wam-erreur-connexion
+    titre: "Exchange Online PowerShell : erreurs de connexion après l'intégration WAM (« A specified logon session does not exist »)"
+    symptome: "Depuis les versions récentes du module, Connect-ExchangeOnline échoue avec une erreur liée au gestionnaire de comptes Web (WAM)."
+    erreurs: ["Error: 0xffffffff80070520 Context: A specified logon session does not exist. It may already have been terminated."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/wam-integration-issues
+    etat: a-rediger
+  - id: exchange-powershell-winrm-nom-serveur
+    titre: "« The WinRM client cannot process the request because the server name cannot be resolved »"
+    symptome: "La connexion PowerShell distante à Exchange Online échoue (ancien mode de connexion, proxy, DNS)."
+    erreurs: ["The WinRM client cannot process the request because the server name cannot be resolved."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/winrm-cannot-process-request
+    etat: a-rediger
+  - id: exchange-powershell-security-compliance-connexion
+    titre: "Impossible de se connecter à Security & Compliance PowerShell (Connect-IPPSSession)"
+    symptome: "La connexion au module de conformité échoue après redirection vers un autre URI."
+    erreurs: ["Connecting to remote server <server name>.ps.compliance.protection.outlook.com failed"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/cannot-connect-to-security-compliance-powershell
+    etat: a-rediger
+  - id: exchange-cmdlet-boite-autre-region-database-introuvable
+    titre: "Cmdlet en erreur « Couldn't find database » sur une boîte hébergée dans une autre région"
+    symptome: "Les commandes de gestion ou de recherche échouent pour une boîte d'une autre géographie (multi-géo)."
+    erreurs: ["Couldn't find database"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/could-not-find-database-running-cmdlets-for-different-region-mailbox
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/cannot-connect-to-the-mailbox-error-when-running-search-mailbox
+    etat: a-rediger
+  - id: exchange-protocoles-pop-imap-ews-desactives
+    titre: "Un protocole (POP, IMAP, MAPI, EWS, ActiveSync, OWA) est désactivé pour la boîte : connexion refusée"
+    symptome: "Une application ou un client ne peut pas se connecter car le protocole est désactivé au niveau de la boîte (CASMailbox) ou bloqué par une stratégie."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/pop3-imap-owa-activesync-office-365
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/incorrect-output-when-running-get-casmailbox
+    etat: a-rediger
+  - id: exchange-imap-pop-authentification-moderne-echec
+    titre: "Connexion POP/IMAP à Exchange Online impossible avec l'authentification moderne"
+    symptome: "Un client ou une application POP/IMAP n'arrive plus à se connecter depuis la fin de l'authentification de base (OAuth requis, protocole désactivé)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/cannot-connect-mailbox-pop-imap-outlook
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/pop-imap-auth-fails-if-x-ms-client-application-is-microsoft-exchange-popimap
+    etat: a-rediger
