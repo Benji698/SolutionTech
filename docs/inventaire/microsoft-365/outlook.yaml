@@ -1494,3 +1494,578 @@ problemes:
       - https://learn.microsoft.com/en-us/answers/questions/2238925/microsoft-outlook-error-some-of-attachments-are-bl
       - https://learn.microsoft.com/en-us/answers/questions/4571526/desktop-version-blocked-pdf-attachment-but-365-ver
     etat: a-rediger
+
+  # --- Recherche ---
+  - id: outlook-recherche-aucune-correspondance-windows-search
+    titre: "Recherche : « Aucune correspondance trouvée » et 0 élément indexé (service Windows Search)"
+    symptome: "La recherche instantanée ne renvoie rien ; l'état de l'indexation indique 0 élément ou une indexation sans fin."
+    erreurs: ["No matches found.", "0 items indexed."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/windows-search-service-setting-results-in-no-matches-found
+    etat: a-rediger
+  - id: outlook-recherche-boite-supplementaire-erreur
+    titre: "« Un problème est survenu et votre recherche n'a pas pu aboutir » dans une boîte supplémentaire"
+    symptome: "La recherche échoue dans une boîte partagée ou supplémentaire ajoutée au profil."
+    erreurs: ["Something went wrong and your search couldn't be completed."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/can't-search-additional-mailbox
+    etat: a-rediger
+  - id: outlook-recherche-filtre-date-incorrect
+    titre: "Résultats de recherche incorrects avec un filtre de date dans la barre de recherche"
+    symptome: "Les critères reçu:/envoyé: avec une date renvoient des messages hors période."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/data-files/incorrect-search-results-for-search-bar-date-filter
+    etat: a-rediger
+  - id: outlook-recherche-incomplete-ifilter-pdf
+    titre: "Résultats de recherche incomplets quand un iFilter PDF est installé"
+    symptome: "La recherche manque des messages après l'installation d'un filtre d'indexation PDF tiers."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/incomplete-search-results-occur-if-pdf-ifilter-installed
+    etat: a-rediger
+  - id: outlook-recherche-mapiph-dll-manquant
+    titre: "Résultats de recherche faux à cause de MapiPH.dll manquant"
+    symptome: "La recherche renvoie des résultats incohérents ; le gestionnaire de protocole MAPI est absent."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/search-results-are-incorrect-due-to--missing-mapiph-dll
+    etat: a-rediger
+  - id: outlook-recherche-sans-texte-apercu
+    titre: "Les résultats de recherche s'affichent sans le texte d'aperçu"
+    symptome: "La liste des résultats ne montre plus les premières lignes des messages."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/search-results-displayed-without-message-preview-text
+    etat: a-rediger
+  - id: outlook-dossiers-recherche-elements-inattendus
+    titre: "Dossiers de recherche vides ou remplis d'éléments sans objet"
+    symptome: "Un dossier de recherche ne se remplit pas en mode en ligne, ou affiche des éléments PersonMetadata vides ; ils n'apparaissent pas dans OWA."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/personmetadata-items
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/outlook-search-folders-issue-online-mode
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/search-folders-created-in-outlook-do-not-appear-in-owa
+    etat: a-rediger
+  - id: outlook-recherche-dossiers-publics-favoris
+    titre: "Pas de résultats ni de contenu dans les favoris de dossiers publics"
+    symptome: "Les dossiers publics ajoutés aux favoris restent vides et la recherche n'y trouve rien."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/no-search-results-or-content-shown-in-public-folder-favorites
+    etat: a-rediger
+  - id: outlook-web-recherche-elements-manquants
+    titre: "Outlook sur le web : des éléments manquent dans les résultats de recherche (archive en ligne)"
+    symptome: "OWA ne trouve pas certains messages, notamment dans l'archive."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-on-the-web-issues/items-missing-search-results
+    etat: a-rediger
+  - id: outlook-web-recherche-erreur-something-went-wrong
+    titre: "Outlook sur le web : « Something went wrong » pendant une recherche"
+    symptome: "La recherche dans OWA renvoie une erreur au lieu des résultats."
+    erreurs: ["Something went wrong"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/2135922/issue-when-searching-in-outlook-web-something-went
+    etat: a-rediger
+
+  # --- Carnet d'adresses, contacts ---
+  - id: outlook-carnet-hors-connexion-0x80070057
+    titre: "Carnet d'adresses hors connexion non téléchargé : erreur 0x80070057"
+    symptome: "La tâche de téléchargement du carnet d'adresses échoue (OAB distribué par dossier public)."
+    erreurs: ["Task <adresse> reported error (0x80070057): 'Sorry, something went wrong. You may want to try again'"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/contacts/error-0x80070057-no-offline-address-book-download
+    etat: a-rediger
+  - id: outlook-carnet-hors-connexion-0x8007007a
+    titre: "Erreur 0x8007007A au téléchargement du carnet d'adresses hors connexion"
+    symptome: "Envoi/réception en erreur lors de la mise à jour de l'OAB."
+    erreurs: ["0x8007007A"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/contacts/0x8007007a-whendownloading-offline-address-book
+    etat: a-rediger
+  - id: outlook-carnet-hors-connexion-http-echec
+    titre: "Le téléchargement manuel du carnet d'adresses hors connexion (HTTP) échoue"
+    symptome: "« Télécharger le carnet d'adresses » ne fait rien ou se termine en erreur."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/data-files/http-version-of-offline-address-book-fails-to-download
+    etat: a-rediger
+  - id: outlook-utilisateur-absent-carnet-hors-connexion
+    titre: "Un nouvel utilisateur ou une modification n'apparaît pas dans le carnet d'adresses Outlook"
+    symptome: "Le collègue est visible dans OWA mais pas dans le carnet d'adresses hors connexion d'Outlook en cache."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-issues/cannot-find-user-in-offline-address-book
+    etat: a-rediger
+  - id: outlook-carnet-adresses-n-affiche-pas-lag
+    titre: "Le carnet d'adresses n'affiche pas la liste d'adresses globale par défaut"
+    symptome: "À l'ouverture du carnet, une autre liste que la GAL est sélectionnée."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/contacts/offline-address-book-not-display-global-address-list
+    etat: a-rediger
+  - id: outlook-liste-adresses-ne-peut-pas-etre-affichee
+    titre: "« La liste d'adresses ne peut pas être affichée » (dossier Contacts)"
+    symptome: "Le carnet d'adresses refuse d'afficher les contacts d'un dossier (public ou personnel)."
+    erreurs: ["The address list cannot be displayed. The Contacts folder associated with this address list could not be opened; it may have been moved or deleted, or you do not have permissions."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/contacts/the-address-list-cannot-be-displayed-error
+    etat: a-rediger
+  - id: outlook-groupe-contacts-imbrique-unknown
+    titre: "« <unknown> » en développant un groupe de contacts imbriqué"
+    symptome: "Les membres d'un groupe de contacts contenant un autre groupe ne s'affichent pas."
+    erreurs: ["<unknown>"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/contacts/cannot-expand-nested-contact-groups-unknown-shown
+    etat: a-rediger
+  - id: outlook-groupes-contacts-compte-eas
+    titre: "Impossible de créer des groupes de contacts sur un compte Outlook.com / Exchange ActiveSync"
+    symptome: "La commande Nouveau groupe de contacts est absente ou grisée pour ces comptes."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/contacts/cannot-create-contact-groups-eas-account
+    etat: a-rediger
+  - id: outlook-carte-contact-sans-photo-ni-presence
+    titre: "Carte de contact sans photo, détails ni présence (pastille Teams absente)"
+    symptome: "Les cartes de visite et la pastille de présence ne s'affichent pas dans Outlook."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/contacts/contact-card-not-showing-user-details-or-presence
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/presence-icons-do-not-show-in-outlook
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-im-presence/issues-with-presence-in-outlook
+    etat: a-rediger
+  - id: outlook-photos-contacts-absentes
+    titre: "Les photos des contacts ne s'affichent pas"
+    symptome: "Aucune photo dans les messages et les contacts, alors qu'elles existent dans Microsoft 365."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/cannot-see-contact-photos
+    etat: a-rediger
+  - id: outlook-dossier-contacts-vide
+    titre: "Le dossier Contacts est vide, les contacts sont dans un autre dossier"
+    symptome: "Après une synchronisation ou une migration, les contacts apparaissent dans un dossier différent."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/contacts/contacts-folder-empty-and-contacts-are-in-different-folder
+    etat: a-rediger
+  - id: outlook-adresse-smtp-profil-inchangee
+    titre: "Après changement d'adresse e-mail, le profil Outlook garde l'ancienne adresse"
+    symptome: "Le nom du compte ou l'adresse SMTP affichée ne change pas après renommage de l'utilisateur."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/smtp-address-in-users-profile-not-change
+    etat: a-rediger
+  - id: outlook-destinataires-supprimes-brouillons
+    titre: "Des destinataires supprimés réapparaissent dans un brouillon"
+    symptome: "Un destinataire retiré d'un brouillon revient à la réouverture."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/deleted-recipients-still-appear
+    etat: a-rediger
+  - id: outlook-carte-contact-personnalisation-gpo
+    titre: "La disposition de la carte de contact ne change pas par GPO ou OCT"
+    symptome: "Les modèles d'administration ne s'appliquent pas à l'onglet Contact de la carte de visite."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/contacts/contact-card-cannot-be-changed-by-group-policy-or-oct
+    etat: a-rediger
+
+  # --- Calendrier ---
+  - id: outlook-disponibilites-verification-calendriers
+    titre: "Disponibilités invisibles : « Nous vérifions les calendriers de chacun » sans fin"
+    symptome: "L'assistant Planification ne montre jamais les disponibilités des participants."
+    erreurs: ["We're checking everyone's calendars"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/cannot-view-free-busy-information
+    etat: a-rediger
+  - id: outlook-erreurs-disponibilites-free-busy
+    titre: "Disponibilités (free/busy) en erreur ou hachurées pour certains utilisateurs"
+    symptome: "Hachures grises « Aucune information » pour des collègues, notamment en hybride ou entre forêts."
+    erreurs: ["No information"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/Resolve-free-busy-errors
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/hashed-lines-shown-in-scheduling-assistant
+    etat: a-rediger
+  - id: outlook-calendrier-internet-ajout-impossible
+    titre: "Impossible d'ajouter un calendrier Internet (iCal) dans Outlook"
+    symptome: "L'abonnement à un calendrier .ics par URL échoue ou ne se met pas à jour."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/cannot-add-an-internet-calendar
+    etat: a-rediger
+  - id: outlook-element-calendrier-impossible-supprimer
+    titre: "Impossible de supprimer un élément de calendrier corrompu"
+    symptome: "Une réunion fantôme refuse d'être supprimée, même avec MFCMAPI."
+    erreurs: ["The move, copy, or deletion cannot be completed. The items might have been moved or deleted, or you may not have sufficient permission."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/cannot-delete-calendar-items
+    etat: a-rediger
+  - id: outlook-demandes-reunion-absentes-boite-reception
+    titre: "Les demandes de réunion ou les réponses n'arrivent pas dans la boîte de réception"
+    symptome: "Les invitations ou acceptations sont absentes de la boîte de réception (envoyées dans Éléments supprimés, délégués, règles)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/cannot-receive-requests-of-tentative-meeting-or-responses
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/specific-users-not-receive-meeting-requests
+    etat: a-rediger
+  - id: outlook-reponse-demande-reunion-impossible
+    titre: "Impossible de répondre à une demande de réunion"
+    symptome: "Les boutons Accepter/Refuser ne permettent pas d'envoyer la réponse dans certains cas."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/cannot-send-response-to-meeting-request
+    etat: a-rediger
+  - id: outlook-delegue-recoit-invitations-en-double
+    titre: "Un délégué reçoit des demandes de réunion en double"
+    symptome: "Le délégué reçoit plusieurs copies de chaque invitation adressée au responsable."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/delegate-receives-multiple-or-duplicate-meeting-requests
+    etat: a-rediger
+  - id: outlook-invitation-partage-calendrier-erreur
+    titre: "Partage de calendrier : « Policy does not allow granting permissions » ou fichier ICS reçu"
+    symptome: "L'invitation de partage échoue ou les destinataires internes reçoivent un fichier au lieu d'un partage."
+    erreurs: ["Policy does not allow granting permissions"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/error-occurs-when-sending-sharing-invitation
+    etat: a-rediger
+  - id: outlook-configuration-delegues-disponibilites-erreur
+    titre: "Erreurs en configurant les délégués ou les options de disponibilité"
+    symptome: "Les paramètres de délégation ou de disponibilité refusent de s'enregistrer (message caché corrompu)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/errors-when-configure-free-busy-or-delegate-information
+    etat: a-rediger
+  - id: outlook-page-delegues-indisponible
+    titre: "« La page Délégués n'est pas disponible. Impossible d'accéder au dossier Outlook »"
+    symptome: "L'onglet de gestion des délégués ne s'ouvre pas."
+    erreurs: ["The Delegates page is not available. Cannot access the Outlook folder."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-issues/cannot-view-outlook-delegates-page
+    etat: a-rediger
+  - id: outlook-delegues-perdus-apres-migration
+    titre: "Délégués impossibles à voir, ajouter ou retirer après migration vers Exchange Online"
+    symptome: "Après une migration hybride, la gestion des délégués ne fonctionne plus."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-issues/no-delegate-permissions-after-migration
+    etat: a-rediger
+  - id: outlook-date-expiration-message-depassee
+    titre: "« La date et l'heure d'expiration du message sont dépassées » en mettant à jour une réunion"
+    symptome: "La mise à jour d'une réunion déclenche un avertissement et n'est pas réellement envoyée."
+    erreurs: ["The expiration date and time for the message have passed. Do you still want to send it?"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/expiration-date-and-time-for-the-message-have-passed-error
+    etat: a-rediger
+  - id: outlook-delegue-reunion-teams-operation-impossible
+    titre: "Un délégué ne peut pas créer une réunion Teams pour son responsable : « L'opération ne peut pas être effectuée »"
+    symptome: "L'ajout d'une réunion Teams ou Skype dans le calendrier du responsable échoue."
+    erreurs: ["Changes to the meeting cannot be saved. The meeting has been updated by another person. Close and reopen the meeting, and then make your updates."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/operation-cannot-be-performed-error
+    etat: a-rediger
+  - id: outlook-reunion-organisateur-obsolete-apres-delegue
+    titre: "La réunion de l'organisateur n'est pas à jour après une modification par son délégué"
+    symptome: "Les participants ont la nouvelle version, mais le calendrier de l'organisateur garde l'ancienne."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/organizers-meeting-outdated-after-delegate-sends-update
+    etat: a-rediger
+  - id: outlook-responsable-ne-peut-pas-repondre-invitation
+    titre: "Le responsable ne peut pas répondre à une invitation (délégation)"
+    symptome: "Les réponses du responsable échouent quand un délégué gère son calendrier."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/manager-cannot-respond-to-meeting-invite
+    etat: a-rediger
+  - id: outlook-suivi-reunion-non-mis-a-jour
+    titre: "L'onglet Suivi d'une réunion ne se met pas à jour avec les réponses"
+    symptome: "L'organisateur ne voit pas les acceptations ; les réponses restent dans la boîte de réception."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/meeting-tracking-tab-not-updated
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/information-about-outlook-sniffer-functionality
+    etat: a-rediger
+  - id: outlook-rappel-absent-invitation-google
+    titre: "Pas de rappel pour une invitation envoyée depuis Google Agenda"
+    symptome: "Les réunions reçues de comptes Google arrivent sans rappel dans Outlook."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/no-meeting-reminder-for-google-calendar-invites
+    etat: a-rediger
+  - id: outlook-rappels-impossibles-a-ignorer
+    titre: "Les rappels de calendrier ne peuvent pas être ignorés ou reviennent sans cesse"
+    symptome: "Après « Ignorer », le même rappel réapparaît au démarrage suivant."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/cannot-dismiss-outlook-calendar-reminders
+    etat: a-rediger
+  - id: outlook-rappels-perdus-occurrence-deplacee
+    titre: "Le rappel disparaît après déplacement d'une occurrence de réunion périodique"
+    symptome: "Une occurrence replanifiée d'une série n'a plus de rappel."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/6044035/rescheduling-a-repeating-meeting-causes-reminders
+    etat: a-rediger
+  - id: outlook-room-finder-salles-absentes
+    titre: "Les salles de réunion n'apparaissent pas dans l'outil de recherche de salle (Room Finder)"
+    symptome: "Aucune liste de salles ou aucune salle disponible dans le Room Finder."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/outlook-room-finder-not-show-conference-room
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-issues/show-a-room-list-option-not-displayed-in-room-finder
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/room-list-not-viewable-in-outlook
+    etat: a-rediger
+  - id: outlook-aucune-salle-hors-heures-travail
+    titre: "Aucune salle disponible pour une réunion hors des heures de travail"
+    symptome: "Le Room Finder n'affiche aucune salle libre quand la réunion est en dehors des heures ouvrées."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/no-available-rooms-for-meeting-outside-working-hours
+    etat: a-rediger
+  - id: outlook-room-finder-calendrier-partage-bloque
+    titre: "Outlook ne répond plus en ouvrant le Room Finder sur un calendrier partagé"
+    symptome: "Le délégué clique sur Room Finder dans une réunion du calendrier partagé et Outlook se bloque."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/room-finder-is-not-available-shared-calendars-outlook
+    etat: a-rediger
+  - id: outlook-invite-envoyer-mise-a-jour-absente
+    titre: "Outlook ne propose pas « Envoyer la mise à jour aux participants »"
+    symptome: "Après modification d'une réunion, l'invite d'envoi de mise à jour n'apparaît pas."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/send-updates-prompt-not-displayed
+    etat: a-rediger
+  - id: outlook-autorisations-calendrier-differentes-versions
+    titre: "« Vous n'avez pas l'autorisation d'afficher ce calendrier » (autorisations selon les versions)"
+    symptome: "Les autorisations de calendrier partagé ne donnent pas le même résultat selon la version d'Outlook."
+    erreurs: ["You do not have permission to view this calendar. Do you want to ask <user> to share his or her Calendar with you?"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/calendar-permissions-differences-in-different-versions-of-outlook
+    etat: a-rediger
+  - id: outlook-calendrier-partage-mise-a-jour-impossible
+    titre: "Calendrier d'une boîte partagée : « could not be updated » dans Outlook (pas dans OWA)"
+    symptome: "Les modifications dans le calendrier de la boîte partagée échouent uniquement dans le client classique."
+    erreurs: ["could not be updated"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/2183498/outlook-shared-mailbox-calendar-gets-could-not-be
+    etat: a-rediger
+  - id: outlook-modification-evenement-impossible
+    titre: "« Impossible de modifier l'événement, réessayez plus tard »"
+    symptome: "L'utilisateur ne peut pas modifier un rendez-vous de son propre calendrier."
+    erreurs: ["Can't edit the event, try again later"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/e1b17f5a-1888-4b15-aa49-ce7fc77c527f/error-pops-up-when-trying-to-edit-my-own-calendar?forum=outlook_com-all
+    etat: a-rediger
+  - id: outlook-serie-periodique-corrompue
+    titre: "Réunion périodique corrompue (occurrences manquantes ou incohérentes)"
+    symptome: "Une série récurrente affiche des occurrences fausses ou disparues."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-gb/answers/questions/5880051/outlook-recurring-event-corruption-need-recovery
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/calendar-checking-tool-for-outlook
+    etat: a-rediger
+  - id: outlook-heures-travail-affichees-en-gris
+    titre: "Le calendrier affiche les heures de travail en gris"
+    symptome: "Les plages normalement blanches (heures ouvrées) apparaissent grisées."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/outlook-calendar-displays-working-hours-as-grey
+    etat: a-rediger
+  - id: outlook-disponibilites-limitees-12-mois
+    titre: "Les disponibilités au-delà de 12 mois ne sont pas affichées"
+    symptome: "L'assistant Planification ne montre rien pour des dates lointaines."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/outlook-not-showing-more-than-12-months-of-free-busy-data
+    etat: a-rediger
+  - id: outlook-details-rendez-vous-prives-calendrier-partage
+    titre: "Détails des rendez-vous privés absents (ou visibles) dans un calendrier partagé"
+    symptome: "Un délégué ne voit pas le contenu des rendez-vous privés, ou au contraire le nouvel Outlook pour Mac les montre."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/outlook-or-owa-not-shows-full-details-of-private-appointments
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendars/shared-calendar-shows-private-event-details
+    etat: a-rediger
+  - id: outlook-calendriers-equipe-responsable-absents
+    titre: "Les calendriers d'équipe du responsable ne s'affichent pas"
+    symptome: "Le groupe « Mon équipe » n'apparaît pas dans le module Calendrier."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/managers-team-calendar-not-shown
+    etat: a-rediger
+  - id: outlook-de-reunion-comptes-manquants
+    titre: "Le champ De d'une demande de réunion ne liste pas tous les comptes"
+    symptome: "Impossible de choisir un autre compte du profil comme organisateur."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/from-field-in-meeting-request-not-list-all-accounts
+    etat: a-rediger
+  - id: outlook-jours-feries-incorrects
+    titre: "Jours fériés incorrects ajoutés au calendrier (fichier .hol)"
+    symptome: "Des dates de jours fériés erronées apparaissent après l'ajout des congés d'un pays."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/incorrect-holidays-in-hol-files
+    etat: a-rediger
+  - id: outlook-calendrier-groupe-pieces-jointes-perdues
+    titre: "Pièce jointe non conservée dans un rendez-vous du calendrier d'un groupe Microsoft 365"
+    symptome: "Le fichier joint à une réunion du groupe disparaît."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/attached-outlook-items-not-retained
+    etat: a-rediger
+  - id: outlook-calendrier-groupe-affiche-disponibilites-tous
+    titre: "Le calendrier d'un groupe Microsoft 365 affiche les disponibilités de tous les membres"
+    symptome: "En ouvrant le calendrier du groupe, les plages occupées de chaque membre apparaissent."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-issues/group-calendar-shows-all-user-free-busy-info
+    etat: a-rediger
+  - id: outlook-calendrier-utilisateur-kiosque-non-modifiable
+    titre: "Impossible de modifier le calendrier d'un utilisateur à licence Kiosque/F"
+    symptome: "Un délégué ne peut pas gérer dans Outlook le calendrier d'un utilisateur Kiosque."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-issues/cannot-edit-o365-kiosk-user-calendar
+    etat: a-rediger
+  - id: outlook-calendrier-elements-conservation-litige
+    titre: "Éléments de calendrier impossibles à mettre à jour sous conservation légale (OWA, Mac)"
+    symptome: "Les mises à jour de réunions échouent dans OWA ou Outlook pour Mac quand la boîte est en conservation."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/holds/cannot-update-calendar-items-from-owa-or-outlook-on-mac
+    etat: a-rediger
+  - id: outlook-assistant-impression-calendrier-installation
+    titre: "Impossible d'installer l'Assistant Impression de calendrier"
+    symptome: "L'installation échoue en exigeant Office 2007 alors qu'une version plus récente est installée."
+    erreurs: ["Setup cannot complete. Calendar Printing Assistant for Microsoft Office Outlook 2007 requires the 2007 Microsoft Office system to be installed."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/Installation/installing-calendar-printing-assistant-fails
+    etat: a-rediger

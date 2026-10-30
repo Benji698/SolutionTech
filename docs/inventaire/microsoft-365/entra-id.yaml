@@ -1691,3 +1691,232 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
     etat: a-rediger
+  # ---------------------------------------------------------------------------
+  # Groupes (dynamiques, Microsoft 365, attribuables à un rôle)
+  # ---------------------------------------------------------------------------
+  - id: entra-groupe-dynamique-membres-non-mis-a-jour
+    titre: "Groupe dynamique : des membres ne sont pas ajoutés ou retirés comme prévu"
+    symptome: "Un utilisateur ou un appareil qui répond à la règle n'apparaît pas dans le groupe (traitement en cours, attribut vide ou mal orthographié, licence P1 absente)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/dir-dmns-obj/troubleshoot-dynamic-groups
+      - https://learn.microsoft.com/en-us/entra/identity/users/groups-dynamic-rule-validation
+    etat: a-rediger
+  - id: entra-groupe-dynamique-erreur-regle
+    titre: "Groupe dynamique : erreur dans la règle d'appartenance (attribut ou opérateur non pris en charge)"
+    symptome: "L'enregistrement de la règle échoue ou le traitement est en erreur : attribut non pris en charge, opérateur invalide, erreur de compilation de la requête."
+    erreurs: ["Error: Attribute not supported.", "Error: Operator isn't supported on attribute.", "Error: Query compilation error."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/users/groups-troubleshooting
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/dir-dmns-obj/troubleshoot-dynamic-groups
+    etat: a-rediger
+  - id: entra-groupe-dynamique-membres-supprimes-en-masse
+    titre: "Groupe dynamique : des membres disparaissent en masse après une modification de règle ou d'attributs"
+    symptome: "Après un changement de règle ou une synchronisation qui a vidé un attribut, des utilisateurs perdent leurs licences et accès ; il faut suspendre le traitement dynamique."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/dir-dmns-obj/troubleshoot-dynamic-group-processing
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/dir-dmns-obj/troubleshoot-dynamic-groups
+    etat: a-rediger
+  - id: entra-groupe-dynamique-creation-impossible-limite
+    titre: "Impossible de créer un groupe dynamique (licence, droits, limite de 5 000 groupes)"
+    symptome: "L'option d'appartenance dynamique est absente ou la création échoue avec un message de nombre maximal de groupes atteint."
+    erreurs: ["Dynamic group policies max allowed groups count reached"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/users/groups-troubleshooting
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/dir-dmns-obj/troubleshoot-dynamic-groups
+    etat: a-rediger
+  - id: entra-groupe-creation-non-bloquee-powershell
+    titre: "Les utilisateurs créent encore des groupes alors que la création est désactivée dans le portail"
+    symptome: "Le paramètre du portail n'empêche pas la création de groupes Microsoft 365 ou de sécurité via PowerShell, Teams ou Outlook (paramètre EnableGroupCreation)."
+    erreurs: ["EnableGroupCreation : True"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/users/groups-troubleshooting
+    etat: a-rediger
+  - id: entra-groupe-microsoft-365-expire-supprime
+    titre: "Un groupe Microsoft 365 (équipe Teams) a été supprimé automatiquement par la stratégie d'expiration"
+    symptome: "Une équipe ou un groupe disparaît car la stratégie d'expiration l'a supprimé faute de renouvellement ; il reste restaurable 30 jours."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/users/groups-lifecycle
+      - https://learn.microsoft.com/en-us/entra/identity/users/groups-restore-deleted
+    etat: a-rediger
+  - id: entra-groupe-supprime-restaurer
+    titre: "Restaurer un groupe Microsoft 365 supprimé (et son équipe, sa boîte et son site)"
+    symptome: "Un groupe Microsoft 365 a été supprimé par erreur ; ses ressources associées (Teams, SharePoint, boîte partagée) ont disparu."
+    erreurs: []
+    priorite: critique
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/users/groups-restore-deleted
+    etat: a-rediger
+  - id: entra-groupe-synchronise-non-modifiable
+    titre: "Impossible de modifier les membres d'un groupe synchronisé depuis AD dans le cloud"
+    symptome: "L'ajout ou le retrait de membres échoue dans Entra ou Microsoft 365 car le groupe est maîtrisé par Active Directory local."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/cannot-manage-objects
+      - https://learn.microsoft.com/en-us/entra/external-id/troubleshoot
+    etat: a-rediger
+  - id: entra-groupe-securite-reste-messagerie
+    titre: "Un groupe de sécurité reste à extension messagerie après désactivation dans AD"
+    symptome: "Après avoir retiré l'adresse d'un groupe de sécurité dans AD, il apparaît toujours comme groupe de sécurité à extension messagerie dans Microsoft 365."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/sg-mail-enabled-sync
+    etat: a-rediger
+  - id: entra-groupe-primaire-utilisateur-absent
+    titre: "Le groupe principal d'un utilisateur (Utilisateurs du domaine) n'apparaît pas dans ses appartenances cloud"
+    symptome: "Entra Connect ne synchronise pas l'appartenance au groupe principal AD ; une règle ou un accès basé sur ce groupe ne fonctionne pas."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/exclude-user-primary-group
+    etat: a-rediger
+  - id: entra-jeton-depassement-groupes-overage
+    titre: "Application qui ne voit pas les groupes de l'utilisateur : dépassement du nombre de groupes dans le jeton"
+    symptome: "Un utilisateur membre de très nombreux groupes n'obtient pas ses droits dans une application car le jeton ne contient plus la liste des groupes (overage claim)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/get-signed-in-users-groups-in-access-token
+    etat: a-rediger
+  # ---------------------------------------------------------------------------
+  # Rôles d'administration et PIM
+  # ---------------------------------------------------------------------------
+  - id: entra-privileges-insuffisants-operation
+    titre: "« Privilèges insuffisants pour effectuer l'opération » (Authorization_RequestDenied)"
+    symptome: "Un administrateur, un script Graph ou une application ne peut pas modifier un utilisateur ou un groupe : rôle ou autorisation API insuffisants, cible plus privilégiée que l'administrateur."
+    erreurs: ["Authorization_RequestDenied", "Insufficient privileges to complete the operation."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/troubleshoot-authorization-requestdenied-graph-api
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/users-groups-entra-apis/authorization-requestdenied-403-error-add-user-group
+    etat: a-rediger
+  - id: entra-admin-support-reinitialisation-refusee
+    titre: "Un administrateur du support technique ne peut pas réinitialiser le mot de passe d'un utilisateur"
+    symptome: "La réinitialisation est refusée car l'utilisateur cible possède un rôle (même faible), est membre d'un groupe attribuable à un rôle ou d'une unité administrative à gestion restreinte."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/groups-faq-troubleshooting
+      - https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/admin-units-restricted-management
+    etat: a-rediger
+  - id: entra-pim-role-active-sans-effet
+    titre: "Rôle activé dans PIM mais les droits n'apparaissent pas"
+    symptome: "Après activation d'un rôle éligible, le portail (Exchange, Microsoft 365, Azure) indique toujours un accès refusé : jeton à rafraîchir, propagation, demande en attente d'approbation."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-how-to-activate-role
+      - https://learn.microsoft.com/en-us/answers/a/2018474
+    etat: a-rediger
+  - id: entra-pim-activation-bloquee-mfa-approbation
+    titre: "Activation de rôle PIM bloquée : MFA, justification, ticket ou approbation exigés"
+    symptome: "L'activation d'un rôle échoue ou reste en attente : authentification renforcée requise, approbateur absent, durée maximale dépassée."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-how-to-activate-role
+      - https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-approval-workflow
+    etat: a-rediger
+  - id: entra-pim-acces-ressources-azure-refuse
+    titre: "PIM : actions impossibles sur les ressources Azure (rôle du principal de service MS-PIM retiré)"
+    symptome: "Un propriétaire voit la ressource dans PIM mais ne peut ni créer d'affectation éligible ni lister les rôles : le principal de service MS-PIM a perdu son rôle sur l'abonnement."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/id-governance/privileged-identity-management/pim-troubleshoot
+    etat: a-rediger
+  - id: entra-groupe-attribuable-role-option-absente
+    titre: "Option « Des rôles Microsoft Entra peuvent être attribués au groupe » absente ou non modifiable"
+    symptome: "Un administrateur de groupes ne voit pas l'option ou ne peut pas l'activer sur un groupe existant ; elle se choisit uniquement à la création."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/groups-faq-troubleshooting
+    etat: a-rediger
+  - id: entra-plus-aucun-administrateur-global
+    titre: "Plus aucun administrateur global ne peut se connecter (compte d'urgence absent)"
+    symptome: "Le seul administrateur global a quitté l'entreprise, a perdu sa MFA ou est bloqué par une stratégie : personne ne peut plus administrer le locataire."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/role-based-access-control/security-emergency-access
+    etat: a-rediger
+  - id: entra-aadsts530034-administrateur-delegue-bloque
+    titre: "Administrateur délégué (partenaire GDAP) bloqué à cause d'un risque (AADSTS530034)"
+    symptome: "Un technicien d'un prestataire ne peut plus accéder au locataire client car son compte est jugé à risque dans son locataire d'origine."
+    erreurs: ["AADSTS530034: DelegatedAdminBlockedDueToSuspiciousActivity"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  # ---------------------------------------------------------------------------
+  # Outils d'administration et journaux
+  # ---------------------------------------------------------------------------
+  - id: entra-journaux-connexion-acteur-inconnu-application-microsoft
+    titre: "Applications Microsoft inconnues ou acteurs non identifiés dans les journaux de connexion et d'audit"
+    symptome: "Les journaux affichent des applications ou des acteurs inconnus ; il faut vérifier s'il s'agit d'applications internes Microsoft avant de conclure à une compromission."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/governance/verify-first-party-apps-sign-in
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/governance/unknown-actors-in-audit-reports
+    etat: a-rediger
+  - id: entra-journaux-connexion-licence-premium-requise
+    titre: "Journaux de connexion inaccessibles via Graph : licence Premium requise"
+    symptome: "La lecture des journaux de connexion par Graph ou PowerShell échoue car le locataire n'a pas de licence Entra ID P1/P2."
+    erreurs: ["Tenant does not have a B2C or premium license"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/users-groups-entra-apis/b2c-or-tenant-premium-license-sign-in-activities
+    etat: a-rediger
+  - id: entra-module-powershell-msonline-azuread-ne-fonctionne-plus
+    titre: "Les anciens modules PowerShell MSOnline / AzureAD ne fonctionnent plus ou ne se chargent pas"
+    symptome: "Les cmdlets Connect-MsolService ou Get-AzureADUser échouent (module retiré, non reconnu, exécution de scripts bloquée) : passer à Microsoft Graph PowerShell."
+    erreurs: ["The term 'Connect-MsolService' is not recognized as the name of a cmdlet"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/dir-dmns-obj/term-cmdlet-name-not-recognized-aad-cmdlet
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/cannot-run-scripts-powershell
+    etat: a-rediger
+  - id: entra-locataire-suppression-impossible
+    titre: "Impossible de supprimer un locataire (annuaire) Entra ID"
+    symptome: "La suppression du locataire est refusée tant qu'il reste des utilisateurs, applications, abonnements ou domaines."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/users/directory-delete-howto
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/dir-dmns-obj/cannot-delete-directory-azure-portal
+    etat: a-rediger

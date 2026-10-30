@@ -74,7 +74,7 @@ problemes:
     titre: "Office en volume (KMS) ne s'active pas : 0xC004F074"
     symptome: "Office LTSC ou 2019/2021 en licence en volume reste non activé ; le service de licences ne joint pas le serveur KMS."
     erreurs: ["0xC004F074", "The Software Licensing Service reported that the computer could not be activated. No Key Management Service (KMS) could be contacted."]
-    priorite: rare
+    priorite: critique
     format: complete
     sources:
       - https://learn.microsoft.com/en-us/answers/questions/5659428/keep-getting-activation-error-in-event-viewer
@@ -741,7 +741,7 @@ problemes:
     titre: "Activation sur ordinateur partagé (RDS, VDI, Citrix) : « Produit sans licence, aucune licence d'ordinateur partagé disponible »"
     symptome: "Sur un serveur RDS ou un VDI, Office passe en mode réduit ; le jeton de licence n'est pas obtenu ou pas renouvelé."
     erreurs: ["UNLICENSED PRODUCT Most features are turned off because a shared computer license isn't available."]
-    priorite: frequent
+    priorite: critique
     format: complete
     sources:
       - https://learn.microsoft.com/en-us/microsoft-365-apps/licensing-activation/troubleshoot-shared-computer-activation

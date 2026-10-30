@@ -1770,3 +1770,224 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/managed-browser-policy-triggers-error-0x87d1fde8
     etat: a-rediger
+  # --- Stratégies de protection des applications (MAM) ---
+  - id: intune-mam-strategie-protection-non-appliquee
+    titre: "Stratégie de protection des applications (MAM) non appliquée à Outlook, Teams ou OneDrive"
+    symptome: "Aucune restriction (PIN, copier-coller) dans l'application ; stratégie affectée à un groupe d'appareils, application non ciblée, compte personnel utilisé ou Portail d'entreprise / Authenticator absent."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-app-protection-policy-deployment
+    etat: a-rediger
+  - id: intune-mam-modifications-strategie-delai
+    titre: "MAM : les modifications de la stratégie de protection mettent des heures à s'appliquer"
+    symptome: "Les utilisateurs déjà connectés peuvent attendre jusqu'à 8 heures ; l'application ne s'est pas reconnectée au service ou le Portail d'entreprise a été supprimé."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-app-protection-policy-deployment
+    etat: a-rediger
+  - id: intune-mam-app-not-set-up
+    titre: "MAM : « App Not Set Up: This app has not been set up for you to use »"
+    symptome: "Aucune stratégie de protection n'est détectée pour l'application alors que l'accès conditionnel exige une application protégée."
+    erreurs: ["App Not Set Up: This app has not been set up for you to use. Contact your IT administrator for help."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+  - id: intune-mam-account-not-set-up-licence
+    titre: "MAM : « Account Not Set Up » (compte sans licence Intune)"
+    symptome: "L'application gérée refuse le compte professionnel car aucune licence Intune n'est attribuée à l'utilisateur."
+    erreurs: ["Account Not Set Up: Your organization has not set up your account to access work or school data.", "Account not set up: This app must be managed by Microsoft Intune, but your account has not been set up."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+  - id: intune-mam-sign-in-failed
+    titre: "MAM : « Sign-in Failed. We can't sign you in right now » dans une application protégée"
+    symptome: "L'inscription de l'utilisateur au service MAM échoue, ou un autre compte professionnel est déjà inscrit dans l'application."
+    erreurs: ["Sign-in Failed: We can't sign you in right now. Please try again later.", "Sign-in failed: Try to sign in again."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+  - id: intune-mam-action-not-allowed-transfert
+    titre: "MAM : « Action Not Allowed » en ouvrant ou partageant un fichier professionnel"
+    symptome: "Le transfert de données vers ou depuis une application non gérée est bloqué par la stratégie (« Applications gérées uniquement »)."
+    erreurs: ["Action Not Allowed: Your organization only allows you to open work or school data in this app.", "Action Not Allowed: Your organization only allows you to transfer its data to other managed apps."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-data-transfer
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/data-transfer-scenarios
+    etat: a-rediger
+  - id: intune-mam-pdf-outlook-action-not-allowed
+    titre: "iOS : ouverture d'une pièce jointe PDF depuis Outlook échoue avec « Action Not Allowed »"
+    symptome: "Acrobat Reader n'est pas authentifié avec le compte professionnel ou l'utilisateur s'est authentifié par empreinte."
+    erreurs: ["Action Not Allowed"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+  - id: intune-mam-copier-coller-bloque
+    titre: "MAM : copier-coller impossible entre applications gérées (ou possible vers les non gérées)"
+    symptome: "La restriction couper/copier/coller ne se comporte pas comme prévu ; paramètre, comptes ou applications non ciblées."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-cut-copy-paste
+    etat: a-rediger
+  - id: intune-mam-enregistrement-local-impossible
+    titre: "MAM : impossible d'enregistrer un fichier professionnel dans le stockage local"
+    symptome: "« Enregistrer sous » vers l'appareil est bloqué par le paramètre de stockage autorisé ; comportement dépendant de l'application."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/data-transfer-scenarios
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+  - id: intune-mam-images-outlook-ios-enregistrables
+    titre: "Outlook iOS : les images des e-mails restent enregistrables malgré la stratégie de stockage"
+    symptome: "Le paramètre de stockage autorisé ne s'applique pas aux images des messages (comportement prévu)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/saving-images-locally-not-restricted
+    etat: a-rediger
+  - id: intune-mam-exemptions-transfert-donnees
+    titre: "MAM : l'exemption de transfert de données vers une application non gérée ne fonctionne pas"
+    symptome: "Le schéma d'URL (iOS) ou le nom de package (Android) de l'exception est mal formaté, ou l'application ne prend pas en charge le partage."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-data-transfer-exemptions
+    etat: a-rediger
+  - id: intune-mam-liens-universels-edge
+    titre: "MAM : les liens (universal links) des applications protégées ne s'ouvrent pas dans Microsoft Edge"
+    symptome: "Les URL ouvertes depuis une application gérée n'arrivent pas dans Edge comme attendu."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/data-transfer-scenarios
+    etat: a-rediger
+  - id: intune-mam-portail-entreprise-requis-android
+    titre: "Android MAM : « Company Portal required » alors que l'appareil n'est pas inscrit"
+    symptome: "L'utilisateur doit installer le Portail d'entreprise (broker MAM sur Android) même sans inscription de l'appareil."
+    erreurs: ["Company Portal required: To use your work or school account with this app, you must install the Intune Company Portal app."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+  - id: intune-mam-authenticator-requis-ios
+    titre: "iOS MAM : l'utilisateur est invité à installer Microsoft Authenticator"
+    symptome: "L'accès conditionnel « application cliente approuvée / protégée » exige Authenticator comme broker sur iOS."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+  - id: intune-mam-donnees-supprimees-outlook-android
+    titre: "Outlook Android : « Your organization has removed its data associated with this app »"
+    symptome: "Les données Outlook sont effacées : application hors ligne trop longtemps ou Portail d'entreprise non détecté après une mise à jour système."
+    erreurs: ["Your organization has removed its data associated with this app because the Microsoft Intune Company Portal data or application was removed."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/removed-data-associated-with-app-error
+    etat: a-rediger
+  - id: intune-mam-wipe-alert
+    titre: "MAM : « Wipe Alert: Your organization has removed its data associated with this app »"
+    symptome: "Un effacement sélectif des données d'application a été lancé par l'administrateur."
+    erreurs: ["Wipe Alert: Your organization has removed its data associated with this app. To continue, restart the app."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+  - id: intune-mam-appareil-jailbreake-roote
+    titre: "MAM : « Device Non-Compliant… jailbroken / rooted device »"
+    symptome: "L'application protégée refuse de démarrer car l'appareil est détecté jailbreaké ou rooté."
+    erreurs: ["Device Non-Compliant: This app cannot be used because you are using a jailbroken device.", "Device noncompliant: This app can't be used because you are using a rooted device."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+  - id: intune-mam-unable-to-register-app
+    titre: "Android MAM : « Unable to register the app » / « Failed app launch »"
+    symptome: "L'application ne parvient pas à s'inscrire auprès du service MAM ; effacer les données de l'application et mettre à jour le Portail d'entreprise."
+    erreurs: ["Unable to register the app: This app must be managed by Microsoft Intune, but we were unable to register this app at this time.", "Failed app launch: There was an issue launching your app."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+  - id: intune-mam-no-apps-found-ouverture
+    titre: "Android MAM : « No apps found » en ouvrant un contenu professionnel"
+    symptome: "Aucune autre application gérée autorisée n'est disponible pour ouvrir le fichier."
+    erreurs: ["No apps found: There are no apps on this device that your organization allows to open this content."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+  - id: intune-mam-erreur-pin-trousseau-ios
+    titre: "iOS MAM : « This app has encountered a problem and must close » (PIN illisible dans le trousseau)"
+    symptome: "L'application protégée se ferme ; le PIN MAM ne peut pas être lu depuis le trousseau iOS."
+    erreurs: ["Error: This app has encountered a problem and must close."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+  - id: intune-mam-deconnexion-office-ios
+    titre: "iOS : utilisateurs déconnectés des applications Office gérées (problème connu MAM)"
+    symptome: "Les applications Office iOS protégées déconnectent occasionnellement l'utilisateur."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/known-issues
+      - https://techcommunity.microsoft.com/t5/intune-customer-success/support-tip-known-issue-occasionally-occurring-with-ios-mam-and/ba-p/2617909
+    etat: a-rediger
+  - id: intune-mam-empreinte-non-proposee-android
+    titre: "Android MAM : l'empreinte digitale n'est pas proposée à la place du PIN"
+    symptome: "Malgré le paramètre « Autoriser l'empreinte », seul le PIN est demandé sur certains appareils Samsung."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/no-prompt-for-fingerprint-identity
+    etat: a-rediger
+  - id: intune-mam-brouillons-nouveaux-documents-non-proteges
+    titre: "MAM non appliqué aux brouillons Outlook et aux nouveaux documents Word/Excel/PowerPoint"
+    symptome: "Les brouillons et documents non enregistrés ne sont pas protégés car l'application gère contexte personnel et professionnel (comportement prévu)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+  - id: intune-mam-presse-papiers-android-12-toast
+    titre: "Android 12 : notification « collé depuis le presse-papiers » dans les applications protégées"
+    symptome: "Un message toast apparaît quand une application accède au presse-papiers ; comportement Android, pas une fuite."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/known-issues
+    etat: a-rediger

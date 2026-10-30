@@ -321,3 +321,221 @@ problemes:
       - https://learn.microsoft.com/en-us/microsoft-365/admin/get-help-with-domains/domain-registrar-setup-limitations
       - https://learn.microsoft.com/en-us/microsoft-365/admin/setup/domains-faq
     etat: a-rediger
+
+  - id: m365-domaine-deja-utilise-autre-tenant
+    titre: "Domaine déjà utilisé dans une autre organisation Microsoft 365 : impossible de l'ajouter"
+    symptome: "L'ajout échoue car le domaine est vérifié dans un autre tenant (ancien prestataire, essai, tenant oublié ou inaccessible)."
+    erreurs: ["This domain is already used in another Microsoft 365 organization"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/admin/misc/remove-a-domain-from-another-account
+      - https://learn.microsoft.com/en-us/answers/questions/5816054/need-help-to-release-domain-from-tenant
+      - https://support.microsoft.com/en-in/help/2812881/error-message-when-you-try-to-verify-a-domain-in-office-365
+    etat: a-rediger
+
+  - id: m365-tenant-non-gere-prise-de-controle-admin
+    titre: "Tenant non géré (inscription en libre-service) : devenir administrateur par prise de contrôle interne"
+    symptome: "Des utilisateurs se sont inscrits avec l'adresse de l'entreprise ; message « Ready to become the admin » ; aucun administrateur."
+    erreurs: ["Ready to become an admin of <domain name>"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/admin/misc/become-the-admin
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/licenses/vl-sign-in
+    etat: a-rediger
+
+  - id: m365-administrateur-general-perdu
+    titre: "Plus aucun administrateur général utilisable (parti, mot de passe ou MFA perdu)"
+    symptome: "Personne ne peut gérer le tenant ; la récupération passe par un autre admin, le partenaire ou le support Microsoft (preuve DNS)."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5740975/microsoft-365-tenant-admin-recovery-no-global-admi
+      - https://learn.microsoft.com/en-us/answers/questions/5787102/global-admin-locked-out-lost-microsoft-authenticat
+    etat: a-rediger
+
+  - id: m365-reinitialisation-mdp-admin-compte-non-verifie
+    titre: "Réinitialisation du mot de passe administrateur : « We could not verify your account »"
+    symptome: "La réinitialisation libre-service pour un admin échoue car l'emplacement d'utilisation (UsageLocation) n'est pas défini."
+    erreurs: ["We could not verify your account"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/admin/access-management/issue-with-reset-admin-password
+    etat: a-rediger
+
+  - id: m365-centre-admin-acces-refuse-role
+    titre: "Centre d'administration Microsoft 365 : « You don't have permission to access this page »"
+    symptome: "Le compte n'a pas de rôle d'administration, n'a pas le bon rôle pour la page, ou n'est pas celui utilisé à l'inscription."
+    erreurs: ["You don't have permission to access this page"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5625096/have-not-got-permission-to-manage-365-admin-centre
+      - https://learn.microsoft.com/en-us/microsoft-365/admin/add-users/about-admin-roles
+    etat: a-rediger
+
+  - id: m365-centre-admin-page-blanche-ne-charge-pas
+    titre: "Centre d'administration Microsoft 365 qui ne charge pas (page blanche, chargement infini)"
+    symptome: "Le portail reste vide ou tourne en boucle : cache du navigateur, extension, incident Microsoft en cours."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/a/1195291
+      - https://techcommunity.microsoft.com/discussions/microsoft-365/admin-page-blank-in-office-365-for-both-company-accounts/3427399
+      - https://www.techrepublic.com/article/news-microsoft-365-admin-outage-feb-2026/
+    etat: a-rediger
+
+  - id: sharepoint-centre-admin-acces-refuse
+    titre: "Centre d'administration SharePoint : « Sorry, you don't have access » malgré le rôle Administrateur SharePoint"
+    symptome: "Le rôle est attribué mais la page -admin.sharepoint.com refuse l'accès (délai de propagation, accès conditionnel, appareil non géré)."
+    erreurs: ["Sorry, you don't have access to this page"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/access-denied-on-sharepoint-admin-centre-even-though-user-has-sharepoint-admin-r/2639998
+      - https://learn.microsoft.com/en-us/answers/questions/5087228/sharepoint-admin-not-able-to-access-admin-center
+    etat: a-rediger
+
+  - id: teams-centre-admin-invalid-privilege
+    titre: "Centre d'administration Teams : « You don't have access » (INVALID_PRIVILEGE)"
+    symptome: "L'administrateur ne peut pas ouvrir admin.teams.microsoft.com faute de rôle Teams adapté."
+    erreurs: ["INVALID_PRIVILEGE"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://www.anoopcnair.com/access-denied-error-invalid-privilege-in-teams/
+    etat: a-rediger
+
+  - id: exchange-cmdlet-non-reconnue-role-rbac
+    titre: "Cmdlet Exchange Online « not recognized » ou action grisée : rôle RBAC manquant"
+    symptome: "Set-Mailbox, Add-MailboxPermission, New-MailContact… absents de la session ; attribution « Regular » manquante ou rôle non attribué."
+    erreurs: ["The term 'Add-MailboxPermission' is not recognized as the name of a cmdlet"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/blog/exchange/troubleshooting-rbac-configuration-issues-in-exchange-online/3093590
+      - https://learn.microsoft.com/en-us/answers/questions/1834497/add-mailboxpermission-the-term-add-mailboxpermissi
+    etat: a-rediger
+
+  - id: exchange-powershell-rps-new-pssession-retire
+    titre: "Ancien script Exchange Online (New-PSSession / powershell-liveid) qui ne se connecte plus"
+    symptome: "Le PowerShell distant (RPS) a été retiré en 2023 ; il faut le module V3 et Connect-ExchangeOnline."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com:443/t5/exchange-team-blog/deprecation-of-remote-powershell-rps-for-new-exchange-online/ba-p/3761567
+      - https://office365itpros.com/2022/12/19/remote-powershell-deprecation/amp/
+    etat: a-rediger
+
+  - id: graph-powershell-function-capacity-4096
+    titre: "Import du module Microsoft.Graph : « Function capacity 4096 has been exceeded for this scope »"
+    symptome: "Windows PowerShell 5.1 refuse de charger tout le méta-module Graph."
+    erreurs: ["Function capacity 4096 has been exceeded for this scope"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://www.github.com/microsoftgraph/msgraph-sdk-powershell/issues/1449
+      - https://learn.microsoft.com/en-ie/answers/questions/1517358/cannot-import-microsoft-graph-modules-import-modul
+    etat: a-rediger
+
+  - id: m365-etat-service-incident-en-cours
+    titre: "Panne Microsoft 365 ou incident en cours : vérifier l'état du service et communiquer"
+    symptome: "Plusieurs utilisateurs touchés (Outlook, Teams…) ; consulter Intégrité > État du service, l'ID d'incident (MO/EX/TM…), status.cloud.microsoft si le portail est inaccessible."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/ms-my/microsoft-365/enterprise/view-service-health?view=o365-worldwide
+      - https://learn.microsoft.com/en-us/microsoft-365/admin/manage/health-dashboard-overview
+    etat: a-rediger
+
+  - id: m365-incident-non-affiche-etat-service
+    titre: "Les utilisateurs ont un problème mais l'état du service n'affiche aucun incident"
+    symptome: "Incident pas encore publié, périmètre limité ou problème local ; signaler le problème et ouvrir une demande."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-au/microsoftTeams/service-health
+      - https://learn.microsoft.com/da-DK/partner-center/check-service-health
+    etat: a-rediger
+
+  - id: m365-demande-support-impossible
+    titre: "Impossible d'ouvrir une demande de support Microsoft depuis le centre d'administration"
+    symptome: "Bouton absent, seul le partenaire est proposé (abonnement CSP), rôle insuffisant (Administrateur général ou Administrateur du support de service requis)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/admin/get-help-support
+      - https://learn.microsoft.com/en-us/answers/questions/5173935/cannot-open-a-microsoft-m365-support-case
+      - https://learn.microsoft.com/en-us/answers/questions/5581275/cant-find-button-to-create-support-ticket-on-admin
+    etat: a-rediger
+
+  - id: m365-rapports-noms-anonymes
+    titre: "Rapports d'utilisation : noms d'utilisateurs remplacés par des identifiants anonymes"
+    symptome: "Les rapports affichent des chaînes masquées au lieu des noms (masquage par défaut depuis 2021)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/admin/miscellaneous/reports-show-anonymous-user-name
+      - https://learn.microsoft.com/en-us/microsoft-365/admin/activity-reports/activity-reports
+    etat: a-rediger
+
+  - id: m365-rapports-utilisation-vides-retard
+    titre: "Rapports d'utilisation vides, incomplets ou non mis à jour"
+    symptome: "Rapport Teams, Exchange ou OneDrive sans données récentes : délai de traitement, incident de rapport, changement de source de données."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/discussions/microsoftteams/usage-reports-reporting-not-updated/1068325/replies/1068438
+      - https://learn.microsoft.com/en-us/answers/questions/1132119/m365-usage-reports-team-usage-is-missing-some-team
+    etat: a-rediger
+
+  - id: m365-rapport-activations-office-incorrect
+    titre: "Rapport d'activations Microsoft 365 Apps incohérent"
+    symptome: "Le rapport d'activations ne reflète pas les installations réelles."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/office/troubleshoot/activation/activation-usage-report-issues
+    etat: a-rediger
+
+  - id: m365-usage-analytics-power-bi-erreurs
+    titre: "Microsoft 365 usage analytics (Power BI) : erreurs de connexion ou d'actualisation"
+    symptome: "« You have to first subscribe to this data », ID de tenant non reconnu, « Refresh failed », droits insuffisants."
+    erreurs: ["We are unable to process your request. You have to first subscribe to this data from the Microsoft 365 admin center", "The tenant ID you provided is not recognized by our system", "Refresh failed"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/admin/usage-analytics/usage-analytics-errors
+    etat: a-rediger
+
+  - id: m365-centre-messages-publication-disparue
+    titre: "Centre de messages : publication disparue, mails de synthèse non reçus ou trop nombreux"
+    symptome: "L'administrateur ne retrouve plus un message ou ne reçoit pas le digest hebdomadaire."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/admin/manage/message-center-faq
+      - https://learn.microsoft.com/en-us/microsoft-365/admin/manage/message-center
+    etat: a-rediger
+
+  - id: m365-applications-integrees-deploiement-complement-echoue
+    titre: "Déploiement d'un complément via Applications intégrées : « Deployment failed »"
+    symptome: "Rôle activé par PIM, rôle Org Marketplace Apps / Org Custom Apps manquant, manifeste invalide."
+    erreurs: ["Deployment failed", "FailedWriteToExchange", "UnableToParseManifest"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/admin/miscellaneous/cannot-deploy-add-in-integrated-apps-menu
+    etat: a-rediger

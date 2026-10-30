@@ -1823,3 +1823,144 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/delays-provision-mailbox-sync-changes
     etat: a-rediger
+  # ---------- Réponses automatiques, transferts, règles de transport ----------
+  - id: exchange-reponse-automatique-non-envoyee
+    titre: "Les réponses automatiques (absence du bureau) ne sont pas reçues par les expéditeurs"
+    symptome: "L'utilisateur a activé ses réponses automatiques mais les expéditeurs ne reçoivent rien : transfert ou règle de redirection, domaine distant bloquant les OOF, message classé indésirable, réponse déjà envoyée une fois."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/understand-troubleshoot-oof-replies
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/send-emails/senders-not-receiving-out-of-office-notifications
+    etat: a-rediger
+  - id: exchange-reponse-automatique-configurer-pour-utilisateur
+    titre: "Configurer les réponses automatiques d'un utilisateur absent ou parti (sans accès à sa session)"
+    symptome: "Un collaborateur est absent ou a quitté l'entreprise et ses correspondants doivent être prévenus ; l'administrateur doit activer le message à sa place."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/set-automatic-replies
+    etat: a-rediger
+  - id: exchange-hybride-oof-non-recus-depuis-local
+    titre: "Hybride : les utilisateurs Microsoft 365 ne reçoivent pas les réponses d'absence des utilisateurs locaux"
+    symptome: "Les messages d'absence du bureau des boîtes locales ne parviennent pas aux boîtes Exchange Online, ou s'affichent mal (comme les boutons de vote)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/send-emails/microsoft-365-users-cannot-receive-out-of-office-notification
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/send-emails/out-of-office-replies-and-voting-options-appear-incorrectly
+    etat: a-rediger
+  - id: exchange-transfert-desactivation-erreur-eac
+    titre: "Erreur « Cannot convert value » en décochant le transfert dans le centre d'administration Exchange"
+    symptome: "La désactivation du transfert de messagerie d'une boîte depuis l'EAC échoue avec une erreur de conversion de valeur booléenne."
+    erreurs: ["Cannot convert value \"to type \"System.Boolean\". Boolean parameters accept only Boolean values and numbers, such as $True, $False, 1 or 0."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/convert-value-error-disabling-enable-forwarding-option
+    etat: a-rediger
+  - id: exchange-regle-transport-exception-transfert-automatique
+    titre: "Une règle de transport ne respecte pas ses exceptions pour les messages transférés automatiquement"
+    symptome: "Une règle de flux qui bloque le transfert externe rejette aussi des messages pourtant exclus, quand le transfert vient d'une règle de boîte de l'utilisateur."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/autoforward-mail-exclusions-not-honored-transport-rule
+    etat: a-rediger
+  - id: exchange-regle-transport-trop-volumineuse
+    titre: "« The rule cannot be created because it is too large » : règle de flux de messagerie de plus de 8 192 caractères"
+    symptome: "Impossible de créer ou modifier une règle de transport contenant une longue liste de mots, domaines ou adresses."
+    erreurs: ["The rule cannot be created because it is too large. It has <X> characters and the maximum number of characters is 8192. Reduce the size."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/transport-rule-not-created-because-too-large
+    etat: a-rediger
+  - id: exchange-regle-transport-bloquer-pieces-jointes
+    titre: "Bloquer des pièces jointes dangereuses par extension : la règle de flux ne se déclenche pas"
+    symptome: "Une règle de transport destinée à bloquer certains types de fichiers laisse passer des pièces jointes (extension renommée, archive, condition mal choisie)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/how-to-block-message-from-being-sent-or-received
+    etat: a-rediger
+  - id: exchange-regle-transport-ne-s-applique-pas
+    titre: "Une règle de flux de messagerie (règle de transport) ne s'applique pas ou s'applique à tort"
+    symptome: "Une règle (disclaimer, redirection, blocage, balise externe) ne se déclenche pas ou touche des messages imprévus : priorité, mode test, conditions, exceptions, délai d'application."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/autoforward-mail-exclusions-not-honored-transport-rule
+      - https://learn.microsoft.com/en-us/answers/questions/1651579/550-5-7-1-transport-rules-rejectmessage-the-messag
+    etat: a-rediger
+  - id: exchange-winmail-dat-destinataires-externes
+    titre: "Les destinataires externes reçoivent une pièce jointe winmail.dat"
+    symptome: "Les correspondants externes reçoivent des messages avec un fichier winmail.dat au lieu des pièces jointes, à cause du format RTF/TNEF."
+    erreurs: ["winmail.dat"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/send-emails/how-to-specify-email-message-format
+    etat: a-rediger
+  - id: exchange-pieces-jointes-uuencode-illisibles
+    titre: "Pièces jointes UUEncode d'une application UNIX illisibles ou corrompues"
+    symptome: "Les pièces jointes insérées en ligne au format UUEncode par une application UNIX arrivent brouillées dans Exchange Online."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/send-emails/inline-uuencoded-attachments-garbled-unreadable
+    etat: a-rediger
+  # ---------- Quotas, archives, rétention, éléments récupérables ----------
+  - id: exchange-quota-non-augmente-apres-licence
+    titre: "Le quota de la boîte n'augmente pas après attribution d'une licence supérieure"
+    symptome: "Malgré une licence donnant 100 Go, la boîte reste limitée à 50 Go : le quota n'a pas été recalculé ou a été fixé manuellement."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/mailbox-quotas-not-increased-automatically-for-qualifing-licenses
+    etat: a-rediger
+  - id: exchange-elements-recuperables-pleins-conservation
+    titre: "Dossier Éléments récupérables plein sur une boîte en conservation : suppression et invitations impossibles"
+    symptome: "Sur une boîte en conservation pour litige ou rétention avec archive, le dossier Éléments récupérables n'est pas déplacé vers l'archive : plus de suppression, plus d'acceptation de réunion, boîte pleine."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/antispam-and-protection/recoverable-items-folder-full
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/store-reached-maximum-size
+    etat: a-rediger
+  - id: exchange-archive-pst-importe-invisible
+    titre: "Le contenu d'un PST importé n'apparaît pas dans la boîte d'archive"
+    symptome: "Après une importation PST ciblant l'archive en ligne, les dossiers importés ne sont pas visibles dans Outlook."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/imported-pst-file-content-hidden-in-archive-mailbox
+    etat: a-rediger
+  - id: exchange-hybride-erreur-validation-archiveguid
+    titre: "Erreurs de validation d'archive (ArchiveGuid) dans le centre d'administration pour des utilisateurs hybrides"
+    symptome: "Le centre d'administration Microsoft 365 ou Entra affiche une erreur de validation sur des utilisateurs cloud synchronisés dont l'archive a été activée côté Exchange Online."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/validation-errors-for-mailbox-archive-guid
+    etat: a-rediger
+  - id: exchange-nombre-elements-statistiques-incoherent
+    titre: "Get-MailboxStatistics annonce plus d'éléments que Get-MailboxFolderStatistics"
+    symptome: "Le nombre d'éléments de la boîte diffère selon la commande utilisée, ce qui fausse l'analyse d'une boîte pleine (comportement prévu)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/item-count-from-get-mailboxstatistics-shows-more-than-mailboxfolderstatistics
+    etat: a-rediger
