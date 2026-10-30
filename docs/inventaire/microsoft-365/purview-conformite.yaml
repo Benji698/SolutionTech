@@ -1180,3 +1180,69 @@ problemes:
       - https://office365itpros.com/2024/03/26/high-completeness-audit-log/
       - https://techcommunity.microsoft.com/discussions/windowspowershell/search-unifiedauditlog-limitation-on-number-of-results/3725523/replies/3725873
     etat: a-rediger
+  - id: purview-etiquettes-retention-invisibles-utilisateurs
+    titre: Étiquettes de rétention publiées mais invisibles pour les utilisateurs (Outlook, SharePoint, Word)
+    symptome: "Les utilisateurs ne voient pas les étiquettes de rétention dans Outlook ou la bibliothèque SharePoint : délai de publication (jusqu'à 7 jours pour Exchange), boîte de moins de 10 Mo, stratégie de type auto-application au lieu de Publication."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/training/modules/m365-compliance-information-govern-information/configure-manual-retention-policies
+      - https://office365itpros.com/2019/04/08/sharepoint-missing-retention-labels/
+      - https://techcommunity.microsoft.com/discussions/microsoft-security/published-retention-label-policies-only-showing-in-outlook-and-not-in-word-or-ex/3638982
+    etat: a-rediger
+  - id: purview-audit-anciens-evenements-introuvables
+    titre: Événements d'audit de plus de 180 jours introuvables (durée de conservation de l'audit)
+    symptome: "Une enquête nécessite des journaux d'audit anciens qui n'apparaissent plus : la conservation par défaut est de 180 jours, un an avec Audit (Premium) et une licence E5, et une nouvelle stratégie n'est pas rétroactive."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/purview/audit-premium
+      - https://learn.microsoft.com/en-us/training/modules/purview-audit-search-investigate/audit-premium-retention
+    etat: a-rediger
+  - id: purview-ome-personnalisation-non-appliquee
+    titre: Personnalisation (logo, couleurs) des mails chiffrés OME non appliquée
+    symptome: "Les messages chiffrés gardent l'apparence par défaut : licence OME avancé absente, modèle non associé à la règle de flux, outil tiers qui modifie le message, logo bloqué chez le destinataire."
+    erreurs:
+      - New-OMEConfiguration
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-GB/purview/add-your-organization-brand-to-encrypted-messages
+      - https://practical365.com/how-to-configure-custom-branding-for-office-365-message-encryption/
+      - https://techcommunity.microsoft.com/t5/exchange/outlook-blocks-ome-branding-logo/m-p/3909593
+    etat: a-rediger
+  - id: purview-archive-extension-auto-conservation-bloquee
+    titre: Archive à extension automatique qui ne s'étend pas sur une boîte en conservation (quota 110 Go atteint)
+    symptome: Une boîte en conservation pour litige atteint 100/110 Go dans l'archive ou les Éléments récupérables et l'extension automatique ne se déclenche pas.
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/purview/autoexpanding-archiving
+      - https://techcommunity.microsoft.com/t5/admin-center/auto-expanding-archive-not-working/m-p/3604316
+      - https://learn.microsoft.com/en-us/purview/edisc-hold-increase-recoverable-item-quota
+    etat: a-rediger
+  - id: purview-explorateur-contenu-acces-refuse
+    titre: Explorateur de contenu ou d'activités Purview inaccessible malgré un rôle d'administrateur
+    symptome: Un administrateur général ou de conformité obtient un message de permissions manquantes sur l'Explorateur de contenu (Content explorer) ou l'Explorateur d'activités.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/purview/data-classification-content-explorer
+      - https://techcommunity.microsoft.com/discussions/azurepurview/least-permissive-role-to-access-content-explorer-in-microsoft-purview/4082675
+      - https://blog-en.topedia.com/2026/05/updates-to-permissions-for-microsoft-purview-data-explorer-and-content-explorer/
+    etat: a-rediger
+  - id: purview-bouton-chiffrer-absent-outlook
+    titre: Bouton « Chiffrer » (Encrypt) absent ou grisé dans Outlook
+    symptome: L'utilisateur ne trouve pas l'option Chiffrer / Ne pas transférer dans Outlook classique, le nouvel Outlook ou Outlook sur le web (licence, configuration IRM, case S/MIME cochée).
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/4709335/outlook-encrypt-option-missing-from-options-in-new
+      - https://learn.microsoft.com/en-us/answers/questions/2136351/why-encrypt-button-in-outlook-is-not-showing-or-en
+      - https://techcommunity.microsoft.com/t5/microsoft-security-and/encrypt-button-disappearing-from-outlook/td-p/313017
+    etat: a-rediger

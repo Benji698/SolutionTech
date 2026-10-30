@@ -868,3 +868,48 @@ problemes:
       - https://buralog.jp/?p=15681
       - https://learn.microsoft.com/en-us/defender-office-365/step-by-step-guides/how-to-handle-false-positives-in-microsoft-defender-for-office-365
     etat: a-rediger
+  - id: defender-alerte-clic-url-malveillante
+    titre: "Alerte « A potentially malicious URL click was detected » : vrai clic ou faux positif ?"
+    symptome: Defender signale qu'un utilisateur a cliqué sur une URL malveillante ; il faut vérifier si le clic est réel (analyse automatique, antivirus) et si l'URL est vraiment dangereuse.
+    erreurs:
+      - A potentially malicious URL click was detected
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/discussions/microsoft-365/a-potentially-malicious-url-click-was-detected/3697631
+      - https://techcommunity.microsoft.com/t5/microsoft-365-defender/safe-links-alert-for-links-of-our-sharepoint-online-site/m-p/3736958/highlight/true
+    etat: a-rediger
+  - id: defender-alerte-locataire-restreint-domaines-non-provisionnes
+    titre: "Alerte « Tenant restricted from sending unprovisioned email » : tout le locataire bloqué en envoi"
+    symptome: Les envois sortants de tout le locataire sont bloqués après un volume de mails depuis des domaines non ajoutés ; seul le support Microsoft peut lever le blocage.
+    erreurs:
+      - Tenant restricted from sending unprovisioned email
+    priorite: critique
+    format: complete
+    sources:
+      - https://office365itpros.com/2020/07/28/exchange-online-protection-restricts-tenants-sending-unprovisioned-email/
+      - https://learn.microsoft.com/en-gb/exchange/troubleshoot/email-delivery/ndr/fix-error-code-5-7-700-through-5-7-750
+      - https://techcommunity.microsoft.com/discussions/microsoft-365/tenant-blocked-from-sending-email/3605700/replies/4077990
+    etat: a-rediger
+  - id: defender-zap-echec-deplacement
+    titre: ZAP n'a pas pu déplacer ou supprimer un message malveillant après remise
+    symptome: Le rapport d'activités après remise indique un échec de ZAP ; le message malveillant reste dans la boîte (règle de transport, liste d'autorisation, emplacement non pris en charge).
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/microsoftdefenderforoffice365/zap-failed-to-move-the-messages/4055729/replies/4061190
+      - https://learn.microsoft.com/en-us/defender-office-365/zero-hour-auto-purge
+    etat: a-rediger
+  - id: defender-spam-domaines-onmicrosoft
+    titre: Spam et hameçonnage envoyés depuis des domaines *.onmicrosoft.com
+    symptome: Des utilisateurs reçoivent du spam provenant de locataires Microsoft 365 créés par des fraudeurs (adresses en @xxx.onmicrosoft.com) qui passent l'authentification.
+    erreurs:
+      - onmicrosoft.com
+    priorite: frequent
+    format: express
+    sources:
+      - https://c7solutions.com/2024/04/blocking-onmicrosoft-com-emails-in-exchange-online-protection
+      - https://practical365.com/?p=60434
+      - https://m365scripts.com/exchange-online/how-to-block-emails-from-onmicrosoft-com-domains/
+    etat: a-rediger
