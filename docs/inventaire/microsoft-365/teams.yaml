@@ -1,0 +1,1305 @@
+domaine: microsoft-365
+sous_domaine: teams
+recense_le: 2026-10-29
+problemes:
+  # --- Démarrage, connexion, cache ---
+  - id: teams-ne-fonctionne-plus-cache
+    titre: "Teams ne se lance plus, reste bloqué ou se comporte bizarrement (cache)"
+    symptome: "Écran blanc, chargement en boucle, messages récents absents ; vider le cache ou réinitialiser l'application corrige le plus souvent."
+    erreurs: ["We're sorry—we've run into an issue."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/clear-teams-cache
+    etat: redigee
+
+  - id: teams-erreur-connexion-caa82ee2-caa82ee7
+    titre: "Connexion à Teams impossible, erreur 0xCAA82EE2 ou 0xCAA82EE7 (réseau, délai dépassé)"
+    symptome: "La connexion échoue faute d'accès réseau aux points de terminaison Microsoft (proxy, pare-feu, délai dépassé), souvent sur RDS ou réseau instable."
+    erreurs: ["0xCAA82EE2", "0xCAA82EE7"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-sign-in/resolve-sign-in-errors
+      - https://www.technipages.com/fix-microsoft-teams-error-caa82ee2
+    etat: a-rediger
+
+  - id: teams-erreur-connexion-caa20004-acces-conditionnel
+    titre: "Connexion à Teams refusée, erreur 0xCAA20004 (accès conditionnel)"
+    symptome: "L'utilisateur ne peut pas se connecter au client Teams ; une stratégie d'accès conditionnel Entra ID bloque la connexion."
+    erreurs: ["0xCAA20004"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-sign-in/resolve-sign-in-errors
+    etat: a-rediger
+
+  - id: teams-erreur-connexion-caa70004-caa70007
+    titre: "Connexion à Teams impossible, erreur 0xCAA70004 ou 0xCAA70007"
+    symptome: "Teams (et parfois les autres applications Office) n'arrive pas à se connecter ; souvent lié aux paramètres TLS, au proxy ou à un agent de filtrage web."
+    erreurs: ["0xCAA70004", "0xCAA70007"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-sign-in/resolve-sign-in-errors
+      - https://techcommunity.microsoft.com/t5/microsoft-teams/user-can-t-get-teams-to-work-error-message/m-p/775266
+    etat: a-rediger
+
+  - id: teams-erreur-connexion-caa20002
+    titre: "Connexion à Teams impossible, erreur CAA20002 (jetons d'authentification)"
+    symptome: "Échec de connexion, souvent sur un PC neuf ou réinstallé ; jetons mis en cache incohérents avec le compte Entra ID."
+    erreurs: ["caa20002"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://appuals.com/caa20002-error-code-microsoft-apps
+      - https://ugetfix.com/ask/how-to-fix-microsoft-teams-error-caa20002-in-windows/
+    etat: a-rediger
+
+  - id: teams-erreur-connexion-caa20003-caa2000c
+    titre: "Erreur d'autorisation à la connexion Teams (CAA20003, CAA2000C)"
+    symptome: "Message « You ran into an authorization problem » ; causes fréquentes : date et heure du poste incorrectes, appareil désactivé dans Entra ID."
+    erreurs: ["0xCAA20003", "caa2000c", "You ran into an authorization problem"]
+    priorite: rare
+    format: express
+    sources:
+      - https://www.thewindowsclub.com/microsoft-teams-error-caa20003-or-caa2000c
+    etat: a-rediger
+
+  - id: teams-erreur-connexion-caa5004b
+    titre: "Teams affiche « We're sorry, we've run into an issue » avec l'erreur caa5004b"
+    symptome: "Le client de bureau refuse la connexion après un changement de mot de passe ou plusieurs tentatives, alors que la version web fonctionne."
+    erreurs: ["caa5004b"]
+    priorite: rare
+    format: express
+    sources:
+      - https://www.thewindowsclub.com/fix-microsoft-teams-error-caa5004b
+      - https://nhs.freshservice.com/support/solutions/articles/4000058999-Microsoft-Teams-we-re-sorry-we-ve-run-into-an-issue-Error-caa5004b
+    etat: a-rediger
+
+  - id: teams-erreur-caa7000a-connexion-reseau
+    titre: "Erreur caa7000a au lancement de Teams"
+    symptome: "Teams n'arrive pas à joindre le service ; erreur réseau, la version web sert de solution de contournement."
+    erreurs: ["caa7000a"]
+    priorite: rare
+    format: express
+    sources:
+      - https://appuals.com/microsoft-teams-error-code-caa7000a/
+    etat: a-rediger
+
+  - id: teams-erreur-80080300-we-ran-into-a-problem
+    titre: "Erreur 80080300 « We ran into a problem. Reconnecting… » à la connexion"
+    symptome: "Le client de bureau tourne en reconnexion après la saisie du compte professionnel ; plusieurs comptes connectés, mise à jour Windows ou cache en cause."
+    erreurs: ["80080300", "We ran into a problem. Reconnecting..."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/t5/microsoft-teams/teams-error-code-80080300-on-login/td-p/1563256
+      - https://mspoweruser.com/microsoft-teams-users-are-running-into-error-80080300-we-ran-into-a-problem-reconnecting-here-is-why
+    etat: a-rediger
+
+  - id: teams-erreur-caa90018-identifiants
+    titre: "Erreur caa90018 à la connexion Teams (identifiants incorrects)"
+    symptome: "La connexion échoue car Teams utilise des identifiants Microsoft 365 erronés ou périmés mis en cache dans Windows."
+    erreurs: ["0xCAA90018"]
+    priorite: rare
+    format: express
+    sources:
+      - https://thewindowsclub.com/microsoft-teams-sign-in-errors-and-problems
+    etat: a-rediger
+
+  - id: teams-erreur-caa30194-jetons-corrompus
+    titre: "Erreur caa30194 à la connexion Teams"
+    symptome: "Fichiers ou jetons locaux corrompus empêchant la connexion du client de bureau."
+    erreurs: ["caa30194"]
+    priorite: rare
+    format: express
+    sources:
+      - https://windowsreport.com/caa70007/
+    etat: a-rediger
+
+  - id: teams-web-boucle-connexion-cookies-tiers
+    titre: "Teams web tourne en boucle à la connexion (cookies tiers bloqués)"
+    symptome: "Dans le navigateur, la page de connexion se recharge sans fin ou demande d'autoriser les cookies tiers."
+    erreurs: ["To open the web app, change your browser settings to allow third-party cookies or allow certain trusted domains."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-sign-in/sign-in-loop
+      - https://bugzilla.mozilla.org/show_bug.cgi?id=1775500
+    etat: a-rediger
+
+  - id: teams-youre-missing-out-licence-absente
+    titre: "« You're missing out! Ask your admin to enable Microsoft Teams » (licence ou service désactivé)"
+    symptome: "À la connexion, Teams indique que l'administrateur n'a pas activé Teams : licence non attribuée ou service Teams décoché dans la licence."
+    erreurs: ["You're missing out! Ask your admin to enable Microsoft Teams for <company name>"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-sign-in/error-missing-out-sign-in-teams
+      - https://techcommunity.microsoft.com/t5/microsoft-teams/you-re-missing-out-ask-your-admin-to-enable-microsoft-teams/m-p/1703281
+    etat: a-rediger
+
+  - id: teams-erreur-teamsdisabledfortenant
+    titre: "URL de connexion contenant TeamsDisabledForTenantForbidden"
+    symptome: "Teams refuse l'accès et l'adresse contient l'erreur indiquant que Teams est désactivé pour l'organisation."
+    erreurs: ["errorcode=TeamsDisabledForTenantForbidden"]
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/microsoftteams/errorcodeteamsdisabledfortenantforbidden-in-the-url/1849620
+    etat: a-rediger
+
+  - id: teams-someone-has-already-set-up-teams
+    titre: "« Someone has already set up Teams for your organization » à l'inscription"
+    symptome: "Un utilisateur tente de s'inscrire à Teams gratuit avec une adresse d'un domaine déjà rattaché à un locataire Microsoft 365."
+    erreurs: ["Someone has already set up Teams for your organization"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-sign-in/someone-has-already-setup-teams
+    etat: a-rediger
+
+  - id: teams-ecran-blanc-lien-symbolique-lecteur-reseau
+    titre: "Teams s'ouvre sur un écran blanc à cause d'un lien symbolique ou d'un lecteur mappé"
+    symptome: "Écran blanc au lancement lorsque le profil ou %AppData% est redirigé par un lien symbolique ou un lecteur réseau."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-sign-in/symlink-or-drivemap-causes-white-screen
+    etat: a-rediger
+
+  - id: teams-connexion-compte-domaine-par-defaut
+    titre: "Teams se connecte automatiquement avec le compte du domaine au lieu du compte voulu"
+    symptome: "Sur un poste joint au domaine, Teams utilise d'office le compte Windows et ne propose pas de choisir un autre compte."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/authentication/teams-defaults-to-domain-joined-account
+    etat: a-rediger
+
+  - id: teams-mac-connexion-impossible-apres-mise-a-niveau-macos
+    titre: "Connexion impossible à Teams sur Mac après une mise à niveau de macOS"
+    symptome: "Après une mise à niveau de macOS, Teams ne parvient plus à se connecter (trousseau, jetons)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-on-mac/teams-sign-in-issues-after-os-upgrade
+    etat: a-rediger
+
+  # --- Installation, lancement, mises à jour (nouveau Teams) ---
+  - id: teams-nouveau-installation-msix-bloquee-strategie
+    titre: "Installation du nouveau Teams (MSIX) bloquée par une stratégie de groupe"
+    symptome: "L'installation échoue avec un message indiquant que les stratégies de l'organisation l'empêchent (clés Appx BlockNonAdminUserInstall, AllowAllTrustedApps…)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/fix-new-teams-installation-issues
+    etat: a-rediger
+
+  - id: teams-nouveau-windows-10-we-ve-run-into-an-issue-webview2
+    titre: "« We've run into an issue » à l'installation du nouveau Teams sous Windows 10 (WebView2 manquant)"
+    symptome: "Le nouveau Teams ne s'installe ou ne démarre pas sous Windows 10 car le runtime WebView2 est absent."
+    erreurs: ["We've run into an issue"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/fix-new-teams-installation-issues
+    etat: a-rediger
+
+  - id: teams-nouveau-bascule-try-new-teams-absente
+    titre: "Le bouton « Essayer le nouveau Teams » (Try the new Teams) est absent ou grisé"
+    symptome: "L'utilisateur ne voit pas le bouton de bascule vers le nouveau Teams, ou la bascule échoue puis se désactive."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/fix-new-teams-installation-issues
+      - https://learn.microsoft.com/en-us/answers/questions/1402823/switch-to-new-teams-client-failed
+    etat: a-rediger
+
+  - id: teams-nouveau-ne-demarre-pas-launch-pear-app
+    titre: "Le nouveau Teams ne démarre pas depuis Teams classique (launch_pear_app, code 11)"
+    symptome: "Après avoir activé la bascule, une bannière d'erreur s'affiche et le journal indique « Launch api returns false, code: 11 »."
+    erreurs: ["Launch api returns false, code: 11", "launch_pear_app"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/resolve-new-teams-launch-issues
+    etat: a-rediger
+
+  - id: teams-nouveau-server-2019-dism-15606
+    titre: "Le nouveau Teams ne s'installe pas sur Windows Server 2019 (erreur DISM 15606)"
+    symptome: "Le provisionnement du paquet MSIX échoue sur Server 2019 / RDS avec l'erreur 0x3CF6 ou « could not be registered »."
+    erreurs: ["15606", "0x3CF6"]
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/microsoftteams/latest-version-of-teams-not-installing-on-server-2019/4365020
+    etat: a-rediger
+
+  - id: teams-echec-lancement-endpoint-inaccessible
+    titre: "Teams ne se lance pas : points de terminaison Teams inaccessibles ou délai dépassé"
+    symptome: "Le client ne démarre pas car un pare-feu ou un proxy bloque l'accès aux URL et adresses IP de Teams."
+    erreurs: ["Unable to navigate to Teams endpoint", "Timed out waiting for Teams endpoint"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/resolve-teams-client-launch-failures
+    etat: a-rediger
+
+  - id: teams-echec-lancement-script-error
+    titre: "Teams ne se lance pas : « Teams application contains a script error »"
+    symptome: "Échec de lancement signalé dans le tableau de bord de santé des clients ; la déconnexion/reconnexion de l'utilisateur corrige."
+    erreurs: ["Teams application contains a script error"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/resolve-teams-client-launch-failures
+    etat: a-rediger
+
+  - id: teams-systeme-exploitation-non-pris-en-charge
+    titre: "Teams refuse de démarrer sur une version de Windows ou macOS non prise en charge"
+    symptome: "Le nouveau Teams ne se lance pas ou ne se met plus à jour sur un système trop ancien."
+    erreurs: ["Unsupported OS version"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/resolve-teams-client-launch-failures
+    etat: a-rediger
+
+  - id: teams-plantages-webview2-pile-media
+    titre: "Teams plante ou se ferme tout seul (WebView2, pile média)"
+    symptome: "Fermetures inattendues du client ; codes de sortie WebView2 (GPU_DEAD_ON_ARRIVAL, PROFILE_IN_USE…) ou échec de la pile média."
+    erreurs: ["RESULT_CODE_GPU_DEAD_ON_ARRIVAL", "RESULT_CODE_HUNG", "RESULT_CODE_PROFILE_IN_USE"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/resolve-teams-client-crash-issues
+    etat: a-rediger
+
+  - id: teams-antivirus-dlp-bloque-teams
+    titre: "Un antivirus ou un outil DLP bloque ou fait planter Teams"
+    symptome: "Teams se fige, plante ou perd l'audio/vidéo car l'antivirus ou l'outil DLP analyse ses processus (ms-teams.exe, msedgewebview2.exe)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/include-exclude-teams-from-antivirus-dlp
+    etat: a-rediger
+
+  - id: teams-ne-demarre-pas-dell-encryption
+    titre: "Teams ne démarre pas sur un poste équipé de Dell Encryption"
+    symptome: "Le client Teams ne se lance pas en présence du logiciel de chiffrement Dell."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/third-party-programs/dell-encryption-prevents-teams-from-starting
+    etat: a-rediger
+
+  - id: teams-symantec-dlp-interfere
+    titre: "Symantec DLP perturbe les processus de Teams"
+    symptome: "Lenteurs, gels ou échecs de Teams dus à l'injection de Symantec DLP dans ses processus."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/third-party-programs/symantec-dlp-interferes-with-teams
+    etat: a-rediger
+
+  - id: teams-mise-a-jour-automatique-ne-fonctionne-pas
+    titre: "Teams ne se met pas à jour automatiquement"
+    symptome: "Le client reste sur une ancienne version malgré les mises à jour publiées."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-sign-in/teams-doesnt-automatically-update
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/resolve-teams-client-update-failures
+    etat: a-rediger
+
+  - id: teams-mise-a-jour-echoue-optimisation-distribution
+    titre: "Échec de mise à jour de Teams : Optimisation de la distribution (Delivery Optimization) désactivée"
+    symptome: "Le tableau de bord de santé des clients signale « DO service disabled by admin » ; la mise à jour du paquet MSIX échoue."
+    erreurs: ["DO service disabled by admin"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/resolve-teams-client-update-failures
+    etat: a-rediger
+
+  - id: teams-mise-a-jour-echoue-0x80072ee2-0x80072efe
+    titre: "Échec de mise à jour de Teams avec 0x80072EE2, 0x80072EFE ou 0x8007000D"
+    symptome: "Mise à jour du nouveau Teams en échec pour cause de délai réseau, de suites de chiffrement ou de données corrompues."
+    erreurs: ["0x80072EE2", "0x80072EFE", "0x8007000D"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/resolve-teams-client-update-failures
+    etat: a-rediger
+
+  - id: teams-performances-degradees-xbox-game-bar
+    titre: "Teams lent car reconnu comme un jeu par la Xbox Game Bar"
+    symptome: "Performances dégradées de Teams quand Windows le mémorise comme un jeu dans la Game Bar."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-on-windows/performance-affected-when-teams-remembered-as-game
+    etat: a-rediger
+
+  # --- Micro, caméra, haut-parleur, casque, périphériques ---
+  - id: teams-micro-ne-fonctionne-pas
+    titre: "Le micro ne fonctionne pas dans Teams (les autres ne m'entendent pas)"
+    symptome: "En réunion ou en appel, les participants n'entendent pas l'utilisateur : mauvais périphérique sélectionné, accès au micro bloqué par Windows/macOS, casque muet."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://www.windowscentral.com/how-fix-microphone-not-working-microsoft-teams
+      - https://helpdeskgeek.com/office-tips/microphone-or-audio-not-working-in-microsoft-teams-9-fixes-to-try/
+    etat: a-rediger
+
+  - id: teams-pas-de-son-haut-parleur
+    titre: "Aucun son en réunion Teams (on n'entend pas les autres)"
+    symptome: "L'utilisateur n'entend pas les participants ni la sonnerie : mauvais haut-parleur sélectionné, volume de l'application coupé, pilote audio."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://helpdeskgeek.com/office-tips/microphone-or-audio-not-working-in-microsoft-teams-9-fixes-to-try/
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/known-issues-teams-certified-peripherals
+    etat: a-rediger
+
+  - id: teams-camera-ne-fonctionne-pas
+    titre: "La caméra ne fonctionne pas dans Teams (image noire ou caméra introuvable)"
+    symptome: "Teams n'affiche pas la vidéo : caméra utilisée par une autre application, accès refusé dans la confidentialité Windows, pilote, touche de désactivation de la caméra."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/office/9581983b-c6f9-40e3-b0d8-122857972ade
+      - https://maketecheasier.com/fix-microsoft-teams-camera-not-working/
+    etat: a-rediger
+
+  - id: teams-video-non-affichee-pilote-nahimic
+    titre: "Le nouveau Teams n'affiche aucune vidéo (conflit avec le pilote audio Nahimic)"
+    symptome: "Ni l'aperçu ni la vidéo en réunion ne s'affichent sur les PC où le logiciel audio Nahimic est installé."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/new-teams-desktop-app-fail-render-video
+    etat: a-rediger
+
+  - id: teams-casque-bluetooth-son-mauvais-mains-libres
+    titre: "Casque Bluetooth : son métallique ou de mauvaise qualité dès que Teams utilise le micro"
+    symptome: "Le casque bascule en profil « mains libres » (HFP) mono basse qualité pendant les appels ; le micro ne marche qu'avec ce profil."
+    erreurs: ["Hands-Free AG Audio"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/3928805/how-to-fix-windows-11-recognizing-bluetooth-device
+      - https://www.intel.com/content/www/us/en/support/articles/000057427.html
+    etat: a-rediger
+
+  - id: teams-casque-bluetooth-entend-sonnerie-pas-voix
+    titre: "Casque Bluetooth : la sonnerie Teams est audible mais pas la voix des interlocuteurs"
+    symptome: "La sonnerie passe dans le casque mais l'audio de l'appel n'arrive pas, à cause des profils Bluetooth distincts."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/microsoftteams/issue-bluetooth-earphones-can-hear-teams-ring-audio-but-no-voice/1296073
+    etat: a-rediger
+
+  - id: teams-echo-en-reunion
+    titre: "Écho ou larsen pendant les réunions Teams"
+    symptome: "Les participants entendent leur propre voix : haut-parleurs trop forts, deux appareils connectés dans la même pièce, améliorations audio Windows."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://www.serverman.co.uk/software/microsoft/microsoft-teams/teams-audio-echo-feedback-fix/
+      - https://learn.microsoft.com/en-us/answers/questions/636789/echo-problem-in-teams
+    etat: a-rediger
+
+  - id: teams-mac-probleme-audio
+    titre: "Problèmes audio de Teams sur macOS"
+    symptome: "Son absent, coupé ou périphérique non reconnu dans Teams sur Mac (autorisations micro, pilotes audio virtuels)."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-on-mac/teams-audio-issue-mac
+    etat: a-rediger
+
+  - id: teams-peripherique-certifie-boutons-ne-synchronisent-pas
+    titre: "Les boutons du casque certifié Teams (décrocher, muet) ne fonctionnent plus"
+    symptome: "Les commandes du périphérique ne se synchronisent plus avec Teams : plusieurs comptes ou locataires, mise en veille, Skype for Business lancé en parallèle."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/known-issues-teams-certified-peripherals
+    etat: a-rediger
+
+  - id: teams-muet-desynchronise-peripherique-bluetooth
+    titre: "L'état « muet » n'est pas synchronisé entre Teams et le casque"
+    symptome: "Couper le micro dans Teams ne coupe pas le casque (ou l'inverse), notamment avec un appareil non certifié appairé en Bluetooth natif."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/known-issues-teams-certified-peripherals
+    etat: a-rediger
+
+  - id: teams-pas-de-tonalite-sonnerie-appel
+    titre: "Pas de sonnerie ni de tonalité de retour d'appel dans Teams"
+    symptome: "Aucun son ne signale un appel entrant ou un appel en cours avant que l'interlocuteur décroche."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/known-issues-teams-certified-peripherals
+    etat: a-rediger
+
+  - id: teams-appel-coupe-lancement-skype-entreprise
+    titre: "L'appel Teams se coupe quand Skype for Business est lancé"
+    symptome: "Avec un périphérique personnel connecté, démarrer Skype for Business pendant un appel Teams fait tomber l'appel."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/known-issues-teams-certified-peripherals
+    etat: a-rediger
+
+  - id: teams-town-hall-pas-de-son-bluetooth
+    titre: "Aucun son dans un town hall Teams avec un ancien casque Bluetooth"
+    symptome: "En rejoignant un town hall depuis le client de bureau avec un ancien appareil Bluetooth, l'audio de l'événement n'est pas entendu."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/known-issues-teams-certified-peripherals
+    etat: a-rediger
+
+  # --- Partage d'écran, qualité ---
+  - id: teams-partage-ecran-noir
+    titre: "Partage d'écran Teams : les participants voient un écran noir"
+    symptome: "L'écran partagé apparaît noir ou figé pour les autres : pilote graphique, accélération GPU, autorisation d'enregistrement d'écran sur macOS, résolution élevée."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/t5/microsoft-teams/when-screen-sharing-people-see-black-screen/td-p/2241522
+      - https://learn.microsoft.com/en-sg/answers/questions/2281459/in-a-teams-meeting-sharing-a-window-shows-only-a-w
+    etat: a-rediger
+
+  - id: teams-mac-partage-ecran-autorisation-enregistrement
+    titre: "Partage d'écran impossible sur Mac (autorisation « Enregistrement de l'écran » manquante)"
+    symptome: "Sur macOS, le partage ne montre que le fond d'écran ou un écran noir tant que Teams n'a pas l'autorisation d'enregistrement de l'écran."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://help.niermanpm.com/internal/troubleshooting-teams-screen-sharing-user-guide
+    etat: a-rediger
+
+  - id: teams-partage-video-saccade
+    titre: "Vidéo partagée saccadée pour les participants pendant un partage d'écran"
+    symptome: "Une vidéo partagée paraît lente ou perd des images car le partage est optimisé pour du contenu statique (faible fréquence d'images)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/fix-choppy-video
+    etat: a-rediger
+
+  - id: teams-donner-le-controle-ne-fonctionne-pas
+    titre: "« Donner le contrôle » (Give control) ne réagit pas pendant un partage d'écran"
+    symptome: "La demande de contrôle s'affiche mais impossible de l'accepter ; pas de GPU ou accélération matérielle désactivée."
+    erreurs: ["appSharingToolbar: AppSharingToolbar created with hardware acceleration: false"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-conferencing/give-control-doesnt-work-sharescreen
+    etat: a-rediger
+
+  - id: teams-lent-ecran-4k-station-accueil
+    titre: "Teams très lent en réunion vidéo sur un portable relié à un écran 4K"
+    symptome: "Performances dégradées pendant les réunions vidéo quand le portable est connecté à un moniteur 4K/UHD via une station d'accueil."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-conferencing/teams-slow-video-meetings-laptops-4k
+    etat: a-rediger
+
+  - id: teams-qualite-appel-mauvaise-coupures
+    titre: "Mauvaise qualité d'appel Teams : voix hachée, coupures, vidéo pixelisée"
+    symptome: "Audio robotique, décalage, vidéo floue ou appels qui tombent ; réseau (Wi-Fi, VPN, QoS, ports UDP 3478-3481) le plus souvent en cause."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/training/modules/troubleshoot-microsoft-teams-voice-issues/2-explore-audio-video-quality-issues
+      - https://learn.microsoft.com/en-us/microsoftteams/use-call-analytics-to-troubleshoot-poor-call-quality
+    etat: a-rediger
+
+  - id: teams-udp-bloque-repli-tcp-audio-robotique
+    titre: "Audio robotique et vidéo figée : ports UDP 3478-3481 bloqués, repli des médias en TCP 443"
+    symptome: "Le pare-feu ou le proxy bloque l'UDP sortant ; Teams envoie les médias en TCP/443 via relais, d'où une qualité « Poor » dans le CQD."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5849006/media-relay-fallback-and-satin-codec-degradation-o
+      - https://learn.microsoft.com/en-us/training/modules/troubleshoot-microsoft-teams-voice-issues/2-explore-audio-video-quality-issues
+    etat: a-rediger
+
+  # --- Réunions ---
+  - id: teams-externes-sign-in-to-join-this-meeting
+    titre: "Un participant externe voit « Sign in to join this meeting » (participation anonyme bloquée)"
+    symptome: "Les invités non connectés ne peuvent pas rejoindre la réunion car la stratégie de réunion de l'organisateur interdit la participation anonyme."
+    erreurs: ["Sign in to join this meeting", "You need to be signed in to Teams to access this meeting."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/external-participants-join-meeting-blocked
+    etat: a-rediger
+
+  - id: teams-externes-sign-in-with-a-different-account
+    titre: "Un participant externe voit « Sign in with a different account to join this meeting »"
+    symptome: "L'accès externe est restreint (domaines autorisés/bloqués) et la participation anonyme désactivée, côté organisateur ou côté invité."
+    erreurs: ["Sign in with a different account to join this meeting", "The account you're using doesn't have access to this meeting."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/external-participants-join-meeting-blocked
+    etat: a-rediger
+
+  - id: teams-externes-boucle-verification-identite
+    titre: "Un externe reste bloqué sur la vérification d'identité (CAPTCHA, code par e-mail) en rejoignant depuis le navigateur"
+    symptome: "L'invité est renvoyé en boucle vers une vérification avant d'entrer dans la réunion ; le navigateur mobile n'est pas pris en charge."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/2224790/external-users-get-this-error-when-trying-to-acces
+    etat: a-rediger
+
+  - id: teams-salle-attente-participants-bloques
+    titre: "Les participants restent bloqués dans la salle d'attente (lobby)"
+    symptome: "Personne ne peut les admettre ou ils attendent alors que la réunion a commencé : options « Qui peut contourner la salle d'attente », appelants RTC et anonymes."
+    erreurs: ["Someone in the meeting should let you in soon"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/external-participants-join-meeting-blocked
+    etat: a-rediger
+
+  - id: teams-organisateur-bloque-salle-attente
+    titre: "L'organisateur est coincé dans la salle d'attente et ne peut pas démarrer sa réunion"
+    symptome: "L'organisateur rejoint comme simple participant, sans bouton Admettre : Teams et Outlook connectés avec des comptes différents, réunion créée depuis une boîte partagée ou déléguée."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-conferencing/organizer-cant-start-teams-meeting
+    etat: a-rediger
+
+  - id: teams-complement-outlook-absent
+    titre: "Le bouton « Réunion Teams » (Teams Meeting add-in) a disparu d'Outlook classique"
+    symptome: "Le complément COM n'apparaît plus dans Outlook : désactivé par Outlook, non enregistré, installation Office du Store, exécution en administrateur."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/resolve-teams-meeting-add-in-issues
+      - https://learn.microsoft.com/en-us/answers/questions/2075043/teams-add-in-not-showing-in-outlook-desktop-app-ha
+    etat: a-rediger
+
+  - id: teams-complement-outlook-absent-apres-nouveau-teams
+    titre: "Complément Teams absent d'Outlook après le passage au nouveau Teams"
+    symptome: "Après la migration vers le nouveau Teams, le complément de réunion n'est plus installé ; le désinstaller puis relancer Teams le réinstalle."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/resolve-teams-meeting-add-in-issues
+    etat: a-rediger
+
+  - id: teams-invitation-sans-lien-de-reunion
+    titre: "Les détails pour rejoindre (lien Teams) manquent dans l'invitation Outlook"
+    symptome: "La réunion créée depuis Outlook ne contient pas le lien « Rejoindre la réunion »."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/resolve-teams-meeting-add-in-issues
+      - https://learn.microsoft.com/en-us/answers/questions/5662491/teams-meeting-link-is-missing-on-outlook-meeting-r
+    etat: a-rediger
+
+  - id: teams-reunion-ouvre-skype-entreprise
+    titre: "Une réunion ouvre Skype for Business au lieu de Teams"
+    symptome: "En cliquant sur une réunion du calendrier, c'est Skype for Business qui se lance car la réunion a été planifiée avec Skype."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-conferencing/meeting-requires-skype-instead-of-teams
+    etat: a-rediger
+
+  - id: teams-reunions-indisponibles-exchange-local
+    titre: "Les réunions ne sont pas disponibles dans Teams (boîte Exchange locale ancienne)"
+    symptome: "Le calendrier ou les réunions n'apparaissent pas car la boîte aux lettres est hébergée sur un Exchange local antérieur à Exchange 2016 CU3."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-conferencing/teams-meetings-not-available
+    etat: a-rediger
+
+  - id: teams-calendrier-absent-integration-exchange
+    titre: "Calendrier absent ou vide dans Teams (intégration Exchange)"
+    symptome: "L'onglet Calendrier manque ou reste vide, la présence basée sur le calendrier ne fonctionne pas : stratégie d'applications, connectivité Exchange (hybride/local)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/exchange-integration/teams-exchange-interaction-issue
+    etat: a-rediger
+
+  # --- Conversations, notifications, présence ---
+  - id: teams-message-echec-envoi-failed-to-send
+    titre: "Messages Teams en échec « Failed to send » (Échec de l'envoi)"
+    symptome: "Les messages restent en attente ou échouent : client à redémarrer, membre de la conversation désactivé ou invité expiré, conversation bloquée par stratégie."
+    erreurs: ["Failed to send"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/4398965/regularly-getting-failed-to-send-message-needs-ful
+      - https://learn.microsoft.com/en-us/answers/questions/4418822/attachments-failed-to-send-in-microsoft-teams-grou?forum=msteams-all
+    etat: a-rediger
+
+  - id: teams-messages-non-recus-en-retard
+    titre: "Les messages Teams arrivent en retard ou n'apparaissent qu'après redémarrage"
+    symptome: "Les nouveaux messages ne s'affichent pas en temps réel dans le client de bureau alors qu'ils sont visibles sur le web ou le mobile."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5569831/microsoft-new-teams-messages-wont-send-until-i-qui
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/clear-teams-cache
+    etat: a-rediger
+
+  - id: teams-notifications-bureau-absentes
+    titre: "Aucune notification Teams sur le bureau Windows"
+    symptome: "Pas de bannière pour les messages : notifications Windows désactivées pour Teams, Assistant de concentration / Ne pas déranger, statut Occupé, conversation en sourdine, Teams classique en doublon."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/4439621/new-teams-notification-are-not-working-correctly
+      - https://learn.microsoft.com/en-us/answers/questions/4418913/unable-to-receive-notifications-on-my-desktop-from
+    etat: a-rediger
+
+  - id: teams-notification-debut-reunion-absente
+    titre: "Le nouveau Teams ne prévient plus au début des réunions"
+    symptome: "Aucune notification « La réunion a commencé » malgré les paramètres activés."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/4440222/new-teams-not-giving-notification-when-meeting-sta
+    etat: a-rediger
+
+  - id: teams-mac-son-notification-revient-par-defaut
+    titre: "Sur Mac, le son de notification Teams est remplacé par le son macOS par défaut"
+    symptome: "Le son personnalisé de Teams ne joue pas car le Centre de notifications macOS a remis en cache le fichier son."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-on-mac/teams-notification-sound-reverts-to-default
+    etat: a-rediger
+
+  - id: teams-statut-presence-bloque
+    titre: "Statut de présence Teams bloqué (Absent, Occupé, Hors ligne) ou faux"
+    symptome: "Le statut ne repasse pas à Disponible après reprise d'activité, ou reste figé : statut forcé avec durée, autre appareil connecté, calendrier, session à rafraîchir."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-im-presence/presence-not-show-actual-status
+      - https://learn.microsoft.com/en-us/answers/questions/6015649/microsoft-teams-presence-status-does-not-update-co
+    etat: a-rediger
+
+  - id: teams-statut-absent-du-bureau-bloque
+    titre: "Statut « Absent du bureau » (Out of Office) bloqué dans Teams"
+    symptome: "Teams affiche Absent du bureau alors que les réponses automatiques sont désactivées : événement de calendrier « Afficher comme : Absent » accepté, réponses automatiques actives dans Outlook."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5526799/teams-ooo-stuck-on
+      - https://learn.microsoft.com/en-us/answers/questions/4432625/microsoft-teams-status-stuck-on-available-out-of-o
+    etat: a-rediger
+
+  - id: teams-presence-contact-inconnue
+    titre: "Présence d'un contact affichée « Statut inconnu » (Status unknown)"
+    symptome: "Le statut d'un contact reste inconnu ou ne se met pas à jour : contact hors ligne, coexistence Skype for Business, problème réseau avec le service de présence."
+    erreurs: ["Status unknown"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-im-presence/contact-presence-status-unknown
+      - https://learn.microsoft.com/en-us/answers/questions/4416800/teams-status-stuck-on-unknown
+    etat: a-rediger
+
+  - id: teams-presence-outlook-incorrecte
+    titre: "La présence Teams est absente ou incorrecte dans Outlook"
+    symptome: "Dans Outlook, la pastille de présence n'apparaît pas, est fausse ou indique « Statut inconnu » (Teams non enregistré comme application de conversation)."
+    erreurs: ["Status unknown"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-im-presence/issues-with-presence-in-outlook
+    etat: a-rediger
+
+  - id: teams-mac-presence-perimee-apres-veille
+    titre: "Sur Mac, la présence des contacts reste périmée après la sortie de veille"
+    symptome: "L'abonnement de présence expiré n'est pas recréé à la reprise ; les statuts des contacts ne se mettent plus à jour."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-on-mac/incorrect-presence-status-teams-for-mac
+    etat: a-rediger
+
+  - id: teams-utilisateur-inconnu-unknown-user
+    titre: "Un collègue apparaît « Utilisateur inconnu » (Unknown User) dans Teams"
+    symptome: "Compte supprimé (définitif) ou désactivé puis réactivé (temporaire, jusqu'à deux semaines)."
+    erreurs: ["Unknown User"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/contacts/unknown-user-teams
+    etat: a-rediger
+
+  - id: teams-nom-photo-non-mis-a-jour
+    titre: "Nom, photo ou téléphone modifiés mais toujours anciens dans Teams"
+    symptome: "Après modification des attributs dans Entra ID, Teams affiche encore les anciennes informations (cache service jusqu'à 3 jours, cache local)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/user-information-not-updated
+    etat: a-rediger
+
+  - id: teams-contacts-federes-introuvables-recherche
+    titre: "Les contacts externes fédérés n'apparaissent pas dans la recherche Teams"
+    symptome: "Contacts importés d'un locataire partenaire introuvables : boîte locale, numéro de téléphone absent, recherche par nom au lieu de l'adresse."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/exchange-integration/external-contacts-not-in-search
+    etat: a-rediger
+
+  - id: teams-messages-supprimes-strategie-retention
+    titre: "Des messages Teams disparaissent (supprimés par une stratégie de rétention)"
+    symptome: "Des messages sont supprimés pour tous les participants à cause d'une stratégie de rétention, éventuellement d'une autre organisation."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-im-presence/messages-unexpectedly-deleted-retention-policy
+    etat: a-rediger
+
+  - id: teams-message-vers-skype-entreprise-echoue
+    titre: "Un message Teams vers un utilisateur Skype for Business échoue"
+    symptome: "En coexistence, le message n'est pas remis si le destinataire est Hors ligne / Ne pas déranger ou utilise Skype for Business local."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-im-presence/teams-user-not-send-message-in-sfb
+    etat: a-rediger
+
+  - id: teams-conversation-reunion-inaccessible
+    titre: "Conversation de réunion inaccessible : « The Administrator has disabled the Chat »"
+    symptome: "Icône Conversation absente, message d'erreur ou historique invisible : stratégie de réunion, plus de 1 000 participants, invité ajouté via un lien transféré."
+    erreurs: ["The Administrator has disabled the Chat"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/meeting-chat-issues
+    etat: a-rediger
+
+  - id: teams-sondage-forms-externe-echoue
+    titre: "Impossible d'envoyer un sondage Forms à un externe ou un invité"
+    symptome: "L'envoi d'un sondage dans une conversation fédérée échoue, ou les invités anonymes ne peuvent pas répondre."
+    erreurs: ["Something went wrong, please try again later"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/forms/cannot-send-poll
+    etat: a-rediger
+
+  # --- Fichiers dans Teams (SharePoint, OneDrive) ---
+  - id: teams-onglet-fichiers-object-does-not-belong-to-list
+    titre: "Onglet Fichiers : « The object specified does not belong to a list »"
+    symptome: "L'onglet Fichiers d'un canal ne s'ouvre plus car la bibliothèque « Shared Documents » du site SharePoint a été renommée."
+    erreurs: ["The object specified does not belong to a list"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/files/access-files-tab-errors
+    etat: a-rediger
+
+  - id: teams-onglet-fichiers-problem-reaching-this-app
+    titre: "Onglet Fichiers : « There was a problem reaching this app »"
+    symptome: "Les fichiers du canal ne se chargent pas car le groupe Microsoft 365 de l'équipe n'a plus de propriétaire."
+    erreurs: ["There was a problem reaching this app"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/files/access-files-tab-errors
+    etat: a-rediger
+
+  - id: teams-onglet-fichiers-we-cant-get-your-files
+    titre: "Onglet Fichiers : « We can't get your files, we're working on getting them back »"
+    symptome: "Les fichiers du canal ne s'affichent pas ; souvent temporaire, sinon diagnostic d'accès aux fichiers."
+    erreurs: ["We can't get your files, we're working on getting them back"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/files/access-files-tab-errors
+    etat: a-rediger
+
+  - id: teams-fichiers-canal-introuvables-ou-vides
+    titre: "Les fichiers d'un canal n'apparaissent pas ou l'onglet Fichiers reste vide"
+    symptome: "Onglet vide ou partiel : dossier SharePoint renommé ou déplacé, héritage des autorisations rompu, site du canal privé distinct, cache du client."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5869481/teams-files-not-showing-up-in-channels
+      - https://learn.microsoft.com/en-us/answers/questions/5873865/teams-channel-files-tab-shows-blank-page-until-rel
+    etat: a-rediger
+
+  - id: teams-televersement-fichier-conversation-verrouille
+    titre: "Envoi de fichier en conversation : « The file didn't upload. The file is locked. »"
+    symptome: "Le fichier ne peut pas être joint car il est verrouillé pendant le téléversement vers OneDrive."
+    erreurs: ["The file <FileName> didn't upload.", "The file <FileName> is locked."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/files/cannot-upload-files-or-access-onedrive
+    etat: a-rediger
+
+  - id: teams-televersement-fichier-onedrive-indisponible
+    titre: "Envoi de fichier en conversation : « Your OneDrive isn't available »"
+    symptome: "Impossible de partager un fichier en conversation car le OneDrive de l'utilisateur n'est pas provisionné ou pas de licence."
+    erreurs: ["The file <FileName> didn't upload.", "Your OneDrive isn't available."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/files/cannot-upload-files-or-access-onedrive
+    etat: a-rediger
+
+  - id: teams-fichier-you-dont-have-access
+    titre: "Fichier partagé en conversation : « You don't have access to this file »"
+    symptome: "Le destinataire ne peut pas ouvrir le fichier car la fonctionnalité « Limited-access user permission lockdown mode » est active sur le OneDrive de l'expéditeur."
+    erreurs: ["You don't have access to this file."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/files/do-not-have-access-to-this-file-teams
+    etat: a-rediger
+
+  - id: teams-invites-fichiers-unauthorized-operation
+    titre: "Les invités ne peuvent pas ouvrir l'onglet Fichiers : « Attempted to perform an unauthorized operation »"
+    symptome: "Paramètres de partage SharePoint/OneDrive incompatibles avec l'accès invité de Teams."
+    erreurs: ["Something went wrong", "Attempted to perform an unauthorized operation."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/files/guests-cannot-access-files
+    etat: a-rediger
+
+  - id: teams-partage-fichier-grande-conversation-echoue
+    titre: "Impossible de partager un fichier dans une conversation de plus de 100 personnes"
+    symptome: "Le message avec pièce jointe ne part pas dans une grande conversation de groupe ou de réunion (lien « Personnes spécifiques »)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/files/cannot-share-files-in-large-chat
+    etat: a-rediger
+
+  - id: teams-onedrive-404-apres-changement-upn
+    titre: "Erreur « 404 File not found » dans l'application OneDrive de Teams après un changement d'UPN"
+    symptome: "Après modification du nom d'utilisateur principal, l'application OneDrive de Teams pointe vers l'ancienne adresse."
+    erreurs: ["404 File not found."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/files/404-error-access-onedrive-teams
+    etat: a-rediger
+
+  - id: teams-option-ouvrir-application-bureau-absente
+    titre: "L'option « Ouvrir dans l'application de bureau » manque pour les fichiers Office dans Teams"
+    symptome: "Word, Excel ou PowerPoint de bureau ne sont pas proposés : client web, Office non installé ou licence sans applications de bureau."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/files/desktop-app-option-missing
+    etat: a-rediger
+
+  - id: teams-onenote-plus-de-5000-elements
+    titre: "Bloc-notes OneNote inaccessible depuis Teams (plus de 5 000 éléments OneNote)"
+    symptome: "Erreur indiquant qu'une bibliothèque contient plus de 5 000 éléments OneNote et ne peut pas être interrogée par l'API."
+    erreurs: ["One or more of the document libraries on the user or group's OneDrive contains more than 5,000 OneNote items"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-onenote-integration/issue-access-notebook
+    etat: a-rediger
+
+  # --- Équipes et canaux ---
+  - id: teams-creation-equipe-impossible
+    titre: "Impossible de créer une équipe : l'option « Créer une équipe » est absente"
+    symptome: "L'utilisateur ne voit que « Rejoindre une équipe » : création des groupes Microsoft 365 restreinte à un groupe de sécurité, licence ou stratégie Teams."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/provisioning/users-cant-create-team
+      - https://learn.microsoft.com/en-us/answers/questions/4430263/ms-teams-create-option-is-missing
+    etat: a-rediger
+
+  - id: teams-ajout-membre-we-couldnt-add-member
+    titre: "« We couldn't add member. We ran into an issue » en ajoutant un membre à une équipe"
+    symptome: "L'ajout échoue dans Teams mais fonctionne dans le groupe Microsoft 365 ; le paramètre Entra UsersPermissionToReadOtherUsersEnabled est à False."
+    erreurs: ["We couldn't add member. We ran into an issue. Please try again later."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/couldnt-add-member-error
+    etat: a-rediger
+
+  - id: teams-nouveau-membre-ne-voit-pas-equipe
+    titre: "Un membre ajouté au groupe Microsoft 365 ne voit pas l'équipe dans Teams"
+    symptome: "Le membre figure dans le groupe (ou groupe dynamique) mais l'équipe n'apparaît qu'après la synchronisation en arrière-plan, jusqu'à 24 h."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/graph/teams-create-group-and-team
+      - https://techcommunity.microsoft.com/t5/microsoft-teams/member-added-via-dynamic-group-azure-need-to-wait-almost-24/td-p/2118852
+    etat: a-rediger
+
+  - id: teams-equipes-disparues-apres-reactivation-compte
+    titre: "Les équipes ont disparu après la réactivation du compte"
+    symptome: "Un compte désactivé est retiré de ses équipes ; après réactivation, l'appartenance revient en 24 à 48 h, sauf pour les canaux privés."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/channels/logon-reenabled-user-not-see-previous-joined-teams
+    etat: a-rediger
+
+  - id: teams-restaurer-equipe-supprimee
+    titre: "Restaurer une équipe supprimée (groupe Microsoft 365 supprimé)"
+    symptome: "Une équipe a disparu ; supprimer l'équipe supprime le groupe, restaurable pendant 30 jours depuis les groupes supprimés."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/provisioning/deleting-team-also-deletes-group
+      - https://learn.microsoft.com/en-us/microsoftteams/archive-or-delete-a-team
+    etat: a-rediger
+
+  - id: teams-restaurer-canal-supprime
+    titre: "Restaurer un canal Teams supprimé"
+    symptome: "Un canal a été supprimé par erreur ; un propriétaire peut le restaurer depuis Gérer l'équipe > Canaux > Supprimés pendant un délai limité."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/4410596/how-to-recover-deleted-teams-channel
+      - https://learn.microsoft.com/en-us/answers/questions/598773/how-to-recover-deleted-teams-channels-and-where-to
+    etat: a-rediger
+
+  - id: teams-nom-canal-supprime-non-reutilisable
+    titre: "Impossible de recréer un canal portant le nom d'un canal supprimé"
+    symptome: "Le nom d'un canal supprimé reste réservé (conçu ainsi pour la protection des informations)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/channels/channel-cannot-be-recreated-after-deletion
+    etat: a-rediger
+
+  - id: teams-dossier-canal-supprime-non-supprimable-sharepoint
+    titre: "Le dossier SharePoint d'un canal supprimé ne peut pas être supprimé"
+    symptome: "Pour les canaux standard supprimés avant août 2022, l'option Supprimer n'apparaît pas sur le dossier dans SharePoint."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/lists-and-libraries/deleted-teams-standard-channel-folder-deletion-fails
+    etat: a-rediger
+
+  - id: teams-equipe-archivee-lecture-seule
+    titre: "Équipe en lecture seule : l'équipe a été archivée"
+    symptome: "Impossible de publier ou de modifier : l'équipe est archivée et doit être réactivée par un propriétaire ou un administrateur."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoftteams/archive-or-delete-a-team
+    etat: a-rediger
+
+  - id: teams-canal-prive-ajout-membre-impossible
+    titre: "Impossible d'ajouter quelqu'un à un canal privé"
+    symptome: "La personne n'est pas proposée car elle doit d'abord être membre de l'équipe parente (y compris les invités)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/microsoftteams/cant-add-members-to-private-channels/1032167/replies/1037127
+      - https://uwindsor.teamdynamix.com/TDClient/1975/Portal/KB/ArticleDet?ID=138421
+    etat: a-rediger
+
+  - id: teams-creation-canal-prive-impossible
+    titre: "L'option de création d'un canal privé ou partagé est absente"
+    symptome: "Le type de canal privé/partagé n'est pas proposé : paramètres de l'équipe ou stratégie Teams de l'utilisateur."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoftteams/shared-channels-errors
+    etat: a-rediger
+
+  - id: teams-canal-partage-due-to-admin-policy-externe
+    titre: "Canal partagé : « Due to admin policy, you can't add external people »"
+    symptome: "Impossible d'inviter un externe dans un canal partagé : stratégie Teams « Inviter des utilisateurs externes dans les canaux partagés » ou paramètres invités des groupes."
+    erreurs: ["Due to admin policy, you can't add external people"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoftteams/shared-channels-errors
+    etat: a-rediger
+
+  - id: teams-canal-partage-cant-share-with-this-org
+    titre: "Canal partagé : « You can't share this channel with people from this org » (accès inter-locataires B2B direct connect)"
+    symptome: "Les paramètres d'accès inter-locataires Entra (entrants chez soi ou sortants chez le partenaire) bloquent le partage du canal."
+    erreurs: ["You can't share this channel with people from this org"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/microsoftteams/shared-channels-errors
+    etat: a-rediger
+
+  - id: teams-canal-partage-we-couldnt-find-any-matches
+    titre: "Canal partagé : « We couldn't find any matches » en recherchant un externe"
+    symptome: "L'adresse e-mail externe est introuvable dans l'organisation partenaire, ou la personne est un invité (non autorisé dans les canaux partagés)."
+    erreurs: ["We couldn't find any matches"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoftteams/shared-channels-errors
+      - https://learn.microsoft.com/en-us/answers/questions/4401437/we-couldnt-find-any-matches-cant-share-a-shared-ch?forum=msteams-all
+    etat: a-rediger
+
+  - id: teams-onglet-planner-failed-to-create-the-plan
+    titre: "Onglet Planner : « Failed to create the plan »"
+    symptome: "Le propriétaire de l'équipe ne peut pas créer d'onglet Planner car il n'est pas membre du groupe Microsoft 365."
+    erreurs: ["Failed to create the plan"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/tabs/teams-owner-cannot-create-planner-tab
+    etat: a-rediger
+
+  # --- Accès externe, fédération, invités ---
+  - id: teams-federation-externe-conversation-impossible
+    titre: "Impossible de discuter avec un utilisateur d'une autre organisation (accès externe / fédération)"
+    symptome: "Les messages vers un externe échouent : accès externe désactivé, domaine bloqué ou non autorisé, mode de coexistence autre que Teams uniquement."
+    erreurs: ["We can't set up the conversation because your organizations are not set up to talk to each other."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/t5/microsoft-teams-support/new-diagnostic-teams-federation-and-interoperability-diagnostic/ba-p/3971173
+      - https://learn.microsoft.com/en-us/answers/questions/4395121/external-access-enabled-but-cannot-access-external
+    etat: a-rediger
+
+  - id: teams-conversation-externe-lecture-seule-mode-coexistence
+    titre: "Conversation avec un externe verrouillée en lecture seule (mode de coexistence)"
+    symptome: "Teams verrouille la conversation native et propose une conversation texte limitée quand un des deux utilisateurs n'est plus en mode Teams uniquement."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/microsoftteams/teams-external-chat/970169
+    etat: a-rediger
+
+  - id: teams-invite-acces-equipe-impossible
+    titre: "Un invité ne peut pas accéder à l'équipe à laquelle il a été ajouté"
+    symptome: "L'invité ne voit pas l'organisation ou l'équipe : invitation non acceptée, mauvais compte, accès invité désactivé, délai de propagation, accès conditionnel."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-nz/answers/questions/5973925/teams-guest-access-issue
+      - https://learn.microsoft.com/en-us/answers/questions/4418119/guest-user-cant-access-teams-school-or-work
+    etat: a-rediger
+
+  - id: teams-invite-organisation-absente-selecteur
+    titre: "L'organisation invitante n'apparaît pas dans le sélecteur de comptes de Teams"
+    symptome: "L'invité ne peut pas basculer vers l'organisation hôte depuis le client de bureau alors que le web fonctionne."
+    erreurs: ["We couldn't switch you to"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/microsoftteams/unable-to-switch-to-guest-organization/1506026
+      - https://techcommunity.microsoft.com/discussions/microsoftteams/guest-account-not-showing-in-teams-app/3760479
+    etat: a-rediger
+
+  - id: teams-invite-redemption-failed
+    titre: "Erreur « Invitation redemption failed » pour un invité Teams"
+    symptome: "L'invité ne peut pas accepter l'invitation : ancien objet invité ou utilisateur supprimé encore présent dans le locataire hôte."
+    erreurs: ["Invitation redemption failed"]
+    priorite: rare
+    format: express
+    sources:
+      - https://www.technipages.com/microsoft-teams-error-invitation-redemption-failed
+      - https://learn.microsoft.com/en-us/answers/questions/5749400/different-org-gets-an-error-message-when-trying-to
+    etat: a-rediger
+
+  - id: teams-invite-compte-personnel-bureau-impossible
+    titre: "Invité avec compte Microsoft personnel : canaux inaccessibles dans le client de bureau"
+    symptome: "L'invité accède via le web mais pas via l'application de bureau (accès conditionnel, compte personnel)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5558899/guests-using-personal-microsoft-accounts-unable-to
+    etat: a-rediger
+
+  - id: teams-externe-affiche-inconnu-analyse-appels
+    titre: "Un utilisateur externe apparaît « Unknown » dans l'analyse des appels du centre d'administration"
+    symptome: "Comportement normal : l'interface interroge Entra ID et ne peut pas résoudre les utilisateurs externes."
+    erreurs: ["Unknown"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/external-user-shown-as-unknown
+    etat: a-rediger
+
+  # --- Applications, onglets, bots ---
+  - id: teams-application-bloquee-par-administrateur
+    titre: "Une application Teams est bloquée ou introuvable (stratégie d'autorisation des applications)"
+    symptome: "L'application n'apparaît pas ou est signalée bloquée : bloquée à l'échelle de l'organisation, par stratégie d'autorisation, ou « Bloquée par l'éditeur »."
+    erreurs: ["Blocked by publisher"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/training/modules/manage-apps-for-microsoft-teams/04-manage-app-settings-organization-level
+      - https://learn.microsoft.com/en-us/microsoftteams/manage-third-party-teams-apps
+    etat: a-rediger
+
+  - id: teams-televersement-application-personnalisee-impossible
+    titre: "Impossible de charger une application personnalisée (sideloading) dans Teams"
+    symptome: "L'option « Charger une application personnalisée » est absente ou refusée : paramètre « Upload custom apps » désactivé dans les stratégies."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-my/answers/questions/2037907/unable-to-upload-custom-apps-on-teams
+      - https://learn.microsoft.com/en-us/answers/questions/1656215/permission-issues-installing-custom-app-for-users
+    etat: a-rediger
+
+  - id: teams-webhook-connecteur-office365-ne-fonctionne-plus
+    titre: "Les webhooks entrants / connecteurs Office 365 ne publient plus dans Teams"
+    symptome: "Les alertes envoyées vers un canal n'arrivent plus : connecteurs Office 365 retirés, recréer le webhook avec l'application Workflows."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://devblogs.microsoft.com/microsoft365dev/retirement-of-office-365-connectors-within-microsoft-teams/
+      - https://mc.merill.net/message/MC808160
+    etat: a-rediger
+
+  - id: teams-onglets-ne-fonctionnent-plus-acces-conditionnel
+    titre: "Onglets Teams (Power BI, Forms, SharePoint…) qui ne se chargent plus après activation de l'accès conditionnel"
+    symptome: "Dans le client de bureau, les onglets demandant une authentification Entra ne s'affichent plus alors qu'ils fonctionnent sur le web."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/tabs/tabs-dont-work-after-enabling-conditional-access
+    etat: a-rediger
+
+  - id: teams-onglet-site-web-ne-se-charge-pas
+    titre: "Un onglet Site web ne se charge pas dans le nouveau Teams ou Teams web"
+    symptome: "Le site refuse d'être intégré (iFrame) ou est soumis à l'accès conditionnel ; utiliser « Ouvrir dans le navigateur »."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/tabs/websites-not-loaded-new-teams
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/sites/cannot-view-website-teams-web-client
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/mobile/websites-with-conditional-access-dont-display
+    etat: a-rediger
+
+  - id: teams-notifications-actualites-sharepoint-indesirables
+    titre: "Notifications d'actualités SharePoint indésirables dans le flux d'activité Teams"
+    symptome: "Les utilisateurs reçoivent dans Teams les notifications de publication d'actualités SharePoint et souhaitent les désactiver."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/disable-sharepoint-news-notifications
+    etat: a-rediger
+
+  # --- Administration du locataire ---
+  - id: teams-centre-admin-failed-to-auto-discover-domain
+    titre: "Centre d'administration Teams : erreur FAILED_TO_AUTO_DISCOVER_DOMAIN"
+    symptome: "Le centre d'administration Teams ne se charge pas : domaine SIP non activé dans le locataire ou autre configuration."
+    erreurs: ["FAILED_TO_AUTO_DISCOVER_DOMAIN"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/failed-to-auto-discover-domain-error-teams-admin-center
+    etat: a-rediger
+
+  - id: teams-passage-mode-teams-uniquement-echoue
+    titre: "Impossible de passer le locataire en mode « Teams uniquement » (Teams Only)"
+    symptome: "Le centre d'administration affiche « Please see the unsaved sections highlighted in red below » ; Grant-CsTeamsUpgradePolicy renvoie une erreur détaillée."
+    erreurs: ["Please see the unsaved sections highlighted in red below."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/cannot-switch-to-teams-only-mode
+    etat: a-rediger
+
+  - id: teams-premium-fonctionnalites-indisponibles
+    titre: "Fonctionnalités Teams Premium absentes malgré la licence"
+    symptome: "Les fonctions Premium n'apparaissent pas ou après 24 h : licence, stratégies ou client non à jour."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/cannot-access-teams-premium-features
+    etat: a-rediger

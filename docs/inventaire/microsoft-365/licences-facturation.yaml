@@ -1,0 +1,895 @@
+domaine: microsoft-365
+sous_domaine: licences-facturation
+recense_le: 2026-10-29
+problemes:
+  # --- Attribution de licences ---
+  - id: m365-licence-boite-non-creee
+    titre: "Nouvel utilisateur sans boîte mail ni Teams (licence non attribuée)"
+    symptome: "Le compte existe mais l'utilisateur n'a ni boîte aux lettres, ni Teams, ni OneDrive."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/office/troubleshoot/activation/license-not-assigned
+    etat: redigee
+
+  - id: m365-licence-emplacement-utilisation-manquant
+    titre: "Impossible d'attribuer une licence : emplacement d'utilisation (usage location) non défini"
+    symptome: "L'attribution de licence échoue ou reste en erreur tant que le pays d'utilisation de l'utilisateur n'est pas renseigné."
+    erreurs: ["License assignment cannot be done for user with invalid usage location", "ProhibitedInUsageLocationViolation"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/fundamentals/licensing-groups-resolve-problems
+      - https://www.adaxes.com/questions/all/active-directory-management-with-adaxes?start=740
+    etat: a-rediger
+
+  - id: m365-licence-nombre-insuffisant
+    titre: "Plus de licences disponibles pour attribuer un produit (CountViolation)"
+    symptome: "L'attribution directe ou par groupe échoue car toutes les licences achetées sont déjà consommées."
+    erreurs: ["CountViolation", "There aren't enough available licenses for one of the products specified in the group"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/fundamentals/licensing-groups-resolve-problems
+      - https://learn.microsoft.com/en-us/answers/questions/2152583/license-limit-has-been-reached
+    etat: a-rediger
+
+  - id: m365-licence-plans-mutuellement-exclusifs
+    titre: "Licences incompatibles : plans de service mutuellement exclusifs (MutuallyExclusiveViolation)"
+    symptome: "Deux produits attribués au même utilisateur contiennent des plans de service qui ne peuvent pas coexister ; l'attribution échoue."
+    erreurs: ["MutuallyExclusiveViolation", "License assignment failed because service plans [xxxx], [xxxx] are mutually exclusive", "You can't assign licenses that contain these conflicting services"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/fundamentals/licensing-groups-resolve-problems
+      - https://mysysadmintips.com/office-365-you-can-t-assign-licenses-that-contain-these-conflicting-services
+      - https://techcommunity.microsoft.com/discussions/microsoft-entra/group-based-licensing-e3-%e2%86%92-business-premium-mutuallyexclusiveviolation-%e2%80%93-months-/4534721
+    etat: a-rediger
+
+  - id: m365-licence-dependance-manquante
+    titre: "Module complémentaire impossible à attribuer : licence prérequise manquante (DependencyViolation)"
+    symptome: "Un add-on (ex. archivage, audioconférence) refuse de s'attribuer ou ne peut pas être retiré car un autre plan en dépend."
+    erreurs: ["DependencyViolation"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/fundamentals/licensing-groups-resolve-problems
+      - https://learn.microsoft.com/en-us/answers/questions/1019815/dynamic-group-based-license-assignment-fails-with
+    etat: a-rediger
+
+  - id: m365-licence-groupe-utilisateurs-en-erreur
+    titre: "Attribution de licences par groupe : des membres restent en erreur sans prévenir"
+    symptome: "Certains membres du groupe n'obtiennent pas la licence ; l'erreur n'apparaît que dans l'onglet des erreurs ou les journaux d'audit."
+    erreurs: ["Change user license (failure)"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-au/microsoft-365/admin/manage/manage-group-licenses?view=o365-worldwide
+      - https://learn.microsoft.com/en-us/entra/fundamentals/licensing-groups-resolve-problems
+    etat: a-rediger
+
+  - id: m365-licence-adresse-proxy-deja-utilisee
+    titre: "Licence par groupe en échec : « Proxy address is already being used »"
+    symptome: "L'attribution échoue pour un utilisateur dont une adresse proxy est déjà portée par un autre objet Exchange Online ou Entra ID."
+    erreurs: ["Proxy address is already being used"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/fundamentals/licensing-groups-resolve-problems
+      - https://learn.microsoft.com/en-gb/answers/questions/1696640/when-im-trying-to-assign-a-license-im-getting-an-e
+    etat: a-rediger
+
+  - id: m365-licence-erreur-concurrence-attribution
+    titre: "Erreur LicenseAssignmentAttributeConcurrencyException lors d'une attribution"
+    symptome: "La même licence est attribuée simultanément par plusieurs groupes ou outils et l'opération échoue."
+    erreurs: ["LicenseAssignmentAttributeConcurrencyException"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-au/entra/identity/users/licensing-groups-resolve-problems
+      - https://developer.sailpoint.com/discuss/t/direct-m365-f1-license-assignment-fails-in-sailpoint-isc-due-to-concurrency-error/194652
+    etat: a-rediger
+
+  - id: m365-licence-retraiter-groupe-reprocess
+    titre: "Erreur de licence corrigée mais l'utilisateur reste en erreur (retraitement nécessaire)"
+    symptome: "Après correction du conflit, l'état de licence n'est pas mis à jour tant que l'utilisateur ou le groupe n'est pas retraité."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-au/microsoft-365/admin/manage/manage-group-licenses?view=o365-worldwide
+      - https://learn.microsoft.com/en-us/entra/fundamentals/licensing-groups-resolve-problems
+    etat: a-rediger
+
+  - id: m365-licence-exchange-plan1-plan2-cumul
+    titre: "Exchange Online Plan 1 et Plan 2 sur le même utilisateur : conflit ou plan inattendu"
+    symptome: "Erreur de conflit lors de l'ajout d'un second plan Exchange, ou fonctionnalités du plan supérieur non appliquées."
+    erreurs: ["You can't assign licenses that contain these conflicting services"]
+    priorite: rare
+    format: express
+    sources:
+      - https://redmondmag.com/articles/2023/01/20/microsoft-eases-exchange-online-license-assignments.aspx
+      - https://www.certero.com/blog/new-microsoft-process-concurrent-exchange-online-license-assignments/
+      - https://techcommunity.microsoft.com/discussions/exchange_general/help-setting-eop2-to-a-user/826013
+    etat: a-rediger
+
+  - id: office-produit-sans-licence
+    titre: "Licence attribuée mais les applications Office restent « Produit sans licence »"
+    symptome: "Le centre d'administration montre la licence mais Word, Excel ou Outlook n'activent pas."
+    erreurs: ["You currently have not been assigned an office license that includes the Office desktop apps"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/office/troubleshoot/activation/license-not-assigned
+      - https://learn.microsoft.com/en-us/answers/questions/5917604/microsoft-365-license-assigned-successfully-but-of
+    etat: redigee
+    # couvert par la fiche office-produit-sans-licence (applications-office)
+
+  - id: m365-licence-droits-admin-insuffisants
+    titre: "Impossible d'attribuer ou d'acheter des licences : rôle d'administration insuffisant"
+    symptome: "Les boutons d'attribution ou d'achat sont grisés ou refusés ; il faut au moins Administrateur de licences / Administrateur de facturation."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-au/microsoft-365/admin/manage/manage-group-licenses?view=o365-worldwide
+    etat: a-rediger
+
+  # --- Retrait de licence et conséquences ---
+  - id: exchange-boite-supprimee-apres-retrait-licence
+    titre: "Boîte aux lettres disparue après retrait ou expiration de la licence Exchange"
+    symptome: "Après retrait de licence, la boîte est déconnectée ; au-delà de 30 jours elle est supprimée définitivement."
+    erreurs: ["UserHasNoMailbox", "NoLicenseAssignedError"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/exchange/troubleshoot/user-and-shared-mailboxes/no-soft-deleted-mailbox-after-license-removal
+      - https://techcommunity.microsoft.com/blog/exchange/change-in-behavior-for-delicensed-exchange-online-users/605962
+    etat: a-rediger
+
+  - id: m365-retrait-licence-donnees-delais
+    titre: "Retrait de licence d'un salarié parti : que deviennent sa boîte et son OneDrive, et sous quels délais"
+    symptome: "Le technicien doit libérer une licence sans perdre les mails et fichiers de l'ancien utilisateur."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/476061/what-happens-to-the-user-data-if-i-remove-the-lice
+      - https://learn.microsoft.com/microsoft-365/admin/add-users/delete-a-user
+      - https://docs.microsoft.com/en-us/microsoft-365/admin/add-users/remove-former-employee
+    etat: a-rediger
+
+  - id: onedrive-lecture-seule-apres-fin-licence
+    titre: "OneDrive en lecture seule ou impossible à modifier après la fin de la licence"
+    symptome: "L'utilisateur ne peut plus modifier ses fichiers OneDrive une fois sa licence retirée ou expirée."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sites/cannot-edit-files-onedrive-license-end
+    etat: a-rediger
+
+  - id: exchange-boite-partagee-licence-requise
+    titre: "Boîte partagée : licence obligatoire au-delà de 50 Go, pour l'archive ou la conservation pour litige"
+    symptome: "Boîte partagée bloquée à 50 Go, archive impossible à activer ou mise en conservation refusée sans licence."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/microsoft-365/admin/email/about-shared-mailboxes
+      - https://learn.microsoft.com/en-us/microsoft-365/admin/email/remove-license-from-shared-mailbox
+      - https://office365itpros.com/2022/08/17/shared-mailbox-license-check/
+    etat: a-rediger
+
+  - id: exchange-quota-non-augmente-apres-licence
+    titre: "Quota de boîte non augmenté après attribution d'une licence supérieure"
+    symptome: "La boîte reste au quota de l'ancienne licence (ex. 50 Go) malgré un passage à un plan qui donne 100 Go."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/exchange/troubleshoot/administration/mailbox-quotas-not-increased-automatically-for-qualifing-licenses
+    etat: a-rediger
+
+  # --- Abonnements : expiration, suspension, changement de formule ---
+  - id: m365-abonnement-expire-desactive-supprime
+    titre: "Abonnement Microsoft 365 expiré, désactivé ou en cours de suppression"
+    symptome: "Bannière d'abonnement expiré ; puis les utilisateurs perdent l'accès, et les données risquent d'être supprimées."
+    erreurs: ["Expired", "Disabled", "Deleted"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/microsoft-365/commerce/subscriptions/what-if-my-subscription-expires
+      - https://blog.ciaops.com/2025/08/02/lifecycle-of-a-microsoft-365-business-premium-tenant-after-license-expiry/
+    etat: a-rediger
+
+  - id: m365-abonnement-suspendu-acces-services-bloque
+    titre: "Accès SharePoint ou aux services bloqué à cause d'un abonnement suspendu (impayé, contrôle de sécurité)"
+    symptome: "Les services sont limités ou SharePoint est bloqué ; l'abonnement apparaît suspendu dans Facturation > Vos produits."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/admin/sign-in/subscription-issues-affect-access-to-services
+      - https://learn.microsoft.com/en-us/answers/questions/5806199/overdue-invoice-7-days-to-pay-before-data-is-delet
+    etat: a-rediger
+
+  - id: m365-compte-facturation-bloque
+    titre: "Compte de facturation bloqué : achats et transferts d'abonnements impossibles"
+    symptome: "Impossible d'ajouter ou de modifier un abonnement ; risque de suspension puis de résiliation du compte."
+    erreurs: []
+    priorite: critique
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5838646/no-access-to-billing-warning-your-online-services
+      - https://learn.microsoft.com/en-us/answers/questions/5852231/how-do-i-fix-a-tenant-access-blocked-error
+    etat: a-rediger
+
+  - id: m365-abonnement-impossible-changer-formule
+    titre: "Impossible de changer de formule (upgrade) : « We can't upgrade your subscription right now »"
+    symptome: "Le bouton de changement de formule est absent ou le passage à un autre plan échoue."
+    erreurs: ["We can't upgrade your subscription right now", "An error occurred while setting up your new subscription"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5822300/we-cant-upgrade-your-subscription-right-now-please
+      - https://learn.microsoft.com/en-us/answers/questions/5793347/how-to-upgrade-my-business-subscription
+    etat: a-rediger
+
+  - id: m365-nce-reduction-licences-impossible
+    titre: "Impossible de réduire le nombre de licences ou d'annuler (fenêtre de 7 jours dépassée, NCE)"
+    symptome: "Après les 168 heures suivant l'achat ou le renouvellement, la quantité est verrouillée jusqu'à la fin de l'engagement."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/partner-center/customers/new-commerce-cancellation-policy
+      - https://www.channelweb.co.uk/news/4052925/microsoft-implements-seven-day-cancellation-window-software-subscriptions
+    etat: a-rediger
+
+  - id: m365-essai-non-disponible-ou-non-eligible
+    titre: "Essai gratuit introuvable ou refusé (tenant non éligible, essai déjà utilisé)"
+    symptome: "L'essai (E5, Purview, Intune…) n'apparaît pas ou la page bascule vers l'achat."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/2264216/microsoft-355-e5-free-trial-not-visible
+      - https://learn.microsoft.com/en-us/answers/questions/2152185/if-i-am-a-global-admin-and-i-have-365-e3-why-cant
+    etat: a-rediger
+
+  # --- Facturation et paiement ---
+  - id: m365-achat-erreur-43881
+    titre: "Achat ou essai bloqué par l'erreur 43881"
+    symptome: "L'achat d'un abonnement (Business Basic, Standard, Exchange Online…) échoue avec le code 43881 ; vérification de compte ou de paiement côté Microsoft."
+    erreurs: ["Error code 43881"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5621474/error-code-43881-when-purchasing-microsoft-365-bus
+      - https://learn.microsoft.com/en-us/answers/questions/2113964/error-43881-when-trying-to-purchase-subscription
+    etat: a-rediger
+
+  - id: m365-paiement-refuse-carte
+    titre: "Paiement refusé pour l'abonnement Microsoft 365 (carte bancaire)"
+    symptome: "Le renouvellement ou l'achat échoue, facture impayée, risque de suspension."
+    erreurs: ["Your payment was declined", "Payment declined by financial institution"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5861771/payment-decline
+      - https://learn.microsoft.com/en-us/answers/questions/5831719/payment-declined-by-financial-institution
+    etat: a-rediger
+
+  - id: m365-cle-produit-deja-utilisee-invalide
+    titre: "Clé de produit Microsoft 365 pour entreprise refusée (déjà utilisée ou invalide)"
+    symptome: "La clé ne s'échange pas dans le centre d'administration : déjà utilisée, invalide ou réservée à un autre pays."
+    erreurs: ["This product key has already been redeemed", "TakenAlreadyRedeemedByOther"]
+    priorite: rare
+    format: express
+    sources:
+      - https://support.office.com/en-us/article/88d337ab-e7b1-43eb-a25e-7d6204e91099
+      - https://learn.microsoft.com/en-us/answers/questions/5287560/error-code-takenalreadyredeemedbyother-msa
+    etat: a-rediger
+
+  - id: m365-achats-libre-service-utilisateurs
+    titre: "Des utilisateurs achètent eux-mêmes des licences (Power BI, Visio, Project) : achats en libre-service"
+    symptome: "Des abonnements apparaissent sans passer par l'administrateur ; besoin de bloquer AllowSelfServicePurchase."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/subscriptions/allowselfservicepurchase-powershell
+      - https://office365itpros.com/2021/03/26/microsoft-increases-self-service-license-purchases/
+    etat: a-rediger
+
+  # --- CSP et partenaires ---
+  - id: m365-partenaire-csp-retrait-acces-transfert
+    titre: "Changer de partenaire CSP ou retirer l'accès d'un ancien partenaire (GDAP, transfert d'abonnements)"
+    symptome: "Ancien revendeur toujours présent, transfert d'abonnement bloqué ou expiré, double facturation pendant la bascule."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/partner-center/customers/transfer-subscriptions
+      - https://learn.microsoft.com/en-us/answers/questions/5838075/how-i-disconnect-a-partner-(moderator-note-persona
+      - https://techcommunity.microsoft.com/discussions/partnershelpingpartnerstechtopics/partner-lockout-of-microsoft-365-tenant-%E2%80%93-looking-for-advice-on-next-steps/4454383/replies/4455117
+    etat: a-rediger
+
+  # --- Teams Phone / Audio ---
+  - id: teams-pave-numerique-absent-licence
+    titre: "Pavé numérique absent dans Teams : licence Teams Phone ou forfait d'appels manquant"
+    symptome: "L'utilisateur ne peut pas appeler de numéro externe ; l'onglet Appels n'a pas de pavé numérique."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://docs.microsoft.com/learn/modules/configure-troubleshoot-microsoft-teams-clients-services/7-troubleshoot-voice
+      - https://learn.microsoft.com/en-us/answers/questions/791255/dial-pad-missing-in-ms-teams
+    etat: a-rediger
+
+  - id: teams-numero-attribution-licence-requise
+    titre: "« You need a phone system license » en attribuant un numéro de service payant (Teams)"
+    symptome: "Le centre d'administration Teams refuse d'attribuer un numéro de service à un compte de ressources ; passer par PowerShell."
+    erreurs: ["You need a phone system license"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-conferencing/need-a-license-error-when-assigning-a-number
+    etat: a-rediger
+
+  - id: m365-teams-absent-licence-no-teams-eee
+    titre: "Teams absent pour les utilisateurs d'une offre « (no Teams) » (Espace économique européen)"
+    symptome: "Nouveaux utilisateurs ou tenant passé sur une suite « no Teams » : Teams n'est pas disponible sans licence Teams séparée."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://www.microsoft.com/en-us/licensing/news/microsoft365-teams-eea
+      - https://blog.arxus.eu/en/what-the-unbundling-of-microsoft-team-means-for-you
+    etat: a-rediger
+
+  - id: teams-audioconference-numero-absent-invitation
+    titre: "Numéro d'appel (audioconférence) absent des invitations Teams malgré la licence"
+    symptome: "Les réunions créées par l'organisateur ne contiennent pas de numéro de téléphone pour rejoindre par appel."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5578892/i-cant-find-the-dial-in-phone-number-showing-up-wh
+      - https://techcommunity.microsoft.com/discussions/microsoftteams/audio-conferencing-dial-in-details-not-displayed-along-with-teams-meeting-detail/2244702
+    etat: a-rediger
+
+  - id: teams-compte-ressource-erreur-bvd
+    titre: "Numéro impossible à attribuer à un compte de ressources : « The following application instance is not present in BVD »"
+    symptome: "Le compte de ressources (file d'attente, standard automatique) refuse le numéro de téléphone."
+    erreurs: ["The following application instance is not present in BVD"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/following-application-instance-not-present-error
+    etat: a-rediger
+
+  - id: teams-premium-fonctionnalites-absentes
+    titre: "Fonctionnalités Teams Premium absentes malgré une licence valide"
+    symptome: "Les fonctions Premium n'apparaissent pas, ou seulement après 24 h, ou jamais (essai expiré, licence non provisionnée)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/cannot-access-teams-premium-features
+    etat: a-rediger
+
+  - id: teams-rooms-connexion-echoue-licence
+    titre: "Salle Teams Rooms qui ne se connecte plus (licence Teams Rooms absente, expirée ou mot de passe expiré)"
+    symptome: "L'appareil de salle affiche un échec de connexion du compte de ressources."
+    erreurs: ["CannotSignIn", "AADSTS50076", "AADSTS50079"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-rooms-and-devices/teams-rooms-resource-account-sign-in-issues
+      - https://techcommunity.microsoft.com/blog/microsoftteamssupport/update-microsoft-teams-rooms-licensing-policy-enforcement/3935112
+      - https://mc.merill.net/message/MC1290834
+    etat: a-rediger
+
+  # --- Conséquences de licences insuffisantes / mauvaise formule ---
+  - id: outlook-web-mailbox-couldnt-be-found
+    titre: "Outlook sur le web : « Mailbox couldn't be found for » (aucune licence Exchange Online)"
+    symptome: "L'utilisateur se connecte à Outlook sur le web mais aucune boîte n'est associée à son compte."
+    erreurs: ["Mailbox couldn't be found for"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/admin/misc/mailbox-not-found-error
+    etat: a-rediger
+
+  - id: onedrive-comptes-sans-licence-lecture-seule-archives
+    titre: "Comptes OneDrive sans licence passés en lecture seule puis archivés (et facturés)"
+    symptome: "Après retrait de licence, le OneDrive devient inaccessible : lecture seule à 60 jours, archivé à 93 jours, restauration payante."
+    erreurs: ["You can't edit your files because your license to use OneDrive ended over a couple of months ago"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/sharepoint/unlicensed-onedrive-accounts
+      - https://mc.merill.net/message/MC1381110
+      - https://lazyadmin.nl/office-365/unlicensed-onedrive-accounts-archived/
+    etat: a-rediger
+
+  - id: office-limite-installations-atteinte
+    titre: "Limite d'installations Microsoft 365 Apps atteinte (5 PC/Mac)"
+    symptome: "L'activation sur un nouveau poste échoue car l'utilisateur a déjà activé Office sur le nombre maximal d'appareils."
+    erreurs: ["Install limit reached"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/office/troubleshoot/activation/activation-limits
+      - https://learn.microsoft.com/en-us/answers/questions/4889402/install-limit-reached
+    etat: a-rediger
+
+  - id: m365-business-limite-300-utilisateurs
+    titre: "Impossible de dépasser 300 licences avec les offres Business (Basic, Standard, Premium)"
+    symptome: "L'achat au-delà de 300 licences Business échoue ; il faut compléter avec des licences Entreprise (E3/E5)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5633445/if-i-have-tenant-with-350-users-is-it-compliant-to
+      - https://techcommunity.microsoft.com/discussions/businessapplicationsforpartners/microsoft-365-now-can-buy-mix-plan-over-300-lic-/3864683/replies/3864719
+    etat: a-rediger
+
+  - id: m365-licence-f3-limites-outlook-bureau
+    titre: "Utilisateur en licence F1/F3 : Outlook de bureau ou applications Office indisponibles, petite boîte"
+    symptome: "Les comptes « première ligne » n'ont pas les droits attendus (client lourd, taille de boîte, OneDrive)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/microsoft-365/f3-license-question/1929359
+      - https://kurtsh.com/2023/05/01/info-compliance-governance-challenges-of-microsoft-365-f3/
+    etat: a-rediger
+    # > [!a-verifier] droits exacts F3 à confirmer dans la description de service officielle
+
+  - id: windows-activation-abonnement-enterprise-echoue
+    titre: "Windows Pro ne passe pas en Enterprise malgré une licence Microsoft 365 E3/E5 (activation par abonnement)"
+    symptome: "Le poste reste en Pro ou affiche Enterprise non activé ; licence Office 365 E3 (sans Windows) ou Pro non activé au préalable."
+    erreurs: ["0x8007007B"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/996262/windows-11-enterprise-subscription-is-active-but-n
+      - https://learn.microsoft.com/en-us/answers/questions/2261277/windows-11-enterprise-upgrade-via-intune-activatio
+      - https://call4cloud.nl/kb5036980-subscription-activation-issue/embed
+    etat: a-rediger
+
+  - id: entra-acces-conditionnel-licence-p1-requise
+    titre: "Accès conditionnel indisponible : licence Microsoft Entra ID P1 requise"
+    symptome: "Impossible de créer une stratégie d'accès conditionnel avec Business Standard ; il faut P1 (ex. Business Premium) ou se contenter des paramètres de sécurité par défaut."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1690999/how-to-manage-users-with-and-without-licenses-that
+      - https://learn.microsoft.com/en-us/answers/a/2337
+    etat: a-rediger
+
+  # --- Achat, facturation et paiement (documentation commerce) ---
+  - id: m365-aucun-compte-facturation-trouve
+    titre: "« You don't have any billing accounts » : impossible d'acheter alors qu'on est administrateur général"
+    symptome: "Un nouvel administrateur général ne peut rien acheter ni modifier dans Facturation ; il manque le rôle de propriétaire du compte de facturation."
+    erreurs: ["You don't have any billing accounts"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/no-billing-account-found
+    etat: a-rediger
+
+  - id: m365-boutons-acheter-retirer-licences-grises
+    titre: "Boutons « Acheter des licences » / « Supprimer des licences » grisés"
+    symptome: "Impossible d'ajuster le nombre de licences : contrôle de crédit en cours, abonnement prépayé par clé, achat via revendeur, essai, produit en fin de vente."
+    erreurs: ["This product is no longer available to buy, so some actions below are turned off."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/licenses/buy-licenses
+    etat: a-rediger
+
+  - id: m365-carte-bancaire-impossible-a-ajouter
+    titre: "Impossible d'ajouter ou de remplacer la carte bancaire de paiement"
+    symptome: "La carte est refusée à l'ajout (pays différent du tenant, blocage bancaire) ou ne peut pas être modifiée sur un moyen de paiement existant."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/billing-and-payments/manage-payment-methods
+    etat: a-rediger
+
+  - id: m365-facture-impayee-relances-desactivation
+    titre: "Facture impayée : relances (dunning) puis désactivation des services"
+    symptome: "Échec de prélèvement, e-mails de relance, puis désactivation progressive ou accélérée (fraude, rejet non réessayable, rétrofacturation)."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/billing-and-payments/billing-dunning-policies
+    etat: a-rediger
+
+  - id: m365-deux-factures-meme-mois
+    titre: "Deux factures pour le même abonnement dans le mois, ou période de facturation d'un seul jour"
+    symptome: "Le client pense être facturé deux fois ; en réalité passage à la facturation à l'avance ou modification de l'abonnement."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/billing-and-payments/understand-your-invoice
+    etat: a-rediger
+
+  - id: m365-montant-facture-different
+    titre: "Montant de la facture différent du mois précédent"
+    symptome: "Le total dû change sans explication apparente (ajout de licences au prorata, changement de prix, taxes)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/billing-and-payments/understand-your-invoice2
+    etat: a-rediger
+
+  - id: m365-compte-facturation-inactif-bloque
+    titre: "Compte de facturation bloqué pour inactivité (12 mois sans usage)"
+    symptome: "Notification de blocage sous 30 jours ; ensuite impossible d'ajouter ou transférer des abonnements, puis risque de résiliation."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/keep-billing-accounts-active
+    etat: a-rediger
+
+  - id: m365-abonnements-detaches-partenaire-csp
+    titre: "« [ACTION REQUIRED] Subscription(s) at risk of deletion » : abonnement détaché d'un partenaire CSP"
+    symptome: "Le revendeur n'est plus partenaire CSP ; l'abonnement n'est plus géré et sera déprovisionné."
+    erreurs: ["[ACTION REQUIRED] Subscription(s) at risk of deletion"]
+    priorite: critique
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/subscriptions/resolve-detached-subscriptions
+    etat: a-rediger
+
+  - id: m365-produit-fin-de-vente
+    titre: "« This product is no longer available to buy » : abonnement en fin de vente"
+    symptome: "Certaines actions (ajout de licences, renouvellement) sont désactivées sur un produit qui n'est plus commercialisé."
+    erreurs: ["This product is no longer available to buy, so some actions below are turned off."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/subscriptions/understand-eos-products
+    etat: a-rediger
+
+  - id: m365-changement-formule-bloque-causes
+    titre: "Lien « Voir les mises à niveau » absent : changement de formule automatique impossible"
+    symptome: "Plus d'utilisateurs que de licences, contrôle de crédit en attente, deux abonnements du même produit, module complémentaire bloquant, solde impayé, incident de service."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/subscriptions/upgrade-to-different-plan
+    etat: a-rediger
+
+  - id: m365-nouvel-abonnement-invisible-autre-tenant
+    titre: "Abonnement acheté mais absent de « Vos produits » (acheté sur une autre organisation)"
+    symptome: "Le nouvel abonnement n'apparaît pas ou n'est pas actif ; souvent acheté avec un autre compte ou un autre tenant."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/subscriptions/upgrade-to-different-plan
+    etat: a-rediger
+
+  - id: m365-facturation-recurrente-desactivee-expiration
+    titre: "Abonnement arrivé à échéance car la facturation récurrente était désactivée"
+    symptome: "L'abonnement passe en expiré à sa date de fin faute de renouvellement automatique."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/subscriptions/renew-your-subscription
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/subscriptions/reactivate-your-subscription
+    etat: a-rediger
+
+  - id: m365-cle-produit-invalide
+    titre: "« The product key you entered isn't valid » : clé Microsoft 365 entreprise invalide"
+    symptome: "Erreur de saisie (0/O, 5/S, l/I) ou clé grand public à utiliser sur setup.microsoft365.com."
+    erreurs: ["The product key you entered isn't valid. Try entering it again.", "Sorry, this is an invalid product key."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/product-key-errors-and-solutions
+    etat: a-rediger
+
+  - id: m365-cle-produit-expiree-ou-deja-saisie
+    titre: "Clé de produit expirée ou déjà saisie pour le renouvellement"
+    symptome: "Le renouvellement d'un abonnement prépayé échoue car la clé est déjà enregistrée ou expirée."
+    erreurs: ["You have already entered this product key. Enter a different key.", "The product key you entered has expired. Enter a different key."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/product-key-errors-and-solutions
+    etat: a-rediger
+
+  - id: m365-cle-produit-trop-de-licences
+    titre: "« You've added more user licenses than this offer allows » avec une clé de produit"
+    symptome: "La clé ajoute plus de licences que le maximum autorisé par l'offre."
+    erreurs: ["You've added more user licenses than this offer allows."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/product-key-errors-and-solutions
+    etat: a-rediger
+
+  - id: m365-cle-produit-role-admin-requis
+    titre: "« You must be a global or billing admin to redeem a product key »"
+    symptome: "L'utilisateur qui saisit la clé n'a pas le rôle d'administrateur de facturation."
+    erreurs: ["You must be a global or billing admin to redeem a product key."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/product-key-errors-and-solutions
+    etat: a-rediger
+
+  - id: m365-abonnement-demande-non-disponible
+    titre: "« The requested subscription isn't available » (offre indisponible, pays, essai déjà utilisé)"
+    symptome: "L'activation d'une offre ou d'un essai est refusée."
+    erreurs: ["The requested subscription isn't available."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/product-key-errors-and-solutions
+    etat: a-rediger
+
+  - id: m365-code-promo-refuse
+    titre: "Code promotionnel refusé à l'achat d'un abonnement"
+    symptome: "Erreur après saisie du code : faute de frappe, abonnement déjà actif, code expiré ou mauvais pays."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/use-a-promo-code
+    etat: a-rediger
+
+  - id: m365-mscommerce-handleerror-tls
+    titre: "MSCommerce : « HandleError : Failed to retrieve policy with PolicyId 'AllowSelfServicePurchase' »"
+    symptome: "Le module PowerShell MSCommerce échoue à lire les stratégies d'achat en libre-service (TLS 1.2 non activé)."
+    erreurs: ["HandleError : Failed to retrieve policy with PolicyId 'AllowSelfServicePurchase', ErrorMessage - The underlying connection was closed: An unexpected error occurred on a send."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/subscriptions/allowselfservicepurchase-powershell
+    etat: a-rediger
+
+  - id: m365-abonnement-inscription-libre-service-bloque-suppression
+    titre: "Abonnements gratuits souscrits par les utilisateurs (inscription en libre-service) qui bloquent la suppression du tenant"
+    symptome: "Des abonnements « viraux » (Power BI gratuit, etc.) apparaissent et empêchent de supprimer l'annuaire."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/subscriptions/manage-self-service-signup-subscriptions
+    etat: a-rediger
+
+  - id: m365-paiement-azure-requestdisallowedbypolicy
+    titre: "Paiement à l'utilisation : erreur « RequestDisallowedByPolicy » lors de la liaison à un abonnement Azure"
+    symptome: "La configuration du paiement à l'utilisation (Syntex, archivage, Copilot) échoue à cause d'une stratégie Azure."
+    erreurs: ["RequestDisallowedByPolicy"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/services/error-request-disallowed-by-policy
+    etat: a-rediger
+
+  - id: m365-virement-bancaire-refuse
+    titre: "Demande de paiement par virement bancaire refusée ou en attente"
+    symptome: "Le statut reste « Pending » ou la demande est refusée (compte de facturation trop récent, solde impayé)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/billing-and-payments/pay-by-wire-transfer
+    etat: a-rediger
+
+  - id: m365-numero-tva-adresse-facturation
+    titre: "Numéro de TVA absent ou adresse de facturation (Sold-To) incorrecte sur les factures"
+    symptome: "TVA facturée à tort ou mauvaise entité sur la facture ; l'adresse ou le numéro fiscal doit être corrigé."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/billing-and-payments/tax-information
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/billing-and-payments/change-your-billing-addresses
+    etat: a-rediger
+
+  - id: m365-notifications-facturation-non-recues
+    titre: "Les e-mails de facturation et les factures n'arrivent pas au bon destinataire"
+    symptome: "Personne ne reçoit les avis de paiement refusé ou d'expiration ; contacts de facturation mal configurés."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/billing-and-payments/manage-billing-notifications
+    etat: a-rediger
+
+  - id: m365-stockage-sharepoint-tenant-plein
+    titre: "Stockage SharePoint du tenant saturé : sites en lecture seule, achat de stockage supplémentaire"
+    symptome: "Le quota global (1 To + 10 Go par licence) est atteint ; impossible d'ajouter des fichiers."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/administration/out-of-storage
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/add-storage-space
+    etat: a-rediger
+
+  - id: exchange-archive-extension-automatique-licence
+    titre: "Archive à extension automatique impossible : licence insuffisante (Exchange Online Archiving requis)"
+    symptome: "L'archive est pleine et ne s'étend pas ; la formule (Business Standard, E1) ne l'inclut pas."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/purview/enable-autoexpanding-archiving
+      - https://learn.microsoft.com/en-us/answers/questions/152870/auto-expanding-archive-question
+    etat: a-rediger
+
+  - id: m365-licences-inutilisees-comptes-inactifs
+    titre: "Licences payées pour des comptes inactifs ou partis : repérer et récupérer les licences inutilisées"
+    symptome: "Le nombre de licences attribuées ne correspond pas aux salariés actifs ; écart entre la page Licences et les utilisateurs actifs."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://o365reports.com/find-unused-licenses-in-microsoft-365-using-powershell/
+      - https://blog.admindroid.com/identify-and-remove-inactive-users-in-microsoft-365/
+    etat: a-rediger
+
+  - id: m365-godaddy-defederation
+    titre: "Quitter GoDaddy (tenant fédéré) : impossible d'administrer le tenant ou de changer de revendeur"
+    symptome: "Pas d'accès administrateur complet, GoDaddy reste partenaire, risque de blocage des connexions pendant la défédération."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/admin/get-help-with-domains/godaddy-defederation-process?view=o365-worldwide
+      - https://learn.microsoft.com/en-us/answers/questions/5848830/defederate-account-from-godaddy
+      - https://techcommunity.microsoft.com/discussions/admincenter/need-assistance-unable-to-remove-godaddy-as-partnerreseller-and-unfederate-the-d/4419358
+    etat: a-rediger
+
+  - id: m365-partenaire-privileges-admin-a-retirer
+    titre: "Un ancien partenaire a toujours des droits d'administration délégués (DAP/GDAP) sur le tenant"
+    symptome: "Le prestataire précédent apparaît encore dans Paramètres > Relations avec les partenaires."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/review-partner-admin-privileges
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/manage-partners
+    etat: a-rediger
+
+  - id: m365-vl-erreur-configuration-profil
+    titre: "Licences en volume : « An error occurred while setting up your profile » à la connexion"
+    symptome: "Connexion aux pages Volume Licensing impossible avec un compte Microsoft personnel ou un annuaire non géré."
+    erreurs: ["An error occurred while setting up your profile. Please refresh the page to try again"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/licenses/vl-sign-in
+    etat: a-rediger
+
+  - id: m365-vl-page-absente-ou-redirection-azure
+    titre: "Page « Licences en volume » introuvable dans le centre d'administration ou redirection vers le portail Azure"
+    symptome: "L'ancien utilisateur VLSC ne voit pas ses contrats ; mauvais rôle, mauvais compte ou réécriture de liens."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/licenses/vl-sign-in
+    etat: a-rediger
+
+  - id: m365-vl-contrat-license-id-absent
+    titre: "Licences en volume : License ID absent de la page Contrats ou « Organization not approved »"
+    symptome: "Les contrats ou téléchargements ne sont pas visibles pour l'administrateur VL."
+    erreurs: ["Organization not approved"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/licenses/view-vl-contracts
+    etat: a-rediger
+
+  - id: m365-vl-email-activation-services-non-recu
+    titre: "Licences en volume : e-mail d'activation des services en ligne jamais reçu"
+    symptome: "Les services en ligne achetés en volume ne sont pas activés ; mauvais OSM, adresse publique, commande non passée."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/licenses/online-service-activation-vl
+    etat: a-rediger
+
+  - id: m365-vl-factures-invisibles
+    titre: "Factures de licences en volume invisibles dans le centre d'administration"
+    symptome: "Rôle Invoice Reader manquant, achat via un revendeur LSP, facture non encore émise."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/licenses/volume-licensing-invoices
+    etat: a-rediger
+
+  - id: m365-licences-appareils-apps-entreprise
+    titre: "Licence Microsoft 365 Apps attribuée aux appareils : Office ne s'active pas sur le poste"
+    symptome: "La licence par appareil (groupe d'appareils) ne s'applique pas ; Office reste non activé."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/licenses/manage-licenses-for-devices
+    etat: a-rediger
+
+  - id: m365-attribution-automatique-auto-claim
+    titre: "Licences consommées automatiquement par les stratégies d'attribution automatique (auto-claim)"
+    symptome: "Des utilisateurs reçoivent une licence en ouvrant une application (ex. Teams) sans action de l'administrateur."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/licenses/manage-auto-claim-policies
+    etat: a-rediger
+
+  - id: m365-demandes-licences-utilisateurs
+    titre: "Des utilisateurs demandent des licences : où approuver ou refuser les demandes"
+    symptome: "L'administrateur reçoit des demandes de licences (Visio, Power BI…) et ne sait pas où les traiter."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/licenses/manage-license-requests
+    etat: a-rediger
+
+  - id: m365-abonnement-fin-duree-service-etendue
+    titre: "Fin d'abonnement imminente sans décision de renouvellement (Extended Service Term)"
+    symptome: "L'abonnement arrive à échéance ; besoin de temps supplémentaire sans interruption de service."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/subscriptions/extend-your-subscription-with-est
+    etat: a-rediger
+
+  - id: m365-eligibilite-education-refusee
+    titre: "Éligibilité éducation (A1/A3/A5) refusée ou en attente de vérification"
+    symptome: "Impossible d'acheter des offres Education tant que l'établissement n'est pas vérifié."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/subscriptions/verify-academic-eligibility
+    etat: a-rediger
+
+  - id: m365-annuler-abonnement-et-sauvegarder-donnees
+    titre: "Résilier un abonnement Microsoft 365 sans perdre les données (et fermer le compte)"
+    symptome: "Annulation demandée : risque de perte de boîtes et fichiers, abonnements désactivés qui empêchent la clôture."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/subscriptions/cancel-your-subscription
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/close-your-account
+    etat: a-rediger
+
+  - id: m365-deplacer-utilisateurs-autre-abonnement
+    titre: "Changement manuel de formule : déplacer les utilisateurs vers le nouvel abonnement sans coupure"
+    symptome: "Après achat d'une nouvelle formule, les utilisateurs gardent l'ancienne licence ou perdent des services pendant la bascule."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/subscriptions/move-users-different-subscription
+      - https://learn.microsoft.com/en-us/microsoft-365/commerce/subscriptions/upgrade-to-different-plan
+    etat: a-rediger

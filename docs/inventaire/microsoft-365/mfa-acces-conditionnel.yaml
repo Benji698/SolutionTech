@@ -1,0 +1,866 @@
+domaine: microsoft-365
+sous_domaine: mfa-acces-conditionnel
+recense_le: 2026-10-29
+problemes:
+  # --- Microsoft Authenticator ---
+  - id: m365-mfa-nouveau-telephone
+    titre: "Nouveau téléphone ou téléphone perdu : l'utilisateur ne peut plus valider la MFA"
+    symptome: "L'utilisateur a changé, perdu ou réinitialisé son téléphone et ne peut plus répondre à la double authentification."
+    erreurs: ["AADSTS50076"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/mfa/troubleshoot-azure-mfa-issue
+    etat: redigee
+  - id: mfa-authenticator-notification-absente
+    titre: "Microsoft Authenticator : la notification d'approbation n'arrive pas"
+    symptome: "La page de connexion attend une approbation mais aucune notification n'apparaît sur le téléphone (mode Ne pas déranger, optimisation de batterie Android, notifications désactivées, inscription push corrompue)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/account-billing/troubleshoot-problems-with-microsoft-authenticator-a3a74493-566b-4c2e-b949-a2789bac0fd3
+      - https://learn.microsoft.com/en-us/answers/questions/1192179/authenticator-abruptly-stopped-sending-notificatio
+    etat: a-rediger
+  - id: mfa-authenticator-nombre-non-affiche
+    titre: "Mise en correspondance des nombres : le nombre à saisir n'apparaît pas ou l'application ne propose pas la saisie"
+    symptome: "L'écran de connexion affiche un nombre à deux chiffres mais Authenticator n'ouvre pas de champ de saisie, ou la bannière iOS masque le nombre."
+    erreurs: ["Open your Authenticator app, and enter the number shown to sign in."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/entra/identity/authentication/how-to-mfa-number-match
+      - https://learn.microsoft.com/en-us/answers/questions/1162790/number-matching-mfa-not-working-on-iphones
+      - https://learn.microsoft.com/en-us/answers/questions/1183376/catch-22-ios-ms-authenticator-prompt-blocks-the-nu
+    etat: a-rediger
+  - id: mfa-authenticator-code-refuse-horloge
+    titre: "Code à 6 chiffres d'Authenticator refusé : horloge du téléphone décalée"
+    symptome: "Le code TOTP saisi est systématiquement refusé alors qu'il est copié correctement ; l'heure du téléphone est réglée manuellement ou dérive."
+    erreurs: ["The code you entered is incorrect"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/account-billing/troubleshoot-problems-with-microsoft-authenticator-a3a74493-566b-4c2e-b949-a2789bac0fd3
+      - https://www.sonicwall.com/support/knowledge-base/kA1VN0000000ECh0AM
+    etat: a-rediger
+  - id: mfa-authenticator-sauvegarde-restauration-incomplete
+    titre: "Authenticator : la restauration depuis la sauvegarde cloud ne récupère pas les comptes professionnels"
+    symptome: "Après restauration sur un nouveau téléphone, les comptes professionnels apparaissent mais demandent une nouvelle vérification, ou seuls certains comptes sont restaurés."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5576417/microsoft-authenticator-cloud-backup-only-restore
+      - https://learn.microsoft.com/en-au/answers/questions/1118863/accounts-not-showing-up-in-microsoft-authenticator
+    etat: a-rediger
+  - id: mfa-authenticator-sauvegarde-introuvable-autre-compte
+    titre: "Authenticator : « your backup is not stored with this email » lors de la restauration"
+    symptome: "La récupération échoue car le compte Microsoft personnel ou Apple ID utilisé n'est pas celui de la sauvegarde."
+    erreurs: ["your backup is not stored with this email"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1206671/backup-restore-failed-on-new-phone-your-backup-is
+      - https://learn.microsoft.com/en-us/answers/questions/955233/microsoft-authenticator-unable-to-recover-your-bac
+    etat: a-rediger
+  - id: mfa-authenticator-limite-cinq-appareils
+    titre: "Impossible d'ajouter Authenticator : limite de 5 appareils atteinte"
+    symptome: "L'enregistrement d'une nouvelle application d'authentification échoue car le compte a déjà cinq applications ou jetons enregistrés."
+    erreurs: ["You cannot have more than 5 hardware tokens or authenticator apps.", "You have too many devices registered."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/mfa/cant-set-up-mfa-five-devices-registered
+    etat: a-rediger
+  - id: mfa-echec-500121-authentification-forte
+    titre: "Erreur 500121 : échec pendant la demande d'authentification forte"
+    symptome: "La connexion échoue après l'étape MFA : demande refusée, expirée, mauvais code ou inscription Authenticator invalide."
+    erreurs: ["AADSTS500121: Authentication failed during strong authentication request."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1190353/mfa-issue-for-a-user-error-500121
+      - https://admindroid.com/error-code-500121-auth-failed-during-strong-auth-request
+    etat: a-rediger
+  # --- SMS et appel ---
+  - id: mfa-sms-appel-non-recu
+    titre: "Code MFA par SMS ou appel vocal jamais reçu"
+    symptome: "L'utilisateur choisit SMS ou appel mais ne reçoit rien : mauvais numéro ou indicatif, filtrage des expéditeurs inconnus, opérateur, pays bloqué."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/mfa/text-voice-call-verification-code-mfa-not-send
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/mfa/troubleshoot-azure-mfa-issue
+    etat: a-rediger
+  - id: mfa-methode-ne-fonctionne-pas-actuellement
+    titre: "« That verification method isn't working right now » lors d'un SMS ou appel MFA"
+    symptome: "La méthode téléphone est refusée temporairement, souvent après trop de demandes ou à cause de la protection anti-fraude téléphonique."
+    erreurs: ["That verification method isn't working right now"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/2150201/mfa-sms-token-authentication-fails-with-that-verif
+      - https://learn.microsoft.com/entra/identity/authentication/concept-mfa-telephony-fraud
+    etat: a-rediger
+  - id: mfa-sms-pays-non-pris-en-charge
+    titre: "SMS MFA non délivrés vers certains pays (indicatifs bloqués ou opt-in régional)"
+    symptome: "Les utilisateurs d'un pays donné ne reçoivent jamais les SMS ou appels, alors que les autres oui."
+    erreurs: ["399287"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5793276/not-receiving-sms-verification-code-for-mfa-in-vie
+      - https://learn.microsoft.com/entra/identity/authentication/concept-mfa-regional-opt-in
+    etat: a-rediger
+  - id: mfa-50088-limite-appels-telecom
+    titre: "Erreur 50088 : limite d'appels ou SMS MFA atteinte"
+    symptome: "Après plusieurs tentatives, la méthode téléphone est bloquée pendant quelques minutes."
+    erreurs: ["AADSTS50088"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  # --- Messages génériques MFA ---
+  - id: mfa-sorry-cant-process-request
+    titre: "« Sorry! We can't process your request » lors de la configuration de la MFA"
+    symptome: "La page de configuration des informations de sécurité échoue à l'enregistrement de la méthode."
+    erreurs: ["Sorry! We can't process your request"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/mfa/troubleshoot-azure-mfa-issue
+    etat: a-rediger
+  - id: mfa-expected-response-non-recue
+    titre: "« We did not receive the expected response » pendant la connexion MFA"
+    symptome: "La vérification par téléphone échoue avec ce message, souvent lié au numéro, à l'appel ou à la saisie."
+    erreurs: ["We did not receive the expected response"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/mfa/troubleshoot-azure-mfa-issue
+    etat: a-rediger
+  - id: mfa-account-verification-system-trouble
+    titre: "« Account verification system is having trouble » à la connexion"
+    symptome: "La connexion d'un compte professionnel échoue avec un message indiquant un problème du système de vérification."
+    erreurs: ["Account verification system is having trouble"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/mfa/troubleshoot-azure-mfa-issue
+    etat: a-rediger
+  # --- Extension NPS MFA (VPN, Wi-Fi, RADIUS, passerelle RD) ---
+  - id: mfa-nps-vpn-pas-de-notification
+    titre: "VPN ou passerelle RD avec extension NPS : aucune demande MFA n'arrive, la connexion échoue"
+    symptome: "L'utilisateur saisit son mot de passe dans le client VPN, aucune notification n'arrive et la connexion est refusée ou expire (journal AzureMfa, Access-Reject)."
+    erreurs: ["An NPS extension dynamic link library (DLL) that is installed on the NPS server rejected the connection request."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-ie/Entra/Identity/Authentication/howto-mfa-nps-extension-errors
+      - https://learn.microsoft.com/en-gb/answers/questions/1281199/nps-extension-for-azure-mfa-failing-to-generate-mf
+    etat: a-rediger
+  - id: mfa-nps-delai-radius-trop-court
+    titre: "VPN RADIUS + MFA : la connexion expire avant que l'utilisateur ait validé"
+    symptome: "Le pare-feu ou le serveur VPN abandonne la requête RADIUS (délai de 5 à 30 s) pendant que la MFA est en cours ; requêtes en double rejetées."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://docs.azure.cn/en-us/entra/identity/authentication/howto-mfa-nps-extension
+      - https://forum.netgate.com/topic/188601/ipsec-vpn-with-active-directory-radius-nps-and-2fa
+    etat: a-rediger
+  - id: mfa-nps-correspondance-nombres-otp-demande
+    titre: "Extension NPS : depuis la mise en correspondance des nombres, le VPN demande un code (OTP) que le client ne sait pas saisir"
+    symptome: "Après l'activation de la mise en correspondance des nombres, l'extension NPS bascule sur un code TOTP ; avec MSCHAPv2 ou PAP sans challenge, la connexion échoue."
+    erreurs: ["OVERRIDE_NUMBER_MATCHING_WITH_OTP"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity/authentication/how-to-mfa-number-match
+      - https://learn.microsoft.com/en-us/answers/questions/1178899/nps-extension-for-azure-ad-mfa-require-otp-in-mobi
+    etat: a-rediger
+  - id: mfa-nps-certificat-expire
+    titre: "Extension NPS MFA : tous les utilisateurs VPN rejetés après expiration du certificat client (2 ans)"
+    symptome: "Du jour au lendemain plus aucune authentification VPN/RADIUS ne passe ; le certificat auto-signé au nom de l'ID du locataire a expiré."
+    erreurs: ["CLIENT_CERT_INSTALL_ERROR", "ESTS_TOKEN_ERROR"]
+    priorite: critique
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/195259/tenantid-certificate-for-vpn-mfa-expired-how-renew
+      - https://www.koetzingit.de/en/invalid-certificate-for-the-azure-multi-factor-authentication-client/
+    etat: a-rediger
+  - id: mfa-nps-jeton-azure-impossible
+    titre: "Extension NPS : « Unable to get Azure AD access token » (principal de service désactivé ou certificat non enregistré)"
+    symptome: "Le journal AzureMfa indique l'impossibilité d'obtenir un jeton ; l'application Azure Multi-Factor Auth Client est désactivée ou ne connaît pas le certificat."
+    erreurs: ["Unable to get Azure AD access token", "ESTS_TOKEN_ERROR", "AADSTS7000112"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1396082/nps-extension-for-mfa-error-unable-to-get-azure-ad
+      - https://learn.microsoft.com/en-us/answers/questions/605948/nps-mfa-authentication-service-principal-disabled
+      - https://www.risual.com/2019/09/azure-mfa-integration-with-nps-adfs-not-working/
+    etat: a-rediger
+  - id: mfa-nps-username-canonicalization-error
+    titre: "Extension NPS : USERNAME_CANONICALIZATION_ERROR ou ALTERNATE_LOGIN_ID_ERROR"
+    symptome: "L'extension ne retrouve pas l'utilisateur dans l'AD local ou l'attribut d'identifiant alternatif est vide ; la MFA n'est jamais déclenchée."
+    erreurs: ["USERNAME_CANONICALIZATION_ERROR", "ALTERNATE_LOGIN_ID_ERROR", "REQUEST_FORMAT_ERROR"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-ie/Entra/Identity/Authentication/howto-mfa-nps-extension-errors
+    etat: a-rediger
+  - id: mfa-nps-utilisateur-sans-methode
+    titre: "Extension NPS : utilisateur non inscrit à la MFA rejeté (ou laissé passer selon REQUIRE_USER_MATCH)"
+    symptome: "Un utilisateur sans méthode MFA enregistrée voit sa connexion VPN refusée, ou au contraire passe sans MFA."
+    erreurs: ["REQUIRE_USER_MATCH"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/mt-mt/entra/identity/authentication/howto-mfa-nps-extension
+      - https://learn.microsoft.com/en-ie/Entra/Identity/Authentication/howto-mfa-nps-extension-errors
+    etat: a-rediger
+  - id: mfa-nps-ntlmv1-mschapv2
+    titre: "Extension NPS MFA ne fonctionne plus après désactivation de NTLMv1 (MSCHAPv2)"
+    symptome: "Après un durcissement NTLM sur les contrôleurs de domaine, l'authentification primaire RADIUS échoue et la MFA n'est jamais demandée."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1019651/azure-mfa-extension-for-nps-not-working-after-disa
+    etat: a-rediger
+  # --- Clés FIDO2 et passkeys ---
+  - id: mfa-passkey-enregistrement-impossible
+    titre: "Impossible d'enregistrer une passkey (clé FIDO2 ou Authenticator) dans les informations de sécurité"
+    symptome: "L'option passkey n'apparaît pas ou l'enregistrement échoue : méthode non activée, configuration libre-service désactivée, groupe exclu, MFA récente absente, invité."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/entra/identity/authentication/how-to-authentication-passkeys-fido2
+      - https://learn.microsoft.com/en-us/answers/questions/5894250/users-are-unable-to-self-register-the-passkey-and
+    etat: a-rediger
+  - id: mfa-passkey-type-cle-bloque-aaguid
+    titre: "« This particular key type has been blocked by your organization » : AAGUID non autorisé"
+    symptome: "L'enregistrement ou la connexion avec une clé ou une passkey échoue à cause des restrictions de clés (liste AAGUID) ou de l'application de l'attestation."
+    erreurs: ["We detected that this particular key type has been blocked by your organization"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://janbakker.tech/kb-we-detected-that-this-particular-key-type-has-been-blocked-by-your-organization/
+      - https://learn.microsoft.com/entra/identity/authentication/how-to-authentication-passkeys-fido2
+    etat: a-rediger
+  - id: mfa-passkey-fido-desactive-135016
+    titre: "Connexion par passkey refusée : « FIDO sign-in is disabled via policy » (AADSTS135016)"
+    symptome: "La passkey s'enregistre mais la connexion est refusée par la stratégie de méthodes d'authentification."
+    erreurs: ["AADSTS135016"]
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/microsoft-entra/passkey-sign%E2%80%91in-fails-in-entra-free-tenants-aadsts135016-%E2%80%93-fido-sign%E2%80%91in-disabled/4547136
+      - https://techcommunity.microsoft.com/discussions/microsoft-entra/fido-passkeys-blocked-by-policy/4416150
+    etat: a-rediger
+  - id: mfa-passkey-multi-appareils-bluetooth
+    titre: "Connexion par passkey du téléphone sur un PC (QR code) : « Something went wrong »"
+    symptome: "Le flux inter-appareils échoue : Bluetooth désactivé ou absent, appareils éloignés, attestation imposée, QR scanné avec la mauvaise application."
+    erreurs: ["Something went wrong. There was a problem signing in with your passkey"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/account-billing/troubleshoot-signing-in-with-a-passkey-5f6b8965-342e-4aeb-b3fe-fc5179e06f2f
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/passkey-faq
+      - https://learn.microsoft.com/en-us/answers/questions/5669020/something-went-wrong-there-was-a-problem-signing-i
+    etat: a-rediger
+  - id: mfa-passkey-orpheline-deja-existante
+    titre: "Passkey « déjà existante » ou clé qui ne fonctionne plus : identifiant orphelin sur la clé ou dans Authenticator"
+    symptome: "La clé ou Authenticator contient encore une passkey supprimée côté Entra ; la connexion échoue et le réenregistrement est refusé."
+    erreurs: ["We couldn't use your device to verify your identity"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5894250/users-are-unable-to-self-register-the-passkey-and
+      - https://support.microsoft.com/account-billing/troubleshoot-signing-in-with-a-passkey-5f6b8965-342e-4aeb-b3fe-fc5179e06f2f
+    etat: a-rediger
+  - id: mfa-passkey-apres-changement-upn
+    titre: "Passkey inutilisable après changement d'UPN de l'utilisateur"
+    symptome: "Après renommage du compte, la passkey existante ne peut pas être mise à jour ; il faut la supprimer et en créer une nouvelle."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity/authentication/how-to-authentication-passkeys-fido2
+    etat: a-rediger
+  - id: mfa-passkey-authenticator-acces-conditionnel-app-approuvee
+    titre: "Passkey dans Authenticator impossible à enregistrer : accès conditionnel « application approuvée » ou « protection d'application »"
+    symptome: "L'enregistrement de la passkey dans Authenticator échoue car Authenticator ne satisfait pas ces contrôles d'octroi sur iOS ou Android."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/2151624/user-failed-to-register-passkey
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/passkey-faq
+    etat: a-rediger
+  - id: mfa-cle-fido2-ouverture-session-windows-rdp
+    titre: "Clé FIDO2 / passkey refusée à l'ouverture de session Windows, en RDP ou dans un bureau virtuel"
+    symptome: "La clé fonctionne sur le web mais pas sur l'écran de verrouillage, en RDP, AVD ou Citrix (redirection WebAuthn absente, stratégie de connexion par clé de sécurité non activée)."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5624857/passkey-(entra)-not-working-on-lockscreen-but-work?page=1
+      - https://learn.microsoft.com/en-us/answers/questions/5946441/how-to-get-fido-key-working-within-an-azure-virtua
+    etat: a-rediger
+  # --- Temporary Access Pass ---
+  - id: mfa-tap-non-propose-connexion
+    titre: "Temporary Access Pass non proposé à la connexion ou refusé"
+    symptome: "L'utilisateur ne voit pas le champ du passe d'accès temporaire, ou il est refusé : hors du périmètre de la stratégie, passe expiré ou déjà utilisé, délai de réplication."
+    erreurs: ["Temporary Access Pass sign in was blocked due to User Credential Policy"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/entra/identity/authentication/howto-authentication-temporary-access-pass
+      - https://learn.microsoft.com/en-us/answers/questions/5655468/entra-id-authentication-methods-)-policies-access
+    etat: a-rediger
+  - id: mfa-tap-invite-externe
+    titre: "« Temporary Access Pass cannot be added to an external guest user »"
+    symptome: "L'administrateur ne peut pas créer de passe d'accès temporaire pour un invité externe."
+    erreurs: ["Temporary Access Pass cannot be added to an external guest user"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity/authentication/howto-authentication-temporary-access-pass
+    etat: a-rediger
+  - id: mfa-tap-usage-unique-delai-depasse
+    titre: "TAP à usage unique : enregistrement de la passkey ou de Windows Hello impossible après 10 minutes"
+    symptome: "La configuration d'un nouveau PC ou d'une méthode sans mot de passe dépasse 10 minutes ; le passe à usage unique n'est plus accepté."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity/authentication/howto-authentication-temporary-access-pass
+    etat: a-rediger
+  - id: mfa-tap-non-supporte-nps-adfs
+    titre: "Temporary Access Pass refusé par le VPN (extension NPS) ou AD FS"
+    symptome: "Le passe d'accès temporaire fonctionne sur le web mais pas via RADIUS/NPS ni l'adaptateur AD FS, qui ne le prennent pas en charge."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity/authentication/howto-authentication-temporary-access-pass
+    etat: a-rediger
+  # --- Enregistrement des méthodes (combined registration) ---
+  - id: mfa-enregistrement-methode-absente
+    titre: "Informations de sécurité : la méthode attendue n'est pas proposée à l'ajout"
+    symptome: "Sur mysignins, l'utilisateur ne peut pas ajouter une méthode (téléphone, Authenticator, clé) : méthode désactivée dans la stratégie, limite atteinte, propagation en cours."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-in/entra/identity/authentication/howto-registration-mfa-sspr-combined-troubleshoot
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/concept-registration-mfa-sspr-combined
+    etat: a-rediger
+  - id: mfa-enregistrement-bloque-acces-conditionnel
+    titre: "Enregistrement de la MFA bloqué par l'accès conditionnel (emplacement ou appareil requis)"
+    symptome: "Un nouvel utilisateur ne peut pas enregistrer ses méthodes hors du réseau de l'entreprise ou depuis un appareil non géré."
+    erreurs: ["AADSTS53010"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity-platform/reference-error-codes
+      - https://learn.microsoft.com/entra/identity/conditional-access/policy-all-users-security-info-registration
+    etat: a-rediger
+  - id: mfa-50079-inscription-requise
+    titre: "AADSTS50079 : l'utilisateur doit enregistrer une méthode MFA avant de continuer"
+    symptome: "Après activation des valeurs par défaut de sécurité ou d'une stratégie, un compte (y compris de service ou d'outil) est bloqué car il n'a aucune méthode."
+    erreurs: ["AADSTS50079: Due to a configuration change made by your administrator, or because you moved to a new location, you must enroll in multi-factor authentication to access"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity-platform/reference-error-codes
+      - https://learn.microsoft.com/en-us/answers/questions/1523014/only-administrator-in-the-directory-is-seeing-erro
+    etat: a-rediger
+  - id: mfa-53004-inscription-bloquee-risque
+    titre: "AADSTS53004 : inscription MFA bloquée à cause du risque de connexion"
+    symptome: "Un utilisateur non inscrit dont la connexion est jugée risquée ne peut ni s'inscrire ni se connecter."
+    erreurs: ["AADSTS53004: ProofUpBlockedDueToRisk"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity/conditional-access/troubleshoot-conditional-access
+      - https://learn.microsoft.com/sk-SK/azure/active-directory/conditional-access/howto-conditional-access-policy-risk
+    etat: a-rediger
+  - id: mfa-enregistrement-boucle-force-authentification
+    titre: "Boucle sur la page Informations de sécurité : « Another sign-in method is required to access this resource »"
+    symptome: "L'utilisateur tourne en rond sur mysignins car la force d'authentification exigée pour l'enregistrement demande une méthode qu'il n'a pas encore."
+    erreurs: ["Let's try something else.", "Another sign-in method is required to access this resource."]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/concept-registration-mfa-sspr-combined
+      - https://learn.microsoft.com/entra/identity/authentication/concept-authentication-strengths
+    etat: a-rediger
+  # --- Accès conditionnel : blocages et codes ---
+  - id: ca-53003-bloque-acces-conditionnel
+    titre: "AADSTS53003 : accès bloqué par une stratégie d'accès conditionnel (identifier la stratégie)"
+    symptome: "L'utilisateur saisit ses identifiants puis voit un refus ; le journal de connexion indique BlockedByConditionalAccess."
+    erreurs: ["AADSTS53003: Access has been blocked by Conditional Access policies. The access policy does not allow token issuance."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/entra/identity/conditional-access/troubleshoot-conditional-access
+      - https://learn.microsoft.com/en-us/answers/questions/2154989/how-to-fix-aadsts53003-access-has-been-blocked-by
+    etat: a-rediger
+  - id: ca-you-cant-get-there-from-here
+    titre: "« You can't get there from here » : accès refusé selon la plateforme, le navigateur ou l'appareil"
+    symptome: "Message générique d'accès conditionnel sur Teams, OWA, SharePoint ou une application iOS ; le lien « More details » donne l'ID de requête."
+    erreurs: ["You can't get there from here"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/troubleshoot/o365-security/cannot-access-application-from-ios-device
+      - https://learn.microsoft.com/en-us/answers/a/1275390
+    etat: a-rediger
+  - id: ca-53000-appareil-non-conforme
+    titre: "AADSTS53000 : l'appareil doit être conforme (Intune) pour accéder à la ressource"
+    symptome: "Accès refusé avec demande d'inscrire ou de mettre en conformité l'appareil, alors que l'utilisateur pense être en règle."
+    erreurs: ["AADSTS53000: Device is not in required device state: compliant."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/entra/identity-platform/reference-error-codes
+      - https://learn.microsoft.com/en-us/answers/questions/708101/conditional-access-error-code-53000-but-device-is
+    etat: a-rediger
+  - id: ca-530002-appareil-conforme-requis
+    titre: "AADSTS530002 : « Your device is required to be compliant to access this resource »"
+    symptome: "Une application ou une intégration perd l'accès car l'appareil sur lequel la connexion a été établie n'est plus conforme."
+    erreurs: ["AADSTS530002: Your device is required to be compliant to access this resource."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-gb/viva/goals/integration-aad-errors
+    etat: a-rediger
+  - id: ca-conforme-intune-mais-bloque-navigateur
+    titre: "Appareil conforme dans Intune mais bloqué dans Chrome ou Firefox (aucun ID d'appareil envoyé)"
+    symptome: "Le journal de connexion montre un appareil vide ou « non inscrit » ; Edge fonctionne mais Chrome nécessite l'extension Windows Accounts ou CloudAPAuthEnabled, Firefox l'option SSO Windows."
+    erreurs: ["AADSTS53000"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1043583/chrome-browser-does-not-send-device-information-wi
+      - https://learn.microsoft.com/en-us/answers/questions/1604091/on-one-device-chrome-cloudapauthenabled-setting-or
+    etat: a-rediger
+  - id: ca-edge-aucun-id-appareil-profil
+    titre: "Edge n'envoie pas l'ID de l'appareil : profil Edge non connecté au compte professionnel"
+    symptome: "Même sur un poste conforme, Edge est bloqué quand le profil du navigateur n'est pas connecté avec le compte Entra (ou en navigation InPrivate)."
+    erreurs: ["AADSTS53003", "AADSTS53000"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1601755/conditional-access-error-53003-no-device-id-is-bei
+    etat: a-rediger
+  - id: ca-53001-appareil-joint-hybride-requis
+    titre: "AADSTS53001 : appareil joint au domaine (Entra hybride) exigé mais non reconnu"
+    symptome: "Le poste est dans le domaine mais pas reconnu comme joint hybride (pas de PRT, jonction en attente, navigateur sans SSO)."
+    erreurs: ["AADSTS53001: Device is not in required device state: domain_joined."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/entra/identity-platform/reference-error-codes
+      - https://learn.microsoft.com/en-sg/answers/questions/353608/acces-msgraph-by-hybrid-azure-ad-joined
+      - https://learn.microsoft.com/en-us/answers/questions/793914/error-code-53001-my-domain-joined-device-is-failin
+    etat: a-rediger
+  - id: ca-530004-acceptcompliantdevice-non-configure
+    titre: "AADSTS530004 : paramètre AcceptCompliantDevice non configuré (invité d'une autre organisation)"
+    symptome: "Un invité B2B est bloqué car le locataire hôte exige un appareil conforme sans faire confiance aux appareils conformes du locataire d'origine."
+    erreurs: ["AADSTS530004: AcceptCompliantDevice setting isn't configured for this organization."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-code-aadsts530004-acceptcompliantdevice-setting-not-configured
+    etat: a-rediger
+  - id: ca-53002-application-non-approuvee
+    titre: "AADSTS53002 : application cliente non approuvée (Mail iOS, Gmail, client tiers)"
+    symptome: "L'application de messagerie native ou un client tiers est refusé ; seules Outlook et les applications Microsoft approuvées sont acceptées."
+    erreurs: ["AADSTS53002: Application used is not an approved application"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity/conditional-access/troubleshoot-conditional-access
+      - https://learn.microsoft.com/en-us/answers/questions/1468593/third-party-apps-and-intune-app-protection-policy
+    etat: a-rediger
+  - id: ca-53009-protection-application-requise
+    titre: "AADSTS53009 : l'application doit appliquer les stratégies de protection Intune (MAM)"
+    symptome: "Sur mobile, Outlook ou Teams demande d'installer Authenticator ou Company Portal (broker), ou refuse l'accès car aucune stratégie de protection n'est appliquée."
+    erreurs: ["AADSTS53009: Application needs to enforce Intune protection policies"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/entra/identity/conditional-access/troubleshoot-conditional-access
+      - https://learn.microsoft.com/en-us/entra/identity/conditional-access/policy-all-users-approved-app-or-app-protection
+      - https://learn.microsoft.com/nb-no/troubleshoot/mem/intune/app-protection-policies/troubleshoot-mam
+    etat: a-rediger
+  - id: ca-application-approuvee-retiree-migration
+    titre: "Stratégie « Exiger une application cliente approuvée » en lecture seule ou sans effet après son retrait"
+    symptome: "Les anciennes stratégies basées sur le contrôle « application cliente approuvée » ne peuvent plus être modifiées ; il faut migrer vers « Exiger une stratégie de protection d'application »."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity/conditional-access/migrate-approved-client-app
+    etat: a-rediger
+  - id: ca-mac-navigateur-non-conforme
+    titre: "Mac conforme bloqué dans Chrome, Firefox ou Safari (extension SSO, Platform SSO, Company Portal)"
+    symptome: "Sur macOS, seul Edge passe l'accès conditionnel « appareil conforme » ; les autres navigateurs voient l'appareil comme non géré."
+    erreurs: ["AADSTS53000"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/azure/active-directory/conditional-access/conditions
+      - https://learn.microsoft.com/en-us/intune/device-configuration/settings-catalog/configure-platform-sso-macos
+    etat: a-rediger
+  - id: ca-ios-safari-prive-appareil-non-reconnu
+    titre: "iPhone/iPad : accès refusé dans Safari ou en navigation privée malgré l'inscription Intune"
+    symptome: "L'appareil est inscrit mais Safari (navigation privée, extension SSO absente) ne transmet pas l'état de l'appareil ; message « Set up your device to get access »."
+    erreurs: ["Set up your device to get access"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/intune/user-help/enrollment/enroll-ios
+      - https://learn.microsoft.com/en-us/azure/active-directory/conditional-access/conditions
+    etat: a-rediger
+  - id: ca-plateforme-non-prise-en-charge-50005
+    titre: "AADSTS50005 : connexion depuis une plateforme non prise en charge par la stratégie d'appareil (Linux, plateforme inconnue)"
+    symptome: "Un utilisateur sous Linux ou un client à user-agent inhabituel est bloqué par une stratégie ciblant les plateformes inconnues."
+    erreurs: ["AADSTS50005"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity-platform/reference-error-codes
+      - https://learn.microsoft.com/entra/identity/conditional-access/policy-all-users-device-unknown-unsupported
+    etat: a-rediger
+  - id: ca-emplacement-ipv6-bloque
+    titre: "Blocage géographique ou emplacement approuvé non reconnu à cause d'IPv6"
+    symptome: "Les utilisateurs au bureau sont traités comme « hors emplacement approuvé » ou bloqués par pays, car la connexion part en IPv6 non déclarée dans les emplacements nommés."
+    erreurs: ["AADSTS53003"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/id-id/troubleshoot/azure/active-directory/azure-ad-ipv6-support
+      - https://learn.microsoft.com/en-us/answers/questions/1723596/conditional-access-geoblocking-blocks-sign-in-by-i
+      - https://call4cloud.nl/the-curse-of-the-ipv6-and-conditional-access
+    etat: a-rediger
+  - id: ca-blocage-pays-voyage
+    titre: "Utilisateur en déplacement à l'étranger bloqué par une stratégie de blocage par pays"
+    symptome: "Connexion refusée depuis un pays non autorisé (ou via un VPN/fournisseur mal géolocalisé)."
+    erreurs: ["AADSTS53003"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity/conditional-access/policy-block-by-location
+    etat: a-rediger
+  - id: ca-risque-utilisateur-compte-bloque
+    titre: "Compte bloqué par Entra ID Protection (risque utilisateur élevé)"
+    symptome: "L'utilisateur voit que son compte est bloqué pour activité suspecte ; il faut enquêter, réinitialiser le mot de passe ou ignorer le risque."
+    erreurs: ["Your account is blocked", "AADSTS53011"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/sl-si/entra/id-protection/concept-identity-protection-user-experience
+      - https://learn.microsoft.com/entra/id-protection/howto-identity-protection-investigate-risk
+      - https://learn.microsoft.com/en-us/entra/id-protection/concept-risky-user-report
+    etat: a-rediger
+  - id: ca-risque-connexion-mfa-repetee
+    titre: "MFA ou changement de mot de passe exigé à chaque connexion à cause du risque de connexion"
+    symptome: "Une stratégie basée sur le risque de connexion redemande la MFA ou force un changement de mot de passe sécurisé (AADSTS50142/50135)."
+    erreurs: ["AADSTS50142", "AADSTS50135"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity/conditional-access/policy-risk-based-sign-in
+      - https://learn.microsoft.com/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: ca-invite-b2b-risque-locataire-origine
+    titre: "Invité B2B bloqué pour risque : la correction doit se faire dans son locataire d'origine"
+    symptome: "Un invité est bloqué par la stratégie de risque du locataire hôte (AADSTS53011) ; l'administrateur hôte ne peut pas lever le risque lui-même."
+    erreurs: ["AADSTS53011"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-gb/entra/id-protection/concept-identity-protection-b2b
+    etat: a-rediger
+  - id: ca-admin-delegue-bloque-risque-530034
+    titre: "AADSTS530034 / 530032 : administrateur délégué (partenaire GDAP) bloqué à cause du risque ou d'une stratégie du locataire"
+    symptome: "Un technicien de prestataire ne peut plus administrer le locataire client."
+    erreurs: ["AADSTS530034", "AADSTS530032"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity-platform/reference-error-codes
+      - https://s365.freshdesk.com/support/solutions/articles/51000466941-aadsts530034-aadsts530032-delegated-admin-blocked-due-to-risk
+    etat: a-rediger
+  - id: ca-what-if-resultat-different
+    titre: "L'outil What If dit que la stratégie ne s'applique pas, mais la connexion réelle est bloquée"
+    symptome: "Résultat de simulation différent du journal de connexion : conditions non renseignées (risque, appareil), dépendances de service non testées."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-ie/entra/identity/conditional-access/what-if-tool
+      - https://learn.microsoft.com/en-ca/entra/identity/conditional-access/troubleshoot-conditional-access-what-if
+    etat: a-rediger
+  - id: ca-dependance-service-bloque
+    titre: "Application bloquée par une stratégie visant une autre ressource (dépendances de service, ex. Teams → SharePoint)"
+    symptome: "Une stratégie ciblant une seule application en bloque une autre, car celle-ci appelle la ressource protégée en arrière-plan."
+    erreurs: ["AADSTS53003"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity/conditional-access/service-dependencies
+      - https://learn.microsoft.com/entra/identity/conditional-access/troubleshoot-conditional-access
+    etat: a-rediger
+  - id: ca-bloque-sans-strategie-visible
+    titre: "Erreur 53003 alors qu'aucune stratégie d'accès conditionnel n'apparaît dans le journal"
+    symptome: "Le journal ne montre aucune stratégie appliquée ; la cause peut être une stratégie gérée par Microsoft, les valeurs par défaut, une stratégie d'un autre locataire (invité) ou le rapport-seul."
+    erreurs: ["AADSTS53003"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/a/2020277
+      - https://learn.microsoft.com/entra/identity/conditional-access/managed-policies
+    etat: a-rediger
+  # --- Administrateur bloqué et comptes de secours ---
+  - id: ca-admin-bloque-strategie
+    titre: "Administrateur global bloqué par sa propre stratégie d'accès conditionnel"
+    symptome: "Après création ou modification d'une stratégie (appareil conforme, emplacement, blocage), plus aucun administrateur ne peut se connecter au portail."
+    erreurs: ["AADSTS53003", "AADSTS53000"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/entra/identity/conditional-access/troubleshoot-conditional-access
+      - https://learn.microsoft.com/en-us/answers/questions/5804766/full-tenant-lockout-locked-all-the-users-and-admin
+      - https://techcommunity.microsoft.com/discussions/admincenter/m365-only-admin-locked-out-mfa-error-53003/4507438/replies/4556403
+    etat: a-rediger
+  - id: mfa-seul-admin-perte-methode
+    titre: "Seul administrateur du locataire : perte de la méthode MFA, personne pour réinitialiser"
+    symptome: "L'unique administrateur a perdu son téléphone ; il faut passer par le support Microsoft avec preuve de propriété du domaine."
+    erreurs: ["AADSTS50076", "AADSTS50079"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5720243/only-admin-for-entra-tenant-unable-to-login-due-to
+      - https://learn.microsoft.com/en-us/answers/questions/1523014/only-administrator-in-the-directory-is-seeing-erro
+    etat: a-rediger
+  - id: ca-compte-bris-de-glace-inutilisable
+    titre: "Compte de secours (bris de glace) inutilisable le jour où on en a besoin"
+    symptome: "Le compte d'urgence est soumis à une stratégie, à la MFA obligatoire des portails ou n'a plus de clé FIDO2 valide ; il ne permet pas de reprendre la main."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/concept-mandatory-multifactor-authentication
+      - https://learn.microsoft.com/en-us/answers/questions/2182560/mfa-for-break-glass-accounts
+    etat: a-rediger
+  - id: mfa-obligatoire-portails-azure-admin
+    titre: "MFA obligatoire de Microsoft pour les portails Azure, Entra, Intune et l'administration M365"
+    symptome: "Un compte sans MFA (compte partagé, compte de service utilisé en interactif, compte de secours) ne peut plus ouvrir les portails d'administration ou exécuter Azure CLI/PowerShell."
+    erreurs: ["AADSTS50076"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/concept-mandatory-multifactor-authentication
+      - https://office365itpros.com/2024/08/19/azure-mfa-requirement/
+    etat: a-rediger
+  # --- Valeurs par défaut de sécurité, MFA par utilisateur, migration des stratégies ---
+  - id: mfa-valeurs-defaut-securite-activees-surprise
+    titre: "Valeurs par défaut de sécurité activées automatiquement : tous les utilisateurs doivent enregistrer la MFA"
+    symptome: "Du jour au lendemain, les utilisateurs voient « More information required » et ne peuvent plus repousser l'enregistrement (fin du délai de 14 jours)."
+    erreurs: ["More information required", "AADSTS50079"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/entra/fundamentals/security-defaults
+      - https://www.bleepingcomputer.com/news/microsoft/microsoft-entra-security-defaults-to-make-mfa-setup-mandatory/amp/
+      - https://learn.microsoft.com/en-us/answers/questions/1265715/the-security-defaults-setting-for-your-xxxxx-tenan
+    etat: a-rediger
+  - id: mfa-530035-bloque-valeurs-defaut
+    titre: "AADSTS530035 : accès bloqué par les valeurs par défaut de sécurité (authentification héritée)"
+    symptome: "Un client IMAP/POP/SMTP, un ancien script ou un périphérique (copieur scan-to-mail) est refusé."
+    erreurs: ["AADSTS530035: Access has been blocked by security defaults."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity-platform/reference-error-codes
+      - https://learn.microsoft.com/entra/identity/conditional-access/block-legacy-authentication
+    etat: a-rediger
+  - id: ca-valeurs-defaut-empechent-acces-conditionnel
+    titre: "Impossible d'activer une stratégie d'accès conditionnel tant que les valeurs par défaut de sécurité sont actives"
+    symptome: "Le portail refuse d'activer la stratégie ; à l'inverse, les valeurs par défaut ne peuvent être réactivées que si aucune stratégie n'est active."
+    erreurs: ["Security defaults must be disabled to enable Conditional Access policy."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1666079/creating-conditional-access-policies-after-disabli
+      - https://learn.microsoft.com/entra/fundamentals/security-defaults
+    etat: a-rediger
+  - id: mfa-par-utilisateur-heritee-conflit
+    titre: "MFA par utilisateur (héritée) encore « Enforced » : invites en trop ou contournement des emplacements approuvés"
+    symptome: "Des utilisateurs reçoivent la MFA partout, même sur le réseau de confiance, ou sont en conflit avec l'accès conditionnel ; l'état par utilisateur reste « Activé » ou « Appliqué »."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/monitoring-health/recommendation-turn-off-per-user-mfa
+      - https://office365itpros.com/2024/10/30/per-user-mfa-entra-admin/
+    etat: a-rediger
+  - id: mfa-statut-invite-incoherent
+    titre: "Statut MFA d'un invité affiché « désactivé » ou « activé » mais comportement inverse"
+    symptome: "Dans la page MFA par utilisateur du locataire hôte, l'état d'un invité ne correspond pas à son comportement : c'est le locataire d'origine qui décide."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/mfa/user-displayed-disabled-or-enabled-mfa
+    etat: a-rediger
+  - id: mfa-migration-strategies-heritees-methodes-perdues
+    titre: "Après la fin des stratégies MFA/SSPR héritées (septembre 2025), des méthodes ne sont plus proposées aux utilisateurs"
+    symptome: "Les réglages de l'ancienne page « Paramètres de service MFA » et de SSPR sont ignorés ; une méthode non activée dans la stratégie de méthodes d'authentification disparaît."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/sk-sk/entra/identity/authentication/concept-authentication-methods-manage
+      - https://learn.microsoft.com/es-es/answers/questions/5524428/mfa-sspr-migration-impact-and-feature-availability
+    etat: a-rediger
+  - id: mfa-retrait-sms-vocal-passkey-imposee
+    titre: "Retrait des SMS et appels vocaux fournis par Microsoft : l'utilisateur doit enregistrer une passkey"
+    symptome: "Les utilisateurs qui n'ont que le SMS ou l'appel voient des invitations à créer une passkey, puis une inscription bloquante après la date de retrait."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/entra/identity/authentication/concept-sms-voice-retirement
+    etat: a-rediger
+  - id: mfa-fraud-alert-bloquer-debloquer-retire
+    titre: "« Bloquer/débloquer des utilisateurs » et l'alerte de fraude MFA ont disparu du portail"
+    symptome: "L'administrateur ne trouve plus la liste des utilisateurs bloqués ; il faut passer par « Signaler une activité suspecte » et ID Protection."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/2246747/entra-block-unblock-users-missing-for-global-admin
+      - https://janbakker.tech/report-suspicious-activity-fraud-alert-for-azure-mfa/
+    etat: a-rediger
+  - id: mfa-non-ce-n-est-pas-moi-utilisateur-bloque
+    titre: "Utilisateur bloqué après avoir répondu « Non, ce n'est pas moi » (signalement d'activité suspecte)"
+    symptome: "Le signalement passe le risque utilisateur à « élevé » ou bloque le compte ; il ne peut plus se connecter tant que le risque n'est pas corrigé."
+    erreurs: ["AADSTS53011"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://janbakker.tech/report-suspicious-activity-fraud-alert-for-azure-mfa/
+      - https://learn.microsoft.com/en-ie/answers/questions/2245486/block-unblock-users-in-mfa-is-gone
+    etat: a-rediger
+  - id: mfa-demandes-inattendues-fatigue-mfa
+    titre: "L'utilisateur reçoit des demandes d'approbation MFA qu'il n'a pas faites (attaque par fatigue MFA)"
+    symptome: "Des notifications Authenticator arrivent sans tentative de connexion : le mot de passe est probablement compromis."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://security.uchicago.edu/2024/10/01/mfa-fatigue-attacks
+      - https://learn.microsoft.com/entra/identity/authentication/how-to-mfa-number-match
+    etat: a-rediger
+  # --- MFA en boucle, trop fréquente ou jamais demandée ---
+  - id: mfa-demandee-trop-souvent
+    titre: "MFA redemandée trop souvent (à chaque ouverture d'application ou plusieurs fois par jour)"
+    symptome: "Combinaison « mémoriser la MFA » + « rester connecté », fréquence de connexion trop courte, appareil sans identité Entra (pas de PRT) ou MFA par utilisateur."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/entra/identity/authentication/concepts-azure-multi-factor-authentication-prompts-session-lifetime
+      - https://techcommunity.microsoft.com/discussions/microsoft-entra/excessive-mfa-prompts-for-a-specific-user/3876400
+    etat: a-rediger
+  - id: mfa-jamais-demandee
+    titre: "La MFA n'est jamais demandée à certains utilisateurs alors qu'une stratégie l'exige"
+    symptome: "Utilisateur dans un groupe exclu, appareil mémorisé, emplacement approuvé, ou exigence satisfaite par une revendication du jeton / un appareil Windows Hello."
+    erreurs: ["MFA requirement satisfied by claim in the token"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/mfa/multi-factor-auth-second-verification
+      - https://learn.microsoft.com/en-ie/Entra/Identity/Authentication/howto-mfa-reporting
+      - https://techcommunity.microsoft.com/discussions/microsoft-entra/mfa-requirement-satisfied-by-multi-factor-device/4427358
+    etat: a-rediger
+  - id: mfa-boucle-more-information-required
+    titre: "Boucle « More information required » à chaque connexion alors que la MFA est déjà configurée"
+    symptome: "L'utilisateur est renvoyé sans fin vers l'enregistrement : stratégie de risque, campagne d'inscription, méthode requise par SSPR manquante ou jeton non rafraîchi."
+    erreurs: ["More information required"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/discussions/admincenter/login-problems-continuously-getting-the-same-message/1955873/replies/4384613
+      - https://learn.microsoft.com/entra/identity/authentication/how-to-mfa-registration-campaign
+    etat: a-rediger
+  - id: mfa-frequence-connexion-non-respectee
+    titre: "La fréquence de connexion (sign-in frequency) ne redemande pas la MFA comme prévu"
+    symptome: "La stratégie de fréquence de connexion est configurée mais l'utilisateur n'est jamais réauthentifié, ou l'est trop souvent."
+    erreurs: ["AADSTS70043"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/742368/sign-in-frequency-not-working-as-expected-user-not
+      - https://learn.microsoft.com/en-us/entra/identity/conditional-access/concept-session-lifetime
+    etat: a-rediger
+  - id: mfa-50076-reauthentification-requise
+    titre: "AADSTS50076 / 50074 : application ou script bloqué car la MFA est requise et non réalisée"
+    symptome: "Un client non interactif (script, connecteur, ancienne application) échoue car une nouvelle stratégie exige la MFA."
+    erreurs: ["AADSTS50076: Due to a configuration change made by your administrator, or because you moved to a new location, you must use multi-factor authentication to access", "AADSTS50074: Strong Authentication is required."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity-platform/reference-error-codes
+      - https://inventivehq.com/knowledge-base/microsoft-azure/aadsts50076-multifactor-authentication-required
+    etat: a-rediger
+  - id: mfa-50078-mfa-expiree
+    titre: "AADSTS50078 : la MFA présentée a expiré, nouvelle validation requise"
+    symptome: "Après un délai défini par l'administrateur, l'application échoue jusqu'à ce que l'utilisateur refasse la MFA."
+    erreurs: ["AADSTS50078"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity-platform/reference-error-codes
+      - https://admindroid.com/error-code-50078-multi-factor-authentication-expired
+    etat: a-rediger
+  # --- Authenticator : ajout de compte et Authenticator Lite ---
+  - id: mfa-authenticator-ajout-compte-echoue
+    titre: "Authenticator : « Couldn't add account » ou « The account you're trying to add is not valid at this time »"
+    symptome: "Le scan du QR code depuis Informations de sécurité échoue (code expiré, ancienne inscription, version de l'application, Android vs iOS)."
+    erreurs: ["The account you're trying to add is not valid at this time", "Couldn't add account"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/topic/a3a74493-566b-4c2e-b949-a2789bac0fd3
+      - https://learn.microsoft.com/en-za/answers/questions/747189/authenticator-failed-to-add-account-on-android-fai
+      - https://learn.microsoft.com/en-us/answers/questions/844520/unable-to-scan-qr-code-in-microsoft-authenticator
+    etat: a-rediger
+  - id: mfa-authenticator-inscription-expiree
+    titre: "« Authenticator registration has timed out » lors de l'ajout du compte"
+    symptome: "L'assistant d'enregistrement expire avant que l'application ait confirmé l'inscription."
+    erreurs: ["authenticator registration has timed out. please choose next to try again"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/998363/microsoft-authenticator-failed-register-authentica
+    etat: a-rediger
+  - id: mfa-authenticator-lite-outlook
+    titre: "Authenticator Lite (dans Outlook mobile) : pas de notification ou méthode inutilisable"
+    symptome: "L'utilisateur valide via Outlook mobile mais ne reçoit plus la demande (version d'Outlook, mode appareil partagé, fonctionnalité désactivée, application Authenticator supprimée)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-au/Entra/identity/authentication/how-to-mfa-authenticator-lite
+      - https://janbakker.tech/authenticator-lite-approve-azure-mfa-prompts-with-the-outlook-app/
+    etat: a-rediger

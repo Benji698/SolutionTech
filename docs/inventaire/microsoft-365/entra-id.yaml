@@ -1,0 +1,1242 @@
+domaine: microsoft-365
+sous_domaine: entra-id
+recense_le: 2026-10-29
+# Périmètre : connexions et codes AADSTS (hors MFA / accès conditionnel, traités dans mfa-acces-conditionnel),
+# comptes, SSPR et réécriture du mot de passe, invités B2B, rôles et PIM, appareils (jonction, PRT),
+# applications d'entreprise et SSO, groupes, Entra Connect côté cloud, Windows Hello for Business, UPN et domaines.
+problemes:
+  # ---------------------------------------------------------------------------
+  # Connexion : comptes, mots de passe, sessions et jetons
+  # ---------------------------------------------------------------------------
+  - id: m365-connexion-refusee-aadsts
+    titre: "Connexion à Microsoft 365 refusée (codes d'erreur AADSTS)"
+    symptome: "L'utilisateur ne peut pas se connecter et un code AADSTS s'affiche (mot de passe, compte verrouillé ou désactivé, accès conditionnel)."
+    erreurs: ["AADSTS50126", "AADSTS50053", "AADSTS50057", "AADSTS53003", "AADSTS53000"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-code-aadsts50057-user-account-is-disabled
+    etat: redigee
+  - id: entra-aadsts50034-compte-inexistant-annuaire
+    titre: "Le compte n'existe pas dans l'annuaire (AADSTS50034)"
+    symptome: "La connexion échoue avec un message indiquant que le compte n'existe pas dans le locataire : faute de frappe dans l'UPN, compte non synchronisé ou supprimé."
+    erreurs: ["AADSTS50034: The user account {identifier} does not exist in the {tenant} directory. To sign into this application, the account must be added to the directory."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+      - https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-primary-refresh-token
+    etat: a-rediger
+  - id: entra-aadsts50055-mot-de-passe-expire
+    titre: "Mot de passe expiré à la connexion Microsoft 365 (AADSTS50055)"
+    symptome: "L'utilisateur est invité à changer son mot de passe ou la connexion d'une application échoue car le mot de passe cloud a expiré."
+    erreurs: ["AADSTS50055: The password is expired."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+      - https://login.microsoftonline.com/error?code=50055
+    etat: a-rediger
+  - id: entra-aadsts50144-mot-de-passe-ad-expire
+    titre: "Mot de passe Active Directory expiré pour un compte synchronisé (AADSTS50144)"
+    symptome: "Un utilisateur hybride (PTA, fédération ou PHS avec expiration activée) ne peut plus se connecter au cloud car son mot de passe AD a expiré."
+    erreurs: ["AADSTS50144: InvalidPasswordExpiredOnPremPassword - User's Active Directory password has expired."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-aadsts50056-mot-de-passe-absent-annuaire
+    titre: "Aucun mot de passe enregistré pour l'utilisateur dans Entra ID (AADSTS50056)"
+    symptome: "La connexion échoue car aucun mot de passe n'existe côté cloud pour ce compte (hachage non synchronisé, compte créé sans mot de passe)."
+    erreurs: ["AADSTS50056: Invalid or null password: password doesn't exist in the directory for this user."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-aadsts50132-session-revoquee-changement-mot-de-passe
+    titre: "Session invalidée après un changement de mot de passe (AADSTS50132 / AADSTS50133)"
+    symptome: "Après une réinitialisation ou un changement de mot de passe, Outlook, Teams ou le navigateur redemandent la connexion ou échouent en boucle."
+    erreurs: ["AADSTS50132: SsoArtifactInvalidOrExpired", "AADSTS50133: SsoArtifactRevoked - The session isn't valid due to password expiration or recent password change."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-aadsts50173-jeton-revoque
+    titre: "Jeton d'actualisation révoqué, nouvelle connexion exigée (AADSTS50173)"
+    symptome: "Une application ou un connecteur cesse de fonctionner et demande de se reconnecter, après un changement de mot de passe ou une révocation des sessions par l'administrateur."
+    erreurs: ["AADSTS50173: The provided grant has expired due to it being revoked, a fresh auth token is needed."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-code-aadsts50173-grant-expired-revoked
+    etat: a-rediger
+  - id: entra-aadsts700082-jeton-expire-inactivite
+    titre: "Jeton d'actualisation expiré après une longue inactivité (AADSTS700082 / AADSTS70008)"
+    symptome: "Une application, un script ou un compte de service non utilisé depuis longtemps échoue avec un jeton expiré pour inactivité."
+    erreurs: ["AADSTS700082: The refresh token has expired due to inactivity.", "AADSTS70008: The refresh token has expired due to inactivity."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-aadsts70043-frequence-connexion-jeton-invalide
+    titre: "Jeton expiré par la fréquence de connexion de l'accès conditionnel (AADSTS70043)"
+    symptome: "Les utilisateurs doivent se reconnecter régulièrement ; les journaux montrent un jeton invalidé par la stratégie de fréquence de connexion."
+    erreurs: ["AADSTS70043: The refresh token has expired or is invalid due to sign-in frequency checks by Conditional Access."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-aadsts50089-flow-token-expire
+    titre: "Page de connexion restée ouverte trop longtemps (AADSTS50089)"
+    symptome: "L'utilisateur valide sa connexion après avoir laissé la page ouverte longtemps et obtient une erreur de jeton de flux expiré."
+    erreurs: ["AADSTS50089: Authentication failed due to flow token expired."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-aadsts50140-interruption-rester-connecte
+    titre: "Échec « Rester connecté ? » dans les journaux de connexion (AADSTS50140)"
+    symptome: "Les journaux de connexion affichent des échecs AADSTS50140 alors que l'utilisateur s'est bien connecté : c'est l'écran « Rester connecté ? » (KMSI)."
+    erreurs: ["AADSTS50140: KmsiInterrupt - This error occurred due to \"Keep me signed in\" interrupt when the user was signing-in."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-aadsts50199-confirmation-utilisateur-requise
+    titre: "Demande de confirmation « Essayez-vous de vous connecter à… » (AADSTS50199)"
+    symptome: "Un écran de confirmation de sécurité s'affiche lors d'une connexion depuis une application ou un navigateur intégré ; l'échec apparaît dans les journaux."
+    erreurs: ["AADSTS50199: CmsiInterrupt - For security reasons, user confirmation is required for this request."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-aadsts50135-changement-mot-de-passe-risque
+    titre: "Changement de mot de passe imposé à cause d'un risque sur le compte (AADSTS50135)"
+    symptome: "Identity Protection détecte un risque (fuite d'identifiants, connexion suspecte) et oblige l'utilisateur à changer son mot de passe ou bloque la connexion."
+    erreurs: ["AADSTS50135: PasswordChangeCompromisedPassword - Password change is required due to account risk.", "AADSTS53011: User blocked due to risk on home tenant."]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-aadsts50128-domaine-locataire-introuvable
+    titre: "Nom de domaine ou locataire introuvable à la connexion (AADSTS50128 / AADSTS90002)"
+    symptome: "L'utilisateur saisit une adresse dont le domaine n'est rattaché à aucun locataire (faute de frappe, ancien domaine supprimé, locataire sans abonnement)."
+    erreurs: ["AADSTS50128: Invalid domain name - No tenant-identifying information found in either the request or implied by any provided credentials.", "AADSTS90002: Tenant '{tenant}' not found."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-aadsts50058-session-sso-absente
+    titre: "Connexion silencieuse impossible, aucune session ouverte (AADSTS50058)"
+    symptome: "Une application tente une connexion unique silencieuse sans session active ; échec visible dans les journaux ou boucle de connexion dans le navigateur (cookies tiers bloqués)."
+    erreurs: ["AADSTS50058: UserInformationNotProvided - Session information isn't sufficient for single-sign-on."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+      - https://login.microsoftonline.com/error?code=50058
+    etat: a-rediger
+  - id: entra-aadsts50196-boucle-detectee
+    titre: "Boucle de connexion détectée par Entra ID (AADSTS50196)"
+    symptome: "Une application redemande des jetons en boucle ; Entra ID interrompt la connexion avec une erreur de boucle client."
+    erreurs: ["AADSTS50196: LoopDetected - A client loop has been detected."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-aadsts500021-restrictions-locataire
+    titre: "Accès à un autre locataire bloqué par les restrictions de locataire (AADSTS500021 / AADSTS500022)"
+    symptome: "Depuis le réseau de l'entreprise, la connexion à un locataire externe (client, partenaire, compte perso pro) est refusée par le proxy ou la stratégie Tenant Restrictions."
+    erreurs: ["AADSTS500021: Access to '{tenant}' tenant is denied.", "AADSTS500022: Access to '{tenant}' tenant is denied."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-aadsts50002-acces-proxy-restreint
+    titre: "Connexion refusée à cause d'un accès proxy restreint sur le locataire (AADSTS50002)"
+    symptome: "La connexion échoue avec NotAllowedTenant ; une restriction de locataire ou de proxy empêche l'accès."
+    erreurs: ["AADSTS50002: NotAllowedTenant - Sign-in failed because of a restricted proxy access on the tenant."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-aadsts5000224-locataire-bloque-fraude
+    titre: "Locataire bloqué par Microsoft pour suspicion de fraude (AADSTS5000224)"
+    symptome: "Plus personne ne peut se connecter au locataire : Microsoft l'a suspendu (fraude, abus, impayé suspect)."
+    erreurs: ["AADSTS5000224: We are sorry, this resource is not available. If you are seeing this message by mistake, please contact Microsoft support."]
+    priorite: critique
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-erreurs-transitoires-service-connexion
+    titre: "Erreur temporaire du service de connexion Microsoft (AADSTS50000, 90033, 90006, 50033, 90024)"
+    symptome: "Des connexions échouent ponctuellement avec une erreur côté service ; il faut vérifier l'état du service avant de chercher une cause locale."
+    erreurs: ["AADSTS50000: There was an error issuing a token or an issue with our sign-in service.", "AADSTS90033: MsodsServiceUnavailable", "AADSTS90006: ExternalServerRetryableError", "AADSTS50033: RetryableError", "AADSTS90024: RequestBudgetExceededError"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-code-aadsts50000-issuing-token-sign-in-service
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-aadsts90055-limitation-requetes
+    titre: "Trop de requêtes de connexion, locataire limité (AADSTS90055)"
+    symptome: "Un script ou une application envoie trop de demandes d'authentification et le locataire est temporairement limité."
+    erreurs: ["AADSTS90055: TenantThrottlingError - There are too many incoming requests."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-aadsts50127-application-broker-requise
+    titre: "Application broker requise sur mobile : Authenticator ou Portail d'entreprise (AADSTS50127)"
+    symptome: "Sur smartphone, une application professionnelle refuse l'accès tant que Microsoft Authenticator ou le Portail d'entreprise n'est pas installé."
+    erreurs: ["AADSTS50127: BrokerAppNotInstalled - User needs to install a broker app to gain access to this content."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-aadsts70019-code-appareil-expire
+    titre: "Connexion par code d'appareil expirée ou code incorrect (AADSTS70019 / AADSTS70018)"
+    symptome: "Sur une salle Teams, une TV, Azure CLI ou PowerShell, la connexion via microsoft.com/devicelogin échoue : code expiré ou mal saisi."
+    erreurs: ["AADSTS70019: CodeExpired - Verification code expired.", "AADSTS70018: BadVerificationCode - Invalid verification code due to User typing in wrong user code for device code flow."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-changement-mot-de-passe-refuse-aadsts1200xx
+    titre: "Changement de mot de passe refusé à la connexion (AADSTS120002, 120003, 120018…)"
+    symptome: "L'utilisateur doit changer son mot de passe mais le nouveau est refusé : trop faible, contient son nom, figure dans la liste des mots de passe interdits, ou mot de passe actuel incorrect."
+    erreurs: ["AADSTS120000: PasswordChangeIncorrectCurrentPassword", "AADSTS120002: PasswordChangeInvalidNewPasswordWeak", "AADSTS120003: PasswordChangeInvalidNewPasswordContainsMemberName", "AADSTS120018: PasswordChangePasswordDoesnotComplyFuzzyPolicy"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/troubleshoot-sspr
+    etat: a-rediger
+  - id: entra-changement-mot-de-passe-hybride-echoue-aadsts1200xx
+    titre: "Changement de mot de passe d'un compte synchronisé impossible depuis le cloud (AADSTS120004, 120012, 120013, 120014)"
+    symptome: "Le changement de mot de passe d'un utilisateur hybride échoue : complexité AD non respectée, réécriture absente, contrôleur injoignable ou compte AD verrouillé/désactivé."
+    erreurs: ["AADSTS120004: PasswordChangeOnPremComplexity", "AADSTS120012: PasswordChangeNeedsToHappenOnPrem", "AADSTS120013: PasswordChangeOnPremisesConnectivityFailure", "AADSTS120014: PasswordChangeOnPremUserAccountLockedOutOrDisabled", "AADSTS120005: PasswordChangeOnPremSuccessCloudFail"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/troubleshoot-sspr-writeback
+    etat: a-rediger
+  # ---------------------------------------------------------------------------
+  # Authentification directe (PTA) et authentification unique transparente (Seamless SSO)
+  # ---------------------------------------------------------------------------
+  - id: entra-pta-aucun-agent-disponible
+    titre: "Authentification directe : aucun agent d'authentification disponible (AADSTS80001)"
+    symptome: "Tous les utilisateurs synchronisés en authentification directe (PTA) ne peuvent plus se connecter : agents arrêtés, serveurs éteints ou injoignables."
+    erreurs: ["AADSTS80001: OnPremiseStoreIsNotAvailable - The Authentication Agent is unable to connect to Active Directory."]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/tshoot-connect-pass-through-authentication
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-pta-delai-validation-ad-depasse
+    titre: "Authentification directe : délai dépassé ou erreur en joignant Active Directory (AADSTS80002 / AADSTS80007)"
+    symptome: "Les connexions PTA échouent ou sont lentes : l'agent n'arrive pas à joindre un contrôleur de domaine à temps."
+    erreurs: ["AADSTS80002: OnPremisePasswordValidatorRequestTimedout - Password validation request timed out.", "AADSTS80007: OnPremisePasswordValidatorErrorOccurredOnPrem - The Authentication Agent is unable to validate user's password."]
+    priorite: critique
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/tshoot-connect-pass-through-authentication
+    etat: a-rediger
+  - id: entra-pta-agent-dechiffrement-mot-de-passe
+    titre: "Authentification directe : l'agent ne peut pas déchiffrer le mot de passe (AADSTS80010 / 80011)"
+    symptome: "Un agent PTA renvoie des erreurs de déchiffrement ; il faut le réinstaller et le réenregistrer."
+    erreurs: ["AADSTS80010: OnPremisePasswordValidationEncryptionException - The Authentication Agent is unable to decrypt password.", "80011: Authentication Agent unable to retrieve decryption key."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/tshoot-connect-pass-through-authentication
+    etat: a-rediger
+  - id: entra-pta-heures-connexion-ad
+    titre: "Connexion cloud refusée hors des horaires autorisés dans AD (AADSTS80012)"
+    symptome: "Avec l'authentification directe, l'utilisateur ne peut pas se connecter à Microsoft 365 en dehors des heures d'ouverture de session définies sur son compte AD."
+    erreurs: ["AADSTS80012: OnPremisePasswordValidationAccountLogonInvalidHours - The users attempted to log on outside of the allowed hours."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-pta-decalage-horaire-agent
+    titre: "Authentification directe : décalage horaire entre l'agent et AD (AADSTS80013)"
+    symptome: "Les validations de mot de passe échouent car l'horloge du serveur de l'agent PTA est décalée par rapport aux contrôleurs de domaine."
+    erreurs: ["AADSTS80013: OnPremisePasswordValidationTimeSkew"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-pta-enregistrement-agent-echoue
+    titre: "Installation ou enregistrement de l'agent d'authentification directe en échec"
+    symptome: "L'agent PTA refuse de s'enregistrer : ports sortants bloqués (80, 443), proxy, jeton ou compte administrateur non autorisé."
+    erreurs: ["Registration of the Authentication Agent failed", "An unexpected error occurred"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/tshoot-connect-pass-through-authentication
+    etat: a-rediger
+  - id: entra-seamless-sso-ne-fonctionne-pas
+    titre: "L'authentification unique transparente (Seamless SSO) ne fonctionne pas : le mot de passe est redemandé"
+    symptome: "Sur un poste joint au domaine, l'utilisateur doit saisir son mot de passe Microsoft 365 alors que le SSO transparent est activé (zone intranet, GPO, ticket Kerberos, compte AZUREADSSOACC)."
+    erreurs: ["AADSTS81004: DesktopSsoIdentityInTicketIsNotAuthenticated - Kerberos authentication attempt failed.", "AADSTS81009: Unable to validate user's Kerberos ticket."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/tshoot-connect-sso
+    etat: a-rediger
+  - id: entra-seamless-sso-ticket-kerberos-trop-grand
+    titre: "Seamless SSO en échec car le ticket Kerberos est trop grand (81001)"
+    symptome: "Un utilisateur membre de très nombreux groupes AD n'obtient jamais le SSO transparent alors que ses collègues l'ont."
+    erreurs: ["81001: User's Kerberos ticket is too large."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/tshoot-connect-sso
+    etat: a-rediger
+  - id: entra-seamless-sso-utilisateur-introuvable-ticket
+    titre: "Seamless SSO : utilisateur introuvable ou différent de celui connecté au poste (AADSTS81011 / AADSTS81012)"
+    symptome: "Le SSO transparent échoue car le compte du ticket Kerberos n'est pas synchronisé, ou l'utilisateur tente de se connecter avec un autre compte que celui de la session Windows."
+    erreurs: ["AADSTS81011: DesktopSsoLookupUserBySidFailed", "AADSTS81012: DesktopSsoMismatchBetweenTokenUpnAndChosenUpn"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/tshoot-connect-sso
+    etat: a-rediger
+  - id: entra-seamless-sso-ticket-expire-cle-azureadssoacc
+    titre: "Seamless SSO : ticket Kerberos expiré ou clé du compte AZUREADSSOACC non renouvelée (AADSTS81010)"
+    symptome: "Le SSO transparent cesse de fonctionner pour tous ; la clé de déchiffrement Kerberos du compte ordinateur AZUREADSSOACC doit être renouvelée."
+    erreurs: ["AADSTS81010: DesktopSsoAuthTokenInvalid - Seamless SSO failed because the user's Kerberos ticket has expired or is invalid."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/tshoot-connect-sso
+    etat: a-rediger
+  - id: entra-aadsts50180-authentification-windows-integree-requise
+    titre: "Authentification Windows intégrée requise mais Seamless SSO non activé (AADSTS50180 / AADSTS81007)"
+    symptome: "Une connexion qui attend l'authentification Windows intégrée échoue car le locataire n'est pas activé pour le SSO transparent."
+    erreurs: ["AADSTS50180: WindowsIntegratedAuthMissing - Integrated Windows authentication is needed. Enable the tenant for Seamless SSO.", "AADSTS81007: DesktopSsoTenantIsNotOptIn"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  # ---------------------------------------------------------------------------
+  # Applications d'entreprise, SSO SAML / OIDC et consentement
+  # ---------------------------------------------------------------------------
+  - id: entra-aadsts50105-utilisateur-non-affecte-application
+    titre: "L'utilisateur n'est pas affecté à l'application (AADSTS50105)"
+    symptome: "L'application est configurée avec « Affectation requise » et l'utilisateur (ou son groupe) n'y est pas affecté : accès refusé après authentification."
+    erreurs: ["AADSTS50105: The signed in user '{EmailHidden}' is not assigned to a role for the application '{appId}'({appName})."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-code-aadsts50105-user-not-assigned-role
+    etat: a-rediger
+  - id: entra-aadsts700016-application-introuvable-locataire
+    titre: "Application introuvable dans le locataire (AADSTS700016 / AADSTS70001)"
+    symptome: "La connexion SSO à une application échoue : l'identifiant (client ID ou Entity ID) ne correspond à aucune application du locataire, ou elle n'a jamais été consentie."
+    erreurs: ["AADSTS700016: Application with identifier '{appIdentifier}' was not found in the directory '{tenantName}'.", "AADSTS70001: Application with Identifier was not found in the directory."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-code-aadsts70001-app-not-found-in-directory
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-aadsts50011-url-reponse-ne-correspond-pas
+    titre: "L'URL de réponse ne correspond pas à celle configurée pour l'application (AADSTS50011)"
+    symptome: "Après authentification, l'erreur indique que l'URL de redirection ou de réponse (Reply URL) envoyée par l'application n'est pas déclarée."
+    erreurs: ["AADSTS50011: The reply URL specified in the request does not match the reply URLs configured for the application.", "AADSTS50011: The redirect URI specified in the request does not match the redirect URIs configured for the application."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-code-aadsts50011-reply-url-mismatch
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-code-aadsts50011-redirect-uri-mismatch
+    etat: a-rediger
+  - id: entra-approbation-administrateur-requise-consentement
+    titre: "« Approbation requise » / « Need admin approval » à l'ouverture d'une application (AADSTS90094 / AADSTS90095)"
+    symptome: "Un utilisateur veut se connecter à une application tierce (ou un complément) et un écran exige l'approbation d'un administrateur."
+    erreurs: ["AADSTS90094: AdminConsentRequired - Administrator consent is required.", "AADSTS90095: AdminConsentRequiredRequestAccess", "Need admin approval"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/troubleshoot-consent-issues
+      - https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/application-sign-in-unexpected-user-consent-error
+    etat: a-rediger
+  - id: entra-aadsts65001-consentement-absent
+    titre: "L'utilisateur ou l'administrateur n'a pas consenti à l'application (AADSTS65001)"
+    symptome: "Une application ou un script échoue en connexion non interactive car le consentement aux autorisations demandées n'a jamais été donné."
+    erreurs: ["AADSTS65001: The user or administrator has not consented to use the application with ID '{appId}'."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/troubleshoot-consent-issues
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-aadsts65004-consentement-refuse
+    titre: "L'utilisateur a refusé le consentement à l'application (AADSTS65004)"
+    symptome: "L'utilisateur a cliqué sur « Annuler » à l'écran des autorisations ; l'application affiche une erreur de consentement refusé."
+    erreurs: ["AADSTS65004: UserDeclinedConsent - User declined to consent to access the app."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/application-sign-in-unexpected-user-consent-error
+    etat: a-rediger
+  - id: entra-demande-consentement-inattendue
+    titre: "Écran de consentement inattendu à chaque connexion à une application"
+    symptome: "Les utilisateurs voient une demande d'autorisations alors que l'application était déjà approuvée (nouvelles permissions demandées, consentement retiré)."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/application-sign-in-unexpected-user-consent-prompt
+    etat: a-rediger
+  - id: entra-consentement-application-risquee-bloque
+    titre: "Consentement bloqué : application jugée risquée ou éditeur non vérifié"
+    symptome: "Le consentement est refusé par la stratégie (éditeur non vérifié, application signalée comme risquée, autorisations non autorisées)."
+    erreurs: ["Policy prevents granting permissions", "Risky app"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/application-sign-in-unexpected-user-consent-error
+    etat: a-rediger
+  - id: entra-aadsts650056-application-mal-configuree
+    titre: "Application mal configurée (AADSTS650056 / AADSTS65005)"
+    symptome: "La connexion échoue car l'application ne déclare pas les autorisations nécessaires, ou demande l'accès à une ressource absente du locataire."
+    erreurs: ["AADSTS650056: Misconfigured application.", "AADSTS65005: MisconfiguredApplication - The app required resource access list doesn't contain apps discoverable by the resource."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-code-aadsts650056-misconfigured-app
+    etat: a-rediger
+  - id: entra-aadsts500011-ressource-introuvable
+    titre: "Ressource introuvable dans le locataire (AADSTS500011)"
+    symptome: "Une application demande un jeton pour une API (principal de service) qui n'existe pas ou n'a pas été provisionnée dans le locataire."
+    erreurs: ["AADSTS500011: The resource principal named {name} was not found in the tenant named {tenant}."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-code-aadsts500011-resource-principal-not-found
+    etat: a-rediger
+  - id: entra-aadsts7000112-application-desactivee
+    titre: "Application désactivée dans Entra ID (AADSTS7000112 / AADSTS500014)"
+    symptome: "La connexion à une application échoue car son principal de service est désactivé (« Activé pour la connexion des utilisateurs » sur Non, ou abonnement expiré)."
+    erreurs: ["AADSTS7000112: Application '{appId}'({appName}) is disabled.", "AADSTS500014: The service principal for resource '{identifier}' is disabled."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-code-aadsts7000112-application-is-disabled
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-aadsts7000222-secret-client-expire
+    titre: "Secret client de l'application expiré : connecteur, script ou scanner en panne (AADSTS7000222)"
+    symptome: "Un service qui fonctionnait (scan vers e-mail, synchro, sauvegarde, script Graph) cesse brutalement de s'authentifier car le secret de l'inscription d'application a expiré."
+    erreurs: ["AADSTS7000222: InvalidClientSecretExpiredKeysProvided - The provided client secret keys are expired."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-aadsts7000215-secret-client-invalide
+    titre: "Secret client invalide (AADSTS7000215 / AADSTS7000218)"
+    symptome: "L'application s'authentifie avec un mauvais secret (identifiant du secret au lieu de sa valeur, secret mal copié) ou sans secret."
+    erreurs: ["AADSTS7000215: Invalid client secret is provided.", "AADSTS7000218: The request body must contain the following parameter: 'client_assertion' or 'client_secret'."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/confidential-client-application-authentication-error-aadsts7000218
+    etat: a-rediger
+  - id: entra-saml-certificat-signature-expire
+    titre: "SSO SAML en panne après expiration ou renouvellement du certificat de signature"
+    symptome: "Plus personne ne peut se connecter à une application SAML : le certificat de signature Entra a expiré, ou le nouveau certificat n'a pas été importé dans l'application."
+    erreurs: ["AADSTS50003: No signing key configured"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/tutorial-manage-certificates-for-federated-single-sign-on
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-code-aadsts50003-cert-or-key-not-configured
+    etat: a-rediger
+  - id: entra-saml-application-erreur-apres-connexion
+    titre: "L'application SAML affiche une erreur après la connexion Entra (attribut manquant, NameID, signature)"
+    symptome: "L'authentification Entra réussit mais l'application refuse l'utilisateur : attribut absent de la réponse SAML, mauvais format NameID, méthode de signature ou algorithme SHA-1 attendu."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/application-sign-in-problem-application-error
+      - https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/debug-saml-sso-issues
+    etat: a-rediger
+  - id: entra-aadsts75011-methode-authentification-saml
+    titre: "SAML : méthode d'authentification différente de celle demandée (AADSTS75011)"
+    symptome: "L'application SAML exige un AuthnContextClassRef précis (par exemple mot de passe) alors que l'utilisateur s'est authentifié autrement (SSO Windows, MFA)."
+    erreurs: ["AADSTS75011: Authentication method by which the user authenticated with the service doesn't match requested authentication method AuthnContextClassRef."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-code-aadsts75011-auth-method-mismatch
+    etat: a-rediger
+  - id: entra-aadsts75005-requete-saml-invalide
+    titre: "Requête SAML non valide envoyée par l'application (AADSTS75005 / AADSTS750054)"
+    symptome: "Le SSO SAML échoue dès l'envoi de la requête : message SAML mal formé ou absent des paramètres attendus pour la liaison Redirect."
+    erreurs: ["AADSTS75005: The request isn't a valid Saml2 protocol message.", "AADSTS750054: SAMLRequest or SAMLResponse must be present as query string parameters in HTTP request for SAML Redirect binding."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-code-aadsts75005-not-a-valid-saml-request
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-code-aadsts750054-saml-request-not-present
+    etat: a-rediger
+  - id: entra-aadsts76021-requete-saml-non-signee
+    titre: "SAML : l'application doit envoyer des requêtes signées (AADSTS76021)"
+    symptome: "L'option de vérification de signature est activée côté Entra mais l'application envoie une requête SAML non signée."
+    erreurs: ["AADSTS76021: ApplicationRequiresSignedRequests - The request sent by client is not signed while the application requires signed requests"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-code-aadsts76021-request-not-signed
+    etat: a-rediger
+  - id: entra-aadsts7500514-type-reponse-saml
+    titre: "Type de réponse SAML non pris en charge (AADSTS7500514)"
+    symptome: "Avec un fournisseur d'identité ou un proxy tiers (PingFederate…), la réponse SAML reçue n'est pas d'un type accepté."
+    erreurs: ["AADSTS7500514: A supported type of SAML response was not found."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-code-aadsts7500514-supported-type-saml-response-not-found
+    etat: a-rediger
+  - id: entra-saml-identifiant-url-reponse-impossible-ajouter
+    titre: "Impossible d'ajouter l'identifiant ou l'URL de réponse d'une application SAML, ou une seconde instance"
+    symptome: "Le portail refuse l'Entity ID ou la Reply URL (déjà utilisés par une autre application, format invalide) ou n'autorise pas une deuxième instance de la même application."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/troubleshoot-saml-based-sso
+    etat: a-rediger
+  - id: entra-sso-mot-de-passe-extension-my-apps
+    titre: "SSO par mot de passe : l'extension Mes applications ne remplit pas ou ne valide pas les identifiants"
+    symptome: "Une application en SSO par mot de passe ne s'ouvre pas connectée : extension non installée, champs non détectés, page de connexion modifiée."
+    erreurs: ["Unable to save single sign-on configuration"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/troubleshoot-password-based-sso
+    etat: a-rediger
+  - id: entra-application-absente-portail-mes-applications
+    titre: "Une application n'apparaît pas dans Mes applications (myapps.microsoft.com) ou le lien direct échoue"
+    symptome: "L'utilisateur ne voit pas une application dans son portail : non affecté, application masquée, plus de 999 rôles d'application, lien profond incorrect."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/application-sign-in-other-problem-access-panel
+      - https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/hide-application-from-user-portal
+    etat: a-rediger
+  - id: entra-application-ajout-galerie-echoue
+    titre: "Application de la galerie qui n'apparaît pas (ou tard) après « Ajouter »"
+    symptome: "Après avoir ajouté une application depuis la galerie, elle n'apparaît pas dans les applications d'entreprise ou met très longtemps à s'afficher."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/app-doesnt-appear
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/app-takes-long-time-appear
+    etat: a-rediger
+  - id: entra-application-suppression-impossible
+    titre: "Impossible de supprimer une application d'entreprise (bouton Supprimer grisé)"
+    symptome: "Le bouton Supprimer d'une application d'entreprise est désactivé : application Microsoft interne, droits insuffisants ou application gérée ailleurs."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/unable-delete-app
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/troubleshoot-adding-apps
+    etat: a-rediger
+  - id: entra-application-supprimee-restaurer
+    titre: "Application d'entreprise supprimée par erreur : la restaurer"
+    symptome: "Une application ou une inscription d'application a été supprimée et plus personne ne peut s'y connecter ; elle reste récupérable pendant 30 jours."
+    erreurs: []
+    priorite: critique
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/restore-application
+      - https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/delete-recover-faq
+    etat: a-rediger
+  # ---------------------------------------------------------------------------
+  # Réinitialisation de mot de passe en libre-service (SSPR) et réécriture
+  # ---------------------------------------------------------------------------
+  - id: entra-sspr-administrateur-pas-active-fonctionnalite
+    titre: "« Votre administrateur ne vous a pas autorisé à utiliser cette fonctionnalité » en réinitialisant son mot de passe"
+    symptome: "L'utilisateur clique sur « Mot de passe oublié » et la réinitialisation est refusée : SSPR désactivé, utilisateur hors du groupe ciblé ou licence manquante."
+    erreurs: ["Your administrator has not enabled you to use this feature.", "TenantSSPRFlagDisabled = 9", "SsprNotEnabledInUserPolicy = 11", "UserNotLicensed = 12", "UserNotMemberOfScopedAccessGroup = 13"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/troubleshoot-sspr
+    etat: a-rediger
+  - id: entra-sspr-informations-securite-manquantes
+    titre: "Réinitialisation impossible : aucune méthode de vérification enregistrée pour le compte"
+    symptome: "L'utilisateur n'a pas enregistré de téléphone ou d'adresse de secours, ou une seule méthode alors que deux sont exigées."
+    erreurs: ["We could not verify your account.", "UserNotProperlyConfigured = 14"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/could-not-verify-account-reset-pwd
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/troubleshoot-sspr
+    etat: a-rediger
+  - id: entra-sspr-sms-appel-non-recu
+    titre: "Le code de réinitialisation par SMS ou appel n'arrive jamais"
+    symptome: "L'utilisateur ne reçoit pas le SMS ou l'appel de vérification : numéro mal formaté (indicatif pays), opérateur, blocage des numéros courts."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/troubleshoot-sspr
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/troubleshoot-voice-call-sms
+    etat: a-rediger
+  - id: entra-sspr-courriel-verification-non-recu
+    titre: "Le courriel de code de réinitialisation n'arrive pas"
+    symptome: "Le message contenant le code de vérification est bloqué par un filtre anti-spam ou arrive dans les courriers indésirables."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/troubleshoot-sspr
+    etat: a-rediger
+  - id: entra-sspr-trop-de-tentatives
+    titre: "Trop de tentatives de réinitialisation, utilisateur bloqué pour la journée"
+    symptome: "Après plusieurs essais, la réinitialisation est temporairement bloquée par le mécanisme de limitation automatique."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/troubleshoot-sspr
+    etat: a-rediger
+  - id: entra-sspr-administrateur-sspr-009
+    titre: "Un administrateur ne peut pas réinitialiser son propre mot de passe (SSPR_009)"
+    symptome: "Un compte avec un rôle d'administration reçoit SSPR_009 alors que les utilisateurs standards réinitialisent sans problème : la stratégie SSPR des administrateurs est désactivée."
+    erreurs: ["SSPR_009: Your organization hasn't turned on password reset."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/password-writeback-error-code-sspr-009
+    etat: a-rediger
+  - id: entra-sspr-0029-configuration-locale
+    titre: "Réinitialisation refusée à cause de la configuration locale (SSPR_0029)"
+    symptome: "Un utilisateur synchronisé (souvent membre d'un groupe protégé AD, adminCount=1) ne peut pas réinitialiser son mot de passe : la réécriture n'a pas les droits."
+    erreurs: ["SSPR_0029: Your organization hasn't properly set up the on-premises configuration for password reset.", "OnPremisesAdminActionRequired = 29"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/password-writeback-error-code-sspr-0029
+    etat: a-rediger
+  - id: entra-sspr-reecriture-non-activee
+    titre: "Réinitialisation impossible pour un compte synchronisé : réécriture du mot de passe non activée"
+    symptome: "Les utilisateurs synchronisés ne peuvent pas réinitialiser leur mot de passe dans le cloud car la réécriture (password writeback) n'est pas activée dans Entra Connect."
+    erreurs: ["WritebackNotEnabled = 10"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/troubleshoot-sspr
+    etat: a-rediger
+  - id: entra-sspr-reecriture-connectivite-service-bus
+    titre: "Réécriture du mot de passe en panne : connexion au Service Bus impossible (événements 32002, 31034)"
+    symptome: "Les réinitialisations échouent pour tous les comptes synchronisés ; le serveur Entra Connect n'arrive pas à joindre le relais Service Bus (pare-feu, proxy, TLS 1.2)."
+    erreurs: ["OnPremisesConnectivityError = 30", "32002 ServiceBusError: Error Connecting to ServiceBus.", "31034 ServiceBusListenerError"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/troubleshoot-sspr-writeback
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/password-writeback-general-troubleshooting-steps
+    etat: a-rediger
+  - id: entra-sspr-reecriture-droits-ad-insuffisants
+    titre: "Réécriture du mot de passe refusée par AD : droits du compte de connecteur insuffisants (33004)"
+    symptome: "La réinitialisation échoue avec « accès refusé » car le compte AD DS du connecteur n'a pas les droits « Réinitialiser le mot de passe » sur l'utilisateur (héritage désactivé, adminCount)."
+    erreurs: ["33004 ADPermissionsError"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/password-writeback-access-rights-permissions
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/troubleshoot-sspr-writeback
+    etat: a-rediger
+  - id: entra-sspr-politique-mot-de-passe-ad-refuse
+    titre: "Nouveau mot de passe refusé par la stratégie de mot de passe AD (33008, durée minimale)"
+    symptome: "Le mot de passe choisi dans le cloud ne respecte pas la stratégie locale (historique, longueur, durée de vie minimale) et la réinitialisation échoue."
+    erreurs: ["Unfortunately, you cannot reset this user's password because your on-premises policy does not allow it.", "33008 ADPasswordPolicyError", "0x80230619: A restriction prevents the password from being changed to the current one specified."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/password-writeback-not-compliant-on-premises-ad-pwd-policy
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/troubleshoot-sspr-writeback
+    etat: a-rediger
+  - id: entra-sspr-mot-de-passe-interdit
+    titre: "Mot de passe refusé car il figure dans la liste des mots de passe interdits"
+    symptome: "Le nouveau mot de passe est rejeté par la protection par mot de passe Entra (liste globale ou personnalisée, y compris côté AD avec l'agent DC)."
+    erreurs: ["Password doesn't comply with fuzzy policy"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/troubleshoot-sspr
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/howto-password-ban-bad-on-premises-troubleshoot
+    etat: a-rediger
+  - id: entra-sspr-reecriture-ldap-signe-0x8023062c
+    titre: "Réécriture : « server is not configured for insecure setting of passwords » (0x8023062c)"
+    symptome: "La réécriture du mot de passe échoue car le connecteur AD n'est pas configuré pour signer et chiffrer le trafic LDAP."
+    erreurs: ["8023062C (0x8023062c)", "The password could not be set because the server is not configured for insecure setting of passwords, or a 128 bit TLS or SSL connection is required."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/password-writeback-error-code-8023062c
+    etat: a-rediger
+  - id: entra-sspr-reecriture-utilisateur-introuvable-ad
+    titre: "Réécriture : utilisateur introuvable ou en double dans AD (33002, 33003)"
+    symptome: "La réinitialisation échoue car l'objet AD correspondant n'est pas trouvé (hors périmètre, supprimé) ou plusieurs objets ont la même ancre."
+    erreurs: ["33002 ADUserNotFoundError", "33003 ADMutliMatchError", "hr=80230402: An attempt to get an object failed because there are duplicated entries with the same anchor."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/troubleshoot-sspr-writeback
+    etat: a-rediger
+  - id: entra-sspr-reecriture-compte-ad-desactive-verrouille
+    titre: "Réécriture : compte AD désactivé ou verrouillé (33005, 33006)"
+    symptome: "La réinitialisation ou le déverrouillage depuis le cloud échoue car le compte local est désactivé ou verrouillé."
+    erreurs: ["33005 ADUserAccountDisabled", "33006 ADUserAccountLockedOut"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/troubleshoot-sspr-writeback
+    etat: a-rediger
+  - id: entra-sspr-reecriture-cle-chiffrement-jeton
+    titre: "Réécriture : erreur de déchiffrement, de jeton ou de configuration (32004, 32005, 32009, 32010)"
+    symptome: "Le service de réinitialisation local ne déchiffre plus les mots de passe ou n'obtient plus de jeton ; il faut désactiver puis réactiver la réécriture."
+    erreurs: ["32004 DecryptionError", "32005 ConfigurationError", "32009 AuthTokenError", "32010 CryptoError", "6329 0x8023061f"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/troubleshoot-sspr-writeback
+    etat: a-rediger
+  - id: entra-sspr-reecriture-configuration-assistant-echoue
+    titre: "« Unable to configure password writeback » à la fin de l'assistant Entra Connect"
+    symptome: "L'activation de la réécriture échoue dans l'assistant Entra Connect (compte administrateur, proxy, service non démarré, événement 6800)."
+    erreurs: ["Unable to configure password writeback"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/unable-configure-pwd-writeback-error
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/troubleshoot-sspr-writeback
+    etat: a-rediger
+  - id: entra-mot-de-passe-reinitialise-centre-admin-non-reecrit
+    titre: "Mot de passe réinitialisé dans le centre d'administration Microsoft 365 mais pas dans AD"
+    symptome: "Après une réinitialisation par l'administrateur, le nouveau mot de passe marche en ligne mais pas sur le poste ; l'ancien fonctionne encore localement."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/password-writeback-microsoft-365-admin-center
+    etat: a-rediger
+  - id: entra-mot-de-passe-serveurs-temps-rattraper
+    titre: "« Votre mot de passe a été mis à jour, mais nos serveurs ont besoin d'un peu de temps » après un changement forcé"
+    symptome: "Un utilisateur forcé à changer de mot de passe à la première connexion (PTA + réécriture) obtient cet avertissement et doit réessayer quelques minutes plus tard."
+    erreurs: ["Your password was successfully updated, but our servers take a little time to catch up. Please try signing in again in a few minutes.", "OnPremisesSuccessCloudFailure"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/password-writeback-servers-need-time-catch-up
+    etat: a-rediger
+  - id: entra-sspr-onglet-integration-locale-absent
+    titre: "Menu « Réinitialisation du mot de passe » ou onglet « Intégration locale » absent du centre d'administration"
+    symptome: "L'administrateur ne trouve pas les options SSPR ou l'onglet On-premises integration : licence, rôle ou Entra Connect non configuré."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/troubleshoot-sspr
+    etat: a-rediger
+  # ---------------------------------------------------------------------------
+  # Utilisateurs invités B2B (invitation, acceptation, accès)
+  # ---------------------------------------------------------------------------
+  - id: entra-aadsts50020-invite-inexistant-locataire
+    titre: "Invité refusé : le compte n'existe pas dans le locataire (AADSTS50020)"
+    symptome: "Un invité (ou un utilisateur avec son compte personnel) ne peut pas accéder à Teams, SharePoint ou une application : il n'a pas été invité, utilise le mauvais compte, ou son compte d'origine a été recréé."
+    erreurs: ["AADSTS50020: User account '{email}' from identity provider '{idp}' does not exist in tenant '{tenant}' and cannot access the application '{appid}'({appName}) in that tenant."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-code-aadsts50020-user-account-identity-provider-does-not-exist
+      - https://learn.microsoft.com/en-us/entra/external-id/troubleshoot
+    etat: a-rediger
+  - id: entra-invite-reinitialiser-etat-acceptation
+    titre: "Invité qui a changé d'adresse ou de compte : réinitialiser l'état d'acceptation de l'invitation"
+    symptome: "Le compte d'origine de l'invité a été supprimé puis recréé, ou il doit utiliser une autre adresse : l'ancien lien d'acceptation ne fonctionne plus."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/external-id/reset-redemption-status
+    etat: a-rediger
+  - id: entra-aadsts50107-acceptation-invitation-echoue
+    titre: "L'acceptation de l'invitation invité échoue (AADSTS50107)"
+    symptome: "En cliquant sur le lien d'invitation, l'invité obtient une erreur de domaine de fédération (realm) inexistant."
+    erreurs: ["AADSTS50107: The requested federation realm object '{name}' doesn't exist."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-aadsts50107-guest-redemption-fails
+    etat: a-rediger
+  - id: entra-invite-acceptation-erreur-emailverified-proxyaddress
+    titre: "Erreur pendant l'acceptation de l'invitation (utilisateurs vérifiés par e-mail interdits, domaine fédéré, proxyAddress en conflit)"
+    symptome: "L'invité ne peut pas finaliser l'invitation : son organisation interdit la création de comptes vérifiés par e-mail, son domaine fédéré ne le connaît pas, ou une adresse entre en conflit."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/external-id/troubleshoot
+      - https://learn.microsoft.com/en-us/entra/external-id/redemption-experience
+    etat: a-rediger
+  - id: entra-invite-courriel-invitation-non-recu
+    titre: "L'invité ne reçoit pas le courriel d'invitation"
+    symptome: "Le message d'invitation (expéditeur invites@microsoft.com) n'arrive pas : filtrage anti-spam, mauvaise adresse, ou envoi désactivé dans l'invitation."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/external-id/troubleshoot
+    etat: a-rediger
+  - id: entra-invitations-desactivees-annuaire
+    titre: "Impossible d'inviter un invité : invitations désactivées pour l'annuaire"
+    symptome: "L'envoi d'une invitation est refusé car les paramètres de collaboration externe interdisent aux utilisateurs (ou à tous) d'inviter."
+    erreurs: ["Invitations have been disabled for directory"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/external-id/troubleshoot
+    etat: a-rediger
+  - id: entra-invitation-bloquee-acces-inter-locataire
+    titre: "Invitation bloquée par les paramètres d'accès inter-locataire"
+    symptome: "L'invitation d'un utilisateur d'une autre organisation Entra est refusée : la stratégie sortante de son locataire ou entrante du vôtre bloque la collaboration B2B."
+    erreurs: ["This invitation is blocked by cross-tenant access settings. Admins in both your organization and the invited user's organization must configure cross-tenant access settings to allow the invitation."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/external-id/troubleshoot
+      - https://learn.microsoft.com/en-us/entra/external-id/cross-tenant-access-overview
+    etat: a-rediger
+  - id: entra-aadsts500213-politique-entrante-sortante-inter-locataire
+    titre: "Accès invité refusé par la stratégie d'accès inter-locataire entrante ou sortante (AADSTS500212 / AADSTS500213)"
+    symptome: "Un invité déjà ajouté ne peut plus se connecter car l'une des deux organisations a restreint l'accès entre locataires."
+    erreurs: ["AADSTS500212: NotAllowedByOutboundPolicyTenant - The user's administrator has set an outbound access policy that doesn't allow access to the resource tenant.", "AADSTS500213: NotAllowedByInboundPolicyTenant - The resource tenant's cross-tenant access policy doesn't allow this user to access this tenant."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+      - https://learn.microsoft.com/en-us/entra/external-id/cross-tenant-access-overview
+    etat: a-rediger
+  - id: entra-acces-externe-bloque-par-strategie-reseau
+    titre: "« Votre administrateur réseau a restreint les organisations accessibles » à la connexion"
+    symptome: "L'écran de connexion indique que l'accès à l'organisation est bloqué : restrictions de locataire v2 configurées par l'organisation d'origine de l'utilisateur."
+    erreurs: ["Your network administrator has restricted what organizations can be accessed. Contact your IT department to unblock access."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/external-id/troubleshoot
+    etat: a-rediger
+  - id: entra-aadsts90071-canal-partage-mfa-confiance
+    titre: "Canal partagé Teams inaccessible en connexion directe B2B (AADSTS90071)"
+    symptome: "Un utilisateur externe ne peut pas ouvrir un canal partagé Teams car l'organisation hôte n'accepte pas la MFA de son locataire d'origine."
+    erreurs: ["AADSTS90071: An admin from <organization> must update their access settings to accept inbound multifactor authentication."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/external-id/troubleshoot
+    etat: a-rediger
+  - id: entra-aadsts500571-compte-invite-desactive
+    titre: "Compte invité désactivé (AADSTS500571)"
+    symptome: "Un invité ne peut plus accéder aux ressources partagées car son compte invité a été bloqué dans le locataire hôte."
+    erreurs: ["AADSTS500571: The guest user account is disabled."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-code-aadsts500571-guest-user-account-is-disabled
+    etat: a-rediger
+  - id: entra-aadsts16000-compte-absent-locataire-ressource
+    titre: "Le compte choisi n'existe pas dans le locataire de la ressource (AADSTS16000 / AADSTS16003)"
+    symptome: "L'utilisateur se connecte avec un compte (souvent celui mémorisé dans le navigateur) qui n'a pas été ajouté au locataire de l'application."
+    erreurs: ["AADSTS16000: User account '{EmailHidden}' from identity provider '{idp}' doesn't exist in tenant '{tenant}' and can't access the application.", "AADSTS16003: SsoUserAccountNotFoundInResourceTenant"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-aadsts50014-invite-en-attente
+    titre: "Invitation non acceptée : invité en attente (AADSTS50014 / AADSTS90072)"
+    symptome: "L'invité n'a pas encore accepté l'invitation ou se connecte avec un compte externe inconnu du locataire."
+    erreurs: ["AADSTS50014: GuestUserInPendingState", "AADSTS90072: PassThroughUserMfaError - The external account that the user signs in with doesn't exist on the tenant that they signed into."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-invite-absent-carnet-adresses-selecteur
+    titre: "Invité absent du carnet d'adresses Outlook ou du sélecteur de personnes SharePoint"
+    symptome: "Un invité ajouté n'apparaît pas dans la liste d'adresses globale ou ne peut pas être sélectionné dans SharePoint / OneDrive."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/external-id/troubleshoot
+    etat: a-rediger
+  - id: entra-invite-parametres-sharepoint-non-respectes
+    titre: "Les restrictions de domaines d'invitation Entra ne s'appliquent pas à SharePoint et OneDrive"
+    symptome: "Des invitations SharePoint ou OneDrive contournent les domaines autorisés ou bloqués configurés dans Entra (intégration B2B non activée)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/external-id/troubleshoot
+    etat: a-rediger
+  - id: entra-invite-conflit-proxyaddresses
+    titre: "Impossible d'inviter une adresse : conflit avec les proxyAddresses d'un objet existant"
+    symptome: "L'invitation échoue car l'adresse est déjà utilisée par un contact, un utilisateur ou un groupe du locataire."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/external-id/troubleshoot
+    etat: a-rediger
+  - id: entra-invite-ajout-groupe-synchronise
+    titre: "Impossible d'ajouter un invité à un groupe synchronisé depuis AD"
+    symptome: "L'ajout d'un utilisateur externe échoue car le groupe est géré par Active Directory local et ne peut être modifié que là-bas."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/external-id/troubleshoot
+    etat: a-rediger
+  - id: entra-aadsts65005-invite-locataire-non-gere
+    titre: "Invité dont l'organisation est un locataire non géré (« viral ») : AADSTS65005"
+    symptome: "Un invité ne peut pas se connecter à une ressource Azure car son domaine appartient à un locataire non géré créé en libre-service ; ce même invité ne peut pas non plus réinitialiser son mot de passe."
+    erreurs: ["AADSTS65005: Using application 'AppName' is currently not supported for your organization contoso.com because it is in an unmanaged state."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/external-id/troubleshoot
+    etat: a-rediger
+  - id: entra-invite-courrier-chiffre-ome-illisible
+    titre: "Un invité ne peut plus lire un courriel chiffré (Rights Management / OME)"
+    symptome: "Un destinataire externe n'arrive plus à ouvrir les messages chiffrés après des changements de paramètres d'accès inter-locataire."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/external-id/troubleshoot
+    etat: a-rediger
+  - id: entra-acces-inter-locataire-limite-objets
+    titre: "« Failure to update policy due to object limit » en configurant l'accès inter-locataire"
+    symptome: "L'enregistrement des paramètres d'accès inter-locataire échoue car la stratégie a atteint sa taille maximale."
+    erreurs: ["Failure to update policy due to object limit"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/external-id/troubleshoot
+    etat: a-rediger
+  - id: entra-invitation-cross-cloud-worker-desactive
+    titre: "Invitation bloquée : application Microsoft B2B Cross Cloud Worker désactivée"
+    symptome: "L'invitation échoue car l'application interne B2B Cross Cloud Worker a été désactivée dans le locataire de l'invité."
+    erreurs: ["This action can't be completed because the Microsoft B2B Cross Cloud Worker application has been disabled in the invited user's tenant."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/external-id/troubleshoot
+    etat: a-rediger
+  - id: entra-invite-quitter-organisation
+    titre: "Un invité veut quitter une organisation ou supprimer son compte invité"
+    symptome: "L'utilisateur voit une organisation dont il ne veut plus dans ses comptes (Teams, myaccount) et ne sait pas comment la quitter."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/external-id/leave-the-organization
+    etat: a-rediger
+  # ---------------------------------------------------------------------------
+  # Appareils : jonction Entra, jonction hybride, inscription, PRT (dsregcmd)
+  # ---------------------------------------------------------------------------
+  - id: entra-jonction-hybride-echoue
+    titre: "Le poste n'arrive pas à devenir « joint hybride » Entra ID (AzureAdJoined : NO)"
+    symptome: "Sur un PC joint au domaine, dsregcmd /status affiche AzureAdJoined : NO ; le poste reste « En attente » ou absent dans Entra : SCP, synchronisation de l'objet ordinateur, réseau, proxy ou TPM."
+    erreurs: ["AzureAdJoined : NO", "DRS Discovery Test : FAIL [0x801c0021/0x80072ee2]"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-hybrid-join-windows-current
+      - https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-device-dsregcmd
+    etat: a-rediger
+  - id: entra-jonction-hybride-scp-illisible-0x801c001d
+    titre: "Jonction hybride : point de connexion de service (SCP) introuvable ou illisible (0x801c001d)"
+    symptome: "La jonction échoue dès la phase de découverte : l'objet SCP n'est pas configuré dans la forêt AD, ou le poste n'arrive pas à le lire (événement 220)."
+    erreurs: ["DSREG_AUTOJOIN_ADCONFIG_READ_FAILED (0x801c001d/-2145648611)"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-hybrid-join-windows-current
+    etat: a-rediger
+  - id: entra-jonction-hybride-tenant-introuvable-0x801c003a
+    titre: "Jonction hybride : mauvais ID de locataire dans le SCP (0x801c003a)"
+    symptome: "Le SCP pointe vers un mauvais locataire ou un locataire sans abonnement actif ; la jonction échoue avec Tenant not found."
+    erreurs: ["DSREG_DISCOVERY_TENANT_NOT_FOUND (0x801c003a/-2145648582)", "AADSTS90002: Tenant UUID not found."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-hybrid-join-windows-current
+    etat: a-rediger
+  - id: entra-jonction-hybride-reseau-proxy-contexte-systeme
+    titre: "Jonction hybride ou PRT bloqués par le proxy en contexte système (0x80072efd, 0x80072ee2, 0x80072f8f)"
+    symptome: "Le poste ne joint pas enterpriseregistration.windows.net ou login.microsoftonline.com : proxy authentifiant, inspection TLS ou pare-feu bloquent le compte SYSTEM."
+    erreurs: ["WININET_E_CANNOT_CONNECT (0x80072efd)", "WININET_E_TIMEOUT (0x80072ee2)", "WININET_E_DECODING_FAILED (0x80072f8f)", "DSREG_AUTOJOIN_DISC_WAIT_TIMEOUT (0x801c001f)", "E_INVALIDDATA (0x8007000d)"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-hybrid-join-windows-current
+    etat: a-rediger
+  - id: entra-jonction-hybride-0x801c03f2-objet-non-synchronise
+    titre: "Jonction hybride : DSREG_E_DIRECTORY_FAILURE, objet ordinateur pas encore synchronisé (0x801c03f2)"
+    symptome: "Le poste tente de se joindre mais Entra ne trouve pas encore l'objet ordinateur (hors périmètre Entra Connect, OU filtrée, attente de synchronisation, certificat userCertificate absent)."
+    erreurs: ["DSREG_E_DIRECTORY_FAILURE (0x801c03f2/-2145647630)", "The device object by the given ID isn't found."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-hybrid-join-windows-current
+    etat: a-rediger
+  - id: entra-jonction-hybride-federation-adfs-ws-trust
+    titre: "Jonction hybride fédérée (AD FS) en échec : erreurs ADAL / WS-Trust (0xcaa…)"
+    symptome: "Dans un domaine fédéré, la jonction échoue lors de l'authentification : point de terminaison WS-Trust ou MEX mal configuré, jeton SAML refusé."
+    erreurs: ["ERROR_ADAL_PROTOCOL_NOT_SUPPORTED (0xcaa90017)", "ERROR_ADAL_FAILED_TO_PARSE_XML (0xcaa9002c)", "ERROR_ADAL_SERVER_ERROR_INVALID_GRANT (0xcaa20003)", "ERROR_ADAL_WSTRUST_REQUEST_SECURITYTOKEN_FAILED (0xcaa90014)"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-hybrid-join-windows-current
+    etat: a-rediger
+  - id: entra-jonction-tpm-erreur-cle
+    titre: "Jonction ou inscription bloquée par une erreur TPM (0x80090016, 0x80290407, 0x80090031)"
+    symptome: "La jonction échoue à la création des clés : TPM défaillant, en mode FIPS ou verrouillé."
+    erreurs: ["NTE_BAD_KEYSET (0x80090016)", "TPM_E_PCP_INTERNAL_ERROR (0x80290407)", "TPM_E_NOTFIPS (0x80280036)", "NTE_AUTHENTICATION_IGNORED (0x80090031)"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-hybrid-join-windows-current
+    etat: a-rediger
+  - id: entra-jonction-hybride-limitation-directoryerror
+    titre: "Jonction hybride temporairement refusée : trop de demandes (DirectoryError, réessayer après 300 s)"
+    symptome: "Plusieurs tentatives de jonction rapprochées déclenchent une limitation côté service ; il faut attendre avant de réessayer."
+    erreurs: ["DirectoryError: Your request is throttled temporarily. Please try after 300 seconds.", "DSREG_SERVER_BUSY (0x801c0025)"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-hybrid-join-windows-current
+    etat: a-rediger
+  - id: entra-appareil-hybride-en-attente
+    titre: "Appareil joint hybride affiché « En attente » (Pending) dans Entra ID"
+    symptome: "L'objet ordinateur est synchronisé mais l'enregistrement n'a pas été finalisé par le poste (pas de connexion utilisateur, poste éteint, échec de la tâche planifiée)."
+    erreurs: ["Registered: Pending"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/dir-dmns-obj/pending-devices
+    etat: a-rediger
+  - id: entra-appareil-double-etat-inscrit-et-hybride
+    titre: "Même poste en double dans Entra ID : « inscrit » et « joint hybride » (double état)"
+    symptome: "Un PC du domaine apparaît deux fois : une inscription Entra (l'utilisateur a accepté « Ajouter ce compte à Windows ») et une jonction hybride ; conflits Intune et accès conditionnel."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/devices/concept-hybrid-join
+      - https://learn.microsoft.com/en-us/answers/questions/2036748/entraid-dual-state-of-microsoft-entra-joined-and-m
+    etat: a-rediger
+  - id: entra-jonction-utilisateur-non-autorise-801c0003
+    titre: "« Un problème est survenu » 801c0003 en joignant un PC à Entra ID"
+    symptome: "Pendant l'OOBE ou dans Paramètres, la jonction Entra échoue : l'utilisateur n'est pas autorisé à joindre des appareils, limite d'appareils atteinte ou édition Windows Famille."
+    erreurs: ["Something went wrong. This user is not authorized to enroll. Error: 801c0003", "0x801c0003"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/autopilot/troubleshoot-aad-join
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/windows-user-cannot-enroll
+    etat: a-rediger
+  - id: entra-nombre-maximal-appareils-atteint
+    titre: "Nombre maximal d'appareils par utilisateur atteint lors de la jonction ou de l'inscription"
+    symptome: "L'inscription ou la jonction d'un nouvel appareil échoue car l'utilisateur a déjà atteint la limite d'appareils définie dans les paramètres Entra."
+    erreurs: ["The maximum number of devices that can be joined to the workplace by the user has been reached."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/ad-dmn-services/maximum-number-of-devices-joined-workplace
+    etat: a-rediger
+  - id: entra-inscription-appareil-cant-connect-service
+    titre: "« Impossible de se connecter au service » en inscrivant un appareil"
+    symptome: "L'ajout d'un compte professionnel ou l'inscription d'un appareil échoue avec Can't connect to the service (réseau, proxy, TLS, service DRS)."
+    erreurs: ["Can't connect to the service"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/ad-dmn-services/cant-connect-service-error-register-device
+    etat: a-rediger
+  - id: entra-aadsts700003-appareil-supprime-organisation
+    titre: "« Votre organisation a supprimé cet appareil » dans Outlook ou Teams (AADSTS700003)"
+    symptome: "Les applications Microsoft 365 affichent qu'il faut contacter l'administrateur avec le code 700003 : l'objet appareil a été supprimé d'Entra ID mais le poste croit toujours être inscrit."
+    erreurs: ["Your organization has deleted this device. To fix this, contact your system administrator and provide the error code 700003.", "AADSTS700003: Device object was not found in the tenant directory."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-code-aadsts700003-device-object-not-found
+    etat: a-rediger
+  - id: entra-aadsts135011-appareil-desactive
+    titre: "Connexion refusée car l'appareil est désactivé dans Entra ID (AADSTS135011 / AADSTS50155)"
+    symptome: "Après désactivation de l'appareil (départ, perte, nettoyage), l'utilisateur ne peut plus se connecter ni obtenir de PRT sur ce poste."
+    erreurs: ["AADSTS135011: Device used during the authentication is disabled.", "AADSTS50155: Device authentication failed"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+      - https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-primary-refresh-token
+    etat: a-rediger
+  - id: entra-prt-absent-azureadprt-no
+    titre: "Pas de jeton d'actualisation principal (AzureAdPrt : NO) : pas de SSO ni de conformité"
+    symptome: "Sur un poste joint Entra ou hybride, dsregcmd /status indique AzureAdPrt : NO ; l'utilisateur subit des demandes de connexion répétées et l'accès conditionnel « appareil conforme » échoue."
+    erreurs: ["AzureAdPrt : NO"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-primary-refresh-token
+      - https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-device-dsregcmd
+    etat: a-rediger
+  - id: entra-prt-echec-identifiants-0xc000006d
+    titre: "PRT refusé : identifiants rejetés après un changement de mot de passe (0xc000006d / 0xc000006a)"
+    symptome: "Sur un poste hybride, l'utilisateur a changé son mot de passe et le PRT échoue car le nouveau hachage n'est pas encore synchronisé, ou le mot de passe saisi est incorrect."
+    erreurs: ["STATUS_LOGON_FAILURE (-1073741715 / 0xc000006d)", "STATUS_WRONG_PASSWORD (-1073741718 / 0xc000006a)", "AADSTS50126: Error validating credentials due to invalid username or password."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-primary-refresh-token
+    etat: a-rediger
+  - id: entra-prt-upn-non-routable-0xc004844c
+    titre: "PRT refusé : UPN au mauvais format ou suffixe non vérifié (0xc004844c / 0xc000005f)"
+    symptome: "L'utilisateur ouvre une session avec un UPN dont le suffixe (ex. contoso.local) n'est pas un domaine vérifié dans Entra ; aucun PRT n'est délivré."
+    erreurs: ["AAD_CLOUDAP_E_OAUTH_USERNAME_IS_MALFORMED (-1073445812 / 0xc004844c)", "STATUS_NO_SUCH_LOGON_SESSION (-1073741729 / 0xc000005f)"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-primary-refresh-token
+    etat: a-rediger
+  - id: entra-prt-erreurs-reseau-winhttp
+    titre: "PRT impossible à obtenir : erreurs réseau WinHTTP (12002, 12007, 12029, 12030)"
+    symptome: "Le poste ne joint pas les points de terminaison Entra au moment de l'ouverture de session (DNS, proxy, pare-feu, VPN non encore monté)."
+    erreurs: ["ERROR_WINHTTP_TIMEOUT (12002)", "ERROR_WINHTTP_NAME_NOT_RESOLVED (12007)", "ERROR_WINHTTP_CANNOT_CONNECT (12029)", "ERROR_WINHTTP_CONNECTION_ERROR (12030)", "STATUS_NETWORK_UNREACHABLE (0xc000023c)"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-primary-refresh-token
+    etat: a-rediger
+  - id: entra-prt-federation-wstrust-mex
+    titre: "PRT en domaine fédéré : réponse WS-Trust ou MEX invalide (0xc00484c1, 0xc004848b, 0xc00cee4f)"
+    symptome: "Avec AD FS ou un autre fournisseur fédéré, le PRT échoue car le point de terminaison WS-Trust ou MEX renvoie une réponse vide, modifiée par le proxy ou contenant une DTD."
+    erreurs: ["AAD_CLOUDAP_E_WSTRUST_SAML_TOKENS_ARE_EMPTY (0xc00484c1)", "AAD_CLOUDAP_E_HTTP_PASSWORD_URI_IS_EMPTY (0xc004848b)", "AAD_CLOUDAP_E_HTTP_CERTIFICATE_URI_IS_EMPTY (0xc004848c)", "WC_E_DTDPROHIBITED (0xc00cee4f)", "AAD_CLOUDAP_E_OAUTH_USER_SID_IS_EMPTY (0xc0048442)"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-primary-refresh-token
+    etat: a-rediger
+  - id: entra-hybride-status-account-disabled-intermittent
+    titre: "« L'utilisateur est désactivé » (STATUS_ACCOUNT_DISABLED) par intermittence au déverrouillage d'un poste hybride"
+    symptome: "Au déverrouillage, Windows affiche que le compte est désactivé alors qu'il ne l'est pas ; le problème disparaît après quelques minutes ou un redémarrage (événements AAD 1081 avec AADSTS50034)."
+    erreurs: ["STATUS_ACCOUNT_DISABLED", "The user is disabled", "Authentication Error Status: 0xC000006D  Authentication Error Substatus: 0xC0000072"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-intermittent-status-account-disabled
+    etat: a-rediger
+  - id: entra-joint-pas-droits-administrateur-local
+    titre: "Pas de droits d'administrateur local sur un PC joint à Entra ID"
+    symptome: "Un utilisateur ou un technicien n'est pas administrateur local d'un poste joint Entra : rôle « Administrateur local des appareils joints » absent ou paramètre « utilisateurs inscrits administrateurs » désactivé."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/dir-dmns-obj/no-local-admin-privileges-azure-ad-joined-device
+    etat: a-rediger
+  - id: entra-joint-demarrage-trois-heures-nom-groupe-travail
+    titre: "PC joint Entra qui met des heures à démarrer : nom de groupe de travail identique au nom NetBIOS du domaine"
+    symptome: "Un poste joint à Entra ID subit un délai de démarrage d'environ trois heures car son groupe de travail porte le nom NetBIOS du domaine AD local."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/computers-3-hour-delay-boot
+    etat: a-rediger
+  - id: entra-aadsts240001-jonction-en-masse-non-autorisee
+    titre: "Package de provisionnement : jonction en masse refusée (AADSTS240001)"
+    symptome: "Un package de provisionnement (Windows Configuration Designer) ne joint pas les PC car le compte utilisé pour obtenir le jeton n'a pas le droit d'inscrire des appareils, ou le jeton a expiré."
+    erreurs: ["AADSTS240001: BulkAADJTokenUnauthorized - The user isn't authorized to register devices in Microsoft Entra ID."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: entra-appareils-disparus-entra-connect
+    titre: "Des appareils disparaissent d'Entra ID après une mise à jour d'Entra Connect"
+    symptome: "Des postes Windows 7/8 ou des objets ordinateur sans certificat sont supprimés d'Entra ID après le passage à une nouvelle version d'Entra Connect."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/ad-dmn-services/reference-connect-device-disappearance
+    etat: a-rediger
+  - id: entra-reecriture-appareils-impossible-activer
+    titre: "Impossible d'activer la réécriture des appareils dans Entra Connect"
+    symptome: "L'option Device writeback est grisée ou échoue dans l'assistant Entra Connect (schéma AD, prérequis manquants)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/cannot-enable-device-writeback
+    etat: a-rediger
+  - id: entra-macos-plateforme-sso-extension
+    titre: "Mac : l'extension SSO Entreprise ou le SSO de plateforme ne fonctionne pas"
+    symptome: "Sur macOS, l'enregistrement Platform SSO échoue ou les applications redemandent la connexion malgré l'extension SSO Microsoft."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-macos-platform-single-sign-on-extension
+      - https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-mac-sso-extension-plugin
+    etat: a-rediger
+  - id: entra-linux-inscription-appareil
+    titre: "Échec de l'inscription d'un poste Linux (Ubuntu, RHEL) dans Entra ID"
+    symptome: "Le broker d'identité Microsoft sur Linux n'arrive pas à inscrire le poste ; Edge ou les applications ne passent pas l'accès conditionnel."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/devices/troubleshoot-device-registration-tool-linux
+    etat: a-rediger

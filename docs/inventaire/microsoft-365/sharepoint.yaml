@@ -1,0 +1,1497 @@
+domaine: microsoft-365
+sous_domaine: sharepoint
+recense_le: 2026-10-29
+problemes:
+  # --- Autorisations et accès ---
+  - id: sharepoint-acces-refuse
+    titre: "« Vous avez besoin d'une autorisation » sur un site ou un fichier SharePoint"
+    symptome: "Un utilisateur interne ou un invité n'accède pas à un site, une bibliothèque ou un fichier (mauvais compte, pas de droits, partage externe fermé, invité ayant accepté avec un autre compte)."
+    erreurs: ["You need permission to access this item.", "Sorry, this site hasn't been shared with you.", "Access Denied"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/administration/access-denied-or-need-permission-error-sharepoint-online-or-onedrive-for-business
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sharing-and-permissions/request-access-to-resource
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/sharing-and-permissions/error-when-external-user-accepts-an-invitation-by-using-another-account
+    etat: redigee
+  - id: sharepoint-erreur-403-forbidden
+    titre: "Erreur 403 FORBIDDEN à l'ouverture d'un site SharePoint ou d'un OneDrive"
+    symptome: "La page affiche une erreur 403 au lieu du site, pour un utilisateur ou pour tous (site verrouillé en NoAccess, incident de service, droits)."
+    erreurs: ["403 FORBIDDEN"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/sharing-and-permissions/error-403-forbidden
+      - https://learn.microsoft.com/en-us/answers/questions/5839130/i-can-not-access-sharepoint
+    etat: a-rediger
+  - id: sharepoint-acces-refuse-verrouillage-acces-limite
+    titre: "Accès refusé à un dossier partagé : mode de verrouillage des utilisateurs à accès limité activé"
+    symptome: "Un utilisateur à qui un dossier ou fichier a été partagé obtient « Access Denied », ou les options de partage sont grisées, car la fonctionnalité de collection « Limited-access user permission lockdown mode » est active."
+    erreurs: ["Access Denied"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sharing-and-permissions/access-denied-shared-folder
+      - https://learn.microsoft.com/en-us/answers/a/1070249
+    etat: a-rediger
+  - id: sharepoint-admin-global-sans-acces-site
+    titre: "Administrateur général mais accès refusé à un site SharePoint"
+    symptome: "Le rôle d'administrateur général ou SharePoint ne donne pas accès au contenu d'un site : il faut s'ajouter comme administrateur de la collection de sites."
+    erreurs: ["Sorry, you don't have access to this page"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/4894353/sorry-you-dont-have-access-to-this-page-but-im-the
+    etat: a-rediger
+  - id: sharepoint-demandes-acces-desactivees
+    titre: "Pas de bouton « Demander l'accès » : demandes d'accès désactivées sur le site"
+    symptome: "L'utilisateur sans droits voit seulement un message de refus, sans possibilité de demander l'accès, car « Allow access requests » est décoché dans les paramètres du site."
+    erreurs: ["Sorry, this site hasn't been shared with you."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sharing-and-permissions/request-access-to-resource
+      - https://support.microsoft.com/office/94B26E0B-2822-49D4-929A-8455698654B3
+    etat: a-rediger
+  - id: sharepoint-demandes-acces-non-recues
+    titre: "Le propriétaire du site ne reçoit pas les demandes d'accès"
+    symptome: "Les utilisateurs envoient une demande d'accès mais aucun mail n'arrive chez le propriétaire actuel (adresse de notification obsolète, ancien propriétaire, administrateur principal du site, courrier indésirable)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5258882/sharepoint-access-request-emails
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sharing-and-permissions/request-access-to-resource
+      - https://techcommunity.microsoft.com/t5/sharepoint/sharepoint-access-requests/m-p/2343568
+    etat: a-rediger
+  - id: sharepoint-approbation-demande-acces-echoue
+    titre: "« Request approval failed » ou accès refusé à la liste des demandes d'accès"
+    symptome: "La personne qui traite une demande d'accès en attente reçoit une erreur, car elle n'a pas le contrôle total ni le rôle de propriétaire ou d'administrateur du site."
+    erreurs: ["Request approval failed", "Access Denied"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/sharing-and-permissions/request-approval-failed
+      - https://support.microsoft.com/en-ca/kb/2911390
+      - https://learn.microsoft.com/en-us/answers/questions/1005777/while-approving-access-request-getting-message-sor
+    etat: a-rediger
+  - id: sharepoint-partage-impossible-trop-elements
+    titre: "« You can't share this folder because there are too many items » : héritage impossible à rompre"
+    symptome: "Le partage ou la rupture d'héritage échoue sur un dossier, une liste ou une bibliothèque de plus de 100 000 éléments, ou qui contient trop d'éléments à autorisations uniques."
+    erreurs: ["You can't share this folder because there are too many items"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/fi-fi/troubleshoot/sharepoint/lists-and-libraries/error-share-break-inheritance
+    etat: a-rediger
+  - id: sharepoint-partage-unable-to-reach-server
+    titre: "« Unable to reach the server » au moment de partager un fichier ou un dossier"
+    symptome: "La fenêtre de partage affiche une erreur de serveur injoignable alors que le réseau fonctionne : la liste contient trop d'éléments à autorisations uniques pour rompre l'héritage."
+    erreurs: ["Unable to reach the server"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sharing-and-permissions/share-file-unable-reach-server
+    etat: a-rediger
+  - id: sharepoint-options-partage-grisees-niveau-autorisation
+    titre: "Options de partage grisées pour les membres à cause d'un niveau d'autorisation personnalisé"
+    symptome: "Les membres ne peuvent plus créer certains liens (par exemple « Tout le monde ») après la modification du niveau « Modifier » (permission « Supprimer des éléments » retirée)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/sharing-problems-in-sharepoint-sharing-options-greyed-out/2425799
+    etat: a-rediger
+  - id: sharepoint-invite-ne-peut-pas-repartager
+    titre: "Un invité externe ne peut pas partager le site avec d'autres personnes externes"
+    symptome: "Un invité membre du site ne peut pas inviter d'autres externes : le partage du site lui-même est réservé aux propriétaires ou au contrôle total."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-gb/answers/questions/5892423/sharepoint-site-external-guest-users-cannot-share
+      - https://learn.microsoft.com/en-us/answers/questions/5222621/external-users-cannot-share-sharepoint-sites-with
+    etat: a-rediger
+  - id: sharepoint-acces-persiste-apres-retrait-lien
+    titre: "Impossible de retirer l'accès d'un utilisateur partagé par un lien"
+    symptome: "Après suppression d'un utilisateur dans « Gérer l'accès », il ouvre encore le fichier car un lien de partage ou des métadonnées de partage subsistent."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5128857/cannot-remove-userss-access-to-a-sharepoint-file-f
+      - https://www.sharepointdiary.com/?p=27901
+    etat: a-rediger
+  - id: sharepoint-impossible-ajouter-invite-autorisations
+    titre: "Impossible d'accorder des autorisations à un invité sur un site"
+    symptome: "L'invité n'apparaît pas dans le sélecteur de personnes ou l'ajout échoue, ou ses autorisations ne s'appliquent pas comme prévu."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/915583/sharepoint-cannot-grant-permission-for-guest-users
+      - https://learn.microsoft.com/en-us/answers/questions/5308703/sharepoint-guest-permissions-not-working-as-intend
+    etat: a-rediger
+  - id: sharepoint-operation-web-autorisations-uniques
+    titre: "« This operation is available only for a web with unique permissions » lors d'un partage"
+    symptome: "Message obtenu en partageant ou en gérant les accès d'un site qui hérite de ses autorisations ; vérifier aussi l'expiration des invités dans la stratégie de partage."
+    erreurs: ["This operation is available only for a web with unique permissions"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/447474/sharepoint-office-365-online-sorry-something-went
+    etat: a-rediger
+  # --- Partage externe et invités ---
+  - id: sharepoint-ose201-partage-externe-desactive
+    titre: "Erreur de partage OSE201 : partage externe désactivé pour l'organisation"
+    symptome: "Le partage avec une personne externe échoue avec le code OSE201 : le partage externe est fermé pour tous les sites SharePoint et OneDrive du tenant."
+    erreurs: ["OSE201"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/sharepoint/sharepoint-onedrive-error-message
+    etat: a-rediger
+  - id: sharepoint-ose207-partage-externe-onedrive-desactive
+    titre: "Erreur de partage OSE207 : partage externe désactivé pour OneDrive"
+    symptome: "Le partage externe depuis OneDrive échoue avec le code OSE207 alors qu'il est possible depuis certains sites SharePoint."
+    erreurs: ["OSE207"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/sharepoint/sharepoint-onedrive-error-message
+    etat: a-rediger
+  - id: sharepoint-ose304-utilisateur-hors-groupe-autorise
+    titre: "Erreur de partage OSE304 : l'utilisateur n'est pas autorisé à partager avec des invités"
+    symptome: "Le partage externe est limité à certains groupes de sécurité et la personne qui partage n'en fait pas partie."
+    erreurs: ["OSE304"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/sharepoint/sharepoint-onedrive-error-message
+    etat: a-rediger
+  - id: sharepoint-ose402-domaine-bloque
+    titre: "Erreur de partage OSE402 : le domaine du destinataire est bloqué"
+    symptome: "Le destinataire appartient à un domaine présent dans la liste des domaines bloqués (« Limit external sharing by domain »)."
+    erreurs: ["OSE402"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/sharepoint/sharepoint-onedrive-error-message
+    etat: a-rediger
+  - id: sharepoint-ose403-domaine-non-autorise
+    titre: "Erreur de partage OSE403 : le domaine du destinataire n'est pas autorisé"
+    symptome: "Code listé par Microsoft parmi les restrictions de domaine ; correspond a priori à un partage limité à une liste de domaines autorisés (à vérifier sur la page officielle, non relue)."
+    erreurs: ["OSE403"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/sharepoint/sharepoint-onedrive-error-message
+    etat: a-rediger
+  - id: sharepoint-ose204-partage-desactive-site
+    titre: "Erreur de partage OSE204 : partage désactivé sur le site d'origine"
+    symptome: "Le partage échoue avec OSE204 alors que le partage externe est ouvert dans le tenant : le site depuis lequel on partage a son propre partage fermé."
+    erreurs: ["OSE204", "Your organization's policies don't allow you to share with these users"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/sharepoint-onedrive-error-message
+      - https://office365itpros.com/2021/02/26/sharepoint-sharing-errors/
+      - https://www.logicallytech.com/blog/solved-sharepoint-error-your-organizations-policies-dont-allow-you-to-share-with-these-users-ose204/
+    etat: a-rediger
+  - id: sharepoint-ose208-onedrive-invites-existants-seulement
+    titre: "Erreur de partage OSE208 : OneDrive limité aux invités déjà présents dans l'annuaire"
+    symptome: "Le partage OneDrive vers une nouvelle personne externe échoue car le niveau de partage OneDrive n'autorise que les invités existants."
+    erreurs: ["OSE208"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/sharepoint-onedrive-error-message
+    etat: a-rediger
+  - id: sharepoint-ose303-utilisateur-hors-groupe-liens-anonymes
+    titre: "Erreur de partage OSE303 : utilisateur hors des groupes autorisés à partager avec des invités et par liens « Tout le monde »"
+    symptome: "Le partage externe et les liens anonymes sont réservés à certains groupes de sécurité dont la personne qui partage ne fait pas partie."
+    erreurs: ["OSE303"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/sharepoint-onedrive-error-message
+    etat: a-rediger
+  - id: sharepoint-politique-organisation-interdit-partage
+    titre: "« Your organization's policies don't allow you to share with these users »"
+    symptome: "Le partage vers une adresse externe est refusé : partage externe fermé au niveau du tenant ou du site, ou restriction de domaine."
+    erreurs: ["Your organization's policies don't allow you to share with these users"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/sharing-and-permissions/organization-policies-do-not-allow-you-to-share-with-users-error
+      - https://learn.microsoft.com/sharepoint/sharepoint-onedrive-error-message
+    etat: a-rediger
+  - id: sharepoint-partage-externe-bloque-niveau-site
+    titre: "Partage externe ouvert dans le tenant mais bloqué sur un site précis"
+    symptome: "Le tenant autorise les invités mais un site (souvent récent) reste en « Only people in your organization » ou plus restrictif ; le réglage le plus strict l'emporte."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/site-collection-external-sharing-option--externalusersharingonly-not-working-as-/172090/replies/173499
+      - https://learn.microsoft.com/en-us/answers/questions/5258793/issue-after-enabling-external-users-in-sharepoint
+    etat: a-rediger
+  - id: sharepoint-invitation-bloquee-acces-inter-tenant
+    titre: "« This invitation is blocked by cross-tenant access settings » (ResponseStatusNotOK)"
+    symptome: "Le partage vers une personne d'une autre organisation échoue à cause des paramètres d'accès inter-tenant de Microsoft Entra."
+    erreurs: ["Error: ResponseStatusNotOK, message: This invitation is blocked by cross-tenant access settings."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sharing-and-permissions/responsestatusnotok-sharing-sharepoint-onedrive-site
+    etat: a-rediger
+  - id: sharepoint-invitations-invites-non-autorisees
+    titre: "« Guest invitations not allowed for your company » (ResponseStatusNotOK)"
+    symptome: "Le partage avec un nouvel invité échoue car les paramètres de collaboration externe Entra empêchent les utilisateurs d'inviter des invités."
+    erreurs: ["Error: ResponseStatusNotOK, message: Guest invitations not allowed for your company."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sharing-and-permissions/responsestatusnotok-sharing-sharepoint-onedrive-site
+    etat: a-rediger
+  - id: sharepoint-impossible-obtenir-lien-invite
+    titre: "« Unable to get the link » en partageant avec une personne externe"
+    symptome: "La création d'un lien pour un nouvel invité échoue, notamment quand le partage passe par une application (app-only) qui ne peut pas créer de nouveaux invités."
+    erreurs: ["Unable to get the link"]
+    priorite: rare
+    format: express
+    sources:
+      - https://blog-en.topedia.com/?p=64460
+    etat: a-rediger
+  - id: sharepoint-invite-unable-to-complete-request
+    titre: "« We're unable to complete your request » après acceptation d'une invitation"
+    symptome: "L'invité clique sur le lien d'invitation, se connecte, puis obtient une erreur au lieu du contenu partagé."
+    erreurs: ["We're unable to complete your request"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sharing-and-permissions/unable-to-complete-request
+    etat: a-rediger
+  - id: sharepoint-invite-introuvable-annuaire
+    titre: "« User is not found in the directory » ou « That didn't work » pour un invité"
+    symptome: "L'invité est informé que son adresse est introuvable dans l'annuaire SharePoint : compte invité absent, supprimé ou différent de celui invité."
+    erreurs: ["User is not found in the directory", "That didn't work"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/sharing-and-permissions/error-when-external-user-accepts-an-invitation-by-using-another-account
+      - https://learn.microsoft.com/en-us/answers/questions/5028289/external-sharing-(again-)
+    etat: a-rediger
+  - id: sharepoint-invite-aadsts90072-compte-inexistant
+    titre: "Invité bloqué à la connexion SharePoint avec AADSTS90072 (compte absent du tenant)"
+    symptome: "L'invité se connecte avec un compte qui n'existe pas comme invité dans le tenant hôte ; il faut l'ajouter comme invité puis partager à nouveau."
+    erreurs: ["AADSTS90072"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5915786/failed-to-login-to-sharepoint
+      - https://www.wps.com/office-quick-solution/security-issues/fix-sharepoint-guest-creation-errors-and-aadsts90072/
+    etat: a-rediger
+  - id: sharepoint-invite-nom-utilisateur-incorrect
+    titre: "« This username may be incorrect » à la connexion d'un invité SharePoint"
+    symptome: "L'invité saisit son adresse et la page de connexion indique que le nom d'utilisateur est peut-être incorrect."
+    erreurs: ["This username may be incorrect"]
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/microsoft-365/sharepoint-error-this-username-may-be-incorrect-for-guest-user/2961703
+    etat: a-rediger
+  - id: sharepoint-invite-autre-tenant-bloque-apres-authentification
+    titre: "Invité d'une autre organisation authentifié mais sans accès au site"
+    symptome: "La connexion de l'invité réussit mais le site reste inaccessible : accès inter-tenant, restrictions de tenant ou accès conditionnel côté hôte ou côté invité."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5811117/guest-users-from-external-tenant-cannot-access-sha
+    etat: a-rediger
+  - id: sharepoint-invite-acces-intermittent
+    titre: "Accès invité intermittent : « external sharing is disabled » alors que l'invité se connecte"
+    symptome: "Le même invité accède au site certains jours et pas d'autres, avec un message indiquant que le partage externe est désactivé."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5188071/intermittent-issue-in-sharepoint-for-external-user
+    etat: a-rediger
+  - id: sharepoint-invite-bloque-apres-approbation
+    titre: "Invité toujours bloqué après l'approbation de sa demande d'accès"
+    symptome: "Le propriétaire a approuvé la demande d'accès de l'invité, qui existe bien dans le tenant, mais l'accès au site reste refusé."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5760334/external-user-has-access-to-tenant-but-cannot-acce
+      - https://learn.microsoft.com/en-us/answers/questions/5769206/sharepoint-site-guest-access-not-working
+    etat: a-rediger
+  - id: sharepoint-retrait-otp-anciens-invites-bloques
+    titre: "Anciens destinataires externes bloqués après le retrait du code à usage unique SharePoint (SPO OTP)"
+    symptome: "Des personnes externes qui ouvraient des liens « Personnes spécifiques » avec un code SharePoint reçoivent « accès refusé » tant qu'aucun compte invité Entra B2B n'est créé pour elles."
+    erreurs: ["Access denied"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://mc.merill.net/message/MC1243549
+      - https://learn.microsoft.com/en-us/sharepoint/faqs-odspintegrationwithentrab2b
+      - https://blog-en.topedia.com/2026/03/retirement-of-sharepoint-otp-identify-report-and-migrate-affected-guest-users/
+    etat: a-rediger
+  - id: sharepoint-partage-externe-non-supporte
+    titre: "« Sharing failed: sharing to external users is not supported »"
+    symptome: "Le partage vers une adresse externe échoue immédiatement avec ce message, en général parce que le site n'autorise pas le partage externe."
+    erreurs: ["Sharing failed: sharing to external users is not supported"]
+    priorite: rare
+    format: express
+    sources:
+      - https://www.sharepointdiary.com/?p=503
+    etat: a-rediger
+  - id: sharepoint-partenaire-delegue-centre-admin-refuse
+    titre: "Partenaire délégué : « External sharing is disabled for the site » dans le centre d'administration SharePoint du client"
+    symptome: "L'administrateur partenaire ne peut pas ouvrir le centre d'administration SharePoint du client, car son compte y existe aussi en tant qu'invité, ce qui prend le pas sur ses droits délégués."
+    erreurs: ["External sharing is disabled for the site"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sharing-and-permissions/troubleshoot-error-when-tries-to-access-center
+    etat: a-rediger
+  - id: sharepoint-demande-fichiers-indisponible
+    titre: "Option « Demander des fichiers » (Request files) indisponible et liens externes impossibles"
+    symptome: "Les utilisateurs ne voient pas la fonction de demande de fichiers ni les liens externes, car les liens « Tout le monde » sont désactivés."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/users-are-unable-to-share-links-with-external-users-and-request-files/1200538
+    etat: a-rediger
+  # --- Liens de partage ---
+  - id: sharepoint-lien-tout-le-monde-grise
+    titre: "Option de lien « Tout le monde » (Anyone with the link) grisée ou absente"
+    symptome: "Le lien anonyme n'est pas proposé : le niveau de partage du tenant, du site ou de OneDrive est plus restrictif, ou le niveau d'autorisation de l'utilisateur ne le permet pas."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5759503/sharing-link-with-anyone-is-not-available-what-set
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/sharepoint-online-anyone-with-the-link-disabled/1983389
+      - https://www.sharepointdiary.com/2019/03/sharepoint-online-anyone-with-link-greyed-out.html
+    etat: a-rediger
+  - id: sharepoint-lien-tout-le-monde-expire
+    titre: "Lien « Tout le monde » expiré : le destinataire n'ouvre plus le fichier"
+    symptome: "Un lien anonyme envoyé il y a quelque temps ne fonctionne plus car la stratégie d'expiration du tenant ou du site l'a fait expirer ; il faut recréer un lien."
+    erreurs: ["This link has expired"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5852639/how-to-share-a-sharepoint
+      - https://techcommunity.microsoft.com/t5/onedrive/onedrive-sharing-out-of-outlook/m-p/126473
+    etat: a-rediger
+  - id: sharepoint-lien-supprime
+    titre: "« This link has been removed » : accès au document retiré"
+    symptome: "Le destinataire d'un lien obtient une page indiquant que le lien a été supprimé (lien retiré par le propriétaire, expiré ou remplacé)."
+    erreurs: ["This link has been removed", "Sorry, access to this document has been removed."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://www.sharepointdiary.com/?p=27901
+    etat: a-rediger
+  - id: sharepoint-lien-ne-fonctionne-plus
+    titre: "« This link doesn't work anymore. Remove it and create a new one »"
+    symptome: "Dans « Gérer l'accès », un ancien lien est signalé comme cassé ; il faut le supprimer manuellement avant d'en créer un nouveau."
+    erreurs: ["This link doesn't work anymore. Remove it and create a new one."]
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/t5/sharepoint/error-on-sharing-links/td-p/3253870
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/error-on-sharing-links/3253870/replies/3254564
+    etat: a-rediger
+  - id: sharepoint-lien-casse-apres-renommage-deplacement
+    titre: "Lien vers un fichier SharePoint cassé après renommage ou déplacement"
+    symptome: "Un lien copié depuis la barre d'adresse ou un ancien lien de partage ne fonctionne plus après le renommage, le déplacement ou la migration du fichier."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1185822/sharepoint-already-generated-sharing-link-will-not
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/sharing-links-and-move-operations/3583742
+      - https://reshmeeauckloo.com/posts/sharepoint-durable-links/
+    etat: a-rediger
+  - id: sharepoint-lien-sorry-cannot-access-document
+    titre: "« Sorry, you cannot access this document. Please contact the person who shared it with you »"
+    symptome: "Le destinataire d'un lien « Personnes spécifiques » ne peut pas ouvrir le document : lien destiné à une autre adresse, autorisations modifiées ou lien supprimé."
+    erreurs: ["Sorry, you cannot access this document. Please contact the person who shared it with you."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://www.sharepointdiary.com/2023/05/sorry-you-cannot-access-this-document-please-contact-the-person-who-shared-it-with-you.html
+      - https://help.stalbansdiocese.org/shared-link-does-not-work
+    etat: a-rediger
+  - id: sharepoint-liens-expires-modification-masse
+    titre: "Impossible de retrouver ou de prolonger en masse les liens de partage expirés"
+    symptome: "L'administrateur veut lister ou nettoyer les liens anonymes expirés ; l'interface ne le permet pas, il faut passer par PnP PowerShell."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1634359/bulk-remove-expired-anyone-links
+      - https://learn.microsoft.com/en-gb/answers/questions/1619798/identifying-expired-sharing-links-in-share-point-o
+      - https://reshmeeauckloo.com/posts/powershell-sharinglink-remove-expiredlinks/
+    etat: a-rediger
+  # --- Sites ---
+  - id: sharepoint-creation-site-url-deja-existe
+    titre: "« The site collection already exists. Please enter a different address »"
+    symptome: "La création d'un site échoue car l'adresse est déjà prise par un site actif ou par un site supprimé encore dans la corbeille des sites."
+    erreurs: ["The site collection already exists. Please enter a different address."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/error-the-site-collection-already-exists-please-enter-a-different-address--help-/325640
+      - https://techcommunity.microsoft.com/t5/sharepoint/sharepoint-online-can-t-create-a-site-quot-the-site-collection/m-p/96082/highlight/true
+    etat: a-rediger
+  - id: sharepoint-restaurer-site-supprime
+    titre: "Restaurer un site SharePoint supprimé (site introuvable, conflit d'URL, groupe Microsoft 365 introuvable)"
+    symptome: "Un site supprimé n'apparaît pas dans les sites supprimés, ou sa restauration échoue (« We couldn't find the Office 365 group », URL déjà utilisée, délai de 93 jours dépassé)."
+    erreurs: ["We couldn't find the Office 365 group"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://www.sharepointdiary.com/2017/03/sharepoint-online-restore-deleted-site-collection-using-powershell.html
+      - https://admindroid.com/how-to-get-all-deleted-sharepoint-sites-in-microsoft-365
+      - https://learn.microsoft.com/en-us/answers/questions/5387614/deleting-sharepoint-site
+    etat: a-rediger
+  - id: sharepoint-suppression-site-impossible
+    titre: "Impossible de supprimer un site SharePoint"
+    symptome: "Le bouton de suppression est absent ou la suppression échoue (site relié à un groupe ou à Teams, site hub, stratégie de rétention, site racine)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/4974140/unable-to-delete-sharepoint-online-site
+      - https://learn.microsoft.com/en-us/answers/questions/5387614/deleting-sharepoint-site
+    etat: a-rediger
+  - id: sharepoint-site-err-invalid-response
+    titre: "« This site can't be reached » ERR_INVALID_RESPONSE : page d'accueil du site supprimée"
+    symptome: "Le navigateur n'affiche pas le site car la page d'accueil a été supprimée ; la restaurer depuis la corbeille du site ou de la collection."
+    erreurs: ["ERR_INVALID_RESPONSE", "This site can't be reached"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/sites/err-invalid-response-accessing-sharepoint-site
+    etat: a-rediger
+  - id: sharepoint-creation-site-non-autorisee
+    titre: "« You are not allowed to create team sites » depuis la page des sites suivis"
+    symptome: "Le bouton « Nouveau site » renvoie ce message : l'utilisateur n'a pas le droit de créer des sites ou des sous-sites."
+    erreurs: ["You are not allowed to create team sites"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sharing-and-permissions/issue-when-you-click-new-site-on-followed-sites-page
+    etat: a-rediger
+  - id: sharepoint-url-sous-site-racine-cassee
+    titre: "Une URL située sous la collection de sites racine ne fonctionne plus"
+    symptome: "Une adresse de type https://contoso.sharepoint.com/<chemin> sous le site racine renvoie une erreur après modification du site racine."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sites/url-that-resides-under-root-site-collection-is-broken
+    etat: a-rediger
+  - id: sharepoint-site-lecture-seule-verrouille
+    titre: "Site SharePoint en lecture seule ou verrouillé"
+    symptome: "Plus personne ne peut modifier ou ouvrir le site : verrou administrateur (ReadOnly/NoAccess), stratégie d'inactivité ou d'expiration, conservation, quota atteint."
+    erreurs: ["This site is read only", "Access Denied"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5839130/i-can-not-access-sharepoint
+      - https://help.cloudiway.com/article/error-file-processing-accessdenied
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/sharing-and-permissions/error-403-forbidden
+    etat: a-rediger
+  - id: sharepoint-tous-utilisateurs-sans-acces
+    titre: "Plus aucun utilisateur n'accède à SharePoint ni au centre d'administration"
+    symptome: "Tout le tenant obtient une erreur sur SharePoint et OneDrive : abonnement expiré ou suspendu, incident de service, problème DNS local."
+    erreurs: ["This site can't be reached", "Sorry, something went wrong"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-in/answers/questions/5911630/all-users-unable-to-access-sharepoint-and-sharepoi
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/sharepointonline-and-onedrive-down-for-all-users-in-the-company-sorry-something-/790990
+    etat: a-rediger
+  - id: sharepoint-something-went-wrong-correlation-id
+    titre: "« Sorry, something went wrong » avec un Correlation ID"
+    symptome: "Page d'erreur générique avec un identifiant de corrélation et une date ; isoler navigateur, compte, page et incident de service, puis transmettre l'ID au support."
+    erreurs: ["Sorry, something went wrong", "Correlation ID"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/447474/sharepoint-office-365-online-sorry-something-went
+      - https://techcommunity.microsoft.com/t5/sharepoint/need-help-to-fix-sharepoint-for-microsoft-office-365/td-p/4131802
+      - https://learn.microsoft.com/fr-fr/archive/blogs/adamding/troubleshoot-sharepoint-online-with-live-examples-1-sitemanager-aspx-page-cannot-open
+    etat: a-rediger
+  # --- Stockage ---
+  - id: sharepoint-stockage-tenant-sature
+    titre: "Stockage SharePoint du tenant saturé : sites en lecture seule"
+    symptome: "Le stockage mutualisé du tenant est dépassé : téléversements bloqués, sites passés en lecture seule, bannière d'alerte dans le centre d'administration."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/administration/out-of-storage
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/what-happens-if-out-of-sharepoint-storage-at-tenant-level/3868317
+      - https://lazyadmin.nl/office-365/sharepoint-storage-limits/
+    etat: a-rediger
+  - id: sharepoint-quota-site-atteint
+    titre: "Quota de stockage d'un site atteint : impossible d'ajouter des fichiers"
+    symptome: "Un site avec un quota manuel est plein alors que le tenant a encore de la place ; augmenter le quota ou nettoyer (versions, corbeille)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://lazyadmin.nl/office-365/sharepoint-storage-limits/
+      - https://www.syskit.com/?p=39048
+    etat: a-rediger
+  - id: sharepoint-quota-reduit-soudainement
+    titre: "Quota de stockage soudainement réduit (alignement sur les licences, tenant de développement)"
+    symptome: "Le stockage disponible diminue sans action de l'administrateur, à la suite de l'application stricte des limites liées aux licences par Microsoft."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://www.smikar.com/sharepoint-storage-quota-dropped/
+      - https://www.itelio.com/en/microsoft-message-center/MC1310684
+      - https://blog-en.topedia.com/2026/07/microsoft-enforces-sharepoint-storage-limits-in-microsoft-365-developer-tenants/
+    etat: a-rediger
+  # --- Listes et bibliothèques ---
+  - id: sharepoint-seuil-affichage-liste-5000
+    titre: "« The number of items in this list exceeds the list view threshold » (seuil de 5 000 éléments)"
+    symptome: "Une vue de liste ou de bibliothèque ne s'affiche plus ou affiche une erreur dès que la requête dépasse 5 000 éléments ; limite fixe dans SharePoint Online."
+    erreurs: ["The number of items in this list exceeds the list view threshold"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/lists-and-libraries/items-exceeds-list-view-threshold
+      - https://support.microsoft.com/kb/2759051
+    etat: a-rediger
+  - id: sharepoint-seuil-5000-vue-filtree-colonne-non-indexee
+    titre: "Erreur de seuil sur une vue filtrée qui renvoie moins de 5 000 éléments"
+    symptome: "La vue est filtrée mais la colonne de filtre n'est pas indexée (ou la vue affiche tous les éléments sans dossiers), donc SharePoint doit parcourir toute la liste."
+    erreurs: ["The number of items in this list exceeds the list view threshold"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/lists-and-libraries/items-exceeds-list-view-threshold
+      - https://community.plumsail.com/t/5000-row-error-on-filtered-view-with-less-than-5000-rows/7511
+    etat: a-rediger
+  - id: sharepoint-seuil-5000-script-powershell-csom
+    titre: "« The attempted operation is prohibited because it exceeds the list view threshold » dans un script"
+    symptome: "Un script PowerShell (CSOM, PnP) ou une requête REST échoue sur une grande liste ; il faut paginer les requêtes ou filtrer sur une colonne indexée."
+    erreurs: ["The attempted operation is prohibited because it exceeds the list view threshold"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://www.sharepointdiary.com/?p=1187
+      - https://www.spguides.com/sharepoint-list-view-threshold/
+    etat: a-rediger
+  - id: sharepoint-tres-grande-bibliotheque-affichage
+    titre: "Bibliothèque de plusieurs dizaines de milliers de fichiers : affichage incomplet ou impossible"
+    symptome: "Dans une bibliothèque de plus de 60 000 éléments, les fichiers n'apparaissent pas tous ou la vue échoue malgré l'interface moderne."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-ca/answers/questions/1791983/fix-view-of-displaying-files-in-a-document-library
+      - https://chuvash.eu/2021/two-workarounds-for-overcoming-the-listview-threshold/
+    etat: a-rediger
+  - id: sharepoint-unknown-render-failure
+    titre: "« Unknown Render Failure » pour les utilisateurs en lecture d'une grande bibliothèque"
+    symptome: "Les lecteurs voient une erreur de rendu alors que les propriétaires affichent la bibliothèque ; seuil des 5 000 éléments ou niveau Lecture modifié (permissions Afficher/Ouvrir manquantes)."
+    erreurs: ["Unknown Render Failure"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5855065/unknown-render-failure-for-read-access-in-sharepoi
+    etat: a-rediger
+  - id: sharepoint-liste-specifiee-invalide
+    titre: "« The specified list is invalid » à l'ouverture d'un dossier de bibliothèque"
+    symptome: "La navigation dans un dossier affiche ce message au lieu de son contenu."
+    erreurs: ["The specified list is invalid"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/94d9148d-98b5-49fb-8e34-51d0d5318294/sharepoint-online-the-specified-list-is-invalid
+    etat: a-rediger
+  - id: sharepoint-liste-depuis-excel-file-does-not-exist
+    titre: "« Something went wrong. The file does not exist » en créant une liste depuis Excel"
+    symptome: "L'import d'un fichier Excel pour créer une liste échoue car la bibliothèque par défaut « Documents » a été supprimée ou renommée."
+    erreurs: ["Something went wrong. The file does not exist."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/lists-and-libraries/error-create-list-excel
+    etat: a-rediger
+  - id: sharepoint-list-0-does-not-exist
+    titre: "« List '|0' does not exist » en créant un document depuis le portail Microsoft 365"
+    symptome: "La création d'un nouveau document depuis le portail échoue car la bibliothèque « Documents » n'existe plus sur le site d'équipe."
+    erreurs: ["List '|0' does not exist"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/lists-and-libraries/o365-portal-fails-creating-documents
+    etat: a-rediger
+  - id: sharepoint-liste-outlook-0x80070005
+    titre: "Erreur 0x80070005 en synchronisant une liste SharePoint dans Outlook"
+    symptome: "Une liste ou un calendrier SharePoint connecté à Outlook ne se synchronise plus et affiche 0x80070005."
+    erreurs: ["0x80070005"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/lists-and-libraries/sync-sharepoint-list-error-0x80070005
+    etat: a-rediger
+  - id: sharepoint-listes-hors-connexion-synchronisation
+    titre: "La synchronisation hors connexion des listes SharePoint échoue"
+    symptome: "Les listes rendues disponibles hors connexion ne se synchronisent pas ou plus sur le poste."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/lists-and-libraries/common-sync-issues
+    etat: a-rediger
+  - id: sharepoint-enregistrer-liste-comme-modele-impossible
+    titre: "Impossible d'enregistrer une liste ou une bibliothèque comme modèle"
+    symptome: "L'option « Enregistrer comme modèle » est absente ou échoue (scripts personnalisés interdits sur le site, site moderne)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/sr-latn-rs/troubleshoot/sharepoint/lists-and-libraries/fails-saving-list-as-template
+    etat: a-rediger
+  - id: sharepoint-experience-moderne-non-affichee
+    titre: "Liste ou bibliothèque bloquée en affichage classique au lieu de l'expérience moderne"
+    symptome: "La liste s'ouvre en mode classique à cause de personnalisations incompatibles (JSLink, XslLink, formulaires personnalisés, paramètres classiques)."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/lists-and-libraries/modern-view-compatibility-checklist
+    etat: a-rediger
+  - id: sharepoint-boutons-nouveau-charger-absents
+    titre: "Boutons Nouveau, Charger, Synchroniser absents d'une bibliothèque classique"
+    symptome: "Les commandes simples ont disparu de la bibliothèque car le style de la vue n'est pas « Par défaut »."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/lists-and-libraries/simple-controls-missing
+    etat: a-rediger
+  - id: sharepoint-liste-bibliotheque-disparue
+    titre: "Une liste ou une bibliothèque a disparu du site"
+    symptome: "Une liste n'apparaît plus dans la navigation ou le contenu du site (supprimée, masquée, retirée de la navigation, droits uniques)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1841719/how-to-fix-sharepoint-missing-list
+    etat: a-rediger
+  # --- Fichiers verrouillés, extraction et co-édition ---
+  - id: sharepoint-fichier-verrouille-pour-modification
+    titre: "« The file is locked for editing by … » alors que personne n'a le fichier ouvert"
+    symptome: "Un fichier Office reste verrouillé au nom d'un collègue (ou de soi-même) après une fermeture brutale, un onglet resté ouvert ou une perte de réseau."
+    erreurs: ["is locked for editing by", "File in use"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/t5/SharePoint/Cannot-Release-Lock-on-SharePoint-Online-File/m-p/59694
+      - https://learn.microsoft.com/en-us/answers/questions/5325057/file-is-locked-for-editing-by-name
+      - https://learn.microsoft.com/en-us/answers/questions/5125256/sharepoint-onedrive-files-randomly-get-locked-by-a
+    etat: a-rediger
+  - id: sharepoint-fichier-verrouille-utilisation-partagee
+    titre: "« The file is locked for shared use » sur un fichier SharePoint"
+    symptome: "Un fichier ne peut pas être modifié, renommé ou supprimé car il est verrouillé pour usage partagé par un autre utilisateur ou un processus."
+    erreurs: ["The file is locked for shared use"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/4996031/the-file-is-locked-for-shared-use-sharepoint-onlin
+      - https://learn.microsoft.com/en-us/answers/questions/5317112/sharepoint-library-document-locked-for-shared-use
+      - https://learn.microsoft.com/en-us/answers/questions/4991027/file-locked-for-shared-use
+    etat: a-rediger
+  - id: sharepoint-office-web-error-file-locked
+    titre: "« Error: The file is locked » dans Office pour le web"
+    symptome: "Word ou Excel pour le web refuse d'ouvrir ou d'enregistrer le document en indiquant qu'il est verrouillé."
+    erreurs: ["Error: The file is locked"]
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/t5/sharepoint/quot-error-the-file-is-locked-quot-when-using-office-online/m-p/227866
+    etat: a-rediger
+  - id: sharepoint-fichier-extrait-par-autre-utilisateur
+    titre: "« Someone else has checked out this workbook » : fichier extrait par un collègue ou un compte parti"
+    symptome: "Le fichier est extrait (check-out) par une autre personne, parfois partie de l'entreprise ; un propriétaire doit forcer l'archivage ou ignorer l'extraction."
+    erreurs: ["Someone else has checked out this workbook"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://www.sharepointdiary.com/2023/01/fix-someone-else-has-checked-out-this-workbook-error-in-sharepoint-online.html
+    etat: a-rediger
+  - id: sharepoint-coedition-upload-failed
+    titre: "« Upload failed » ou « Upload blocked » pendant la co-édition d'un fichier"
+    symptome: "Le fichier ouvert dans l'application de bureau passe de « Enregistré » à « Échec du chargement » : conflit de modifications, cache Office, fichier protégé ou réglage OneDrive."
+    erreurs: ["Upload failed", "Upload blocked"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/2c94f2c5-afa6-4bcf-aa98-05c96c3ad9bb/upload-failed-and-upload-blocked-when-coauthoring
+      - https://learn.microsoft.com/en-us/answers/questions/96f5a473-d4d6-4f0c-ab88-fc1ed08a8f7d/file-changes-from-saved-to-upload-failed
+    etat: a-rediger
+  - id: sharepoint-modifications-non-fusionnables
+    titre: "« Your changes cannot be merged with changes made by someone else »"
+    symptome: "Office refuse de charger les modifications car elles entrent en conflit avec celles d'un autre co-auteur ; il faut enregistrer une copie et fusionner."
+    erreurs: ["your file wasn't uploaded because your changes cannot be merged with changes made by someone else"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5002104/your-file-wasnt-uploaded-because-your-changes-cann
+    etat: a-rediger
+  - id: sharepoint-coedition-impossible
+    titre: "Co-édition impossible sur un document Word ou Excel stocké dans SharePoint"
+    symptome: "Un seul utilisateur peut modifier à la fois : extraction obligatoire activée, fonctionnalité incompatible (classeur partagé), IRM, version d'Office trop ancienne."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5135418/problems-with-co-authoring-a-word-document-sharepo
+      - https://learn.microsoft.com/en-us/answers/questions/164280/sharepoint-online-excel-file-locked-by-user
+    etat: a-rediger
+  # --- Ouverture dans l'application de bureau ---
+  - id: sharepoint-ouvrir-dans-application-echoue
+    titre: "« Ouvrir dans l'application » (Open in app) ne fait rien ou échoue"
+    symptome: "Le clic sur « Ouvrir dans l'application » depuis SharePoint ou Teams n'ouvre pas Word/Excel : associations de fichiers, plusieurs versions d'Office, client OneDrive, cache Office."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5968308/files-wont-open-in-desktop-app-when-opening-throug
+      - https://learn.microsoft.com/en-us/answers/questions/5205630/sharepoint-open-in-app-feature-not-working
+      - https://learn.microsoft.com/en-us/answers/questions/5759769/office-files-from-sharepoint-won-t-open-or-edit-pr
+    etat: a-rediger
+  - id: sharepoint-ouvrir-application-option-absente
+    titre: "Option « Ouvrir dans l'application de bureau » absente pour un utilisateur"
+    symptome: "L'utilisateur n'a qu'un accès « Restricted view » ou « View only » (pas de téléchargement), donc seule l'ouverture dans le navigateur est proposée."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5078875/sharepoint-online-open-in-desktop-app-not-an-optio
+    etat: a-rediger
+  - id: sharepoint-fichier-telecharge-au-lieu-de-souvrir
+    titre: "Le fichier se télécharge au lieu de s'ouvrir depuis SharePoint"
+    symptome: "Un clic sur un document lance un téléchargement au lieu de l'ouvrir dans le navigateur ou dans l'application."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5165948/sharepoint-file-downloading-instead-of-opening
+    etat: a-rediger
+  - id: sharepoint-ouverture-navigateur-par-defaut
+    titre: "Les documents s'ouvrent toujours dans le navigateur au lieu de l'application de bureau"
+    symptome: "Le comportement d'ouverture est réglé sur le navigateur (paramètre avancé de la bibliothèque, fonctionnalité de site, préférence Office)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5829272/how-do-i-have-office-documents-default-to-open-in
+      - https://learn.microsoft.com/en-us/answers/questions/5510627/sharepoint-file-open-in-app
+    etat: a-rediger
+  - id: sharepoint-pdf-ouvrir-dans-application
+    titre: "PDF ou fichier non Office impossible à ouvrir dans l'application de bureau depuis SharePoint"
+    symptome: "« Ouvrir dans l'application » est absent ou inopérant pour les PDF et autres types : dépend du client OneDrive et de l'autorisation de synchroniser la bibliothèque."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5340717/open-pdf-in-app-sharepoint-and-onedrive
+      - https://learn.microsoft.com/en-us/answers/questions/5377516/open-unknown-file-types-on-sharepoint-in-desktop-a
+    etat: a-rediger
+  # --- Appareils non gérés et accès conditionnel ---
+  - id: sharepoint-appareil-non-gere-acces-web-limite
+    titre: "Accès web limité sur un appareil non géré : téléchargement, impression et synchronisation bloqués"
+    symptome: "L'utilisateur voit SharePoint en lecture dans le navigateur avec un bandeau d'avertissement, sans pouvoir télécharger, imprimer ni synchroniser."
+    erreurs: ["Your organization doesn't allow you to download, print, or sync using this device."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/control-access-from-unmanaged-devices
+      - https://uwindsor.teamdynamix.com/TDClient/1975/Portal/KB/ArticleDet?ID=142811
+    etat: a-rediger
+  - id: sharepoint-acces-limite-navigateur-non-supporte
+    titre: "Accès web limité dans un navigateur (Firefox…) mais pas dans Edge sur un poste géré"
+    symptome: "Le poste est conforme mais le navigateur utilisé ne transmet pas l'état de l'appareil, donc la stratégie le traite comme non géré."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-gb/answers/questions/2167965/sharepoint-web-limited-in-mozilla-but-not-in-edge
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/browsers-and-operating-system-combination-for-limit-access-on-unmanaged-devices/301174
+    etat: a-rediger
+  - id: sharepoint-wkwebview-navigateur-non-supporte
+    titre: "« You can not access the resource from this browser » dans une application iOS (WKWebView)"
+    symptome: "Une application mobile qui intègre une vue web ne peut pas ouvrir SharePoint à cause de l'accès conditionnel ; il faut passer par Safari ou Edge."
+    erreurs: ["You can not access the resource from this browser please use Safari or Edge browser"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-gb/answers/questions/1195010/ios-webkit-wkwebview-is-not-supported-to-access-th
+    etat: a-rediger
+  - id: sharepoint-blocage-appareils-non-geres-impacte-teams
+    titre: "Le blocage des appareils non gérés sur SharePoint empêche aussi l'accès aux fichiers dans Teams"
+    symptome: "Après avoir limité SharePoint aux appareils gérés, les onglets Fichiers de Teams et les applications mobiles ne fonctionnent plus sur les appareils personnels."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1485235/how-to-block-sharepoint-access-from-apps-on-unmana
+      - https://learn.microsoft.com/en-us/answers/questions/143465/sharepoint-online-and-conditional-access
+    etat: a-rediger
+  # --- Recherche ---
+  - id: sharepoint-recherche-resultats-manquants
+    titre: "Documents ou pages absents des résultats de recherche SharePoint"
+    symptome: "Des fichiers existants ne remontent pas : site ou bibliothèque exclu de la recherche, brouillons, droits, groupe de plus de 2 000 membres, indexation en attente."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/search/search-results-missing
+      - https://learn.microsoft.com/en-us/answers/questions/5637926/cant-search-files-from-sharepoint
+      - https://learn.microsoft.com/en-us/answers/questions/1687896/sharepoint-search-for-files-not-working
+    etat: a-rediger
+  - id: sharepoint-recherche-ce-site-aucun-resultat
+    titre: "La recherche « Ce site » ne renvoie rien ou affiche une erreur"
+    symptome: "La recherche limitée au site échoue alors que la recherche globale fonctionne : la source de résultats par défaut n'est plus « Local SharePoint Results »."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/search/search-results-not-return
+    etat: a-rediger
+  - id: sharepoint-recherche-contenu-recent-non-indexe
+    titre: "Nouveau contenu absent de la recherche plusieurs jours après sa création"
+    symptome: "Les fichiers récents n'apparaissent pas dans la recherche, même après une demande de réindexation de la bibliothèque ou du site."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5757323/sharepoint-online-search-not-indexing-recent-conte
+      - https://learn.microsoft.com/en-gb/answers/questions/1662005/sharepoint-online-site-not-yielding-search-results
+    etat: a-rediger
+  - id: sharepoint-recherche-pages-sous-site-autorisations-uniques
+    titre: "Pages .aspx d'un sous-site à autorisations uniques absentes de la recherche"
+    symptome: "Les pages d'un sous-site qui n'hérite pas des autorisations ne sont pas indexées avec le réglage de visibilité par défaut."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/search/search-results-missing
+    etat: a-rediger
+  - id: sharepoint-proprietes-analysees-non-generees
+    titre: "Propriétés analysées non générées pour des colonnes de site personnalisées"
+    symptome: "Une colonne personnalisée n'apparaît pas dans le schéma de recherche, ce qui empêche de créer la propriété gérée ou d'afficher les métadonnées dans les résultats."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5090251/sharepoint-online-crawled-properties-not-being-gen
+    etat: a-rediger
+  # --- Administration, PowerShell et authentification ---
+  - id: sharepoint-connect-sposervice-echec
+    titre: "Connect-SPOService échoue (« Could not connect to SharePoint Online », 429, Unauthorized)"
+    symptome: "Le module SharePoint Online Management Shell ne se connecte pas : module obsolète, TLS 1.2, mauvaise URL d'administration, limitation (429), droits insuffisants."
+    erreurs: ["The remote server returned an error: (429)", "Could not connect to SharePoint Online"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/administration/errors-connecting-to-management-shell
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/administration/connect-sposervice-error
+    etat: a-rediger
+  - id: sharepoint-connect-sposervice-mot-de-passe-ne-correspond-pas
+    titre: "Connect-SPOService : « The sign-in name or password does not match one in the Microsoft account system »"
+    symptome: "La connexion avec -Credential échoue avec un compte MFA ou quand l'authentification héritée est bloquée par l'accès conditionnel ; utiliser l'authentification moderne (-ModernAuth) ou PnP PowerShell."
+    erreurs: ["The sign-in name or password does not match one in the Microsoft account system"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/805576/connect-sposervice-the-sign-in-name-or-password-do
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/administration/connect-sposervice-error
+    etat: a-rediger
+  - id: sharepoint-authentification-basique-refusee
+    titre: "Scripts et applications en authentification basique refusés par SharePoint Online"
+    symptome: "Un script, un outil tiers ou une application qui se connectait avec identifiant et mot de passe (ou mot de passe d'application) n'accède plus à SharePoint."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5830113/issue-with-sharepoint-access-due-to-discontinuatio
+    etat: a-rediger
+  - id: sharepoint-app-only-401-unauthorized
+    titre: "Application en accès app-only : 401 Unauthorized sur SharePoint"
+    symptome: "Une application inscrite dans Entra obtient 401 : consentement administrateur manquant, jeton émis pour Graph au lieu de SharePoint, secret au lieu d'un certificat."
+    erreurs: ["(401) Unauthorized"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-my/answers/questions/5848297/unable-to-authenticate-net-4-0-app-with-sharepoint
+    etat: a-rediger
+  - id: sharepoint-centre-admin-inaccessible-admin-sharepoint
+    titre: "Centre d'administration SharePoint inaccessible pour un administrateur SharePoint"
+    symptome: "Un compte ayant le rôle Administrateur SharePoint obtient un refus ou une page vide en ouvrant le centre d'administration (rôle récent, licence, compte invité)."
+    erreurs: ["Sorry, you don't have access to this page"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/795217/cannot-access-sharepoint-admin-center
+      - https://learn.microsoft.com/en-us/answers/questions/5087228/sharepoint-admin-not-able-to-access-admin-center
+    etat: a-rediger
+  - id: sharepoint-galerie-types-contenu-erreur
+    titre: "« Unexpected error » dans la galerie des types de contenu du centre d'administration"
+    symptome: "La galerie des types de contenu ne se charge pas car l'administrateur n'est pas administrateur de la collection du hub de types de contenu."
+    erreurs: ["Unexpected error"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/administration/content-type-gallery-error
+    etat: a-rediger
+  - id: sharepoint-centre-admin-advanced-api-access-absents
+    titre: "Menus « Advanced » et « API access » absents du centre d'administration SharePoint"
+    symptome: "Ces entrées n'apparaissent pas car le site de catalogue d'applications n'existe pas ou est mal enregistré."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/administration/api-access-does-not-appear
+    etat: a-rediger
+  - id: sharepoint-sign-in-isnt-working-right-now
+    titre: "« Sign-in isn't working right now. But we're on it! » en ouvrant SharePoint"
+    symptome: "La connexion à SharePoint échoue avec ce message pour un utilisateur (compte supprimé ou désactivé, cache navigateur, incident)."
+    erreurs: ["Sign-in isn't working right now. But we're on it! Please try again later."]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5295779/sharepoint-error-sign-in-isnt-working-right-now-bu
+    etat: a-rediger
+  - id: sharepoint-deconnexions-boucle-connexion-navigateur
+    titre: "SharePoint déconnecte sans cesse ou boucle sur la page de connexion (Edge, Chrome)"
+    symptome: "L'utilisateur doit se reconnecter en permanence ou reste bloqué sur « We couldn't sign you in » : identifiants mis en cache, cookies tiers, mode de sécurité renforcée."
+    erreurs: ["We couldn't sign you in"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5657325/edge-and-chrome-issue-with-sharepoint-auth
+      - https://learn.microsoft.com/en-us/answers/questions/5618753/sharepoint-onedrive-signing-out-issues
+    etat: a-rediger
+  # --- Migration (SPMT, Migration Manager) ---
+  - id: sharepoint-spmt-0x0201000c-identifiants
+    titre: "SharePoint Migration Tool : erreur 0x0201000C (identifiants refusés)"
+    symptome: "SPMT refuse la connexion au compte de migration ; ressaisir les identifiants, vérifier MFA et accès conditionnel."
+    erreurs: ["0x0201000C"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepointmigration/troubleshooting-common-spmt-issues
+      - https://learn.microsoft.com/en-us/answers/questions/694260/sharepoint-migration-tool-powershell-error-credent
+    etat: a-rediger
+  - id: sharepoint-spmt-0x02010017-droits-insuffisants
+    titre: "SharePoint Migration Tool : erreur 0x02010017 (compte sans droits sur le site cible)"
+    symptome: "La tâche échoue car le compte de migration n'est pas administrateur de la collection de sites de destination."
+    erreurs: ["0x02010017"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepointmigration/troubleshooting-common-spmt-issues
+      - https://learn.microsoft.com/en-us/answers/questions/5150008/sharepoint-migration-tool-error-code-0x0201000f-0x
+    etat: a-rediger
+  - id: sharepoint-spmt-0x0201000f-url-invalide
+    titre: "SharePoint Migration Tool : erreur 0x0201000F (URL du site cible invalide)"
+    symptome: "SPMT ne trouve pas le site de destination ; vérifier l'URL et l'ouvrir dans un navigateur avec le même compte."
+    erreurs: ["0x0201000F"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepointmigration/troubleshooting-common-spmt-issues
+      - https://learn.microsoft.com/en-us/answers/questions/5150008/sharepoint-migration-tool-error-code-0x0201000f-0x
+    etat: a-rediger
+  - id: sharepoint-spmt-0x01510001-upload-echoue
+    titre: "« Failed to Upload the Job to Server: Upload file failed during migration » (0x01510001)"
+    symptome: "De nombreux fichiers échouent au chargement pendant une migration SPMT ou Migration Manager (accès au stockage Azure, site cible, client obsolète)."
+    erreurs: ["0x01510001", "Failed to Upload the Job to Server:Upload file failed during migration."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepointmigration/troubleshooting-common-spmt-issues
+      - https://learn.microsoft.com/en-us/answers/questions/6042351/using-sharepoint-file-share-migration-manaager-res
+    etat: a-rediger
+  - id: sharepoint-spmt-0x01710009-elements-echoues
+    titre: "SharePoint Migration Tool : erreur 0x01710009 (certains éléments du package ont échoué)"
+    symptome: "Une partie des éléments n'est pas migrée, souvent à cause d'un trop grand nombre de versions par fichier ; relancer en limitant les versions."
+    erreurs: ["0x01710009"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepointmigration/troubleshooting-common-spmt-issues
+      - https://learn.microsoft.com/en-us/answers/questions/852677/sharepoint-migration-error-0x01710009
+    etat: a-rediger
+  - id: sharepoint-spmt-0x0131000f-fichier-extrait
+    titre: "SharePoint Migration Tool : erreur 0x0131000F (lecture impossible, fichier extrait)"
+    symptome: "SPMT ne peut pas lire un fichier source parce qu'il est extrait (check-out) dans le site SharePoint d'origine."
+    erreurs: ["0x0131000F"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepointmigration/troubleshooting-common-spmt-issues
+    etat: a-rediger
+  - id: sharepoint-spmt-failed-read-file-unknown-reason
+    titre: "SPMT : « Failed to Read the file: Unknown reason » sur certains dossiers"
+    symptome: "Une migration réussit en partie mais des dossiers de la même bibliothèque échouent ; analyser FailureSummary.csv et les rapports d'éléments en échec."
+    erreurs: ["Failed to Read the file: Unknown reason"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5610716/i-am-using-the-sharepoint-migration-tool-and-keep
+    etat: a-rediger
+  - id: sharepoint-spmt-analyse-risques-erreurs
+    titre: "Erreurs de l'analyse préalable SPMT (CANNOT_ACCCESS, ITEM_COUNT_EXCEED_INDEX_LIMIT…)"
+    symptome: "Le rapport d'évaluation SPMT signale des risques bloquants avant migration (source inaccessible, trop d'éléments, chemins trop longs)."
+    erreurs: ["CANNOT_ACCCESS", "ITEM_COUNT_EXCEED_INDEX_LIMIT"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepointmigration/spmt-scan-risk-codes
+    etat: a-rediger
+  - id: sharepoint-spmt-migration-flux-travail-erreur
+    titre: "Migration des flux de travail SharePoint avec SPMT en erreur"
+    symptome: "Les workflows SharePoint 2010/2013 ne sont pas convertis vers Power Automate ; lire le rapport de migration des workflows et ses codes."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepointmigration/spmt-workflow-report-and-error-codes
+    etat: a-rediger
+  - id: sharepoint-migration-manager-agent-taches-echec
+    titre: "Migration Manager : agent déconnecté ou tâches de migration en échec"
+    symptome: "L'agent installé sur le serveur de fichiers apparaît déconnecté ou les tâches échouent (proxy, identifiants, accès au partage source)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepointmigration/mm-troubleshoot
+    etat: a-rediger
+  - id: sharepoint-migration-fichiers-non-migres-chemin-trop-long
+    titre: "Fichiers non migrés vers SharePoint : chemin trop long ou caractères non valides"
+    symptome: "Les rapports de migration listent des éléments ignorés dont l'URL complète dépasse 400 caractères ou dont le nom contient des caractères interdits."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepointmigration/troubleshooting-common-spmt-issues
+      - https://learn.microsoft.com/en-us/answers/questions/2004568/sharepoint-migration-issue
+    etat: a-rediger
+  # --- Métadonnées, extraction, versions, corbeille ---
+  - id: sharepoint-fichier-invisible-metadonnees-obligatoires
+    titre: "Fichier chargé invisible pour les collègues : resté extrait faute de métadonnées obligatoires"
+    symptome: "Après un chargement (surtout multiple) dans une bibliothèque à colonnes obligatoires ou à extraction obligatoire, le fichier reste extrait au nom de l'auteur et les autres ne le voient pas."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://sharepointmaven.com/how-to-make-sharepoint-metadata-columns-required/
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/required-columns-and-metadata/328541
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/lists-and-libraries/upload-file-using-new-experience
+    etat: a-rediger
+  - id: sharepoint-colonne-obligatoire-non-demandee-chargement
+    titre: "La colonne obligatoire n'est pas demandée lors du chargement dans la nouvelle expérience"
+    symptome: "Dans une bibliothèque moderne, le fichier est chargé sans que la valeur obligatoire soit demandée ; il apparaît ensuite avec une information requise manquante."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/lists-and-libraries/upload-file-using-new-experience
+      - https://learn.microsoft.com/en-us/answers/questions/500131/when-will-modern-ui-prompt-users-to-fill-in-requir
+    etat: a-rediger
+  - id: sharepoint-extraction-obligatoire-synchronisation
+    titre: "Extraction obligatoire activée : fichiers synchronisés ou modifiés impossibles à enregistrer"
+    symptome: "Avec « Exiger l'extraction » sur la bibliothèque, les fichiers synchronisés par OneDrive restent en lecture seule ou en conflit et la co-édition ne fonctionne pas."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/t5/SharePoint/SharePoint-Online-with-Forced-Checkout-and-Synced-Folders/m-p/128162
+      - https://sharepointmaven.com/?p=5200
+    etat: a-rediger
+  - id: sharepoint-versions-saturent-stockage
+    titre: "L'historique des versions consomme le stockage du site"
+    symptome: "Un site grossit rapidement à cause des versions (500 par défaut) ; réduire la limite ne libère rien tant que les anciennes versions ne sont pas supprimées."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/blog/microsoftmissioncriticalblog/managing-sharepoint-online-version-history-at-scale-to-recover-storage/4553571
+      - https://smikar.com/sharepoint-version-history-storage/
+    etat: a-rediger
+  - id: sharepoint-versions-au-dela-limite-retention
+    titre: "Des fichiers gardent plus de versions que la limite configurée"
+    symptome: "Des documents dépassent largement la limite de versions car une stratégie ou une étiquette de rétention empêche la suppression des anciennes versions."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/version-history-and-retention-policies---why-do-i-have-so-many-versions/1849646/replies/4052766
+      - https://office365itpros.com/2025/01/06/intelligent-versioning-500/amp/
+    etat: a-rediger
+  - id: sharepoint-fichier-supprime-introuvable-corbeille
+    titre: "Fichier supprimé introuvable dans la corbeille SharePoint"
+    symptome: "L'utilisateur ne retrouve pas un fichier supprimé : il est dans la corbeille de deuxième niveau (réservée aux administrateurs de la collection), dans un dossier supprimé, ou au-delà des 93 jours."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://blog.ciaops.com/2025/06/17/recovering-deleted-files-and-maximizing-retention-in-sharepoint-online/
+      - https://www.sharepointdiary.com/?p=38786
+    etat: a-rediger
+  # --- Chargement et gros fichiers ---
+  - id: sharepoint-chargement-gros-fichier-delai-depasse
+    titre: "Chargement d'un gros fichier dans SharePoint en échec ou bloqué (délai dépassé)"
+    symptome: "Le chargement par le navigateur d'un fichier volumineux s'arrête ou expire ; passer par le client OneDrive, vérifier la limite de taille et le type de fichier."
+    erreurs: ["The request timed out"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/sharepoint/troubleshoot/lists-and-libraries/request-timed-out-when-upload-large-file-to-library
+      - https://www.mrsharepoint.com/cant-upload-files-to-sharepoint/
+    etat: a-rediger
+  - id: sharepoint-chargement-sorry-problem-uploading
+    titre: "« Sorry, there was a problem uploading this file » ou « Something went wrong » au chargement"
+    symptome: "Le chargement de fichiers échoue pour un ou plusieurs utilisateurs avec un message générique, parfois sur tous les sites à la fois."
+    erreurs: ["Sorry, there was a problem uploading this file", "Something went wrong"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/t5/sharepoint/sharepoint-online-quot-sorry-there-was-a-problem-uploading-this/td-p/856445
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/something-went-wrong---when-uploading-to-sp-sites-experienced-by-multiple-users-/3987496
+      - https://learn.microsoft.com/en-us/answers/questions/5149419/sharepoint-upload-fails-error-in-the-application
+    etat: a-rediger
+  - id: sharepoint-telechargement-zip-taille-depassee
+    titre: "Téléchargement de plusieurs fichiers en ZIP : « The file size exceeds the allowed limit »"
+    symptome: "Le ZIP généré par SharePoint pour une sélection volumineuse est incomplet ou contient un fichier d'erreur indiquant un dépassement de taille."
+    erreurs: ["The file size exceeds the allowed limit"]
+    priorite: rare
+    format: express
+    sources:
+      - https://oregonstate.teamdynamix.com/TDClient/1935/Portal/KB/ArticleDet?ID=160364
+      - https://answers.microsoft.com/en-us/msoffice/forum/all/zip-file-size-limit-exceeded/cf447937-6563-45d3-900a-90568b1fe69f
+    etat: a-rediger
+  - id: sharepoint-bouton-synchroniser-absent
+    titre: "Bouton « Synchroniser » absent ou grisé dans une bibliothèque SharePoint"
+    symptome: "La bibliothèque ne propose pas la synchronisation OneDrive car la disponibilité pour les clients hors connexion est désactivée au niveau du site ou de la bibliothèque, ou par stratégie."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/t5/SharePoint/Issue-with-Sync-button-missing-in-Modern-Document-Library/td-p/49141
+      - https://www.sharepointdiary.com/2021/01/sharepoint-online-sync-button-missing-in-document-library.html
+      - https://learn.microsoft.com/en-us/answers/questions/5015878/sync-option-missing
+    etat: a-rediger
+  - id: sharepoint-fichier-chiffre-etiquette-sensibilite-inaccessible
+    titre: "Fichier protégé par une étiquette de sensibilité chiffrée : aperçu, recherche ou co-édition impossibles"
+    symptome: "Un document chiffré par étiquette ne s'ouvre pas dans le navigateur, n'est pas indexé ou bloque la co-édition (droits d'usage insuffisants, expiration d'accès, co-édition des fichiers chiffrés non activée)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/purview/sensitivity-labels-sharepoint-onedrive-files
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/sensitivity-labels/known-issues-ip-client
+      - https://support.microsoft.com/office/troubleshoot-co-authoring-in-office
+    etat: a-rediger
+  # --- PnP PowerShell, compléments, alertes ---
+  - id: sharepoint-pnp-aadsts700016-application-supprimee
+    titre: "Connect-PnPOnline : AADSTS700016 depuis la suppression de l'application PnP Management Shell"
+    symptome: "Depuis septembre 2024, la connexion PnP PowerShell interactive échoue sans -ClientId : il faut inscrire sa propre application Entra ID."
+    erreurs: ["AADSTS700016"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://pnp.github.io/powershell/articles/authentication.html
+      - https://learn.microsoft.com/en-za/answers/questions/2046326/aadsts700016-application-with-identifier-(id)-was
+      - https://www.sharepointdiary.com/?p=59283
+    etat: a-rediger
+  - id: sharepoint-pnp-aadsts65001-consentement
+    titre: "Connect-PnPOnline : AADSTS65001 (consentement de l'application manquant)"
+    symptome: "La connexion PnP échoue car l'utilisateur ou l'administrateur n'a pas consenti aux autorisations de l'application utilisée."
+    erreurs: ["AADSTS65001", "The user or administrator has not consented to use the application"]
+    priorite: rare
+    format: express
+    sources:
+      - https://techpress.net/how-to-fix-error-connect-pnponline-the-user-or-administrator-has-not-consented-to-use-the-application-with-id-31359c7f-bd7e-475c-86db-fdb8c937548e
+    etat: a-rediger
+  - id: sharepoint-pnp-commande-non-reconnue
+    titre: "« Connect-PnPOnline is not recognized » : module PnP PowerShell absent ou incompatible"
+    symptome: "La commande PnP n'est pas trouvée (module non installé, ancien module SharePointPnPPowerShellOnline, PowerShell 5.1 au lieu de 7)."
+    erreurs: ["Connect-PnPOnline : The term 'Connect-PnPOnline' is not recognized"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://www.spguides.com/connect-pnponline-is-not-recognized/
+    etat: a-rediger
+  - id: sharepoint-pnp-client-secret-header-not-found
+    titre: "PnP PowerShell avec secret client : « The given header was not found »"
+    symptome: "Une connexion PnP en app-only par secret client échoue avec cette erreur sous PowerShell 7."
+    erreurs: ["The given header was not found"]
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/windowspowershell/powershell-7-pnp-powershell-header-issue/4507325
+    etat: a-rediger
+  - id: sharepoint-complements-acs-retires
+    titre: "Compléments SharePoint (add-ins) et accès app-only Azure ACS arrêtés depuis avril 2026"
+    symptome: "Applications hébergées par un fournisseur, scripts utilisant GetACSAppOnlyContext ou un ID client ACS échouent (401) ; migrer vers une application Entra ID app-only."
+    erreurs: ["(401) Unauthorized"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/dev/sp-add-ins/retirement-announcement-for-add-ins
+      - https://learn.microsoft.com/sharepoint/dev/sp-add-ins/retirement-announcement-for-azure-acs
+      - https://learn.microsoft.com/en-us/sharepoint/dev/sp-add-ins/add-ins-and-azure-acs-retirements-faq
+      - https://www.ibm.com/support/pages/outdatedout-support-authentication-patterns-sharepoint-online-april-2026
+    etat: a-rediger
+  - id: sharepoint-alertes-ne-fonctionnent-plus
+    titre: "Les alertes SharePoint ne sont plus envoyées (retrait des alertes en juillet 2026)"
+    symptome: "Les utilisateurs ne reçoivent plus les mails d'alerte sur leurs listes et bibliothèques ; les recréer avec les règles SharePoint ou Power Automate."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/blog/spblog/sharepoint-alerts-retirement/4410402
+      - https://learn.microsoft.com/en-us/answers/questions/5826376/sharepoint-alerts-being-discontinued
+    etat: a-rediger
+  # --- Sites hub ---
+  - id: sharepoint-association-site-hub-impossible
+    titre: "Impossible d'associer un site à un site hub"
+    symptome: "Le site hub n'apparaît pas dans la liste ou l'association échoue (droits d'association limités à certains utilisateurs, ancien site hérité, interface en échec)."
+    erreurs: ["Attempted to perform an unauthorized operation."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1921298/hub-site-error
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/user-unable-to-associate-site-with-hub/2735851
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/unable-to-join-sites-to-a-hub---attempted-to-perform-an-unauthorized-operation/3612390
+    etat: a-rediger
+  - id: sharepoint-hub-demande-approbation-403
+    titre: "Demande d'association à un hub avec approbation : 403 Forbidden"
+    symptome: "L'association à un hub qui exige une approbation échoue avec une erreur 403 alors que les hubs sans approbation fonctionnent."
+    erreurs: ["403 Forbidden"]
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/hub-site-association-approval-request-fails-with-403-forbidden-previously-workin/4554343
+    etat: a-rediger
+  - id: sharepoint-hub-navigation-sites-associes-absents
+    titre: "Navigation du hub ou sites associés absents des sites du hub"
+    symptome: "La barre de navigation du hub ou les actualités et sites associés n'apparaissent pas sur certains sites (droits, délai de propagation, indexation)."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/sharepoint-hub-issues---cross-site-navigation-and-associated-sites-not-showing/239384
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/sharepoint-hub-site-not-seeing-an-associated-site-connected-to-the-hub/4229931/replies/4230689
+    etat: a-rediger
+  - id: sharepoint-association-hub-refus-acces
+    titre: "« Sorry, you don't have access » en associant un site à un hub"
+    symptome: "Le propriétaire du site obtient un refus d'accès en choisissant le hub, car il ne figure pas parmi les personnes autorisées à y associer des sites."
+    erreurs: ["Sorry, you don't have access"]
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/trying-to-associate-a-site-with-a-hub-site-will-return-this-error-sorry-you-do-n/295822
+    etat: a-rediger
+  # --- Pages et composants WebPart ---
+  - id: sharepoint-webpart-something-went-wrong
+    titre: "Composant WebPart d'une page moderne en erreur « Something went wrong »"
+    symptome: "Un ou plusieurs composants d'une page affichent une erreur au lieu de leur contenu (incident de service, composant SPFx ou tiers dont le script ne charge pas, droits trop restrictifs)."
+    erreurs: ["Something went wrong"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-gb/answers/questions/1659326/sharepoint-sorry-something-went-wrong
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/sharepoint-modern-news-web-part-error---something-went-wrong/4259345
+    etat: a-rediger
+  - id: sharepoint-page-cant-load-application
+    titre: "« Sorry, something went wrong. Can't load the application on this page »"
+    symptome: "Une page moderne ou une application SPFx ne se charge pas et affiche ce message."
+    erreurs: ["Can't load the application on this page"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/sorry-something-went-wrong-cant-load-the-application-on-this-page/638849
+    etat: a-rediger
+  - id: sharepoint-erreur-configuration-composant-spfx
+    titre: "« Something went wrong » en configurant un composant SPFx"
+    symptome: "L'ouverture du volet de propriétés d'un composant SharePoint Framework provoque une erreur."
+    erreurs: ["Something went wrong"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/web-parts/something-went-wrong-error-configuring-spfx-component
+    etat: a-rediger
+  - id: sharepoint-site-moderne-page-blanche
+    titre: "Site SharePoint moderne qui s'affiche en page blanche"
+    symptome: "Le site ou la page ne charge qu'une page vide (navigateur ancien, page maître ou code personnalisé, extension de navigateur)."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/t5/SharePoint/SharePoint-loading-blank-page-Modern-SharePoint-sites-not/td-p/103646
+    etat: a-rediger
+  - id: sharepoint-webpart-tiers-cdn-ne-charge-plus
+    titre: "Composants WebPart tiers qui ne fonctionnent plus sur les pages modernes"
+    symptome: "Des composants d'un éditeur tiers cessent de s'afficher sur tous les sites car leurs scripts hébergés sur un CDN externe ne se chargent plus."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://support.shortpoint.com/en/support/solutions/articles/1000302688-known-issue-shor[%E2%80%A6]webparts-stopped-working-on-modern-sharepoint-office-365-
+      - https://techcommunity.microsoft.com/discussions/sharepointdev/spfx-react-web-part-error-message-when-adding-to-page-/1148698/replies/1150555
+    etat: a-rediger
+  # --- Sites connectés à Teams ---
+  - id: sharepoint-site-teams-onglet-fichiers-erreur
+    titre: "Onglet Fichiers d'un canal Teams en erreur après modification du site SharePoint"
+    symptome: "L'onglet Fichiers (ou Partagé) affiche « We can't get your files » ou pointe au mauvais endroit après renommage ou déplacement du dossier du canal dans SharePoint."
+    erreurs: ["We can't get your files, we're working on getting them back"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/troubleshoot/microsoftteams/files/access-files-tab-errors
+      - https://learn.microsoft.com/answers/a/12586650
+      - https://blog-en.topedia.com/?p=62311
+    etat: a-rediger
+  # --- Conformité, sécurité, gouvernance ---
+  - id: sharepoint-suppression-bloquee-retention-conservation
+    titre: "Suppression d'un site, d'une liste ou d'une version bloquée par une stratégie de rétention ou une conservation eDiscovery"
+    symptome: "La suppression échoue car le contenu est sous rétention ou en conservation (y compris pendant la période de grâce de 30 jours après le retrait d'une conservation)."
+    erreurs: ["List cannot be deleted while on hold or retention policy"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/sites/compliance-policy-blocking-site-deletion
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/sharepoint-online-list-cannot-be-deleted-while-on-hold-or-retention-policy-/366783
+      - https://learn.microsoft.com/en-us/purview/retention-policies-sharepoint
+    etat: a-rediger
+  - id: sharepoint-dossier-non-vide-suppression-impossible
+    titre: "Impossible de supprimer un dossier qui contient des éléments sous rétention"
+    symptome: "La suppression d'un dossier échoue alors que les dossiers vides se suppriment, à cause d'une stratégie de rétention sur le contenu."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/cannot-delete-folders-with-items-in-them---bug-or-feature/66314
+    etat: a-rediger
+  - id: sharepoint-scripts-personnalises-bloques
+    titre: "Fonctions absentes à cause du blocage des scripts personnalisés (DenyAddAndCustomizePages)"
+    symptome: "« Enregistrer le site/la liste comme modèle », l'éditeur de scripts ou certaines solutions tierces sont indisponibles car les scripts personnalisés sont bloqués sur le site ; le réglage du tenant peut le rétablir sous 24 h."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/th-th/sharepoint/allow-or-prevent-custom-script
+      - https://www.manageengine.com/sharepoint-management-reporting/kb/enable-custom-script-sharepoint-online.html
+      - https://www.sharepointdiary.com/?p=1303
+    etat: a-rediger
+  - id: sharepoint-fichier-infecte-bloque
+    titre: "Fichier détecté comme malveillant dans SharePoint : ouverture, partage ou téléchargement bloqués"
+    symptome: "Un fichier est signalé par l'antivirus intégré ou par Pièces jointes fiables (Safe Attachments) ; il reste visible mais ne peut plus être ouvert, copié ni partagé."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/defender-office-365/safe-attachments-for-spo-odfb-teams-about
+      - https://learn.microsoft.com/en-us/defender-office-365/anti-malware-protection-for-spo-odfb-teams-about
+      - https://support.microsoft.com/office/01e902ad-a903-4e0f-b093-1e1ac0c37ad2
+    etat: a-rediger
+  - id: sharepoint-controle-acces-restreint-rac
+    titre: "Accès refusé malgré des autorisations : contrôle d'accès restreint (Restricted Access Control) actif"
+    symptome: "L'utilisateur a des droits sur le site ou un lien, mais n'est pas membre du groupe de contrôle défini par la stratégie de restriction d'accès du site."
+    erreurs: ["Access Denied"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/restricted-access-control
+      - https://www.sharepointdiary.com/2024/10/restricted-site-access-in-sharepoint-online.html
+    etat: a-rediger
+  - id: sharepoint-restricted-view-ne-voit-pas-site
+    titre: "Utilisateur avec l'autorisation « Restricted View » qui ne voit pas le site"
+    symptome: "Le niveau Affichage restreint ne donne pas accès aux pages du site, seulement aux fichiers partagés ; l'utilisateur obtient un refus sur la page d'accueil."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1082370/sharepoint-online-restricted-view-permission-assig
+    etat: a-rediger
+  - id: sharepoint-acces-refuse-permission-action
+    titre: "« Access denied. You do not have permission to perform this action or access this resource »"
+    symptome: "Message obtenu en PowerShell, en REST ou dans l'interface lors d'une action d'administration ou d'une modification (droits insuffisants, scripts bloqués, site verrouillé)."
+    erreurs: ["Access denied. You do not have permission to perform this action or access this resource."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://www.sharepointdiary.com/2020/03/sharepoint-online-access-denied-you-do-not-have-permission-to-perform-this-action-access-this-resource.html
+    etat: a-rediger
+  - id: sharepoint-deconnexion-sessions-inactives
+    titre: "Utilisateurs déconnectés de SharePoint après une période d'inactivité"
+    symptome: "Un avertissement puis une déconnexion surviennent après inactivité dans le navigateur, même si l'utilisateur travaille dans une autre application Microsoft 365 (stratégie de délai d'inactivité)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/sharepoint/sign-out-inactive-users
+      - https://learn.microsoft.com/en-us/microsoft-365/admin/manage/idle-session-timeout-web-apps
+    etat: a-rediger
+  - id: sharepoint-changement-adresse-site-effets
+    titre: "Problèmes après changement d'adresse (URL) d'un site SharePoint"
+    symptome: "Après renommage de l'URL, des liens codés en dur, composants, flux ou onglets Teams ne fonctionnent plus ; la suppression du site de redirection aggrave le problème."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://petri.com/big-side-effect-teams-renaming-sharepoint-site-url/
+      - https://office365itpros.com/2020/01/06/microsoft-fixes-teams-problem-sharepoint-site-rename/
+      - https://www.sikich.com/insight/sharepoint-site-urls-in-microsoft-365-changing-sites-understanding-redirects-and-cleaning-them-up/
+    etat: a-rediger
+  - id: sharepoint-sites-nouveau-nom-domaine-incomplet
+    titre: "Sites SharePoint qui ne passent pas entièrement au nouveau nom de tenant après un changement de domaine"
+    symptome: "Après le renommage du domaine SharePoint (contoso.sharepoint.com vers un nouveau nom), certains sites, liens ou applications pointent encore vers l'ancien nom."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-gb/answers/questions/2126629/sharepoint-sites-not-fully-updating-to-the-new-dom
+    etat: a-rediger
+  # --- Création de sites ---
+  - id: sharepoint-creer-site-bouton-absent-ou-refuse
+    titre: "Bouton « Créer un site » absent ou création refusée pour les utilisateurs"
+    symptome: "Les utilisateurs (voire les administrateurs) ne voient pas « Créer un site » sur la page d'accueil SharePoint, ou obtiennent un refus : création de sites désactivée, ou création de groupes Microsoft 365 restreinte dans Entra ID."
+    erreurs: ["Access denied"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/users-cant-create-sites-anymore/3220823
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/sharepoint-online-admins-dont-get-the-option-to-create-sites-from-start-page-/4000569
+      - https://www.sharepointdiary.com/2017/11/sharepoint-online-how-to-hide-create-site-link.html
+    etat: a-rediger
+  - id: sharepoint-creation-site-chargement-modeles-bloque
+    titre: "Création de site bloquée sur « Chargement des modèles »"
+    symptome: "L'assistant de création de site reste indéfiniment sur le chargement des modèles et ne permet pas de continuer."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/user-cant-create-site---stuck-on-loading-templates/4043090
+    etat: a-rediger

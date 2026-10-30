@@ -1,0 +1,752 @@
+domaine: microsoft-365
+sous_domaine: outlook
+recense_le: 2026-10-29
+problemes:
+  # --- Connexion et authentification ---
+  - id: outlook-demande-mot-de-passe-en-boucle
+    titre: Outlook redemande le mot de passe en boucle
+    symptome: "Fenêtre de connexion qui revient sans cesse, état « Mot de passe requis » dans la barre d'état."
+    erreurs: ["Need password"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/authentication/continually-prompts-password-office-365
+    etat: redigee
+
+  # --- Démarrage, profil ---
+  - id: outlook-impossible-ouvrir-fenetre-outlook
+    titre: "Outlook ne démarre pas : « Impossible d'ouvrir la fenêtre Outlook »"
+    symptome: "Au lancement, Outlook classique affiche une erreur puis se ferme ; le jeu de dossiers ne peut pas être ouvert."
+    erreurs: ["Cannot start Microsoft Outlook. Cannot open the Outlook window. The set of folders cannot be opened."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/en-us/outlook/i-can-t-start-microsoft-outlook-or-receive-the-error-cannot-start-microsoft-outlook-cannot-open-the
+      - https://learn.microsoft.com/en-us/answers/questions/154274/cannot-start-microsoft-outlook-cannot-open-outlook
+    etat: a-rediger
+  - id: outlook-ouverture-echec-connexion-exchange
+    titre: "« The attempt to log on to Microsoft Exchange has failed » au démarrage"
+    symptome: "Outlook classique refuse de s'ouvrir sur une boîte Exchange Online alors que Outlook sur le web fonctionne."
+    erreurs: ["Cannot start Microsoft Outlook. Cannot open the Outlook window. The set of folders cannot be opened. The attempt to log on to Microsoft Exchange has failed."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/en-us/support/known-issues/error-when-opening-classic-outlook-cannot-start-microsoft-outlook-cannot-open-the-outlook-window-the
+      - https://learn.microsoft.com/en-us/answers/questions/4690639/cannot-start-microsoft-outlook-cannot-open-the-out
+    etat: a-rediger
+
+  # --- Performance, plantages, compléments ---
+  - id: outlook-ne-repond-pas-fige
+    titre: "Outlook se fige ou affiche « Ne répond pas »"
+    symptome: "Outlook classique devient blanc, se bloque plusieurs secondes ou plante régulièrement."
+    erreurs: ["Microsoft Outlook (Not Responding)"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/outlook-not-responding-error-or-outlook-freezes
+      - https://support.microsoft.com/office/troubleshoot-outlook-for-windows-issues-241bb0fc-b201-4bb2-98d3-74750a27029e
+    etat: a-rediger
+  - id: outlook-complement-desactive-automatiquement
+    titre: Un complément Outlook a été désactivé automatiquement (lent ou instable)
+    symptome: "Bandeau indiquant qu'un complément a été désactivé car il ralentit Outlook ; le bouton du complément a disparu du ruban."
+    erreurs: ["A problem was detected with an add-in and it has been disabled."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/add-ins-are-user-re-enabled-after-being-disabled
+      - https://learn.microsoft.com/en-us/answers/questions/1082173/outlook-add-in-deactivated-due-to-slow-start-how-t
+    etat: a-rediger
+
+  # --- Fichiers de données ---
+  - id: outlook-fichier-ost-taille-maximale
+    titre: "Fichier OST plein : « Le fichier de données Outlook a atteint sa taille maximale »"
+    symptome: "Envoi et réception bloqués, alerte de taille maximale atteinte alors que la boîte en ligne n'est pas pleine (limite de 50 Go par défaut)."
+    erreurs: ["The Outlook data file has reached the maximum size"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/en-us/topic/how-to-configure-the-size-limit-for-both-pst-and-ost-files-in-outlook-2f13f558-d40e-9c2a-e3b6-02806fa535f4
+      - https://learn.microsoft.com/en-us/answers/a/9143864
+    etat: a-rediger
+
+  # --- Recherche ---
+  - id: outlook-recherche-aucun-resultat
+    titre: "La recherche Outlook ne trouve rien ou des résultats incomplets"
+    symptome: "Recherche instantanée vide ou partielle alors que les messages existent (OWA les trouve)."
+    erreurs: ["No results", "Search results may be incomplete because items are still being indexed."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/4716855/outlook-indexing-issue
+      - https://www.msoutlook.info/?p=47
+    etat: a-rediger
+
+  # --- Envoi ---
+  - id: outlook-messages-bloques-boite-envoi
+    titre: Messages bloqués dans la boîte d'envoi
+    symptome: "Les messages restent dans « Boîte d'envoi » (Outbox) et ne partent pas, parfois un seul message bloque toute la file."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5849820/emails-are-stuck-in-the-outbox-and-not-sending-hel
+      - https://learn.microsoft.com/en-us/answers/questions/5493650/why-is-sent-email-getting-stuck-in-the-outbox
+    etat: a-rediger
+
+  # --- Pièces jointes ---
+  - id: outlook-piece-jointe-bloquee-non-securisee
+    titre: "Pièce jointe bloquée : « Outlook a bloqué l'accès aux pièces jointes potentiellement dangereuses »"
+    symptome: "Une pièce jointe (.exe, .js, .bat…) apparaît mais ne peut être ni ouverte ni enregistrée."
+    erreurs: ["Outlook blocked access to the following potentially unsafe attachments"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/en-us/outlook/outlook-blocked-access-to-the-following-potentially-unsafe-attachments
+    etat: a-rediger
+  - id: outlook-piece-jointe-liee-bloquee
+    titre: Impossible d'ouvrir une pièce jointe liée (lien vers un fichier) dans Outlook
+    symptome: "Les pièces jointes insérées sous forme de lien vers un fichier réseau ou local refusent de s'ouvrir."
+    erreurs: ["Outlook blocked access to the following potentially unsafe attachments"]
+    priorite: rare
+    format: express
+    sources:
+      - https://support.microsoft.com/en-us/servicing/office/troubleshooting/outlook/you-cannot-open-linked-file-attachments-in-outlook-outlook-blocked-access-to-the-following-potential
+    etat: a-rediger
+
+  # --- Saisie semi-automatique ---
+  - id: outlook-saisie-semi-automatique-vide-ou-erronee
+    titre: La saisie semi-automatique des destinataires a disparu ou propose une adresse erronée
+    symptome: "Les adresses habituelles ne sont plus proposées, ou une ancienne adresse fausse revient toujours."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/4578399/outlook-365-address-auto-complete-not-working
+      - https://learn.microsoft.com/en-us/answers/questions/5883031/outlook-will-not-forget-an-incorrect-autofill-emai
+    etat: a-rediger
+
+  # --- Signatures ---
+  - id: outlook-signatures-itinerantes-problemes
+    titre: Signatures disparues, en double ou appliquées à la mauvaise boîte (signatures itinérantes)
+    symptome: "Après une mise à jour, les signatures disparaissent, reviennent ou s'appliquent à toutes les boîtes ; l'option de stockage dans le cloud est absente."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/2028732/roaming-signature-synchronization-problem
+      - https://learn.microsoft.com/en-us/answers/questions/4655909/roaming-signatures-are-not-working-on-my-machine-a
+    etat: a-rediger
+
+  # --- Boîtes partagées ---
+  - id: outlook-boite-partagee-ne-se-met-pas-a-jour
+    titre: Boîte partagée qui ne se met pas à jour en mode Exchange mis en cache
+    symptome: "Les nouveaux messages de la boîte partagée n'apparaissent qu'après « Mettre à jour le dossier », ou avec un long retard."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/performance-synchronization-problems-when-work-with-folders-secondary-mailbox
+      - https://learn.microsoft.com/en-us/answers/questions/4714222/shared-mailboxes-not-updating-with-cache-mode-enab
+    etat: a-rediger
+  - id: outlook-boite-partagee-messages-anciens-absents
+    titre: Seule une partie des messages d'une boîte partagée s'affiche
+    symptome: "Les messages anciens d'une boîte partagée ou d'un dossier public n'apparaissent pas dans Outlook classique."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/data-files/fewer-emails-in-shared-mailboxes-or-public-folders
+    etat: a-rediger
+
+  # --- Calendrier ---
+  - id: outlook-rappels-calendrier-absents
+    titre: Les rappels de réunion ne s'affichent plus
+    symptome: "Aucune fenêtre de rappel ni notification avant les réunions, dans Outlook classique ou le nouvel Outlook."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5829234/im-not-getting-notifications-reminders-of-my-meeti
+      - https://learn.microsoft.com/en-us/answers/questions/5492144/new-outlook-notifications-not-appearing
+    etat: a-rediger
+  - id: outlook-reunions-decalees-fuseau-horaire
+    titre: Réunions affichées avec une heure de décalage (fuseau horaire, heure d'été)
+    symptome: "Les invitations arrivent à la mauvaise heure chez certains participants, souvent avec une heure d'écart."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5806277/how-to-fix-calendar-invites-received-for-the-wrong
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-on-the-web-issues/meeting-attendee-has-an-incorrect-time-zone
+    etat: a-rediger
+  - id: outlook-calendrier-elements-en-double
+    titre: Réunions en double ou éléments de calendrier manquants
+    symptome: "Le calendrier affiche plusieurs copies d'une même réunion, ou des réunions disparaissent."
+    erreurs: ["Conflicting edits have been made to the same item"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/calendaring/calendar-checking-tool-for-outlook
+      - https://learn.microsoft.com/en-us/answers/questions/4681766/outlook-calendar-duplication-issues-conflicting-ed
+    etat: a-rediger
+
+  # --- Règles ---
+  - id: outlook-regles-ne-s-executent-pas-automatiquement
+    titre: "Les règles ne s'exécutent pas automatiquement (règles « client uniquement »)"
+    symptome: "Une règle fonctionne quand on la lance à la main mais pas à l'arrivée des messages, ou seulement quand Outlook est ouvert."
+    erreurs: ["This rule will only run when you check your email in Outlook"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/en-us/outlook/mail/edit-or-fix-a-broken-rule-in-outlook
+      - https://learn.microsoft.com/en-us/answers/questions/4701903/rules-only-work-when-run-manually
+    etat: a-rediger
+  - id: outlook-erreur-lecture-regles-serveur
+    titre: "« There was an error reading the rules from the server »"
+    symptome: "À l'ouverture du gestionnaire de règles, Outlook signale que le format des règles du serveur n'est pas reconnu."
+    erreurs: ["There was an error reading the rules from the server. The format of the server rules was not recognized."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/56326/there-was-an-error-reading-the-rules-from-the-serv
+    etat: a-rediger
+
+  # --- Codes d'erreur ---
+  - id: outlook-erreur-0x800ccc0e
+    titre: "Erreur 0x800CCC0E à l'envoi ou à la réception (POP/IMAP/SMTP)"
+    symptome: "Envoi/réception en échec sur un compte POP ou IMAP : connexion au serveur impossible."
+    erreurs: ["0x800CCC0E"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5825227/how-to-fix-error-0x800ccc0e-in-outlook
+      - https://helpdeskgeek.com/how-to-fix-an-outlook-error-0x800ccc0e/
+    etat: a-rediger
+  - id: outlook-erreur-0x80040115
+    titre: "Erreur 0x80040115 : impossible de contacter le serveur"
+    symptome: "Message d'erreur à l'envoi : Outlook ne peut pas joindre le serveur pour le moment."
+    erreurs: ["0x80040115", "We can't complete this because we can't contact the server right now."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5818658/email-error-0x80040115
+      - https://lazyadmin.nl/it/fix-error-0x80040115/
+    etat: a-rediger
+
+  # --- Autodiscover ---
+  - id: outlook-autodiscover-redirige-vers-microsoft-365
+    titre: Outlook se connecte à Microsoft 365 au lieu du serveur Exchange sur site ou hébergé
+    symptome: "Avec un Exchange hébergé ou sur site, Outlook propose une connexion Microsoft 365 et n'atteint jamais le bon serveur."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1344448/how-do-i-bypass-auto-discover-and-manually-configu
+      - https://learn.microsoft.com/en-us/answers/questions/5626728/outlook-tente-de-se-connecter-office-365-au-lieu-d
+    etat: a-rediger
+
+  # --- Connexion, authentification (suite) ---
+  - id: outlook-mot-de-passe-authentification-moderne-non-utilisee
+    titre: "Outlook demande le mot de passe dans une ancienne fenêtre au lieu de l'authentification moderne"
+    symptome: "Fenêtre d'identifiants Windows (style basique) au lieu de la fenêtre Microsoft 365 ; la connexion échoue ou boucle."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/authentication/outlook-prompt-password-modern-authentication-enabled
+    etat: a-rediger
+  - id: outlook-mot-de-passe-a-chaque-demarrage-ou-profil-impossible
+    titre: "Mot de passe demandé à chaque démarrage ou création de profil impossible"
+    symptome: "Outlook demande les identifiants à chaque lancement, ou l'assistant de création de profil n'aboutit pas."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/authentication/password-prompt-at-every-start-or-cannot-create-profile
+    etat: a-rediger
+  - id: outlook-deconnecte-apres-activation-authentification-moderne
+    titre: "Outlook « Déconnecté » après activation de l'authentification moderne (compte de connexion différent de la boîte)"
+    symptome: "La boîte Microsoft 365 ne se connecte plus quand l'adresse de la boîte ne correspond pas au compte de connexion."
+    erreurs: ["Disconnected"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/authentication/outlook-shows-disconnected-after-enabling-modern-authentication
+    etat: a-rediger
+  - id: outlook-identifiants-demandes-mapi-over-http
+    titre: "Invites de mot de passe répétées après le passage à MAPI over HTTP (Exchange sur site)"
+    symptome: "Après bascule du protocole RPC over HTTP vers MAPI over HTTP, Outlook redemande sans cesse le mot de passe."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/authentication/outlook-prompt-password-when-use-mapi-over-http
+    etat: a-rediger
+  - id: outlook-identifiants-demandes-reseau-etendu
+    titre: "Identifiants demandés quand le poste passe du réseau local au WAN ou au VPN"
+    symptome: "Sur Exchange sur site, Outlook affiche une invite d'identifiants dès que l'utilisateur change de réseau."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/authentication/outlook-prompts-for-credentials-if-using-wan
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/authentication/outlook-prompts-credentials
+    etat: a-rediger
+  - id: outlook-code-pin-carte-a-puce-bloque
+    titre: "Code PIN de carte à puce bloqué à cause d'Outlook"
+    symptome: "Outlook réutilise mal les identifiants de carte à puce enregistrés et finit par bloquer le PIN."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/authentication/blocked-smart-card-pin-using-outlook
+    etat: a-rediger
+  - id: outlook-connexion-exchange-indisponible
+    titre: "« La connexion à Microsoft Exchange n'est pas disponible » à la création du profil"
+    symptome: "L'ajout du compte Microsoft 365 échoue ; Outlook exige d'être en ligne alors que le réseau fonctionne."
+    erreurs: ["The connection to Microsoft Exchange is unavailable. Outlook must be online or connected to complete this action."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-issues/connection-to-microsoft-exchange-is-unavailable-error
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/authentication/continually-prompts-password-office-365
+    etat: a-rediger
+  - id: outlook-impossible-configurer-compte-microsoft-365
+    titre: "« Something went wrong and Outlook couldn't set up your account »"
+    symptome: "L'assistant d'ajout de compte échoue pour une boîte Microsoft 365 ; aucun profil n'est créé."
+    erreurs: ["Something went wrong and Outlook couldn't set up your account. Please try again. If the problem continues, contact your email administrator."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-issues/outlook-cannot-setup-microsoft-365-account
+    etat: a-rediger
+  - id: outlook-connexion-chiffree-indisponible
+    titre: "« Une connexion chiffrée à votre serveur de messagerie n'est pas disponible »"
+    symptome: "La configuration automatique (Autodiscover) d'une boîte Exchange Online échoue avec un message de connexion chiffrée."
+    erreurs: ["An encrypted connection to your mail server is not available."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-issues/cannot-set-up-profile-autodiscover
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-issues/encrypted-connection-unavailable
+    etat: a-rediger
+  - id: outlook-avertissement-redirection-autodiscover
+    titre: "« Autoriser ce site web à configurer les paramètres du serveur ? » (redirection Autodiscover)"
+    symptome: "À chaque démarrage ou création de profil, Outlook demande s'il faut autoriser un site à configurer le compte."
+    erreurs: ["Allow this website to configure <adresse> server settings?"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/connectivity/suppress-autodiscover-redirect-warning
+    etat: a-rediger
+  - id: outlook-avertissement-certificat-autodiscover
+    titre: "Alerte de sécurité : le nom du certificat ne correspond pas (Autodiscover)"
+    symptome: "Fenêtre d'alerte de sécurité au démarrage d'Outlook, souvent pour autodiscover.<domaine> ou le site web de l'entreprise."
+    erreurs: ["The name on the security certificate is invalid or does not match the name of the site."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/connectivity/resolve-autodiscover-mismatch-warning
+    etat: a-rediger
+  - id: outlook-certificat-serveur-proxy-invalide
+    titre: "« Problème avec le certificat de sécurité du serveur proxy » (RPC/HTTPS)"
+    symptome: "Outlook ne se connecte pas au serveur Exchange via Outlook Anywhere et signale un certificat de proxy invalide."
+    erreurs: ["There is a problem with the proxy server's security certificate."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/connectivity/error-when-outlook-uses-rpc-https-connect-server
+    etat: a-rediger
+  - id: outlook-autodiscover-echec-profil-disponibilite-boite-partagee
+    titre: "Autodiscover en échec : profil, disponibilités ou boîte partagée inaccessibles"
+    symptome: "Impossible de créer un profil, de voir les disponibilités ou d'ouvrir une boîte partagée ou un dossier public."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-issues/issues-when-using-autodiscover-service
+    etat: a-rediger
+  - id: outlook-services-web-hs-apres-migration-microsoft-365
+    titre: "Après migration vers Microsoft 365, Outlook ne se connecte plus ou les services web ne marchent pas"
+    symptome: "Outlook reste branché sur l'ancien serveur : absence du bureau, disponibilités ou connexion en échec après la migration."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/profiles-and-accounts/cannot-connect-web-service-not-working-migrated-to-office-365
+    etat: a-rediger
+  - id: outlook-redemarrage-demande-par-administrateur
+    titre: "« L'administrateur Microsoft Exchange a apporté une modification qui nécessite de redémarrer Outlook »"
+    symptome: "Message invitant à quitter et relancer Outlook, parfois de façon répétée."
+    erreurs: ["The Microsoft Exchange administrator has made a change that requires you quit and restart Outlook."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/profiles-and-accounts/change-requires-restart
+    etat: a-rediger
+  - id: outlook-affiche-deconnecte
+    titre: "Outlook affiche « Déconnecté » en permanence dans la barre d'état"
+    symptome: "La barre d'état reste sur « Déconnecté » ou « Tentative de connexion » alors qu'Internet fonctionne."
+    erreurs: ["Disconnected", "Trying to connect..."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/connectivity/outlook-shows-disconnected-if-ipv6-is-enabled
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/connectivity/outlook-displays-disconnected-in-status
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-issues/outlook-connection-issues
+    etat: a-rediger
+  - id: outlook-deconnexions-reconnexions-repetees
+    titre: "Outlook se déconnecte et se reconnecte sans arrêt"
+    symptome: "La connexion à Exchange tombe et revient en boucle (inspection SPI du routeur, serveur Exchange)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/connectivity/outlook-repeatedly-disconnects-and-reconnects
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-issues/outlook-connectivity-issues-when-spi-enabled-on-router
+    etat: a-rediger
+  - id: outlook-erreurs-http-0-404-500-liste-sharepoint
+    titre: "Erreur d'envoi/réception HTTP 0, 404 ou 500 sur une liste SharePoint connectée (0x80040102)"
+    symptome: "La tâche SharePoint échoue dans la fenêtre de progression d'envoi/réception."
+    erreurs: ["Task 'SharePoint' reported error (0x80040102)", "HTTP 0", "HTTP 404", "HTTP 500"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/connectivity/outlook-send-receive-errors-http-0-http-404-http-500
+    etat: a-rediger
+  - id: outlook-proxy-winhttp-disponibilites-absence-infos-courrier
+    titre: "Disponibilités, réponses automatiques et infos courrier en erreur à cause du proxy WinHTTP"
+    symptome: "Free/Busy, absence du bureau et MailTips échouent alors que la messagerie fonctionne."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/connectivity/proxy-server-causes-issues-with-freebusy-oof-mailtips
+    etat: a-rediger
+  - id: outlook-proxy-pac-connexion-impossible
+    titre: "Outlook ne se connecte pas à Exchange Online derrière un proxy configuré par fichier PAC"
+    symptome: "La connexion échoue quand le proxy est défini par script PAC."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/outlook-cannot-connect-via-proxy-set-by-pac
+    etat: a-rediger
+  - id: outlook-avertissement-connexion-limitee
+    titre: "Envoi et réception bloqués : avertissement de connexion limitée (réseau facturé à l'usage)"
+    symptome: "Outlook n'envoie ni ne reçoit et signale une connexion limitée sur un réseau marqué comme limité."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/profiles-and-accounts/metered-connection-warning
+    etat: a-rediger
+  - id: outlook-connexion-activation-impossible-equipement-reseau
+    titre: "Connexion ou activation impossible d'Outlook et des applications Microsoft 365 (équipement réseau)"
+    symptome: "Les applications ne peuvent pas se connecter aux services Microsoft 365 sur réseau filaire, alors que le Wi-Fi fonctionne."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/connectivity/outlook-cannot-signin-activate
+    etat: a-rediger
+  - id: outlook-connexion-mapi-desactive-utilisateur
+    titre: "Outlook ne se connecte plus : MAPI désactivé pour l'utilisateur"
+    symptome: "Outlook ne peut pas ouvrir la boîte alors qu'OWA fonctionne ; le protocole MAPI est bloqué sur le compte."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/connectivity/connection-issues-mapi-disabled
+    etat: a-rediger
+  - id: outlook-ne-se-connecte-pas-en-mapi-over-http
+    titre: "Outlook n'utilise pas MAPI over HTTP comme prévu"
+    symptome: "L'état de connexion montre RPC/HTTP au lieu de HTTP, avec des problèmes de connexion."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/connectivity/outlook-not-connect-exchange-use-mapi-over-http
+    etat: a-rediger
+  - id: outlook-autodiscover-ajout-service-en-boucle-exchange-sur-site
+    titre: "Fenêtre « Ajouter un service » ou compte Microsoft 365 qui s'ouvre en boucle avec Exchange sur site"
+    symptome: "Avec Office LTSC et Exchange 2019, Outlook propose sans cesse d'ajouter un compte."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5611247/i-have-installed-office-2024-ltsc-and-having-on-pr
+    etat: a-rediger
+
+  # --- Démarrage, plantages ---
+  - id: outlook-bloque-traitement-au-demarrage
+    titre: "Outlook reste bloqué sur « Traitement » (Processing) ou « Chargement du profil » au démarrage"
+    symptome: "L'écran de démarrage ne dépasse jamais l'étape de traitement ; Outlook ne s'ouvre pas."
+    erreurs: ["Processing...", "Loading Profile..."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/outlook-2016-hangs-at-processing
+      - https://howto-outlook.com/?p=125
+    etat: a-rediger
+  - id: outlook-impossible-creer-fichier-de-travail
+    titre: "« Outlook n'a pas pu créer le fichier de travail. Vérifiez la variable d'environnement temp »"
+    symptome: "Erreur au lancement d'Outlook, qui refuse ensuite de démarrer."
+    erreurs: ["Outlook could not create the work file. Check the temp environment variable."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/outlook-could-not-create-the-work-file-error-when-starting
+    etat: a-rediger
+  - id: outlook-mode-cache-impossible-memoire-insuffisante
+    titre: "Impossible de démarrer en mode mis en cache : « mémoire insuffisante pour effectuer l'opération »"
+    symptome: "Le démarrage ou la création d'un profil en mode Exchange mis en cache échoue."
+    erreurs: ["Cannot start Microsoft Outlook. Cannot open the Outlook window. The set of folders cannot be opened. There is not enough memory available to perform the operation."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/cannot-start-outlook-in-cached-mode-or-create-profile
+    etat: a-rediger
+  - id: outlook-delai-ouverture-session-atteint
+    titre: "« Le délai d'ouverture de session a été atteint en attendant des ressources système » (MAPI 000004C2)"
+    symptome: "Outlook refuse de démarrer, souvent à cause d'un complément tiers qui retient la session MAPI."
+    erreurs: ["The time limit for logging on was reached while waiting for system resources. Try again. MAPI 1.0 [000004C2]"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/time-limit-logging-reached-error-outlook-2016
+    etat: a-rediger
+  - id: outlook-plante-evenement-1000
+    titre: "Outlook plante (événement 1000 dans le journal Application)"
+    symptome: "Outlook se ferme brutalement au démarrage ou pendant l'utilisation ; l'Observateur d'événements montre une erreur d'application 1000."
+    erreurs: ["Event ID 1000", "Faulting application name: OUTLOOK.EXE"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/outlook-crashes-and-returns-event-id-1000-crash-signatures
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-issues/crash-issues
+    etat: a-rediger
+  - id: outlook-plante-creation-profil
+    titre: "Outlook plante pendant la création d'un nouveau profil"
+    symptome: "L'assistant de création de profil provoque la fermeture d'Outlook."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/outlook-crashes-when-creating-a-new-profile
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/enable-and-collect-logs-for-profile-creation-issues
+    etat: a-rediger
+  - id: outlook-plante-apres-module-linguistique
+    titre: "Outlook plante au démarrage après l'installation d'un module linguistique"
+    symptome: "Plantage avec événement 1000 quand le pack de langue a été installé après les mises à jour."
+    erreurs: ["Event ID 1000"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/outlook-2016-crash-event-1000
+    etat: a-rediger
+  - id: outlook-erreur-premier-demarrage
+    titre: "« Une erreur inattendue s'est produite » au premier démarrage d'Outlook"
+    symptome: "Message d'erreur générique lors du tout premier lancement sur un poste."
+    erreurs: ["An unexpected error has occurred."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/profiles-and-accounts/outlook-displays-error-message-on-first-start
+    etat: a-rediger
+  - id: outlook-evenement-1098-creation-profil-impossible
+    titre: "Création de profil impossible avec l'événement 1098 (« A specified logon session does not exist »)"
+    symptome: "Aucun nouveau profil ne peut être créé ; le journal montre l'événement 1098 lié au jeton de connexion."
+    erreurs: ["Event ID 1098", "A specified logon session does not exist. It may already have been terminated."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/profiles-and-accounts/event-1098-and-cannot-create-new-profiles
+    etat: a-rediger
+  - id: outlook-demarrage-mode-cache-aleatoire
+    titre: "Outlook classique démarre parfois sans le mode Exchange mis en cache"
+    symptome: "De façon aléatoire, Outlook s'ouvre en mode en ligne (lent) puis revient au cache au démarrage suivant."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5563445/outlook-365-classic-desktop-client-randomly-fails
+    etat: a-rediger
+
+  # --- Performance ---
+  - id: outlook-lent-microsoft-365
+    titre: "Outlook lent avec Microsoft 365 (ouverture des messages, boîte d'envoi, pièces jointes)"
+    symptome: "Ouverture des messages lente, messages qui stationnent dans la boîte d'envoi, message « récupération d'informations sur le serveur »."
+    erreurs: ["Outlook is retrieving information from the server"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/outlook-performance-is-slow-in-office-365
+    etat: a-rediger
+  - id: outlook-lent-trop-elements-ou-dossiers
+    titre: "Outlook lent à cause d'un trop grand nombre d'éléments par dossier ou de dossiers"
+    symptome: "Lenteurs ou blocages en changeant de dossier ou en triant, dans un OST ou PST très chargé."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/performance-issues-if-too-many-items-or-folders
+    etat: a-rediger
+  - id: outlook-pauses-gros-fichier-de-donnees
+    titre: "Outlook se fige quelques secondes avec un gros fichier OST ou PST"
+    symptome: "Pauses fréquentes de l'application quand le fichier de données est très volumineux."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/application-pauses-if-you-have-large-data-file
+    etat: a-rediger
+  - id: outlook-lent-nombreuses-boites-partagees
+    titre: "Outlook lent quand de nombreuses boîtes ou dossiers partagés sont ouverts"
+    symptome: "Lenteurs et erreurs d'autorisation quand beaucoup de boîtes supplémentaires sont montées dans le profil."
+    erreurs: ["You don't have permission to create an entry in this folder."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/slow-performance-if-having-many-shared-folder-or-mailboxes-open
+    etat: a-rediger
+  - id: outlook-memoire-insuffisante-afficher-dossier
+    titre: "« Mémoire insuffisante » à l'ouverture d'un dossier Outlook"
+    symptome: "Un clic sur un dossier affiche une erreur de mémoire libre insuffisante alors que le PC a de la RAM."
+    erreurs: ["Cannot display the folder. There is not enough free memory to run this program. Quit one or more programs, and then try again."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/outlook-folder-fails-displaying
+    etat: a-rediger
+  - id: outlook-ne-repond-pas-boite-migree-exchange-online
+    titre: "Outlook ne répond plus juste après le démarrage sur une boîte migrée vers Exchange Online"
+    symptome: "Blocage « Ne répond pas » dès l'ouverture, uniquement pour certaines boîtes migrées."
+    erreurs: ["Not Responding"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-issues/outlook-not-responding-when-it-connects-to-exchange-online-mailbox
+    etat: a-rediger
+  - id: outlook-fermeture-lente
+    titre: "Outlook met très longtemps à se fermer"
+    symptome: "Après fermeture, le processus OUTLOOK.EXE reste plusieurs minutes en mémoire."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/outlook-shutdown-slowly-if-using-requireshutdownnotification
+    etat: a-rediger
+  - id: outlook-fichier-journal-temp-volumineux
+    titre: "Le fichier Outlook.exe.log remplit le dossier %Temp%"
+    symptome: "Espace disque consommé par un journal Outlook qui grossit sans fin."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/outlook-exe-log-file-in-temp-folder-consumes-too-much-space
+    etat: a-rediger
+  - id: outlook-resolution-noms-lente
+    titre: "Résolution des noms de destinataires lente (carnet d'adresses hors connexion absent)"
+    symptome: "La vérification des noms dans À/Cc prend plusieurs secondes."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/outlook-may-be-slower-to-resolve-names
+    etat: a-rediger
+  - id: outlook-instable-citrix-appsense
+    titre: "Outlook instable dans un environnement Citrix avec AppSense"
+    symptome: "Plantages et blocages d'Outlook sur des bureaux virtuels Citrix utilisant AppSense."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/possible-stability-issues-in-citrix-enviconment-with-appsense
+    etat: a-rediger
+  - id: outlook-lenteurs-uselowpriorityconfiguration
+    titre: "Problèmes de performance quand UseLowPriorityConfiguration vaut 0"
+    symptome: "Lenteurs liées à un réglage de registre de priorité de configuration."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/performance-issues-if-uselowpriorityconfiguration-is-0
+    etat: a-rediger
+
+  # --- Compléments ---
+  - id: outlook-complement-reunion-teams-absent
+    titre: "Le bouton « Réunion Teams » a disparu d'Outlook (complément Teams absent)"
+    symptome: "Le complément Teams Meeting n'apparaît pas dans le ruban du calendrier ou a été désactivé."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/resolve-teams-meeting-add-in-issues
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/admin/miscellaneous/get-help-teams-meeting-add-in-outlook
+    etat: a-rediger
+  - id: outlook-complement-reactive-par-utilisateur
+    titre: "Un complément désactivé par Outlook revient (réactivé par l'utilisateur) et ralentit Outlook"
+    symptome: "Un complément lent est réactivé « toujours » par l'utilisateur ; impossible de le maintenir désactivé sans stratégie."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/add-ins-are-user-re-enabled-after-being-disabled
+      - https://learn.microsoft.com/en-us/answers/questions/608337/is-there-a-way-to-stop-outlook-from-disabiling-vba
+    etat: a-rediger
+  - id: outlook-complements-office-mal-affiches
+    titre: "Compléments Office (web) mal affichés ou icône par défaut dans le ruban"
+    symptome: "Un complément web s'affiche mal, ne se charge pas ou apparaît avec une icône générique."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/office-add-ins-not-displayed-correctly
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/default-office-addin-icon-displayed-outlook-ribbon
+    etat: a-rediger
+  - id: outlook-applications-outlook-ne-chargent-pas
+    titre: "Une application (complément) Outlook ne charge pas ses données"
+    symptome: "Le volet du complément reste vide (exemple : Bing Maps)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/apps-for-outlook-app-does-not-load-data
+    etat: a-rediger
+  - id: outlook-boutons-onenote-absents
+    titre: "Les boutons OneNote ont disparu d'Outlook"
+    symptome: "Le bouton « Envoyer à OneNote » n'apparaît plus dans le ruban."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/onenote-buttons-are-missing
+    etat: a-rediger
+  - id: outlook-macros-projet-desactivees
+    titre: "« Les macros de ce projet sont désactivées » (VBA Outlook signé)"
+    symptome: "Les macros VBA d'Outlook ne s'exécutent plus malgré un certificat de signature."
+    erreurs: ["The macros in this project are disabled."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/deployment/macros-in-this-project-disabled-outlook
+    etat: a-rediger
+  - id: outlook-erreur-inscription-ole
+    titre: "« Une erreur d'inscription OLE s'est produite » à l'ouverture d'un dossier"
+    symptome: "Erreur d'exécution 80040154 en ouvrant un dossier de formulaires InfoPath ou via le modèle objet."
+    erreurs: ["Cannot display the folder. An OLE registration error occurred. The program is not correctly installed. Run Setup again for the program.", "Run-time error '-2147221164 (80040154)'"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/an-ole-registration-error-occurred-message
+    etat: a-rediger
+  - id: outlook-evenement-4096-complements-vsto
+    titre: "Événement 4096 (VSTO) au chargement d'un complément"
+    symptome: "Un complément VSTO ne se charge pas et le journal Application montre l'événement 4096."
+    erreurs: ["Event ID 4096", "Source: VSTO"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/event-4096-is-logged-if-warmup-set-for-vsto-add-ins
+    etat: a-rediger

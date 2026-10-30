@@ -1,0 +1,1281 @@
+domaine: microsoft-365
+sous_domaine: applications-office
+recense_le: 2026-10-29
+# Périmètre : Microsoft 365 Apps (Word, Excel, PowerPoint, Access, Visio, Project, OneNote) sur Windows et Mac.
+# Installation et mises à jour Click-to-Run, activation et licences, plantages, compléments, fichiers,
+# sécurité des documents, co-édition, problèmes propres à chaque application.
+problemes:
+
+  # ───────────────────────── Activation et licences ─────────────────────────
+
+  - id: office-produit-sans-licence
+    titre: "Office affiche « Produit sans licence » ou refuse de s'activer"
+    symptome: "Barre rouge « Produit sans licence » dans Word, Excel ou Outlook ; les applications passent en lecture seule."
+    erreurs: ["Unlicensed Product", "Produit sans licence", "Account Notice: There are problems with your account."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-US/office/troubleshoot/activation/license-issue-when-start-office-application
+    etat: redigee
+
+  - id: office-autre-compte-organisation-deja-connecte
+    titre: "« Un autre compte de votre organisation est déjà connecté sur cet ordinateur »"
+    symptome: "À la connexion dans Office, un message indique qu'un autre compte du même tenant est déjà connecté ; impossible d'activer avec le bon compte."
+    erreurs: ["Sorry, another account from your organization is already signed in on this computer."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/activation/another-account-already-signed-in
+      - https://techcommunity.microsoft.com/discussions/microsoft365apps/sorry-another-account-from-your-organization-is-already-signed-in-on-this-comput/3794453
+    etat: a-rediger
+
+  - id: office-licence-introuvable-application
+    titre: "« Office ne trouve pas votre licence pour cette application »"
+    symptome: "Au lancement d'une application Office, message de licence introuvable alors que l'abonnement est actif."
+    erreurs: ["Microsoft Office can't find your license for this application. A repair attempt was unsuccessful or was cancelled."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-US/office/troubleshoot/activation/license-issue-when-start-office-application
+      - https://learn.microsoft.com/en-us/answers/a/11476127
+    etat: a-rediger
+
+  - id: office-impossible-verifier-licence
+    titre: "« Microsoft Office ne peut pas vérifier la licence de ce produit »"
+    symptome: "Message au démarrage d'une application Office ; souvent lié au service Protection logicielle (sppsvc) ou au mode de compatibilité."
+    erreurs: ["Microsoft Office cannot verify the license for this product. You should repair the Office program by using Control Panel."]
+    priorite: rare
+    format: express
+    sources:
+      - https://support.microsoft.com/kb/2797062
+    etat: a-rediger
+
+  - id: office-activation-0x8004fc12
+    titre: "Erreur d'activation Office 0x8004FC12"
+    symptome: "L'activation échoue avec le code 0x8004FC12, souvent après une mise à niveau de Windows."
+    erreurs: ["0x8004FC12"]
+    priorite: rare
+    format: express
+    sources:
+      - https://support.microsoft.com/topic/f32c97d5-11f7-4e56-925c-94959b222bd3
+    etat: a-rediger
+
+  - id: office-activation-0x80070005
+    titre: "Erreur d'activation Office 0x80070005 (accès refusé)"
+    symptome: "L'activation échoue avec 0x80070005 ; problème de droits, parfois apparu après une mise à jour Windows."
+    erreurs: ["0x80070005"]
+    priorite: rare
+    format: express
+    sources:
+      - https://support.microsoft.com/en-us/office/office-error-code-0x80070005-when-activating-office-7aa7600f-df57-4aef-81d2-25509c66f865
+    etat: a-rediger
+
+  - id: office-activation-kms-0xc004f074
+    titre: "Office en volume (KMS) ne s'active pas : 0xC004F074"
+    symptome: "Office LTSC ou 2019/2021 en licence en volume reste non activé ; le service de licences ne joint pas le serveur KMS."
+    erreurs: ["0xC004F074", "The Software Licensing Service reported that the computer could not be activated. No Key Management Service (KMS) could be contacted."]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5659428/keep-getting-activation-error-in-event-viewer
+    etat: a-rediger
+
+  - id: office-reinitialiser-etat-activation
+    titre: "Office reste activé avec l'ancien compte ou l'ancien tenant (réinitialiser l'activation)"
+    symptome: "Après une migration de tenant, un changement d'utilisateur ou de mode de licence, Office garde l'ancienne licence ou l'ancien compte."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/activation/reset-activation-state
+      - https://github.com/MicrosoftDocs/SupportArticles-docs/blob/main/Office/Client/activation/reset-activation-state.md
+    etat: a-rediger
+
+  - id: office-mac-connexion-impossible-trousseau
+    titre: "Office pour Mac : impossible de se connecter ou de s'activer (trousseau)"
+    symptome: "Word ou Excel sur Mac redemande la connexion en boucle ou refuse l'activation ; entrées Office corrompues dans le trousseau."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/en-us/kb/3081002
+      - https://services.dartmouth.edu/TDClient/1806/Portal/KB/Article/152365/Office-for-Mac-activation-error-Another-account-from-your-organization-is-already-signed-in-on-this
+    etat: a-rediger
+
+  - id: office-installation-connexion-impossible
+    titre: "« Nous ne pouvons pas vous connecter pour l'instant » pendant l'installation d'Office"
+    symptome: "L'installation ou l'activation bloque à l'étape de connexion au compte Microsoft."
+    erreurs: ["We can't sign you in right now. Please try again later."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/office/-we-can-t-sign-you-in-right-now-error-when-installing-office-de321781-2847-4506-a839-7b1c53259676
+    etat: a-rediger
+
+  # ─────────────── Installation Click-to-Run : codes d'erreur ───────────────
+
+  - id: office-installation-erreur-0-1011
+    titre: "Installation d'Office : erreur 0-1011, 30088-1015 ou 30183-1011"
+    symptome: "L'installation s'arrête avec un de ces codes ; souvent proxy, pare-feu, antivirus, espace disque ou restes d'une ancienne installation."
+    erreurs: ["0-1011", "30088-1015", "30183-1011"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/office/error-code-0-1011-30088-1015-or-30183-1011-when-installing-office-65aa955c-a35f-41d4-b098-8060f2d04264
+      - https://learn.microsoft.com/en-us/answers/questions/4891929/cannot-install-office-error-code-0-1011-(0)
+    etat: a-rediger
+
+  - id: office-installation-droits-admin-0-1005
+    titre: "Installation d'Office : « Privilèges d'administrateur requis » (0-1005, 0-2005)"
+    symptome: "L'installation refuse de démarrer faute de droits administrateur sur le poste."
+    erreurs: ["0-1005", "0-2005", "Administrative privileges required"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/office/administrative-privileges-required-or-error-code-0-1005-or-0-2005-when-installing-office-61c355c5-5128-4cc5-b411-0f19c2d2976d
+    etat: a-rediger
+
+  - id: office-installation-erreur-12002-4
+    titre: "Installation d'Office : erreur 12002-4, 12007-4 ou 12152-4 (téléchargement impossible)"
+    symptome: "L'installateur en ligne n'arrive pas à télécharger les fichiers (connexion, proxy, DNS)."
+    erreurs: ["12002-4", "12007-4", "12152-4"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/en-us/office/lifecycle/error-code-12002-4-12007-4-or-12152-4-when-installing-office
+    etat: a-rediger
+
+  - id: office-installation-erreur-30183-28
+    titre: "Installation d'Office : erreur 30183-28 (réseau, proxy, antivirus)"
+    symptome: "L'installation par Internet échoue ; la connexion, l'antivirus, le pare-feu ou le proxy bloquent le téléchargement."
+    erreurs: ["30183-28", "30183-4", "30183-39"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/en-gb/office/error-code-30183-28-when-installing-office-927cd1b5-1512-469a-80cc-c8e831d3d7c3
+      - https://learn.microsoft.com/en-us/answers/questions/4867376/error-code-30183-4-while-installing-office-2016
+    etat: a-rediger
+
+  - id: office-installation-erreur-30029-1011
+    titre: "Installation d'Office : erreur 30029-1011 ou 30029-4"
+    symptome: "« Un problème s'est produit » pendant l'installation ; espace disque, conflit de registre ou logiciel de sécurité."
+    erreurs: ["30029-1011", "30029-4"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/en-us/office/lifecycle/error-code-30029-1011-when-installing-office
+      - https://www.thewindowsclub.com/office-errors-30029-4-30029-1011-30094-1011-30183-39-30088-4
+    etat: a-rediger
+
+  - id: office-installation-erreur-30068-service-desactive
+    titre: "Installation d'Office : erreur 30068 (service Click-to-Run désactivé)"
+    symptome: "L'installation échoue avec un code 30068-xx ; le service « Microsoft Office Click-to-Run » est désactivé."
+    erreurs: ["30068-4 (1058)", "30068-39"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/en-us/office/error-code-30068-when-installing-office-963ca3e4-217a-4c16-9c02-ff946548357b
+    etat: a-rediger
+
+  - id: office-erreur-1058-13-service-systeme-desactive
+    titre: "« Office a rencontré un problème car son service système est désactivé » (1058-13)"
+    symptome: "Office ne démarre pas ou ne s'installe pas avec le code 1058-13 ou 1058-4 ; service ClickToRunSvc désactivé."
+    erreurs: ["1058-13", "1058-4", "Something went wrong. We're sorry, Office ran into a problem because its system service is disabled."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://www.thewindowsclub.com/office-something-went-wrong-error-code-1058-13
+      - https://learn.microsoft.com/en-us/answers/a/10093439
+    etat: a-rediger
+
+  - id: office-installation-erreur-30015-6
+    titre: "Installation d'Office : erreur 30015-6 en fin d'installation"
+    symptome: "Le message apparaît dans les dernières étapes ; l'installation est souvent réussie malgré tout."
+    erreurs: ["30015-6"]
+    priorite: rare
+    format: express
+    sources:
+      - https://support.microsoft.com/en-US/Office/lifecycle/error-code-30015-6-when-installing-office
+    etat: a-rediger
+
+  - id: office-installation-erreur-30015-1392
+    titre: "Installation d'Office : erreur 30015-1011 (1392) ou 30015-4 (1392)"
+    symptome: "L'installation échoue avec le code 1392 entre parenthèses (fichier ou répertoire endommagé et illisible)."
+    erreurs: ["30015-1011 (1392)", "30015-4 (1392)"]
+    priorite: rare
+    format: express
+    sources:
+      - https://support.microsoft.com/office/lifecycle/error-code-30015-1011-1392-and-30015-4-1392-when-installing-office
+    etat: a-rediger
+
+  - id: office-erreur-30015-26-mise-a-jour-reparation
+    titre: "Erreur 30015-26 ou 30015-45 pendant une mise à jour ou une réparation d'Office"
+    symptome: "La mise à jour ou la réparation rapide échoue ; fichiers système abîmés ou logiciel de sécurité en cause."
+    erreurs: ["30015-26", "30015-45", "30015-25 (5)"]
+    priorite: rare
+    format: express
+    sources:
+      - https://www.thewindowsclub.com/fix-office-error-code-30015-26-or-30015-45
+      - https://learn.microsoft.com/en-us/answers/questions/4954376/error-code-30015-25-(5)
+    etat: a-rediger
+
+  - id: office-installation-erreur-30125-reseau-restreint
+    titre: "Installation d'Office : erreur 30125-4 ou 30125-1011 (réseau d'entreprise restrictif)"
+    symptome: "L'installation échoue sur le réseau de l'entreprise ou de l'école mais fonctionne sur un autre réseau."
+    erreurs: ["30125-4", "30125-1011"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/en-us/office/lifecycle/error-code-30125-4-or-30125-1011-when-installing-office
+    etat: a-rediger
+
+  - id: office-installation-erreur-30016-22
+    titre: "Installation d'Office : erreur 30016-22"
+    symptome: "L'installation ou la mise à jour échoue ; installations multiples, conflit de registre, réseau ou espace disque."
+    erreurs: ["30016-22"]
+    priorite: rare
+    format: express
+    sources:
+      - https://answers.microsoft.com/en-us/msoffice/forum/all/error-code-30016-22-when-attempting-to-install/40512eec-14db-44e5-93f3-504f88d92368
+      - https://windowsreport.com/error-30016-22-installing-office/
+    etat: a-rediger
+
+  - id: office-installation-erreur-30010-4
+    titre: "Installation ou mise à niveau d'Office : erreur 30010-4"
+    symptome: "Échec de l'installation ou de la mise à niveau ; fichiers d'installation endommagés."
+    erreurs: ["30010-4"]
+    priorite: rare
+    format: express
+    sources:
+      - https://support.microsoft.com/en-us/office/error-code-30010-4-when-installing-office-0bc7544f-efa6-4998-b68b-9e81280bf475
+    etat: a-rediger
+
+  - id: office-installation-erreur-30180-4
+    titre: "Installation d'Office : erreur 30180-4"
+    symptome: "L'installation échoue ; antivirus, VPN, proxy ou plusieurs versions d'Office présentes."
+    erreurs: ["30180-4"]
+    priorite: rare
+    format: express
+    sources:
+      - https://thewindowsclub.com/error-code-30180-4-when-installing-office
+      - https://learn.microsoft.com/en-us/answers/questions/4868296/o365-software-installation-error-code-30180-4
+    etat: a-rediger
+
+  - id: office-installation-erreur-30174-4
+    titre: "Installation d'Office : erreur 30174-4"
+    symptome: "Installation incomplète ou conflit avec une installation existante."
+    erreurs: ["30174-4"]
+    priorite: rare
+    format: express
+    sources:
+      - https://thewindowsclub.com/fix-30174-4-office-installation-error
+    etat: a-rediger
+
+  - id: office-installation-32-64-bits-incompatible
+    titre: "« Office (64 bits ou 32 bits) n'a pas pu être installé » : conflit d'architecture"
+    symptome: "Impossible d'installer Office, Visio ou Project car une version d'architecture différente (32/64 bits) est déjà présente."
+    erreurs: ["We couldn't install the 64-bit version of Office because we found the following 32-bit programs on your PC"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/en-US/Office/lifecycle/office-64-bit-or-32-bit-couldn-t-be-installed-error-when-trying-to-install
+    etat: a-rediger
+
+  - id: office-installation-erreur-30050-1039
+    titre: "Installation de Microsoft 365 Apps for enterprise : erreur 30050-1039 (0)"
+    symptome: "L'installation de Microsoft 365 Apps for enterprise échoue avec ce code."
+    erreurs: ["30050-1039 (0)"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/troubleshoot/installation/error-30050-1039-0
+    etat: a-rediger
+
+  - id: office-deploiement-intune-17002-17004
+    titre: "Déploiement Microsoft 365 Apps (Intune, SCCM, ODT) : codes de retour 17002 ou 17004"
+    symptome: "Le déploiement échoue : installation annulée, application Office ouverte, disque plein, langue ou référence (SKU) inconnue."
+    erreurs: ["17002", "17004", "17000", "17001"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/intune/app-management/deployment/add-microsoft-365-windows
+      - https://learn.microsoft.com/en-us/answers/questions/4902998/error-code-17002-office-365-installation
+      - https://sccmnotes.wordpress.com/2017/12/14/office-365-updates-failing-with-error-17002-due-to-disk-errors/
+    etat: a-rediger
+
+  - id: office-desinstallation-erreur-30016-4
+    titre: "« Un problème s'est produit 30016-4 » à la désinstallation de Microsoft 365 Apps"
+    symptome: "La désinstallation échoue car le dossier %temp% pointe vers un autre lecteur que %ProgramFiles%."
+    erreurs: ["Something went wrong 30016-4"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/admin/installation/something-went-wrong-30016-4-error
+      - https://github.com/MicrosoftDocs/SupportArticles-docs/blob/main/Microsoft365/admin/admin/installation/something-went-wrong-30016-4-error.md
+    etat: a-rediger
+
+  # ─────────────── Mises à jour Click-to-Run : codes d'erreur ───────────────
+
+  - id: office-mise-a-jour-erreur-30088-27
+    titre: "Mise à jour d'Office : erreur 30088-27 (vague d'échecs de mise à jour)"
+    symptome: "« Un problème s'est produit » pendant la mise à jour, avec invitation à vérifier la connexion réseau alors qu'elle fonctionne."
+    erreurs: ["30088-27"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365-apps/updates/update-errors
+      - https://bleepingcomputer.com/news/microsoft/microsoft-365-office-users-hit-by-wave-of-30088-27-update-errors
+    etat: a-rediger
+
+  - id: office-mise-a-jour-erreur-30088-26
+    titre: "Mise à jour d'Office : erreur 30088-26"
+    symptome: "La mise à jour démarre puis échoue avec « Un problème s'est produit 30088-26 »."
+    erreurs: ["30088-26"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/office/error-30088-26-when-updating-office-5745bde4-f62e-4d64-90f4-2c5868eb2620
+      - https://pureinfotech.com/fix-error-30088-26-updating-office-windows-10/
+    etat: a-rediger
+
+  - id: office-mise-a-jour-erreur-30094-27
+    titre: "Mise à jour d'Office : erreur 30094-27 (signature invalide)"
+    symptome: "La mise à jour manuelle (Fichier > Compte > Options de mise à jour > Mettre à jour) échoue ; la validation de signature échoue."
+    erreurs: ["30094-27", "30094-1011"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/en-us/Support/known-issues/error-code-30094-27-when-updating-office
+      - https://learn.microsoft.com/en-us/microsoft-365-apps/updates/update-errors
+    etat: a-rediger
+
+  - id: office-mise-a-jour-erreur-30182-source-personnalisee
+    titre: "Mise à jour d'Office : erreur 30182-1 (2) avec une source de mise à jour personnalisée"
+    symptome: "La mise à jour échoue quand l'administrateur a défini un emplacement de mise à jour (UpdatePath, SourcePath) inaccessible."
+    erreurs: ["30182-1 (2)", "30182-27 (53)", "30182-2016", "30182-1011"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/en-gb/office/error-code-30182-1-2-when-updating-office-6a8d49a6-db50-40d1-9a70-1f93b095c774
+      - https://www.bleepingcomputer.com/forums/t/783810/error-code-30182-2016-when-installing-office-2019-pro
+    etat: a-rediger
+
+  - id: office-mise-a-jour-erreur-30180-28
+    titre: "Mise à jour d'Office : erreur 30180-28"
+    symptome: "La mise à jour d'Office échoue avec ce code."
+    erreurs: ["30180-28"]
+    priorite: rare
+    format: express
+    sources:
+      - https://support.microsoft.com/en-au/office/error-code-30180-28-when-updating-office-47ae453b-677c-412f-9a21-6766555ff4de
+    etat: a-rediger
+
+  - id: office-mise-a-jour-erreur-30038-28
+    titre: "Mise à jour d'Office : erreur 30038-28"
+    symptome: "La mise à jour échoue ; connexion instable, logiciel de sécurité ou fichiers temporaires corrompus."
+    erreurs: ["30038-28"]
+    priorite: rare
+    format: express
+    sources:
+      - https://thewindowsclub.com/error-code-30038-28-when-updating-office
+    etat: a-rediger
+
+  - id: office-mise-a-jour-erreur-30088-4
+    titre: "Installation ou mise à jour d'Office : erreur 30088-4 ou 30183-39"
+    symptome: "Erreur générique « Un problème s'est produit » ; nouvel essai puis réparation en ligne recommandés."
+    erreurs: ["30088-4", "30183-39"]
+    priorite: rare
+    format: express
+    sources:
+      - https://www.thewindowsclub.com/office-errors-30029-4-30029-1011-30094-1011-30183-39-30088-4
+      - https://learn.microsoft.com/en-us/microsoft-365-apps/updates/update-errors
+    etat: a-rediger
+
+  - id: office-mise-a-jour-erreur-30125-9-500
+    titre: "Mise à jour d'Office : erreur 30125-9 (500)"
+    symptome: "La mise à jour échoue avec un code 30125 suivi d'une erreur serveur."
+    erreurs: ["30125-9 (500)"]
+    priorite: rare
+    format: express
+    sources:
+      - https://answers.microsoft.com/en-us/msoffice/forum/all/office-update-error-30125-9-500/54bdf271-7a54-4508-800b-10c82b5cf5c1
+    etat: a-rediger
+
+  - id: office-mise-a-jour-erreur-30175-29
+    titre: "Mise à jour d'Office ou d'Outlook : erreur 30175-29"
+    symptome: "La mise à jour échoue avec ce code ; à traiter comme une erreur générique de mise à jour Click-to-Run."
+    erreurs: ["30175-29"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5023659/outlook-update-error
+      - https://learn.microsoft.com/en-us/microsoft-365-apps/updates/update-errors
+    etat: a-rediger
+
+  - id: office-occupe-mise-a-jour-en-cours
+    titre: "« Impossible de démarrer Office » ou « Office est occupé »"
+    symptome: "Une application refuse de s'ouvrir car Office est en train de se mettre à jour ou d'ajouter/supprimer des programmes."
+    erreurs: ["We're sorry, WINWORD.EXE can't be used right now because Office is busy. We're either updating or helping you add or remove some programs.", "Unable to start Office"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/article/9490798a-86ec-4218-98b3-788d850e8a24
+    etat: a-rediger
+
+  # ───────────────────────────── Excel ─────────────────────────────
+
+  - id: excel-ressources-insuffisantes-memoire
+    titre: "Excel : « Impossible de terminer cette tâche avec les ressources disponibles » / mémoire insuffisante"
+    symptome: "Excel affiche des erreurs de mémoire ou de ressources sur un classeur ; contenu lourd, compléments, antivirus, imprimante par défaut ou Excel 32 bits."
+    erreurs: ["Excel cannot complete this task with available resources. Choose less data or close other applications.", "Out of Memory", "Not enough System Resources to Display Completely", "There isn't enough memory to complete this action."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/available-resources-errors
+      - https://github.com/MicrosoftDocs/SupportArticles-docs/blob/main/Office/Client/excel/available-resources-errors.md
+    etat: a-rediger
+
+  - id: excel-n-enregistre-pas-modifications
+    titre: "Excel n'enregistre pas les modifications ou affiche une erreur à l'enregistrement"
+    symptome: "L'enregistrement échoue : compléments tiers, droits sur le dossier, disque plein, antivirus, partage de fichier ou chemin trop long."
+    erreurs: ["Document not saved.", "Disk is Full."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/issue-when-save-excel-workbooks
+      - https://github.com/MicrosoftDocs/SupportArticles-docs/blob/main/Office/Client/excel/issue-when-save-excel-workbooks.md
+    etat: a-rediger
+
+  - id: excel-contenu-illisible-trop-de-formats
+    titre: "Excel : « Excel a détecté du contenu illisible » (trop de formats de cellule différents)"
+    symptome: "À l'ouverture, Excel signale un contenu illisible ou refuse de coller ; le classeur dépasse la limite de combinaisons de formats."
+    erreurs: ["Excel found unreadable content in the file.", "Too many different cell formats.", "Microsoft Excel can't paste data"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/too-many-different-cell-formats-in-excel
+      - https://github.com/MicrosoftDocs/SupportArticles-docs/blob/main/Office/Client/excel/too-many-different-cell-formats-in-excel.md
+    etat: a-rediger
+
+  - id: excel-s-ouvre-ecran-blanc
+    titre: "Excel s'ouvre sur un écran blanc ou gris au double-clic sur un fichier"
+    symptome: "Excel démarre mais n'affiche pas le classeur ; feuilles masquées, associations de fichiers, UE-V, compléments ou installation à réparer."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/excel-opens-blank
+      - https://github.com/MicrosoftDocs/SupportArticles-docs/blob/main/Office/Client/excel/excel-opens-blank.md
+    etat: a-rediger
+
+  - id: excel-mac-plantage-au-demarrage
+    titre: "Excel pour Mac : « Microsoft Excel a rencontré un problème et doit fermer » au démarrage"
+    symptome: "Excel se ferme dès le lancement sur macOS ; préférences corrompues, permissions ou compte utilisateur en cause."
+    erreurs: ["Microsoft Excel has encountered a problem and needs to close. We are sorry for the inconvenience."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/fails-starting-excel-mac
+      - https://github.com/MicrosoftDocs/SupportArticles-docs/blob/main/Office/Client/excel/fails-starting-excel-mac.md
+    etat: a-rediger
+
+  - id: excel-lent-environnement-multisession
+    titre: "Excel très lent sur RDS, Windows Server ou Azure Virtual Desktop multisession"
+    symptome: "Les classeurs lourds sont beaucoup plus lents en environnement multisession (limite de threads) que sur un poste Windows 10/11."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/heavy-excel-workloads-run-slowly-multisession
+      - https://github.com/MicrosoftDocs/SupportArticles-docs/blob/main/Office/Client/excel/heavy-excel-workloads-run-slowly-multisession.md
+    etat: a-rediger
+
+  - id: excel-erreur-formule-separateur-liste
+    titre: "Excel : « Nous avons trouvé un problème dans cette formule » (séparateur de liste régional)"
+    symptome: "Les formules saisies avec des virgules sont refusées car le séparateur de liste régional est le point-virgule (ou l'inverse)."
+    erreurs: ["We found a problem with this formula. Try clicking Insert Function on the Formulas tab to fix it, or click Help for more info on common formula problems."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/formula-errors
+      - https://github.com/MicrosoftDocs/SupportArticles-docs/blob/main/Office/Client/excel/formula-errors.md
+    etat: a-rediger
+
+  - id: excel-liens-externes-erreur-mise-a-jour
+    titre: "Excel : erreur à la mise à jour des liens externes (« Impossible de mettre à jour certains liens »)"
+    symptome: "Au rafraîchissement des liaisons vers un autre classeur, Excel ne trouve pas un nom défini ou ne peut pas mettre à jour les liens."
+    erreurs: ["Microsoft Excel cannot find name \"Defined Name\".", "We can't update some of the links in your workbook right now."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/update-external-links
+      - https://github.com/MicrosoftDocs/SupportArticles-docs/blob/main/Office/Client/excel/update-external-links.md
+    etat: a-rediger
+
+  - id: excel-message-demarrage-mise-a-jour-liaisons
+    titre: "Excel demande à chaque ouverture de mettre à jour les liaisons vers d'autres classeurs"
+    symptome: "Message de sécurité ou demande de mise à jour des liaisons à chaque ouverture ; liens vers des sources absentes ou recalculées."
+    erreurs: ["This workbook contains links to one or more external sources that could be unsafe."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/control-startup-message
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/external-links-calculated-open-workbook-earlier-version-excel
+    etat: a-rediger
+
+  - id: excel-memoire-insuffisante-copie-formules
+    titre: "Excel : « Mémoire insuffisante » en copiant des formules sur une grande plage"
+    symptome: "Remplir ou recopier des formules sur une zone étendue provoque des erreurs de mémoire."
+    erreurs: ["Not enough memory.", "Not enough system resources to display completely."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/copy-formulas-over-large-area
+    etat: a-rediger
+
+  - id: excel-tri-cellules-fusionnees
+    titre: "Excel refuse de trier : « Cette opération nécessite que les cellules fusionnées soient de taille identique »"
+    symptome: "Le tri d'une plage échoue car elle contient des cellules fusionnées de tailles différentes."
+    erreurs: ["This operation requires the merged cells to be identically sized."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/error-sort-a-range-merged-cell
+    etat: a-rediger
+
+  - id: excel-colonnes-numerotees-l1c1
+    titre: "Excel : les colonnes sont numérotées (1, 2, 3) au lieu de lettres"
+    symptome: "Les en-têtes de colonnes affichent des chiffres et les formules sont en notation L1C1."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/numeric-columns-and-rows
+    etat: a-rediger
+
+  - id: excel-collage-special-absent
+    titre: "Excel ou Office : le Collage spécial est absent ou ne fonctionne pas"
+    symptome: "L'option Collage spécial est grisée ou absente ; macro qui vide le presse-papiers ou complément en cause."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/paste-special-missing-or-not-working
+    etat: a-rediger
+
+  - id: excel-pages-blanches-imprimees
+    titre: "Excel imprime des pages blanches inattendues"
+    symptome: "L'impression sort des pages vides : cellules mises en forme comme vides, erreurs imprimées en blanc, zone d'impression trop large."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/blank-pages-unexpectedly-printed
+    etat: a-rediger
+
+  - id: excel-fichiers-s-ouvrent-automatiquement
+    titre: "Excel ouvre automatiquement des fichiers au démarrage"
+    symptome: "Des classeurs s'ouvrent seuls au lancement d'Excel (dossier XLStart ou dossier de démarrage alternatif)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/files-open-automatically
+    etat: a-rediger
+
+  - id: excel-signatures-invalides-ouverture
+    titre: "Excel : « Ce document contient des signatures non valides »"
+    symptome: "Un classeur signé numériquement dans une version antérieure d'Excel affiche des signatures invalides à l'ouverture."
+    erreurs: ["This document contains invalid signatures."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/document-contains-invalid-signatures-error
+    etat: a-rediger
+
+  - id: excel-recalcul-somme-si-lent
+    titre: "Excel : recalcul très lent sur une feuille contenant SOMME.SI (SUMIF)"
+    symptome: "La saisie d'une valeur bloque Excel le temps du recalcul ; plages de SOMME.SI de tailles différentes."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/worksheet-recalculation-sumif-formula
+    etat: a-rediger
+
+  - id: excel-commande-selections-multiples
+    titre: "Excel : « Impossible d'utiliser cette commande sur des sélections multiples »"
+    symptome: "La copie de plages non adjacentes est refusée."
+    erreurs: ["That command cannot be used on multiple selections."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/command-cannot-be-used-on-selections
+    etat: a-rediger
+
+  - id: excel-resultat-calcul-virgule-flottante
+    titre: "Excel donne un résultat de calcul légèrement faux (virgule flottante)"
+    symptome: "Un calcul simple renvoie 0,0000000001 au lieu de 0 ou une égalité attendue est fausse."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/floating-point-arithmetic-inaccurate-result
+    etat: a-rediger
+
+  - id: excel-export-sharepoint-impossible
+    titre: "Export vers Excel depuis une liste SharePoint impossible"
+    symptome: "« Exporter vers Excel » échoue avec une erreur inattendue (délai DataFetchTimeout)."
+    erreurs: ["An unexpected error has occurred. Changes to your data cannot be saved."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/cannot-export-to-excel
+    etat: a-rediger
+
+  - id: office-lien-hypertexte-lecteur-reseau-unc
+    titre: "Office : un lien hypertexte vers un lecteur réseau mappé devient un chemin UNC"
+    symptome: "Le lien affiche la lettre de lecteur mais pointe vers \\\\serveur\\partage, ce qui casse les liens après migration de serveur."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/network-mapped-drive-hyperlinks-unc
+    etat: a-rediger
+
+  - id: office-mentions-utilisateur-non-resolu
+    titre: "Office : la @mention d'un collègue ne trouve pas l'utilisateur"
+    symptome: "Dans un commentaire Excel, Word ou PowerPoint, la @mention ne résout pas l'utilisateur (configuration Exchange hybride)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/mentions-not-resolve-user-information
+    etat: a-rediger
+
+  - id: excel-mac-erreur-liaison-incorporation-objets
+    titre: "Excel pour Mac : « Impossible d'utiliser la liaison et l'incorporation d'objets »"
+    symptome: "Message OLE à l'ouverture ou à l'insertion d'un objet dans Excel sur Mac."
+    erreurs: ["Cannot use object linking and embedding"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/cant-use-object-linking-and-embedding-error
+    etat: a-rediger
+
+  - id: excel-dde-liaisons-bloquees
+    titre: "Excel : liaisons DDE bloquées par le Centre de gestion de la confidentialité"
+    symptome: "Les liaisons dynamiques (DDE) avec une autre application ne se mettent plus à jour depuis les nouveaux paramètres de sécurité."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/security-settings
+    etat: a-rediger
+
+  # ───────────────────────────── Access ─────────────────────────────
+
+  - id: access-fige-table-liee-sharepoint
+    titre: "Access se fige à l'ouverture d'une table liée à une liste SharePoint"
+    symptome: "Access ne répond plus quand on ouvre une table liée à SharePoint."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/access/access-freezes-when-open-linked-table
+    etat: a-rediger
+
+  - id: access-objet-introuvable-table-liee
+    titre: "Access : « Impossible de trouver l'objet » sur une table liée"
+    symptome: "Une table liée ne s'ouvre plus : chemin de la base dorsale changé ou lien rompu."
+    erreurs: ["Microsoft Office Access can't find the object '<name>.'", "Run-time error '7874'"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/access/error-reference-linked-table
+    etat: a-rediger
+
+  - id: access-espace-disque-memoire-insuffisant
+    titre: "Access : « Espace disque ou mémoire insuffisant » sur une requête action"
+    symptome: "Une requête sur une grande table échoue à cause du nombre de verrous de page."
+    erreurs: ["There isn't enough disk space or memory.", "There isn't enough disk space or memory to undo the data changes this action query is about to make."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/access/error-when-perform-operation-on-table
+    etat: a-rediger
+
+  - id: access-nombre-verrous-depasse
+    titre: "Access : « Nombre de verrous de partage de fichier dépassé » (MaxLocksPerFile)"
+    symptome: "Les transactions importantes échouent en environnement multi-utilisateur."
+    erreurs: ["File sharing lock count exceeded. Increase MaxLocksPerFile registry entry."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/access/file-sharing-lock-count-exceeded
+    etat: a-rediger
+
+  - id: access-operation-non-prise-en-charge
+    titre: "Access ou Excel : « Opération non prise en charge pour ce type d'objet »"
+    symptome: "Erreur sur une requête avec référence distante, une connexion ODBC ou un assistant Access."
+    erreurs: ["Operation is not supported for this type of object", "Invalid use of Null"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/access/operation-is-not-supported-error
+    etat: a-rediger
+
+  - id: access-string-data-right-truncation
+    titre: "Access : « String data, right truncation (#0) » sur un champ varchar(max)"
+    symptome: "La mise à jour d'un champ texte lié à SQL Server échoue depuis un formulaire ou une feuille de données."
+    erreurs: ["String data, right truncation (#0)"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/access/string-data-right-truncation
+    etat: a-rediger
+
+  # ─────────────── Activation sur ordinateur partagé (RDS, VDI) ───────────────
+
+  - id: office-activation-ordinateur-partage-echec
+    titre: "Activation sur ordinateur partagé (RDS, VDI, Citrix) : « Produit sans licence, aucune licence d'ordinateur partagé disponible »"
+    symptome: "Sur un serveur RDS ou un VDI, Office passe en mode réduit ; le jeton de licence n'est pas obtenu ou pas renouvelé."
+    erreurs: ["UNLICENSED PRODUCT Most features are turned off because a shared computer license isn't available."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365-apps/licensing-activation/troubleshoot-shared-computer-activation
+      - https://support.microsoft.com/en-gb/office/fix-problems-with-shared-computer-activation-276daad5-1544-46d4-ad80-1651b6d36bc2
+    etat: a-rediger
+
+  - id: office-activation-ordinateur-partage-limite-depassee
+    titre: "Activation sur ordinateur partagé : limite du nombre d'ordinateurs atteinte"
+    symptome: "L'utilisateur a activé Office sur trop d'ordinateurs partagés dans une courte période ; l'activation est refusée temporairement."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365-apps/licensing-activation/troubleshoot-shared-computer-activation
+    etat: a-rediger
+
+  - id: office-activation-ordinateur-partage-jeton-fslogix
+    titre: "Activation sur ordinateur partagé : le jeton de licence est perdu à chaque session (profils itinérants, FSLogix)"
+    symptome: "L'utilisateur doit réactiver Office à chaque connexion car le dossier Licensing n'est pas conservé dans le profil."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365-apps/licensing-activation/troubleshoot-shared-computer-activation
+      - https://learn.microsoft.com/en-us/answers/a/10360854
+    etat: a-rediger
+
+  # ─────────────── Plantages, démarrage, compléments ───────────────
+
+  - id: excel-ne-repond-pas-se-fige
+    titre: "Excel ne répond pas, se fige ou cesse de fonctionner"
+    symptome: "Excel se bloque à l'ouverture d'un classeur ou pendant le travail ; compléments, mises en forme, fichiers de démarrage ou mise à jour en cause."
+    erreurs: ["Microsoft Excel is not responding.", "Microsoft Excel has stopped working."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/office/excel-not-responding-hangs-freezes-or-stops-working-37e7d3c9-9e84-40bf-a805-4ca6853a1ff4
+    etat: a-rediger
+
+  - id: office-plantage-demarrage-mode-sans-echec
+    titre: "Word, Excel ou PowerPoint plante au démarrage (tester le mode sans échec)"
+    symptome: "L'application se ferme dès son lancement ; le démarrage avec /safe permet d'isoler un complément ou un modèle."
+    erreurs: ["Microsoft Word has stopped working.", "Word experienced an error trying to open the file."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/office/excel-not-responding-hangs-freezes-or-stops-working-37e7d3c9-9e84-40bf-a805-4ca6853a1ff4
+      - https://learn.microsoft.com/en-us/answers/questions/4886959/office-application-stops-working
+    etat: a-rediger
+
+  - id: office-complement-com-desactive-automatiquement
+    titre: "Un complément COM est désactivé automatiquement par Office à chaque démarrage"
+    symptome: "Un complément (GED, signature, téléphonie…) disparaît du ruban ; Office l'a désactivé car il ralentit ou fait planter l'application."
+    erreurs: ["A problem was detected with an add-in and it has been disabled.", "Slow and Disabled COM Add-ins"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/add-ins-are-user-re-enabled-after-being-disabled
+      - https://learn.microsoft.com/en-us/archive/technet-wiki/53941.office-troubleshooting-certain-add-ins-keeps-getting-disabled
+    etat: a-rediger
+
+  - id: office-complement-com-ne-se-charge-pas
+    titre: "Un complément COM ou VSTO ne se charge pas (LoadBehavior repasse à 2)"
+    symptome: "Le complément est installé mais reste décoché ; la valeur LoadBehavior passe de 3 à 2 après un échec de chargement."
+    erreurs: ["Not loaded. A runtime error occurred during the loading of the COM Add-in."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://blogs.msdn.microsoft.com/vsod/2008/04/22/troubleshooting-com-add-in-load-failures
+      - https://nimbusportals.atlassian.net/wiki/spaces/CH/pages/240549889/Add-in+not+loading
+    etat: a-rediger
+
+  - id: office-complement-web-ne-demarre-pas
+    titre: "Un complément Office (Office Add-in web) ne démarre pas ou reste bloqué au chargement"
+    symptome: "Le volet du complément affiche une erreur ou tourne indéfiniment ; WebView2, cache des compléments, sites de confiance ou proxy en cause."
+    erreurs: ["Add-in Error: This add-in could not be started. Close this dialog to ignore the problem or click \"Restart\" to try again."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/is-is/office/dev/Add-ins/testing/testing-and-troubleshooting
+      - https://intercom.help/celigo/en/articles/4413785-add-in-error-this-add-in-could-not-be-started-close-this-dialog-to-ignore-the-problem-or-click-restart-to-try-again
+    etat: a-rediger
+
+  # ─────────────── Sécurité des documents ───────────────
+
+  - id: office-macros-bloquees-mark-of-the-web
+    titre: "« Microsoft a bloqué l'exécution des macros car la source de ce fichier n'est pas approuvée » (Mark of the Web)"
+    symptome: "Bannière rouge « Risque de sécurité » sur un fichier téléchargé ou reçu par e-mail ; impossible d'activer les macros."
+    erreurs: ["SECURITY RISK Microsoft has blocked macros from running because the source of this file is untrusted."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://docs.microsoft.com/en-us/deployoffice/security/internet-macros-blocked
+      - https://learn.microsoft.com/en-us/answers/questions/5810085/blocked-macros-on-onedrive-files
+    etat: a-rediger
+
+  - id: office-mode-protege-probleme-fichier
+    titre: "« Office a détecté un problème avec ce fichier » : document ouvert en mode protégé"
+    symptome: "Le fichier s'ouvre en mode protégé avec une bannière rouge ; il n'a pas passé la validation de fichiers Office."
+    erreurs: ["PROTECTED VIEW Office has detected a problem with this file. Editing it may harm your computer. Click for more details."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/office/d6f09ac7-e6b9-4495-8e43-2bbcdbcb6653
+      - https://support.microsoft.com/kb/973736
+    etat: a-rediger
+
+  - id: office-blocage-fichiers-anciens-formats
+    titre: "« La modification de ce type de fichier n'est pas autorisée » (blocage des fichiers, anciens formats)"
+    symptome: "Un ancien format (Excel 4, .xls 2, Word 95…) s'ouvre en lecture seule ou est refusé à cause des paramètres de blocage des fichiers."
+    erreurs: ["PROTECTED VIEW Editing this file type is not allowed due to your policy settings."]
+    priorite: rare
+    format: express
+    sources:
+      - https://support.microsoft.com/office/d6f09ac7-e6b9-4495-8e43-2bbcdbcb6653
+      - https://www.exceldemy.com/excel-protected-view-editing-this-file-type-is-not-allowed/
+    etat: a-rediger
+
+  # ─────────────── Fichiers verrouillés, co-édition, enregistrement automatique ───────────────
+
+  - id: office-fichier-verrouille-par-autre-utilisateur
+    titre: "« Le fichier est verrouillé pour modification par un autre utilisateur »"
+    symptome: "Le document s'ouvre en lecture seule car il est verrouillé, parfois par l'utilisateur lui-même (verrou orphelin sur SharePoint ou partage réseau)."
+    erreurs: ["File in Use. <file> is locked for editing by <user>.", "The file is locked for shared use by <user>."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/t5/sharepoint/cannot-release-lock-on-sharepoint-online-file/td-p/59694
+      - https://td.usd.edu/TDClient/33/Portal/KB/ArticleDet?ID=4673
+    etat: a-rediger
+
+  - id: office-coedition-echec-telechargement-conflit
+    titre: "Co-édition : « Échec du chargement » ou « Impossible de fusionner vos modifications »"
+    symptome: "Word ou Excel n'arrive pas à envoyer les modifications vers OneDrive ou SharePoint et propose d'enregistrer une copie ou de résoudre un conflit."
+    erreurs: ["UPLOAD FAILED We're sorry, someone updated the server version and we can't merge your changes.", "Can't Upload. We can't merge your changes with those made by someone else."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/word/troubleshoot-common-coauthoring-errors
+      - https://techcommunity.microsoft.com/t5/word/can-t-upload-we-can-t-merge-your-changes-with-those-made-by/td-p/2153798
+      - https://learn.microsoft.com/en-us/answers/questions/5042386/sharepoint-onedrive-and-excel-upload-failed-new-ve
+    etat: a-rediger
+
+  - id: office-enregistrement-automatique-grise
+    titre: "L'enregistrement automatique (AutoSave) est grisé ou indisponible"
+    symptome: "Le bouton Enregistrement automatique reste désactivé alors que le fichier est sur OneDrive ou SharePoint (fichier synchronisé, ancien format, paramètre)."
+    erreurs: ["AutoSave Not Available"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/office/autosave-is-disabled-for-onedrive-onedrive-for-business-and-sharepoint-locations-43aaaa22-2656-4697-b44b-c15ae5779b65
+    etat: a-rediger
+
+  # ─────────────── Fichiers endommagés ───────────────
+
+  - id: word-contenu-illisible-fichier-endommage
+    titre: "Word : « Word a détecté du contenu illisible » ou fichier endommagé"
+    symptome: "Le document refuse de s'ouvrir ou s'ouvre partiellement ; utiliser Ouvrir et réparer, puis la récupération de texte."
+    erreurs: ["Word found unreadable content in <file>. Do you want to recover the contents of this document?", "The file is corrupt and cannot be opened."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://thewindowsclub.com/word-found-unreadable-content-in-document
+      - https://answers.microsoft.com/en-us/msoffice/forum/all/word-found-unreadable-content-inurgent-help-please/92e6dab8-a91e-4297-97a3-04e4d1b3c284
+    etat: a-rediger
+
+  # ─────────────── Word ───────────────
+
+  - id: word-modele-normal-dotm-corrompu
+    titre: "Word : modèle Normal.dotm corrompu (plantages, styles perdus, erreurs à la fermeture)"
+    symptome: "Word plante, affiche des erreurs à l'ouverture ou à l'enregistrement, ou ne conserve pas les réglages ; renommer Normal.dotm règle le problème."
+    erreurs: ["Word cannot open the existing global template. (Normal.dotm)"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/kb/247028
+      - https://learn.microsoft.com/en-us/office/troubleshoot/word/save-as-dialog-box-appears-two-times
+    etat: a-rediger
+
+  - id: word-enregistrer-sous-apparait-deux-fois
+    titre: "Word : la boîte « Enregistrer sous » apparaît deux fois"
+    symptome: "En enregistrant, la boîte de dialogue s'affiche une seconde fois ; Normal.dotm endommagé."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/office/troubleshoot/word/save-as-dialog-box-appears-two-times
+    etat: a-rediger
+
+  # ─────────────── OneNote ───────────────
+
+  - id: onenote-erreur-0xe4010641-reseau-deconnecte
+    titre: "OneNote : erreur 0xE4010641 (Network Disconnected)"
+    symptome: "OneNote ne synchronise plus un ou plusieurs blocs-notes : poste hors ligne ou emplacement du bloc-notes injoignable."
+    erreurs: ["0xE4010641"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/en-au/office/error-0xe4010641-network-disconnected-in-onenote-431c61ce-9f9d-44fe-a517-caefe70df6f7
+    etat: a-rediger
+
+  - id: onenote-erreur-0xe000005e-revision-introuvable
+    titre: "OneNote : erreur 0xE000005E (ReferencedRevisionNotFound)"
+    symptome: "Une section précise ne se synchronise plus ; erreur souvent temporaire."
+    erreurs: ["0xE000005E"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/en-us/office/resolve-the-0xe000005e-referencedrevisionnotfound-error-in-onenote-56426044-12bf-41db-9298-dc07380de238
+    etat: a-rediger
+
+  - id: onenote-erreur-0xe0000024-mot-de-passe-requis
+    titre: "OneNote : « Un mot de passe est requis pour synchroniser ce bloc-notes » (0xE0000024)"
+    symptome: "OneNote demande une authentification pour un bloc-notes SharePoint ou OneDrive et ne synchronise plus."
+    erreurs: ["A password is required to synchronize this notebook. (Error code: 0xE0000024)"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://businesstechplanet.com/cause-of-sign-in-error-code-0xe0000024-in-onenote-and-how-to-fix/
+      - https://support.microsoft.com/en-us/office/a8632a1d-7c39-4607-904c-3f165e4819ce
+    etat: a-rediger
+
+  - id: onenote-erreur-0xe0000007-probleme-synchronisation
+    titre: "OneNote : « Nous avons rencontré un problème lors de la synchronisation de votre bloc-notes » (0xE0000007)"
+    symptome: "Erreur de synchronisation sur tous types de clients OneNote, parfois sur des sections protégées par mot de passe."
+    erreurs: ["0xE0000007", "We ran into a problem syncing your notebook."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/en-us/topic/resolve-the-0xe0000007-error-we-ran-into-a-problem-syncing-your-notebook-in-onenote-b303eed4-4c9f-45af-bc52-810ddca86e83
+      - https://learn.microsoft.com/en-us/answers/questions/4947393/sync-issue-w-encrypted-sections-(0xe0000007)
+    etat: a-rediger
+
+  - id: onenote-sections-deplacees
+    titre: "OneNote : « Sections déplacées » (Misplaced Sections) en bas de la liste des blocs-notes"
+    symptome: "OneNote ne retrouve plus le fichier d'une section qu'il essaie de synchroniser et la range dans « Sections déplacées »."
+    erreurs: ["Misplaced Sections"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/en-us/OneNote/onenote-help-and-learning/resolve-misplaced-sections-in-onenote
+      - https://learn.microsoft.com/en-us/answers/questions/4924432/onenote-has-misplaced-sections-and-sync-error-afte
+    etat: a-rediger
+
+  - id: onenote-section-pas-encore-disponible
+    titre: "OneNote : « Cette section n'est pas encore disponible » / « Contenu pas encore disponible »"
+    symptome: "Une section ou une page créée sur un autre appareil reste vide tant que cet appareil n'a pas terminé sa synchronisation."
+    erreurs: ["This section isn't available yet. It was added from another device. You'll be able to use it when that device syncs.", "Content not yet available"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://thewindowsclub.com/fix-content-not-yet-available-error-on-onenote
+      - https://www.onenotegem.com/a/faq/win-office-onenote/2025/0613/section-isnt-available-yet.html
+    etat: a-rediger
+
+  - id: onenote-windows-10-lecture-seule-fin-support
+    titre: "OneNote pour Windows 10 passe en lecture seule (fin de support) : migrer vers OneNote"
+    symptome: "L'application OneNote pour Windows 10 n'édite et ne synchronise plus les notes ; migration vers OneNote (Microsoft 365) et récupération des notes non synchronisées."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/blog/microsoft365insiderblog/onenote-for-windows-10-support-is-ending/4445230
+      - https://learn.microsoft.com/en-us/answers/questions/5766638/how-to-solve-onenote-for-window-10-end-of-support
+    etat: a-rediger
+
+  - id: onenote-erreur-e0001462-windows-10
+    titre: "OneNote pour Windows 10 : erreur de synchronisation E0001462"
+    symptome: "Le bloc-notes ne se synchronise plus dans OneNote pour Windows 10."
+    erreurs: ["E0001462"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5159739/onenote-for-windows-10-not-syncing-error-e0001462
+    etat: a-rediger
+
+  - id: onenote-erreur-0x80070191-synchronisation
+    titre: "OneNote : erreur 0x80070191 pendant la synchronisation"
+    symptome: "La synchronisation d'un bloc-notes échoue avec ce code (problème côté fournisseur cloud ou fichier local)."
+    erreurs: ["Error code 0x80070191 occurred while trying to sync"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/4814764/error-code-0x80070191-occurred-while-trying-to-syn
+    etat: a-rediger
+
+  - id: onenote-erreurs-stockage-cloud
+    titre: "OneNote : erreurs de stockage cloud (quota OneDrive ou SharePoint plein, bloc-notes trop volumineux)"
+    symptome: "OneNote ne peut plus enregistrer dans le cloud car l'espace de stockage est saturé ou le bloc-notes trop gros."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://support.microsoft.com/en-au/office/resolve-cloud-storage-errors-in-onenote-ec43ed03-eb3c-4a10-8d9d-e9e5433c9ed2
+    etat: a-rediger
+
+  - id: onenote-plantages-lenteurs
+    titre: "OneNote plante ou devient très lent"
+    symptome: "OneNote se ferme ou réagit lentement ; problèmes connus et contournements publiés par Microsoft."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://support.microsoft.com/en-us/topic/3fe5b6e1-6304-4317-a87e-2afe139935d9
+    etat: a-rediger
+
+  # ─────────────── Office pour Mac ───────────────
+
+  - id: office-mac-microsoft-autoupdate-echec
+    titre: "Office pour Mac : Microsoft AutoUpdate (MAU) ne met plus à jour les applications"
+    symptome: "AutoUpdate échoue, tourne en boucle ou indique que certaines applications ont rencontré des erreurs ; MAU obsolète, cache ou droits sur LaunchDaemons."
+    erreurs: ["Some apps have encountered errors when trying to update.", "Microsoft AutoUpdate installation failed"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/office/office-for-mac/troubleshoot-microsoft-autoupdate-in-microsoft-365-and-office-for-mac
+      - https://techcommunity.microsoft.com/t5/office-365/autoupdate-for-mac-is-not-working/m-p/2380885
+      - https://learn.microsoft.com/en-us/answers/questions/5619347/some-apps-have-encountered-errors-when-trying-to-u
+    etat: a-rediger
+
+  - id: office-mac-supprimer-fichiers-licence
+    titre: "Office pour Mac : activation bloquée, supprimer les fichiers de licence (License Removal Tool)"
+    symptome: "Office pour Mac reste activé avec une mauvaise licence ou refuse de s'activer ; il faut purger les licences locales avant de se reconnecter."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/office/b032c0f6-a431-4dad-83a9-6b727c03b193
+    etat: a-rediger
+
+  - id: office-mac-compte-ne-permet-pas-modification
+    titre: "Office pour Mac : « Votre compte ne permet pas la modification sur un Mac » (lecture seule)"
+    symptome: "Word ou Excel pour Mac s'ouvrent en mode Affichage seul ; la licence n'inclut pas les applications de bureau (Business Basic, A1…) ou le trousseau est en cause."
+    erreurs: ["View Only: Your account doesn't allow editing on a Mac."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5283261/view-only-your-account-doesnt-allow-editing
+      - https://help.it.ox.ac.uk/node/2513796
+    etat: a-rediger
+
+  - id: office-mac-autoriser-acces-fichiers
+    titre: "Office pour Mac : « Autoriser l'accès aux fichiers » (Grant File Access) à chaque ouverture"
+    symptome: "Word ou Excel pour Mac demande des autorisations supplémentaires pour ouvrir un fichier (bac à sable macOS)."
+    erreurs: ["Additional permissions are required to access the following files:", "Word cannot open the document: user does not have access privileges"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/office/vba/office-mac/grantaccesstomultiplefiles
+      - https://learn.microsoft.com/en-us/answers/questions/4894910/grant-file-access-word-cannot-open-the-document-us
+    etat: a-rediger
+
+  - id: office-mac-version-macos-non-prise-en-charge
+    titre: "Office pour Mac ne s'installe plus ou ne se met plus à jour : version de macOS trop ancienne"
+    symptome: "Office n'est pris en charge que sur les trois dernières versions de macOS ; installation refusée ou mises à jour bloquées."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5671114/unable-to-install-office-2024-on-my-mac-due-to-it
+      - https://learn.microsoft.com/en-us/answers/a/658224
+    etat: a-rediger
+
+  - id: word-mac-plantage-preferences-corrompues
+    titre: "Word pour Mac : « Microsoft Word a rencontré un problème et doit fermer »"
+    symptome: "Word pour Mac plante au démarrage ou en cours d'utilisation ; préférences ou Normal.dotm corrompus, fichiers de récupération automatique."
+    erreurs: ["Microsoft Word has encountered a problem and needs to close."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/en-us/word/word-for-mac-error-microsoft-word-has-encountered-a-problem-and-needs-to-close
+    etat: a-rediger
+
+  # ─────────────── Déploiement, canaux, réparation ───────────────
+
+  - id: office-odt-fichier-configuration-introuvable
+    titre: "Office Deployment Tool : « Impossible de trouver le fichier de configuration » (0-2048)"
+    symptome: "setup.exe /configure échoue : configuration.xml absent du dossier, nom incorrect, invite non élevée ou ODT obsolète."
+    erreurs: ["0-2048 (0)", "Couldn't find configuration file"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5657375/i-cant-get-our-office-ltsc-2024-to-install-i-conti
+      - https://learn.microsoft.com/en-us/answers/questions/5405371/odt-cannot-find-configuration-file
+    etat: a-rediger
+
+  - id: office-odt-erreur-0-2054
+    titre: "Office Deployment Tool : erreur générique 0-2054 à l'installation"
+    symptome: "L'installation via ODT échoue avec un code générique ; vérifier le fichier XML, le canal et les produits demandés."
+    erreurs: ["0-2054"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-my/answers/questions/896144/cannot-install-office-error-code-0-2054
+    etat: a-rediger
+
+  - id: office-odt-erreur-1008
+    titre: "Installation d'Office : erreur 1008 (0)"
+    symptome: "L'installation (souvent via ODT ou un package d'entreprise) s'arrête avec 1008 (0)."
+    erreurs: ["1008 (0)"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/4880699/error-code)-1008-(0)
+    etat: a-rediger
+
+  - id: office-mises-a-jour-desactivees-strategie
+    titre: "Office ne se met pas à jour : « Options de mise à jour » absentes ou grisées (stratégie, licence en volume)"
+    symptome: "Le bouton Mettre à jour est grisé ou absent ; les mises à jour sont gérées par GPO, Cloud Update ou désactivées manuellement."
+    erreurs: ["This product will not be updated.", "Automatic updating for Microsoft Office is not enabled."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/kb/2753538
+      - https://support.microsoft.com/en-us/help/5002907
+    etat: a-rediger
+
+  - id: office-installation-bloquee-preparation
+    titre: "Installation d'Office bloquée sur « Préparation en cours » ou qui n'avance plus"
+    symptome: "L'installateur reste sur « Nous préparons les éléments » ou sur une progression figée ; restes d'installation, droits, réseau."
+    erreurs: ["We're getting things ready"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5855269/office-2021-install-stops-at-were-getting-things-r
+      - https://www.thewindowsclub.com/office-stuck-on-were-getting-things-ready-screen
+    etat: a-rediger
+
+  - id: office-installation-bloquee-90-pourcent
+    titre: "Installation d'Office bloquée à 90 % (Windows Installer occupé)"
+    symptome: "La progression s'arrête à 90 % ; une autre installation Windows Installer est en cours."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://support.microsoft.com/en-us/office/lifecycle/installation-of-office-hangs-at-90
+    etat: a-rediger
+
+  - id: office-installation-tres-longue
+    titre: "L'installation d'Office prend très longtemps"
+    symptome: "Le téléchargement et l'installation durent anormalement longtemps (connexion lente, proxy, installation en arrière-plan)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://eus.prod.support.services.microsoft.com/en-gb/office/office-is-taking-long-to-install-0f09f357-3fef-42a6-b8aa-cef4c6c44bdf
+    etat: a-rediger
+
+  - id: office-reparation-ne-demarre-pas
+    titre: "La réparation rapide ou en ligne d'Office ne démarre pas ou échoue"
+    symptome: "Le bouton Réparer ne fait rien ou la réparation rapide n'aide pas ; passer à la réparation en ligne puis à la désinstallation complète."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/help/2769349
+      - https://learn.microsoft.com/en-us/microsoft-365-apps/updates/update-errors
+    etat: a-rediger
+
+  # ─────────────── Excel (suite) ───────────────
+
+  - id: excel-csv-une-seule-colonne-separateur
+    titre: "Excel : un fichier CSV s'ouvre avec toutes les données dans une seule colonne"
+    symptome: "Le séparateur du CSV (virgule) ne correspond pas au séparateur de liste régional (point-virgule) ; utiliser l'import Données > À partir d'un fichier texte/CSV."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://cleverence.com/articles/oracle-documentation/converting-a-comma-separated-file-in-excel-7489
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/formula-errors
+    etat: a-rediger
+
+  - id: excel-csv-zeros-dates-accents
+    titre: "Excel : un CSV perd les zéros en tête, convertit des codes en dates ou affiche des accents illisibles"
+    symptome: "À l'ouverture d'un CSV, les numéros commençant par 0 perdent leur zéro, des références deviennent des dates et les accents UTF-8 sont mal affichés."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://support-splashtoponprem.splashtop.com/hc/en-us/articles/39132067582361-How-to-Preserve-Leading-Zeros-When-Opening-CSV-Files-in-Excel
+      - https://support.marketplacer.com/hc/en-us/articles/26893953596685-Save-CSV-with-UTF-8-Encoding
+    etat: a-rediger
+
+  - id: excel-formules-ne-se-recalculent-pas
+    titre: "Excel : les formules ne se recalculent plus (calcul manuel, références circulaires)"
+    symptome: "Les résultats ne se mettent pas à jour ; le classeur est en calcul manuel, une référence circulaire bloque, ou les cellules sont au format Texte."
+    erreurs: ["There are one or more circular references where a formula refers to its own cell either directly or indirectly."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/current-mode-of-calculation
+      - https://helpdeskgeek.com/microsoft-excel-formulas-not-working-or-calculating-try-these-7-fixes/
+    etat: a-rediger
+
+  - id: excel-classeur-lent-volumineux
+    titre: "Excel : classeur très lent ou anormalement volumineux"
+    symptome: "Ouverture, saisie et enregistrement lents ; plage utilisée gonflée, mises en forme conditionnelles, styles inutiles, formules volatiles."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/excel/clean-workbook-less-memory
+      - https://www.ablebits.com/office-addins-blog/reduce-excel-file-size/
+    etat: a-rediger
+
+  - id: excel-impossible-acceder-fichier
+    titre: "Excel : « Microsoft Excel ne peut pas accéder au fichier »"
+    symptome: "Ouverture ou enregistrement impossible : chemin trop long ou inaccessible, droits, fichier utilisé par un autre processus."
+    erreurs: ["Microsoft Excel cannot access the file '<path>'. There are several possible reasons:"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-ca/answers/questions/5014473/microsoft-excel-cannot-access-the-file
+      - https://helpdeskgeek.com/8-best-ways-to-fix-microsoft-excel-cannot-access-the-file-error/
+    etat: a-rediger
+
+  - id: excel-format-extension-non-valide
+    titre: "Excel : « Impossible d'ouvrir le fichier car le format ou l'extension n'est pas valide »"
+    symptome: "Le fichier a une extension qui ne correspond pas à son contenu ou il est endommagé."
+    erreurs: ["Excel cannot open the file '<file>.xlsx' because the file format or file extension is not valid. Verify that the file has not been corrupted and that the file extension matches the format of the file."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/archive/technet-wiki/52908.excel-troubleshooting-unable-to-read-file-error
+      - https://helpdeskgeek.com/8-best-ways-to-fix-microsoft-excel-cannot-access-the-file-error/
+    etat: a-rediger
+
+  - id: excel-liens-externes-fantomes-impossible-rompre
+    titre: "Excel : liens externes fantômes impossibles à rompre"
+    symptome: "L'alerte de liaisons externes persiste alors que « Modifier les liens » est vide ou que « Rompre le lien » ne fait rien (noms définis, graphiques, validation, mise en forme conditionnelle)."
+    erreurs: ["This workbook contains links to one or more external sources that could be unsafe."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/archive/technet-wiki/54347.excel-troubleshooting-breaking-external-links-fails
+      - https://techcommunity.microsoft.com/t5/excel/breaking-external-workbook-links-which-cannot-be-broken-via-edit/m-p/2812619
+    etat: a-rediger

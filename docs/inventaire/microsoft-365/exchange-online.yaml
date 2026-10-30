@@ -1,0 +1,1194 @@
+domaine: microsoft-365
+sous_domaine: exchange-online
+recense_le: 2026-10-29
+# Périmètre : Exchange Online côté service/serveur (flux de messagerie, NDR, boîtes, groupes,
+# calendriers et ressources, conformité, migration, authentification du domaine).
+# Les problèmes du client Outlook sont recensés dans un autre fichier.
+problemes:
+  # ---------- Codes de non-remise (NDR) : 5.1.x ----------
+  - id: exchange-ndr-550-5-1-1-adresse-destinataire-invalide
+    titre: "Message refusé : adresse du destinataire introuvable (550 5.1.1)"
+    symptome: "L'expéditeur reçoit un rapport de non-remise indiquant que l'adresse de destination n'existe pas ou est mal saisie."
+    erreurs: ["550 5.1.1 Bad destination mailbox address", "550 5.1.1 RESOLVER.ADR.RecipNotFound; not found"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-550-5-1-1-through-5-1-20-in-exchange-online
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+    etat: a-rediger
+  - id: exchange-ndr-550-5-1-1-exrecipnotfound-adresse-x500
+    titre: "NDR 550 5.1.1 RESOLVER.ADR.ExRecipNotFound vers un collègue (ancienne adresse X500 en cache)"
+    symptome: "Un message interne revient en erreur alors que le destinataire existe, souvent après une migration ou une recréation de boîte : la saisie semi-automatique pointe vers un ancien objet."
+    erreurs: ["550 5.1.1 RESOLVER.ADR.ExRecipNotFound; not found"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/exrecipnotfound-ndr
+    etat: a-rediger
+  - id: exchange-ndr-imceaex-destinataire-interne
+    titre: "NDR IMCEAEX en envoyant à un utilisateur interne (LegacyExchangeDN manquant)"
+    symptome: "Le rapport de non-remise contient une adresse commençant par IMCEAEX- : l'entrée de cache Outlook pointe vers un LegacyExchangeDN qui n'existe plus."
+    erreurs: ["IMCEAEX-_O=", "550 5.1.1 RESOLVER.ADR.ExRecipNotFound"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/imceaex-ndr
+    etat: a-rediger
+  - id: exchange-ndr-550-5-1-0-sender-denied
+    titre: "NDR 550 5.1.0 Sender denied (réponse à un message enregistré hors ligne)"
+    symptome: "Une réponse envoyée depuis un message enregistré en fichier (.msg) puis rouvert est refusée : l'adresse de l'expéditeur d'origine n'est plus résolue."
+    erreurs: ["550 5.1.0 Sender denied"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-550-5-1-0-in-exchange-online
+    etat: a-rediger
+  - id: exchange-ndr-550-5-1-8-expediteur-bloque-spam
+    titre: "Utilisateur bloqué en envoi pour spam sortant (550 5.1.8 bad outbound sender)"
+    symptome: "Un utilisateur ne peut plus envoyer aucun message ; l'alerte « Utilisateur restreint » apparaît dans Microsoft Defender. Le compte est souvent compromis."
+    erreurs: ["550 5.1.8 Access denied, bad outbound sender"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-550-5-1-8
+    etat: a-rediger
+  - id: exchange-ndr-550-5-1-10-recipient-not-found
+    titre: "NDR 550 5.1.10 RESOLVER.ADR.RecipientNotFound (destinataire introuvable)"
+    symptome: "Le destinataire n'est pas trouvé par recherche d'adresse SMTP : faute de frappe, adresse supprimée ou rétrodiffusion (backscatter) d'un spam usurpant l'expéditeur."
+    erreurs: ["550 5.1.10 RESOLVER.ADR.RecipientNotFound; Recipient not found by SMTP address lookup"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-550-5-1-10-in-exchange-online
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/recipientnotfound-ndr
+    etat: a-rediger
+  - id: exchange-ndr-550-5-1-11-delegue-mise-a-jour-reunion-hybride
+    titre: "NDR 550 5.1.11 quand un délégué met à jour une réunion après la migration du responsable"
+    symptome: "En environnement hybride, le délégué qui modifie une réunion du responsable migré vers Microsoft 365 reçoit un rapport de non-remise."
+    erreurs: ["550 5.1.11"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/550-5111-ndr-delegate-sends-update-meeting
+    etat: a-rediger
+  - id: exchange-ndr-550-5-1-20-plusieurs-adresses-from
+    titre: "NDR 550 5.1.20 : plusieurs adresses From sans en-tête Sender"
+    symptome: "Les messages générés par une application qui place plusieurs adresses dans le champ De sont rejetés par Exchange Online."
+    erreurs: ["550 5.1.20 Multiple From addresses are not allowed without Sender address"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-550-5-1-20-multiple-from-addresses
+      - https://mc.merill.net/message/MC886603
+    etat: a-rediger
+  - id: exchange-ndr-550-5-1-90-limite-quotidienne-destinataires
+    titre: "Limite quotidienne de destinataires atteinte (550 5.1.90)"
+    symptome: "Un utilisateur ou une boîte partagée qui envoie en masse ne peut plus envoyer : la limite de 10 000 destinataires par 24 h glissantes est dépassée."
+    erreurs: ["550 5.1.90 Your message can't be sent because you've reached your daily limit for message recipients"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+      - https://techcommunity.microsoft.com/discussions/exchange_general/550-5-1-90-ndr/2631003
+    etat: a-rediger
+  - id: exchange-ndr-quota-soumission-depasse
+    titre: "« The message can't be submitted because the sender's submission quota was exceeded »"
+    symptome: "L'envoi est refusé après un grand nombre de destinataires dans la journée ; peut révéler un compte compromis envoyant du spam."
+    erreurs: ["The message can't be submitted because the sender's submission quota was exceeded", "554 5.2.0 STOREDRV.Submission.Exception:SubmissionQuotaExceededException"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-for-submission-quota-exceeded-in-exchange-online
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/send-emails/smtp-submission-improvements
+    etat: a-rediger
+  # ---------- NDR : 5.2.x ----------
+  - id: exchange-boite-pleine
+    titre: "Boîte aux lettres pleine : avertissements puis NDR 554 5.2.2 mailbox full"
+    symptome: "Les expéditeurs reçoivent un rapport de non-remise car la boîte (ou le dossier Éléments récupérables) du destinataire a atteint son quota."
+    erreurs: ["554 5.2.2 mailbox full; STOREDRV.Deliver.Exception:QuotaExceededException"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+    etat: redigee
+  - id: exchange-ndr-554-5-2-2-dossier-public-messagerie-plein
+    titre: "NDR 554 5.2.2 mailbox full en écrivant à un dossier public à extension messagerie"
+    symptome: "Les messages destinés à un dossier public à extension messagerie sont rejetés car la boîte de dossiers publics qui l'héberge a atteint son quota."
+    erreurs: ["554 5.2.2 mailbox full"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/cannot-send-mail-mepf
+    etat: a-rediger
+  - id: exchange-ndr-groupe-m365-aggregategroupmailbox-plein
+    titre: "NDR « AggregateGroupMailbox » plein en écrivant à un groupe Microsoft 365"
+    symptome: "Les messages envoyés à un groupe Microsoft 365 reviennent en erreur car la boîte du groupe a atteint son quota."
+    erreurs: ["AggregateGroupMailbox", "554 5.2.2 mailbox full"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/ndr-received-send-emails-microsoft365-groups
+    etat: a-rediger
+  - id: exchange-ndr-550-5-2-0-badprimary
+    titre: "NDR 550 5.2.0 RESOLVER.ADR.BadPrimary (adresse principale invalide)"
+    symptome: "Le message vers un destinataire est refusé car son adresse SMTP principale est incorrecte ou incohérente avec ses adresses proxy."
+    erreurs: ["550 5.2.0 RESOLVER.ADR.BadPrimary"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/badprimary-ndr
+    etat: a-rediger
+  - id: exchange-ndr-554-5-2-0-storedrv-deliver-exception
+    titre: "NDR 554 5.2.0 STOREDRV.Deliver.Exception (MapiExceptionNotFound)"
+    symptome: "La remise échoue au moment du dépôt dans la boîte du destinataire, souvent à cause d'une règle de boîte ou d'un dossier cible introuvable."
+    erreurs: ["554 5.2.0 STOREDRV.Deliver.Exception:ObjectNotFoundException; Failed to process message due to a permanent exception with message", "MapiExceptionNotFound"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/mapiexceptionnotfound-ndr
+    etat: a-rediger
+  - id: exchange-ndr-554-5-2-0-sendasdenied
+    titre: "Envoi refusé « SendAsDeniedException » depuis une boîte partagée ou une application (554 5.2.0)"
+    symptome: "Un utilisateur ou une application SMTP envoie avec une adresse De qui n'est pas la sienne sans disposer du droit Envoyer en tant que."
+    erreurs: ["554 5.2.0 STOREDRV.Submission.Exception:SendAsDeniedException; Failed to process message due to a permanent exception", "554 5.2.252 SendAsDeniedException.MapiExceptionSendAsDenied"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/mailflow/cannot-send-email-with-full-access
+      - https://learn.microsoft.com/en-us/answers/questions/892221/unable-to-send-emails-from-shared-mailbox
+    etat: a-rediger
+  - id: exchange-ndr-5-2-121-5-2-122-limite-reception-horaire
+    titre: "NDR 5.2.121 / 5.2.122 : limite horaire de réception du destinataire dépassée"
+    symptome: "Une application ou un expéditeur envoie trop de messages par heure à la même boîte Exchange Online, qui refuse les messages excédentaires."
+    erreurs: ["5.2.121 Recipient's per hour message receive limit from specific sender exceeded", "5.2.122 Recipient's per hour message receive limit exceeded"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+    etat: a-rediger
+  - id: exchange-ndr-554-4-3-2-mailbox-busy-limite-elements-dossier
+    titre: "NDR 554 4.3.2 mailbox busy : trop d'éléments dans un dossier de la boîte"
+    symptome: "Les messages ne sont plus remis à une boîte dont un dossier (souvent la Boîte de réception ou un dossier alimenté par une règle) a atteint la limite d'éléments."
+    erreurs: ["554 4.3.2 mailbox busy; STOREDRV.Deliver.Exception:StoragePermanentException.MapiExceptionMaxObjsExceeded"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/remote-server-returned-mailbox-busy
+    etat: a-rediger
+  - id: exchange-ndr-432-4-3-2-recipient-thread-limit
+    titre: "Remise différée 432 4.3.2 recipient thread limit exceeded (boîte qui reçoit trop vite)"
+    symptome: "Une boîte qui reçoit un afflux massif de messages voit sa remise ralentie par limitation (throttling) ; les messages arrivent en retard."
+    erreurs: ["432 4.3.2 STOREDRV.Deliver; recipient thread limit exceeded"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+    etat: a-rediger
+  # ---------- NDR : 5.3.x / 5.4.x / 4.4.x ----------
+  - id: exchange-ndr-5-3-190-journalisation-onprem-non-supportee
+    titre: "NDR 5.3.190 : journalisation de messages locaux vers Microsoft 365 non prise en charge"
+    symptome: "Les rapports de journal envoyés par un serveur local vers une boîte Exchange Online sont rejetés."
+    erreurs: ["5.3.190 Journaling on-premises messages to Microsoft 365 or Office 365 not supported when Journaling Archive is disabled"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+    etat: a-rediger
+  - id: exchange-ndr-550-5-4-1-dbeb-recipient-rejected
+    titre: "NDR 550 5.4.1 Recipient address rejected: Access denied (blocage DBEB)"
+    symptome: "Les messages entrants vers une adresse du domaine sont rejetés à la périphérie car l'adresse n'existe pas dans l'annuaire Exchange Online (souvent en hybride ou après création récente)."
+    erreurs: ["550 5.4.1 Recipient address rejected: Access denied. AS(201806281)"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-550-5-4-1
+      - https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/use-directory-based-edge-blocking
+      - https://support.microsoft.com/en-us/servicing/exchange/non-delivery-report/ndr-error-code-550-5-4-1-recipient-address-rejected-access-denied
+    etat: a-rediger
+  - id: exchange-ndr-5-4-1-relay-access-denied
+    titre: "NDR 5.4.1 Relay Access Denied (serveur ou DNS mal configuré pour le domaine)"
+    symptome: "Le serveur qui génère l'erreur n'accepte pas le courrier pour le domaine destinataire : enregistrement MX ou domaine accepté incorrect."
+    erreurs: ["5.4.1 Relay Access Denied"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+    etat: a-rediger
+  - id: exchange-ndr-554-5-4-14-hop-count-boucle
+    titre: "Boucle de messagerie : 554 5.4.14 Hop count exceeded (connecteurs, domaine non vérifié)"
+    symptome: "Les messages tournent entre Exchange Online et un autre serveur jusqu'au rejet ; fréquent en hybride (connecteur ou domaine accepté mal configuré)."
+    erreurs: ["554 5.4.14 Hop count exceeded - possible mail loop ATTR34", "5.4.6 Routing loop detected"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-5-4-6-through-5-4-20-in-exchange-online
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/hop-count-exceeded-ndr
+    etat: a-rediger
+  - id: exchange-ndr-4-4-7-message-expire
+    titre: "Message expiré après 24 h de tentatives (4.4.7 / 550 4.4.7 Message expired)"
+    symptome: "Exchange Online n'a pas réussi à remettre le message au serveur distant pendant le délai de nouvelle tentative ; l'expéditeur reçoit d'abord un avis de retard puis un NDR."
+    erreurs: ["550 4.4.7 QUEUE.Expired; message expired", "4.4.7 Message expired"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-550-4-4-7-in-exchange-online
+    etat: a-rediger
+  - id: exchange-ndr-5-4-300-message-expire
+    titre: "NDR 5.4.300 Message expired (serveur de destination ne répondant pas)"
+    symptome: "Le message n'a pas pu être remis à temps : le serveur de destination n'a pas répondu ou a renvoyé une erreur répétée."
+    erreurs: ["5.4.300 Message expired"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+    etat: a-rediger
+  - id: exchange-ndr-4-4-316-connexion-refusee
+    titre: "Remise vers l'extérieur bloquée : 450 4.4.316 / 550 5.4.316 Connection refused (socket 10061)"
+    symptome: "Exchange Online ne parvient pas à ouvrir de connexion SMTP vers le serveur destinataire ou le smart host du connecteur (pare-feu, port 25 fermé, serveur arrêté)."
+    erreurs: ["450 4.4.316 Connection refused [Message=Socket error code 10061]", "550 5.4.316 Message expired, connection refused(Socket error code 10061)"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+      - https://learn.microsoft.com/en-us/defender-office-365/connectors-mail-flow-intelligence
+    etat: a-rediger
+  - id: exchange-ndr-4-4-312-dns-query-failed
+    titre: "Échec de résolution DNS du destinataire ou du smart host : 450 4.4.312 / 550 5.4.312 DNS query failed"
+    symptome: "Les messages vers un domaine externe restent en file puis expirent car la requête DNS (MX ou smart host du connecteur) échoue."
+    erreurs: ["450 4.4.312 DNS query failed", "550 5.4.312 Message expired, DNS query failed(ServerFailure)"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/defender-office-365/connectors-mail-flow-intelligence
+      - https://community.cloudflare.com/t/dns-query-failed-from-microsoft-email-services/358723
+    etat: a-rediger
+  - id: exchange-ndr-450-4-4-317-untrustedroot
+    titre: "NDR 450 4.4.317 Cannot connect to remote server [Message=UntrustedRoot] (chaîne de certificat incomplète)"
+    symptome: "La connexion TLS vers le serveur distant ou le smart host échoue car il présente un certificat sans sa chaîne complète."
+    erreurs: ["450 4.4.317 Cannot connect to remote server [Message=UntrustedRoot]"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-450-4-4-317-untrusted-root
+    etat: a-rediger
+  - id: exchange-451-4-4-62-attr35-mauvaise-region
+    titre: "Messages différés 451 4.4.62 Mail sent to the wrong Office 365 region (ATTR35)"
+    symptome: "Un serveur ou un appareil envoie directement à un point de terminaison Microsoft 365 qui n'est pas celui du MX du domaine ; les messages sont différés."
+    erreurs: ["451 4.4.62 Mail sent to the wrong Office 365 region. ATTR35."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/wrong-office-365-region-exo
+    etat: a-rediger
+  - id: exchange-ndr-4-4-8-mta-sts-validation
+    titre: "Remise sortante en échec MTA-STS (4.4.8 / 5.4.8 / 4.7.5 / 5.7.5)"
+    symptome: "Les messages vers un domaine qui publie une politique MTA-STS échouent : MX non listé dans la politique ou certificat du serveur distant invalide."
+    erreurs: ["4.4.8 MX hosts of <domain> failed MTA-STS validation", "5.7.5 Remote certificate failed MTA-STS validation. Reason: <validityStatus>"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+      - https://learn.microsoft.com/en-us/purview/enhancing-mail-flow-with-mta-sts
+    etat: a-rediger
+  - id: exchange-ndr-4-5-3-trop-de-destinataires
+    titre: "Remise différée 4.5.3 Too many recipients (plus de 200 destinataires d'un même domaine)"
+    symptome: "Un message adressé à plus de 200 destinataires d'un même domaine dans l'enveloppe SMTP est partiellement différé."
+    erreurs: ["4.5.3 Too many recipients"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+    etat: a-rediger
+  # ---------- NDR : 5.5.x / 5.6.x / 5.0.x ----------
+  - id: exchange-ndr-550-5-5-0-mailbox-unavailable-outlook-com
+    titre: "NDR 550 5.5.0 Requested action not taken: mailbox unavailable (adresse Outlook.com/Hotmail)"
+    symptome: "Un message vers une adresse @outlook.com ou @hotmail.com est refusé car l'adresse n'existe pas côté service grand public."
+    erreurs: ["550 5.5.0 Requested action not taken: mailbox unavailable"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+    etat: a-rediger
+  - id: exchange-ndr-550-5-6-11-bare-line-feed
+    titre: "NDR 550 5.6.11 Invalid characters (bare line feed) depuis une application ou en journalisation"
+    symptome: "Les messages générés par une application ou un système UNIX contenant des sauts de ligne LF isolés sont rejetés par un serveur de destination qui ne les accepte pas."
+    erreurs: ["550 5.6.11 SMTPSEND.BareLinefeedsAreIllegal; message contains bare linefeeds, which cannot be sent via DATA and receiving system does not support BDAT"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-550-5-6-11-in-exchange-online
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/antispam-and-protection/smtpsend-barelinefeedsareillegal-when-tracing-messages
+    etat: a-rediger
+  - id: exchange-ndr-554-5-6-0-invalid-message-content
+    titre: "NDR 554 5.6.0 Invalid message content (contenu MIME du message invalide)"
+    symptome: "Un message, souvent généré par une application ou contenant une pièce jointe mal formée, est rejeté car son contenu ne peut pas être converti."
+    erreurs: ["554 5.6.0 Invalid message content"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/invalid-message-ndr
+    etat: a-rediger
+  - id: exchange-ndr-550-5-6-0-approval-invalidexpiry-groupe-modere
+    titre: "NDR 550 5.6.0 APPROVAL.InvalidExpiry en écrivant à un groupe modéré"
+    symptome: "Aucun message ne peut être envoyé à un groupe de distribution modéré car la balise de rétention par défaut des destinataires modérés est absente."
+    erreurs: ["550 5.6.0 APPROVAL.InvalidExpiry; Cannot read expiry policy. [Stage: OnCreatedEvent][Agent: Approval Processing Agent]"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/550-5-6-0-approval-invalidexpiry-cannot-read-expiry-poilcy-error
+    etat: a-rediger
+  - id: exchange-ndr-550-5-0-350-x-dg-ref-header
+    titre: "NDR 550 5.0.350 (x-dg-ref header is too long ou erreur générique du destinataire)"
+    symptome: "Un message, souvent avec pièces jointes Outlook ou vers une organisation tierce, est refusé avec ce code générique ; la variante x-dg-ref vient d'un en-tête trop long."
+    erreurs: ["550 5.0.350 x-dg-ref header is too long", "550 5.0.350 Requested action not taken: policy violation detected (AS345)"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-550-5-0-350-in-exchange-online
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/550-x-dg-ref-header-too-long-ndr
+    etat: a-rediger
+  # ---------- NDR : 5.7.x restrictions de remise ----------
+  - id: exchange-ndr-550-5-7-1-delivery-not-authorized
+    titre: "NDR 550 5.7.1 Delivery not authorized (restriction de remise sur un groupe ou une boîte)"
+    symptome: "L'expéditeur n'a pas le droit d'écrire au destinataire : groupe restreint à certains expéditeurs, modération, règle de transport ou blocage par le destinataire."
+    erreurs: ["550 5.7.1 RESOLVER.RST.NotAuthorized; not authorized", "550 5.7.1 Delivery not authorized, message refused"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-550-5-7-1-in-exchange-online
+    etat: a-rediger
+  - id: exchange-ndr-550-5-7-1-transport-rules-rejectmessage
+    titre: "NDR 550 5.7.1 TRANSPORT.RULES.RejectMessage : message rejeté par une règle de flux"
+    symptome: "Un message est rejeté par une règle de flux de messagerie (transport) de l'organisation, avec le texte de rejet configuré par l'administrateur."
+    erreurs: ["550 5.7.1 TRANSPORT.RULES.RejectMessage; the message was rejected by organization policy"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1651579/550-5-7-1-transport-rules-rejectmessage-the-messag
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-550-5-7-1-in-exchange-online
+    etat: a-rediger
+  - id: exchange-ndr-5-7-1-unable-to-relay-blocked-by-customer-allow-list
+    titre: "NDR 5.7.1 Unable To Relay: Blocked by Customer Allow list"
+    symptome: "Un expéditeur passant par un serveur dont l'IP est sur une liste de blocage est rejeté alors que l'organisation l'a placé en liste verte de connexion."
+    erreurs: ["5.7.1 Unable To Relay: Blocked by Customer Allow list"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/unable-to-relay-blocked-by-allow-list
+    etat: a-rediger
+  - id: exchange-ndr-5-7-1-unable-to-relay
+    titre: "NDR 5.7.1 Unable to relay : relais refusé vers un domaine non hébergé"
+    symptome: "Une application ou un serveur tente de faire relayer par Exchange Online un message vers l'extérieur sans connecteur ni authentification valides."
+    erreurs: ["550 5.7.1 Unable to relay"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+    etat: a-rediger
+  - id: exchange-ndr-550-5-7-1-resolver-rst-authrequired
+    titre: "NDR 550 5.7.1 RESOLVER.RST.AuthRequired : destinataire réservé aux expéditeurs authentifiés"
+    symptome: "Un expéditeur externe ne peut pas écrire à un dossier public, un groupe ou une boîte configuré pour n'accepter que les expéditeurs internes."
+    erreurs: ["550 5.7.1 RESOLVER.RST.AuthRequired; authentication required"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/public-folders/authrequired-ndr
+    etat: a-rediger
+  - id: exchange-ndr-550-5-7-12-sender-not-authenticated-by-organization
+    titre: "NDR 550 5.7.12 : expéditeur non authentifié par l'organisation"
+    symptome: "L'adresse destinataire est configurée pour rejeter les messages venant de l'extérieur de l'organisation."
+    erreurs: ["550 5.7.12 RESOLVER.RST.SenderNotAuthenticatedByOrganization; Delivery restriction check failed as sender not authenticated"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-5-7-12-in-exchange-online
+    etat: a-rediger
+  - id: exchange-ndr-550-5-7-124-sender-not-in-allowed-list
+    titre: "NDR 550 5.7.124 : expéditeur absent de la liste des expéditeurs autorisés du groupe"
+    symptome: "Le groupe de distribution n'accepte que certains expéditeurs (ou ses seuls membres) et l'expéditeur n'en fait pas partie."
+    erreurs: ["550 5.7.124 RESOLVER.RST.NotAuthorized; Sender not in allowed-senders list"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-5-7-124-in-exchange-online
+    etat: a-rediger
+  - id: exchange-ndr-550-5-7-125-needssenderrestrictions
+    titre: "NDR 550 5.7.125 RESOLVER.GRP.Blocked.NeedsSenderRestrictions (grand groupe sans restriction)"
+    symptome: "L'envoi à un groupe de distribution très volumineux est bloqué tant que le groupe n'a pas de restriction d'expéditeurs ou de modération."
+    erreurs: ["550 5.7.125 RESOLVER.GRP.Blocked.NeedsSenderRestrictions"]
+    priorite: rare
+    format: express
+    sources:
+      - https://support.uidaho.edu/TDClient/40/Portal/KB/Article/2606/How-to-resolve-550-5-7-125-RESOLVER-GRP-Blocked-NeedsSenderRestrictions-bounce-message
+    etat: a-rediger
+  - id: exchange-ndr-550-5-7-133-groupe-expediteurs-externes
+    titre: "Les externes ne peuvent pas écrire à une liste de distribution (550 5.7.133)"
+    symptome: "Les expéditeurs externes reçoivent un NDR en écrivant à un groupe de distribution configuré pour n'accepter que les expéditeurs internes (réglage par défaut)."
+    erreurs: ["550 5.7.133 RESOLVER.RST.SenderNotAuthenticatedForGroup; authentication required; Delivery restriction check failed as sender not authenticated"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-5-7-133-in-exchange-online
+      - https://practical365.com/office-365-delivery-has-failed-to-these-recipients-or-groups/
+    etat: a-rediger
+  - id: exchange-ndr-550-5-7-134-boite-expediteurs-externes
+    titre: "NDR 550 5.7.134 : boîte aux lettres réservée aux expéditeurs authentifiés"
+    symptome: "Une boîte (souvent partagée) rejette les messages externes car l'option « Exiger que tous les expéditeurs soient authentifiés » est activée."
+    erreurs: ["550 5.7.134 RESOLVER.RST.SenderNotAuthenticatedForMailbox; Delivery restriction check failed as sender not authenticated"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-5-7-134-in-exchange-online
+    etat: a-rediger
+  - id: exchange-ndr-550-5-7-13-5-7-135-dossier-public-authentification
+    titre: "NDR 550 5.7.13 / 5.7.135 : dossier public réservé aux expéditeurs authentifiés"
+    symptome: "Un dossier public à extension messagerie refuse les messages venant de l'extérieur de l'organisation."
+    erreurs: ["550 5.7.135 RESOLVER.RST.SenderNotAuthenticatedForPublicFolder; Delivery restriction check failed as sender not authenticated"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-5-7-13-or-5-7-135-in-exchange-online
+    etat: a-rediger
+  - id: exchange-ndr-550-5-7-136-utilisateur-messagerie-authentification
+    titre: "NDR 550 5.7.136 : utilisateur de messagerie (mail user) réservé aux expéditeurs authentifiés"
+    symptome: "Un utilisateur de messagerie (adresse externe déclarée dans le tenant) rejette les messages venant de l'extérieur."
+    erreurs: ["550 5.7.136 RESOLVER.RST.SenderNotAuthenticated; Delivery restriction check failed as sender not authenticated"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-5-7-136-in-exchange-online
+    etat: a-rediger
+  - id: exchange-ndr-550-5-7-193-groupe-m365-externes
+    titre: "Les externes ne peuvent pas écrire à un groupe Microsoft 365 (550 5.7.193)"
+    symptome: "Les expéditeurs externes reçoivent « Le groupe n'est pas configuré pour recevoir des messages de… » car l'option d'acceptation des messages externes du groupe est désactivée."
+    erreurs: ["550 5.7.193 ... isn't set up to receive messages from"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr-when-external-users-send-email-to-microsoft-365-group
+    etat: a-rediger
+  # ---------- NDR : 5.7.x authentification, réputation, blocages ----------
+  - id: exchange-ndr-550-5-7-23-spf-violation
+    titre: "Message rejeté pour violation SPF (550 5.7.23)"
+    symptome: "Le serveur destinataire rejette le message car l'IP d'envoi n'est pas autorisée par l'enregistrement SPF du domaine expéditeur (service tiers non ajouté, transfert, passerelle)."
+    erreurs: ["550 5.7.23 The message was rejected because of Sender Policy Framework violation"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-5-7-23-in-exchange-online
+      - https://learn.microsoft.com/en-us/defender-office-365/email-authentication-troubleshoot
+    etat: a-rediger
+  - id: exchange-ndr-5-7-25-4-7-26-ipv6-rdns-spf-dkim
+    titre: "Envoi en IPv6 vers Microsoft 365 refusé : DNS inverse absent ou SPF/DKIM non valides (5.7.25 / 4.7.26)"
+    symptome: "Un serveur qui envoie en IPv6 vers Exchange Online est rejeté car son adresse IPv6 n'a pas d'enregistrement PTR ou le message n'est ni SPF ni DKIM valide."
+    erreurs: ["5.7.25 Access denied, the sending IPv6 address [2a01:111:f200:2004::240] must have a reverse DNS record", "4.7.26 Access denied, a message sent over IPv6 [2a01:111:f200:2004::240] must pass either SPF or DKIM validation, this message is not signed"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+    etat: a-rediger
+  - id: exchange-ndr-5-7-510-ipv6-non-accepte
+    titre: "NDR 5.7.510 : le domaine destinataire n'accepte pas le courrier en IPv6"
+    symptome: "Un serveur tente de remettre en IPv6 à un domaine Microsoft 365 qui n'a pas activé la réception IPv6."
+    erreurs: ["5.7.510 Access denied, [contoso.com] does not accept email over IPv6"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+    etat: a-rediger
+  - id: exchange-ndr-5-7-508-plage-ipv6-limite
+    titre: "NDR 5.7.508 : la plage IPv6 de l'expéditeur a dépassé les limites autorisées"
+    symptome: "Une plage IPv6 envoie trop de messages en trop peu de temps vers Microsoft 365 et est temporairement refusée."
+    erreurs: ["5.7.508 Access denied, [$SenderIPAddress] has exceeded permitted limits within $range range"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+    etat: a-rediger
+  - id: exchange-ndr-5-7-57-smtp-anonyme-application
+    titre: "Application ou copieur : 5.7.57 Client was not authenticated to send anonymous mail during MAIL FROM"
+    symptome: "Un copieur, un logiciel métier ou un script envoie via smtp.office365.com sans authentification valide (identifiants, TLS, SMTP AUTH désactivé ou mauvais point de terminaison)."
+    erreurs: ["530 5.7.57 SMTP; Client was not authenticated to send anonymous mail during MAIL FROM"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-5-7-57-in-exchange-online
+      - https://learn.microsoft.com/en-au/answers/questions/1691684/getting-530-5-7-57-smtp-client-was-not-authenticat
+    etat: a-rediger
+  - id: exchange-ndr-550-5-7-64-tenantattribution
+    titre: "Relais via connecteur refusé : 550 5.7.64 TenantAttribution; Relay Access Denied"
+    symptome: "Le serveur local, le copieur ou la passerelle qui relaie par Exchange Online n'est plus reconnu par le connecteur entrant (IP publique changée, certificat renouvelé, chaîne TLS incomplète)."
+    erreurs: ["550 5.7.64 TenantAttribution; Relay Access Denied", "550 5.7.64 TenantAttribution; Relay Access Denied ATTR36"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-5-7-64-in-exchange-online
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/relay-access-denied-smtp
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/tenantattribution-ndr
+    etat: a-rediger
+  - id: exchange-ndr-550-5-7-367-relay-pool-transfert
+    titre: "Message transféré rejeté par la passerelle aval : 550 5.7.367 not permitted to relay"
+    symptome: "Les messages transférés ou relayés (passerelle Proofpoint, Barracuda…) passent par le pool de relais Microsoft car SPF/DKIM échouent, puis sont refusés par le destinataire."
+    erreurs: ["550 5.7.367 Remote server returned not permitted to relay"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/forwarded-message-rejected-5-7-367-ndr
+      - https://techcommunity.microsoft.com/blog/exchange/loop-prevention-in-exchange-online-demystified/2312258
+    etat: a-rediger
+  - id: exchange-ndr-5-7-501-502-503-banned-sender
+    titre: "Compte expéditeur banni pour spam : 5.7.501 / 5.7.502 / 5.7.503"
+    symptome: "Le compte d'envoi a été banni après détection d'activité de spam (compte compromis, campagne de masse) ; les messages sont refusés."
+    erreurs: ["550 5.7.501 Access denied, spam abuse detected", "550 5.7.502 Access denied, banned sender", "550 5.7.503 Access denied, banned sender"]
+    priorite: critique
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+      - https://techcommunity.microsoft.com/t5/outlook/remote-server-returned-550-5-7-501-access-denied-spam-abuse/m-p/15120
+    etat: a-rediger
+  - id: exchange-ndr-5-7-504-5-7-505-destinataire-refuse
+    titre: "NDR 5.7.504 / 5.7.505 : destinataire refusé ou banni par Microsoft 365"
+    symptome: "L'adresse que l'on cherche à joindre n'est pas valide ou a été bannie côté Exchange Online Protection."
+    erreurs: ["5.7.504 Recipient address rejected: Access denied", "5.7.505 Access denied, banned recipient"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+    etat: a-rediger
+  - id: exchange-ndr-5-7-506-bad-helo
+    titre: "NDR 5.7.506 Access Denied, Bad HELO : le serveur d'envoi se présente avec un mauvais nom"
+    symptome: "Un serveur de messagerie s'annonce (HELO/EHLO) avec le nom du serveur Microsoft auquel il se connecte au lieu de son propre FQDN ; ses messages sont refusés."
+    erreurs: ["5.7.506 Access Denied, Bad HELO"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+    etat: a-rediger
+  - id: exchange-ndr-5-7-507-5-7-513-ip-bloquee-par-destinataire
+    titre: "IP d'envoi bloquée par l'organisation destinataire (5.7.507 / 5.7.513 Customer Block list)"
+    symptome: "Le destinataire Microsoft 365 a ajouté l'IP d'envoi à sa propre liste de blocage de connexions ; seul son administrateur peut lever le blocage."
+    erreurs: ["5.7.507 Access denied, rejected by recipient", "5.7.513 Service unavailable, Client host [$ConnectingIP] blocked by $recipientDomain using Customer Block list (AS16012607)"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+    etat: a-rediger
+  - id: exchange-ndr-550-5-7-509-dmarc-reject
+    titre: "Message rejeté : le domaine expéditeur échoue DMARC avec une politique reject (550 5.7.509)"
+    symptome: "Les messages d'un domaine (application, scanner, service marketing envoyant au nom du domaine) sont rejetés car ni SPF ni DKIM alignés ne passent et la politique DMARC est p=reject."
+    erreurs: ["550 5.7.509 Access denied, sending domain [contoso.com] does not pass DMARC verification and has a DMARC policy of reject"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+      - https://techcommunity.microsoft.com/blog/exchange/announcing-new-dmarc-policy-handling-defaults-for-enhanced-email-security/3878883
+    etat: a-rediger
+  - id: exchange-ndr-5-7-511-ip-bannie-delist
+    titre: "IP ou expéditeur banni par Microsoft : 550 5.7.511 Access denied, banned sender"
+    symptome: "Toutes les remises vers Microsoft 365 depuis une IP échouent ; le portail de retrait de liste ne s'applique pas, il faut écrire à Microsoft."
+    erreurs: ["550 5.7.511 Access denied, banned sender"]
+    priorite: critique
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/defender-office-365/external-senders-use-the-delist-portal-to-unblock-yourself
+      - https://learn.microsoft.com/en-us/answers/questions/698255/550-5-7-511-access-denied-banned-sender-45-users-i
+    etat: a-rediger
+  - id: exchange-ndr-550-5-7-512-from-rfc5322
+    titre: "NDR 550 5.7.512 : en-tête From absent ou non conforme RFC 5322"
+    symptome: "Une application envoie des messages sans adresse De valide (champ vide, sans chevrons avec un MAIL FROM vide) ; Exchange Online les refuse."
+    erreurs: ["550 5.7.512 Access denied, message must be RFC 5322 section 3.6.2 compliant"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+      - https://learn.microsoft.com/en-us/archive/blogs/tzink/sending-mail-with-invalid-from-addresses-to-office-365
+    etat: a-rediger
+  - id: exchange-ndr-550-5-7-515-outlook-com-authentification-insuffisante
+    titre: "Envois vers Outlook.com/Hotmail rejetés : 550 5.7.515 (exigences des expéditeurs en volume)"
+    symptome: "Les messages vers des adresses grand public Microsoft sont rejetés car le domaine expéditeur n'a pas SPF, DKIM et DMARC conformes et alignés."
+    erreurs: ["550 5.7.515 Access denied, sending domain <domain> does not meet the required authentication level"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/en-us/outlook/fix-ndr-error-550-5-7-515-in-outlook-com
+      - https://techcommunity.microsoft.com/blog/outlook/strengthening-email-security-outlook-new-requirements-for-high-volume-senders/4399730
+    etat: a-rediger
+  - id: exchange-ndr-550-5-7-520-transfert-externe-bloque
+    titre: "Transfert automatique vers l'extérieur bloqué (550 5.7.520)"
+    symptome: "Les messages transférés vers une adresse externe reviennent en erreur."
+    erreurs: ["550 5.7.520 Access denied, Your organization does not allow external forwarding. Please contact your administrator for further assistance. AS(7555)"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/defender-office-365/outbound-spam-policies-external-email-forwarding
+    etat: redigee
+  - id: exchange-ndr-5-7-606-649-ip-bannie-portail-delist
+    titre: "IP d'envoi bannie : 550 5.7.606-649 Access denied, banned sending IP (portail sender.office.com)"
+    symptome: "Un serveur de messagerie externe ne peut plus écrire à aucun destinataire Microsoft 365 ; la levée se demande sur le portail de retrait de liste."
+    erreurs: ["550 5.7.606-649 Access denied, banned sending IP [IP1.IP2.IP3.IP4]; To request removal from this list please visit https://sender.office.com/"]
+    priorite: critique
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/defender-office-365/external-senders-use-the-delist-portal-to-unblock-yourself
+      - https://learn.microsoft.com/en-us/archive/blogs/eopfieldnotes/take-action-yourself-on-blocked-ips-and-banned-senders
+    etat: a-rediger
+  - id: exchange-ndr-5-7-703-tenant-allow-block-list
+    titre: "Envoi bloqué par la liste d'autorisation/blocage du tenant (5.7.703)"
+    symptome: "Un utilisateur interne ne peut pas écrire à une adresse ou un domaine car un administrateur l'a bloqué dans la Tenant Allow/Block List."
+    erreurs: ["5.7.703 Your message can't be delivered because messages to XXX, YYY are blocked by your organization using Tenant Allow Block List"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-codes-550-5-7-703-550-5-7-705-550-5-7-708-550-5-7-750
+    etat: a-rediger
+  - id: exchange-ndr-5-7-705-tenant-seuil-depasse
+    titre: "Tout le tenant bloqué en envoi : 550 5.7.705 Access denied, tenant has exceeded threshold"
+    symptome: "Plus aucun utilisateur ne peut envoyer vers l'extérieur : la majorité du trafic sortant du tenant a été jugée suspecte (serveur local ou compte admin compromis)."
+    erreurs: ["550 5.7.705 Access denied, tenant has exceeded threshold"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-codes-550-5-7-703-550-5-7-705-550-5-7-708-550-5-7-750
+      - https://support.microsoft.com/en-us/servicing/exchange/online/troubleshooting/ndr-error-codes-550-5-7-703-550-5-7-705-550-5-7-708-and-550-5-7-750
+    etat: a-rediger
+  - id: exchange-ndr-5-7-708-ip-faible-reputation-nouveau-tenant
+    titre: "Nouveau tenant ou essai : 550 5.7.708 Access denied, traffic not accepted from this IP"
+    symptome: "Un tenant récent, en essai ou réactivé n'arrive pas à envoyer vers l'extérieur : le trafic part d'un pool d'IP à faible réputation."
+    erreurs: ["550 5.7.708 Access denied, traffic not accepted from this IP"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-codes-550-5-7-703-550-5-7-705-550-5-7-708-550-5-7-750
+      - https://techcommunity.microsoft.com/discussions/microsoft-365/created-dev-o365-tenant-to-test-email-everyting-blocked-with-5-7-708-service-una/3934612
+    etat: a-rediger
+  - id: exchange-ndr-5-7-750-domaine-non-enregistre
+    titre: "Envoi depuis un domaine non enregistré dans le tenant : 550 5.7.750"
+    symptome: "Des messages relayés via un connecteur utilisent une adresse De dont le domaine n'est ni ajouté ni vérifié dans Microsoft 365 ; l'envoi est bloqué."
+    erreurs: ["550 5.7.750 Service unavailable. Client blocked from sending from unregistered domains"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-codes-550-5-7-703-550-5-7-705-550-5-7-708-550-5-7-750
+      - https://techcommunity.microsoft.com/t5/microsoft-365/remote-server-returned-550-5-7-750-service-unavailable-client/m-p/3653478
+    etat: a-rediger
+  - id: exchange-ndr-5-7-800-domaine-expediteur-banni
+    titre: "NDR 5.7.800 : domaine expéditeur (EHLO, P1 ou P2) banni pour spam"
+    symptome: "Le domaine utilisé dans l'EHLO ou l'adresse d'expéditeur a été banni par Microsoft après détection de spam."
+    erreurs: ["5.7.800 Access denied, banned sender"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+    etat: a-rediger
+  - id: exchange-ndr-451-4-7-500-699-asxxx-restriction-temporaire
+    titre: "Remise différée vers Microsoft 365 : 451 4.7.500-699 (ASxxx) Access denied, please try again later"
+    symptome: "Un serveur externe voit ses messages différés, parfois pendant des heures, car Microsoft a détecté une activité suspecte depuis son IP ou son domaine (nouvelle IP, volume inhabituel)."
+    erreurs: ["451 4.7.500 Server busy. Please try again later", "451 4.7.500-699 (ASxxx) Access denied, please try again later"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-451-4-7-500-699-asxxx-in-exchange-online
+      - https://www.spamresource.com/2023/10/microsoft-451-47500-server-busy-errors.html
+    etat: a-rediger
+  - id: exchange-ndr-4-7-850-899-ip-restriction-temporaire
+    titre: "Remise différée 4.7.850-899 : IP d'envoi temporairement restreinte"
+    symptome: "Une activité suspecte a été détectée sur l'IP d'envoi ; les messages sont différés pendant l'évaluation."
+    erreurs: ["4.7.850-899 Access denied, please try again later"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+    etat: a-rediger
+  # ---------- Limites d'envoi du tenant ----------
+  - id: exchange-ndr-5-7-233-limite-destinataires-externes-tenant
+    titre: "Tenant bloqué en envoi externe : limite quotidienne de destinataires externes (5.7.233 / 5.7.232 TERRL)"
+    symptome: "Plus aucun message vers l'extérieur ne part pour tout le tenant : le nombre de destinataires externes sur 24 h glissantes dépasse la limite liée au nombre de licences (5.7.232 pour un tenant d'essai)."
+    erreurs: ["550 5.7.233 Your message can't be sent because your tenant exceeded its daily limit for sending email to external recipients (tenant external recipient rate limit)", "550 5.7.232 Your message can't be sent because your trial tenant has exceeded its daily limit for sending email to external recipients"]
+    priorite: critique
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+      - https://techcommunity.microsoft.com/blog/exchange/introducing-exchange-online-tenant-outbound-email-limits/4372797
+      - https://mc.merill.net/message/MC1239178
+    etat: a-rediger
+  - id: exchange-ndr-5-7-236-limite-domaine-onmicrosoft
+    titre: "Envoi externe bloqué depuis l'adresse en onmicrosoft.com (5.7.236, limite de 100 destinataires externes)"
+    symptome: "Un tenant qui envoie encore depuis son domaine initial contoso.onmicrosoft.com est limité à 100 destinataires externes par 24 h ; les envois suivants sont refusés."
+    erreurs: ["5.7.236 Your message can't be sent because your tenant has exceeded its daily limit for sending email to external recipients from your tenant's onmicrosoft.com domains"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+      - https://techcommunity.microsoft.com/blog/exchange/limiting-onmicrosoft-domain-usage-for-sending-emails/4446167
+    etat: a-rediger
+  # ---------- TLS / DANE sortant ----------
+  - id: exchange-ndr-dane-dnssec-4-7-321-a-325
+    titre: "Remise sortante en échec DANE/DNSSEC (4.7.321 à 4.7.325 / 5.7.321 à 5.7.325)"
+    symptome: "Les messages vers un domaine protégé par DNSSEC/DANE échouent : STARTTLS non pris en charge, certificat expiré, enregistrement TLSA invalide ou nom de certificat incorrect."
+    erreurs: ["4.7.321 starttls-not-supported: Destination mail server must support TLS to receive mail.", "4.7.322 certificate-expired: Destination mail server's certificate is expired.", "4.7.323 tlsa-invalid: The domain failed DANE validation.", "4.7.324 dnssec-invalid: Destination domain returned invalid DNSSEC records", "4.7.325 certificate-host-mismatch: Remote certificate MUST have a common name or subject alternative name that matches the hostname (DANE)"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+    etat: a-rediger
+  - id: exchange-tls-connexion-serveur-distant-impossible-certificat-sha1
+    titre: "Impossible d'établir une connexion TLS vers un serveur distant (algorithme de signature du certificat non sécurisé)"
+    symptome: "Les messages vers un partenaire restent en file : la négociation TLS échoue car la chaîne de certificat du serveur distant utilise un algorithme jugé non sûr."
+    erreurs: ["Cannot establish TLS connection to remote mail server"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/cannot-establish-tls-connection-to-remote-mail-server
+    etat: a-rediger
+  - id: exchange-tls-1-0-1-1-socketerror-flux
+    titre: "Erreurs SocketError dans le flux de messagerie avec TLS 1.0 / 1.1 (serveur ou appareil ancien)"
+    symptome: "Un serveur local, un copieur ou une passerelle ne parvient plus à envoyer ni recevoir avec Exchange Online car il ne négocie que TLS 1.0 ou 1.1."
+    erreurs: ["SocketError", "421 4.4.1 Connection timed out"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/send-receive-emails-socketerror
+    etat: a-rediger
+  # ---------- SMTP AUTH, relais d'applications et copieurs ----------
+  - id: exchange-smtp-auth-desactive-5-7-139
+    titre: "Envoi SMTP d'une application refusé : 535 5.7.139 SmtpClientAuthentication is disabled for the Tenant"
+    symptome: "Un copieur, un logiciel ou un script qui s'authentifie sur smtp.office365.com est refusé car SMTP AUTH est désactivé pour le tenant ou la boîte."
+    erreurs: ["535 5.7.139 Authentication unsuccessful, SmtpClientAuthentication is disabled for the Tenant. Visit https://aka.ms/smtp_auth_disabled for more information."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/fix-issues-with-printers-scanners-and-lob-applications-that-send-email-using-off
+      - https://community.sisense.com/kb/troubleshooting/outlook365-error---535-5-7-139/24817
+    etat: a-rediger
+  - id: exchange-smtp-auth-security-defaults-5-7-139
+    titre: "SMTP AUTH refusé par les paramètres de sécurité par défaut (535 5.7.139 security defaults policy)"
+    symptome: "L'authentification SMTP de base d'une application échoue car les paramètres de sécurité par défaut ou l'accès conditionnel bloquent l'authentification héritée."
+    erreurs: ["535 5.7.139 Authentication unsuccessful, user is locked by your organization's security defaults policy", "535 5.7.139 Authentication unsuccessful, the request did not meet the criteria to be authenticated successfully"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://manageengine.com/network-monitoring/how-to/fix-smtpclientauth-disabled-error.html
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/fix-issues-with-printers-scanners-and-lob-applications-that-send-email-using-off
+    etat: a-rediger
+  - id: exchange-smtp-auth-535-5-7-3-authentication-unsuccessful
+    titre: "SMTP AUTH : 535 5.7.3 Authentication unsuccessful (identifiants, MFA, SMTP AUTH de la boîte)"
+    symptome: "Une application ou un copieur configuré avec smtp.office365.com:587 échoue à l'authentification : mot de passe, MFA, SMTP AUTH désactivé sur la boîte ou authentification de base bloquée."
+    erreurs: ["535 5.7.3 Authentication unsuccessful"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/134212/office-365-smtp-cant-authenticate
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/fix-issues-with-printers-scanners-and-lob-applications-that-send-email-using-off
+    etat: a-rediger
+  - id: exchange-smtp-auth-fin-authentification-de-base
+    titre: "Fin de l'authentification de base pour SMTP AUTH : copieurs et applications qui cessent d'envoyer"
+    symptome: "Des appareils ou applications qui envoient avec identifiant/mot de passe via smtp.office365.com cessent de fonctionner lors du retrait de l'authentification de base (OAuth obligatoire)."
+    erreurs: ["550 5.7.30"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://mc.merill.net/message/MC786329
+      - https://learn.microsoft.com/en-us/answers/questions/5645009/exchange-online-to-retire-basic-auth-for-client-su
+      - https://www.captaindns.com/en/blog/microsoft-exchange-basic-auth-smtp-end
+    etat: a-rediger
+  - id: exchange-smtp-5-7-60-send-as-application
+    titre: "Copieur ou application : 5.7.60 Client does not have permissions to send as this sender"
+    symptome: "L'appareil s'authentifie avec un compte mais envoie avec une autre adresse De, sans droit Envoyer en tant que sur cette adresse."
+    erreurs: ["5.7.60 SMTP; Client does not have permissions to send as this sender"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/fix-issues-with-printers-scanners-and-lob-applications-that-send-email-using-off
+    etat: a-rediger
+  - id: exchange-copieur-scan-to-mail-ne-fonctionne-plus
+    titre: "Le scan vers e-mail d'un copieur ne fonctionne plus avec Microsoft 365"
+    symptome: "Le copieur multifonction n'envoie plus les numérisations : méthode d'envoi (SMTP AUTH, envoi direct, relais par connecteur) inadaptée, port ou TLS incorrects, IP publique changée."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/fix-issues-with-printers-scanners-and-lob-applications-that-send-email-using-off
+      - https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/how-to-set-up-a-multifunction-device-or-application-to-send-email-using-microsoft-365-or-office-365
+      - https://learn.microsoft.com/en-au/answers/questions/1879579/multi-function-printers-and-smtp-auth-deprecation
+    etat: a-rediger
+  - id: exchange-envoi-direct-bloque-rejectdirectsend
+    titre: "Envoi direct (Direct Send) refusé après activation de RejectDirectSend"
+    symptome: "Des copieurs, applications ou services tiers qui envoient anonymement vers le MX du domaine sont rejetés une fois l'option Reject Direct Send activée sans connecteur partenaire."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://trundl.com/blog/unpacking-rejectdirectsend-microsoft-customers/
+      - https://cmitsolutions.com/chicago-il-1221/lp/reject-direct-send/
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/fix-issues-with-printers-scanners-and-lob-applications-that-send-email-using-off
+    etat: a-rediger
+  - id: exchange-smtp-serveur-inconnu-client-smtp
+    titre: "Client SMTP : « le serveur est inconnu, introuvable ou mal configuré » en se connectant à Exchange Online"
+    symptome: "Une application ou un client de messagerie ne trouve pas le serveur SMTP Exchange Online (mauvais nom d'hôte, port bloqué, chiffrement incorrect)."
+    erreurs: ["Sending of message failed."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/send-emails/error-when-connecting-to-exchange-online-via-smtp-client
+    etat: a-rediger
+  - id: exchange-smtp-auth-limitation-connexions-messages
+    titre: "SMTP AUTH limité : 421 4.3.240 trop de connexions simultanées, 30 messages par minute"
+    symptome: "Une application qui envoie en masse via SMTP AUTH voit ses connexions fermées ou ses envois ralentis/refusés (limites de concurrence, de débit et de stockage de soumission)."
+    erreurs: ["421 4.3.240 The maximum number of concurrent server connections has exceeded a per authenticated source limit, closing transmission channel"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/send-emails/smtp-submission-improvements
+      - https://learn.microsoft.com/en-us/exchange/mail-flow-best-practices/continuous-error-throttling-smtp-auth-submissions
+    etat: a-rediger
+  - id: exchange-hve-erreurs-envoi-volume
+    titre: "Erreurs d'envoi avec High Volume Email (HVE) : jeton OAuth, compte mal configuré, destinataires externes"
+    symptome: "Les envois via le service High Volume Email échouent : jeton expiré ou permissions incorrectes, compte HVE mal configuré, tenant d'essai ou destinataires externes non pris en charge."
+    erreurs: ["535 5.7.143 XOAUTH2 authentication failed. Expired token.", "535 5.7.144 XOAUTH2 authentication failed. Invalid API permissions.", "550 5.2.240 The email account is not set up properly for the HVE service. Contact your administrator.", "550 5.7.244 Message rejected. External sending is not supported for HVE accounts."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
+    etat: a-rediger
+  # ---------- Flux de messagerie, domaines et connecteurs ----------
+  - id: exchange-mails-non-recus
+    titre: "Un utilisateur ne reçoit pas certains e-mails (suivi des messages)"
+    symptome: "Un expéditeur affirme avoir envoyé un message introuvable : jamais reçu, mis en quarantaine, filtré en courrier indésirable, déplacé par une règle ou bien remis."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/email-delivery-issues
+    etat: redigee
+  - id: exchange-mails-non-recus-nouveau-domaine
+    titre: "Aucun message reçu sur un domaine nouvellement ajouté à Microsoft 365"
+    symptome: "Après l'ajout d'un domaine personnalisé, les messages externes n'arrivent pas : enregistrement MX absent ou pointant encore vers l'ancien hébergeur, domaine non vérifié ou propagation DNS."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/emails-not-received-for-new-domain
+    etat: a-rediger
+  - id: exchange-messages-entrants-en-retard
+    titre: "Les messages entrants arrivent avec plusieurs heures de retard"
+    symptome: "Les messages externes arrivent tardivement : incident de service Microsoft, report par le filtrage (expéditeur nouveau ou à faible réputation), passerelle tierce ou signature serveur en amont."
+    erreurs: ["451 4.7.500 Server busy. Please try again later"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/email-delivery-issues
+      - https://learn.microsoft.com/en-us/answers/questions/1412219/e-mail-sending-to-offce-microsoft365-customers-del
+    etat: a-rediger
+  - id: exchange-messages-pieces-jointes-retardes-signature-tiers
+    titre: "Messages avec pièces jointes retardés ou jamais remis (service de signature tiers comme Exclaimer)"
+    symptome: "Les messages qui transitent par un service tiers de signatures restent bloqués plusieurs heures ou n'arrivent jamais dans la boîte du destinataire."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/messages-with-attachments-are-not-delivered
+    etat: a-rediger
+  - id: exchange-suivi-message-introuvable-ou-delai
+    titre: "Le suivi des messages (message trace) ne trouve pas le message ou affiche « En attente »"
+    symptome: "Le message n'apparaît pas dans le suivi des messages, ou reste à l'état En attente / Différé : délai d'indexation, mauvais critères, rapport étendu nécessaire au-delà de 10 jours."
+    erreurs: ["Pending", "Deferred"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/email-delivery-issues
+    etat: a-rediger
+  - id: exchange-connecteur-sortant-validation-echoue
+    titre: "La validation d'un connecteur sortant échoue dans le centre d'administration Exchange"
+    symptome: "Le test de validation du connecteur sortant vers un partenaire ou une passerelle échoue : domaine destinataire non inclus dans le connecteur, smart host injoignable ou TLS refusé."
+    erreurs: ["The domain of the recipient is not configured as part of connector."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/cannot-validate-outbound-connector
+    etat: a-rediger
+  - id: exchange-connecteur-limite-administrative-domaines
+    titre: "« The administrative limit for this request was exceeded » en ajoutant des domaines à un connecteur sortant"
+    symptome: "L'ajout d'un grand nombre de domaines destinataires à un connecteur sortant échoue."
+    erreurs: ["The administrative limit for this request was exceeded."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/administrative-limit-for-this-request-was-exceeded-error
+    etat: a-rediger
+  - id: exchange-connecteur-entrant-propriete-trop-longue
+    titre: "« The length of the property is too long » en ajoutant des domaines expéditeurs à un connecteur entrant"
+    symptome: "Le connecteur entrant refuse la liste de domaines expéditeurs car elle dépasse la longueur maximale autorisée."
+    erreurs: ["The length of the property is too long. The maximum length is 2243 and the length of the value provided is xxx."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/property-length-too-long-error
+    etat: a-rediger
+  - id: exchange-connecteur-certificat-relais-onprem
+    titre: "Relais du serveur local via Microsoft 365 en échec après changement de certificat (connecteur basé sur certificat)"
+    symptome: "Après renouvellement du certificat du serveur local, Exchange Online n'associe plus les messages au connecteur entrant et refuse de les relayer vers l'extérieur."
+    erreurs: ["550 5.7.64 TenantAttribution; Relay Access Denied"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/office-365-notice
+      - https://learn.microsoft.com/nl-nl/archive/blogs/eopfieldnotes/when-a-certificated-based-connector-is-not-working
+    etat: a-rediger
+  - id: exchange-hostname-ne-correspond-pas-ip
+    titre: "Envoi vers l'extérieur refusé : le nom d'hôte ne correspond pas à l'adresse IP"
+    symptome: "Un destinataire externe rejette les messages car le nom annoncé par le serveur d'envoi ne correspond pas à son IP (DNS inverse, smart host local)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/antispam-and-protection/cannot-send-emails-to-external-recipients
+    etat: a-rediger
+  - id: exchange-accuse-reception-non-genere-destinataire-externe
+    titre: "« Delivery to these recipients or groups is complete, but no delivery notification was sent by the destination server »"
+    symptome: "L'expéditeur demande un accusé de remise mais le serveur externe ne renvoie aucune notification ; un message d'information est reçu à la place."
+    erreurs: ["Delivery to these recipients or groups is complete, but no delivery notification was sent by the destination server."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/delivery-receipts-are-not-generated
+    etat: a-rediger
+  - id: exchange-ndr-personnalise-remplace-par-message-systeme
+    titre: "Les messages NDR personnalisés sont remplacés par les messages système par défaut"
+    symptome: "Les textes personnalisés des rapports de non-remise configurés par l'administrateur n'apparaissent pas : le message système Microsoft 365 s'affiche."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/custom-messages-replaced-by-default-system-messages
+    etat: a-rediger
+  - id: exchange-passerelle-tierce-proofpoint-mx-flux
+    titre: "Flux de messagerie perturbé avec une passerelle tierce devant Microsoft 365 (Proofpoint, Mimecast…)"
+    symptome: "Après mise en place d'une passerelle de filtrage en amont, des messages sont rejetés, mal filtrés ou échouent SPF car Exchange Online voit l'IP de la passerelle (connecteur, Enhanced Filtering)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/configure-proofpoint-with-exchange
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/forwarded-message-rejected-5-7-367-ndr
+    etat: a-rediger
+  - id: exchange-diagnostic-flux-messagerie-auto-assistance
+    titre: "Diagnostiquer un problème de remise avec les diagnostics intégrés du centre d'administration"
+    symptome: "Le technicien ne sait pas par où commencer face à un problème de remise : les diagnostics d'auto-assistance Microsoft 365 analysent le cas (NDR, suivi, configuration)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/self-help-diagnostics
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/email-delivery-issues
+    etat: a-rediger
+  # ---------- Hybride : flux de messagerie ----------
+  - id: exchange-hybride-onprem-ne-recoit-pas-depuis-cloud
+    titre: "Hybride : les utilisateurs locaux ne reçoivent pas les messages des utilisateurs Microsoft 365"
+    symptome: "Les messages envoyés depuis les boîtes Exchange Online vers les boîtes encore locales reviennent en 550 5.1.1 ou n'arrivent pas (domaine accepté, connecteur sortant vers le local)."
+    erreurs: ["550 5.1.1 RESOLVER.ADR.ExRecipNotFound; not found"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/on-premises-users-not-getting-emails-from-microsoft-365
+    etat: a-rediger
+  - id: exchange-hybride-envoi-boite-migree-550-5-1-1
+    titre: "Hybride : impossible d'écrire à une boîte récemment migrée vers Exchange Online (550 5.1.1)"
+    symptome: "Les utilisateurs locaux reçoivent un NDR en écrivant à une boîte déplacée vers le cloud : adresse cible (targetAddress) ou domaine de routage mal configuré."
+    erreurs: ["550 5.1.1 RESOLVER.ADR.RecipNotFound; not found"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/delivery-has-failed-and-550-5-1-1-resolver.adr.recipnotfound
+    etat: a-rediger
+  - id: exchange-hybride-messages-cloud-rejetes-ndr
+    titre: "Hybride : les messages envoyés depuis les boîtes cloud sont rejetés avec NDR"
+    symptome: "Les messages des boîtes Exchange Online passant par le serveur local sont rejetés (connecteur de réception local, TLS ou relais mal configurés)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/emails-are-rejected-and-receive-ndrs
+    etat: a-rediger
+  - id: exchange-hybride-flux-arrete-event-2004-untrustedroot
+    titre: "Hybride : le flux vers Exchange Online s'arrête, événement 2004 UntrustedRoot"
+    symptome: "Le serveur local n'envoie plus vers Exchange Online ; l'Observateur d'événements journalise l'échec d'établissement du canal TLS (UntrustedRoot, Access Denied)."
+    erreurs: ["Event ID: 2004", "Failed to establish appropriate TLS channel: UntrustedRoot: Access Denied"]
+    priorite: critique
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/mail-flow-stops-event-2004
+    etat: a-rediger
+  - id: exchange-hybride-starttls-absent-nouveau-certificat
+    titre: "Hybride : plus aucun message reçu après installation d'un nouveau certificat (STARTTLS absent)"
+    symptome: "Après remplacement du certificat sur le serveur hybride, la commande STARTTLS n'est plus proposée et Exchange Online ne peut plus lui remettre de messages."
+    erreurs: ["451 5.7.3 STARTTLS is required to send mail", "450 4.4.101 Proxy session setup failed on Frontend"]
+    priorite: critique
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/cannot-receive-mail-with-new-certificate
+    etat: a-rediger
+  - id: exchange-hybride-messages-quarantaine-spf-centralise
+    titre: "Hybride en transport centralisé : messages mis en quarantaine à tort ou échec SPF"
+    symptome: "Avec le routage centralisé via le serveur local, des messages légitimes sont mis en quarantaine ou échouent SPF car la promotion des en-têtes inter-locaux est mal configurée."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/email-messages-incorrectly-quarantined
+    etat: a-rediger
+  - id: exchange-hybride-messages-internes-vus-externes-edge
+    titre: "Hybride : les messages envoyés depuis le serveur Edge local apparaissent comme externes"
+    symptome: "Les messages des utilisateurs locaux transitant par un serveur Edge arrivent dans Exchange Online comme s'ils venaient de l'extérieur (balise externe, anti-spam)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/email-sent-from-edge-transport-server-appears-as-mail-from-external-contacts
+    etat: a-rediger
+  - id: exchange-hybride-groupe-m365-ne-recoit-pas-du-local
+    titre: "Hybride : les groupes Microsoft 365 ne reçoivent pas les messages envoyés depuis les boîtes locales"
+    symptome: "Les utilisateurs locaux ne peuvent pas écrire aux groupes Microsoft 365 car le groupe n'existe pas dans l'annuaire local (réécriture des groupes non activée)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/microsoft-365-group-email-delivery-fails
+    etat: a-rediger
+  # ---------- Boîtes partagées et délégations ----------
+  - id: exchange-boite-partagee-acces
+    titre: "La boîte aux lettres partagée n'apparaît pas ou l'envoi « en tant que » échoue"
+    symptome: "L'utilisateur ne voit pas une boîte partagée dans Outlook, ou ne peut pas envoyer de messages depuis son adresse (Accès total, Envoyer en tant que, mappage automatique)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/how-to-access-other-mailboxes
+    etat: redigee
+  - id: exchange-boite-partagee-elements-envoyes-non-enregistres
+    titre: "Les messages envoyés depuis une boîte partagée ne sont pas enregistrés dans ses Éléments envoyés"
+    symptome: "Les messages envoyés « en tant que » ou « de la part de » la boîte partagée n'apparaissent que dans les Éléments envoyés de l'utilisateur, pas dans ceux de la boîte partagée."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/sent-mail-is-not-saved
+    etat: a-rediger
+  - id: exchange-boite-partagee-owa-page-blanche
+    titre: "Page blanche ou erreur en ouvrant une boîte partagée dans Outlook sur le web"
+    symptome: "L'ouverture directe d'une boîte partagée dans Outlook Web App aboutit à une page vide ou à une erreur, alors que l'accès total est accordé."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/blank-page-access-shared-mailbox
+    etat: a-rediger
+  - id: exchange-boite-partagee-demande-identifiants
+    titre: "Outlook demande des identifiants après l'ajout d'une boîte partagée comme second compte"
+    symptome: "Une boîte partagée ajoutée comme compte Exchange supplémentaire dans le profil Outlook provoque des invites d'authentification répétées."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/users-prompted-credentials-after-adding-shared-mailbox
+    etat: a-rediger
+  - id: exchange-boite-partagee-elements-prives-invisibles
+    titre: "Les éléments privés ne s'affichent pas dans une boîte partagée"
+    symptome: "Les rendez-vous ou messages marqués Privé dans une boîte partagée sont invisibles pour les utilisateurs disposant de l'accès total."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/private-items-not-display
+    etat: a-rediger
+  - id: exchange-boite-partagee-groupes-m365-invisibles
+    titre: "Les groupes Microsoft 365 ne sont pas visibles depuis une boîte partagée"
+    symptome: "Les groupes Microsoft 365 dont la boîte partagée est membre n'apparaissent pas dans Outlook lorsqu'on l'ouvre."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/office-365-groups-not-visible-from-shared-mail
+    etat: a-rediger
+  - id: exchange-boite-partagee-masquee-gal-envoi-impossible
+    titre: "Envoi depuis une boîte partagée impossible car elle est masquée de la liste d'adresses globale"
+    symptome: "Le droit Envoyer en tant que est accordé, mais Outlook ne parvient pas à envoyer ou à ouvrir le calendrier car la boîte est masquée de la GAL."
+    erreurs: ["554 5.2.0 STOREDRV.Submission.Exception:SendAsDeniedException"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/cannot-access-shared-calendar-for-hidden-mailbox
+      - https://learn.microsoft.com/en-us/answers/questions/892221/unable-to-send-emails-from-shared-mailbox
+    etat: a-rediger
+  - id: exchange-autorisation-boite-supprimee-impossible-retirer
+    titre: "Impossible de retirer une autorisation de boîte aux lettres (entrée de contrôle d'accès persistante)"
+    symptome: "Une autorisation Accès total ou Envoyer en tant que reste visible après suppression, ou une entrée « NT User:S-1-5-… » d'un compte supprimé subsiste."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/cannot-remove-mailbox-permission-office-365
+    etat: a-rediger
+  - id: exchange-boite-partagee-convertie-deconnectee
+    titre: "Boîte convertie en boîte partagée déconnectée de façon inattendue après migration"
+    symptome: "Une boîte migrée vers Exchange Online puis convertie en boîte partagée disparaît ou est déconnectée (attribut local non mis à jour, licence retirée)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/shared-mailboxes-unexpectedly-converted-to-user-mailboxes
+    etat: a-rediger
+  - id: exchange-boite-partagee-licence-necessaire
+    titre: "Boîte partagée bloquée ou à licencier : plus de 50 Go, archive, conservation pour litige"
+    symptome: "Une boîte partagée atteint 50 Go, a besoin d'une archive ou d'une conservation légale : sans licence, elle cesse de recevoir ou la fonctionnalité est refusée."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/increase-or-customize-mailbox-size
+    etat: a-rediger
+  - id: exchange-hybride-boite-partagee-cloud-inaccessible-onprem
+    titre: "Hybride : les utilisateurs locaux n'accèdent pas à une boîte partagée créée dans Exchange Online"
+    symptome: "Une boîte partagée créée directement dans le cloud est inaccessible depuis les boîtes locales (ouverture, disponibilité, envoi)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/cannot-access-mailbox
+    etat: a-rediger
+  - id: exchange-hybride-delegue-envoyer-de-la-part-apres-migration
+    titre: "Hybride : un délégué ne peut plus « envoyer de la part de » après la migration du responsable"
+    symptome: "Un délégué ajouté après la migration de la boîte vers Microsoft 365 reçoit une erreur en envoyant de la part du responsable (droit non synchronisé)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/send-emails/delegate-cannot-send-on-behalf-of-after-migration
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/send-emails/overview-delegation-office-365-hybrid
+    etat: a-rediger
+  - id: exchange-hybride-delegues-dupliques-apres-migration
+    titre: "Hybride : délégués en double dans la boîte de dialogue Délégués après migration"
+    symptome: "Après migration vers Microsoft 365, la liste des délégués Outlook affiche des doublons ou des entrées incorrectes."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/send-emails/delegates-not-listed-correctly-in-outlook-after-migration
+    etat: a-rediger
+  - id: exchange-hybride-boite-masquee-inaccessible-apres-migration
+    titre: "Hybride : boîte masquée de la GAL inaccessible dans Outlook après migration"
+    symptome: "Les utilisateurs ne peuvent plus ouvrir une boîte masquée de la liste d'adresses une fois qu'elle a été migrée vers Exchange Online."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/cannot-access-hidden-mailbox-in-outlook-after-migration
+    etat: a-rediger
+  - id: exchange-acces-admin-toutes-boites-powershell
+    titre: "Un administrateur doit accéder à toutes les boîtes (ou à la boîte d'un départ) : droits non accordés"
+    symptome: "Un administrateur global ne peut pas ouvrir la boîte d'un autre utilisateur : être administrateur ne donne pas l'accès total aux boîtes, il faut l'accorder explicitement."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/how-to-use-powershell-to-grant-admin-access-to-all-mailboxes
+    etat: a-rediger

@@ -1,0 +1,1105 @@
+domaine: microsoft-365
+sous_domaine: intune
+recense_le: 2026-10-29
+problemes:
+  # --- Inscription Windows (enrollment) ---
+  - id: intune-inscription-windows-0x80180014-non-supporte
+    titre: "Inscription Windows refusée : « Your organization does not support this version of Windows » (0x80180014)"
+    symptome: "L'ajout du compte professionnel ou l'Autopilot échoue ; l'inscription MDM Windows est bloquée par les restrictions de plateforme ou l'appareil a déjà été pré-provisionné."
+    erreurs: ["There was a problem. Your organization does not support this version of Windows. (0x80180014)", "80180014"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-windows-enrollment-errors
+      - https://www.prajwaldesai.com/intune-enrollment-error-80180014/
+      - https://cloudinfra.net/fix-intune-enrollment-error-code-80180014
+    etat: a-rediger
+  - id: intune-inscription-windows-0x80180018-licence
+    titre: "Inscription Windows échoue : erreur de licence 0x80180018 (MENROLL_E_USERLICENSE)"
+    symptome: "L'utilisateur ne peut pas inscrire le poste ; aucune licence Intune n'est attribuée ou l'utilisateur est hors de la portée utilisateur MDM."
+    erreurs: ["0x80180018", "MENROLL_E_USERLICENSE"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/2125004/microsoft-entra-id-error-0x80180018
+      - https://techcommunity.microsoft.com/discussions/microsoft-intune/error-code-80180018/4056745/replies/4056816
+      - https://learn.microsoft.com/en-us/windows/win32/mdmreg/mdm-registration-constants
+    etat: a-rediger
+  - id: intune-inscription-auto-gpo-0x8018002b
+    titre: "Inscription automatique par GPO échouée : « Auto MDM Enroll: Failed (0x8018002b) » (événement 76)"
+    symptome: "Le poste joint à Entra ID hybride ne s'inscrit pas dans Intune ; la tâche planifiée EnterpriseMgmt échoue. UPN en .local non routable ou portée utilisateur MDM sur « Aucun »."
+    erreurs: ["Auto MDM Enroll: Failed (Unknown Win32 Error code: 0x8018002b)", "Event ID 76"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-windows-enrollment-errors
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-windows-auto-enrollment
+      - https://www.anoopcnair.com/intune-enrollment-error-unknown-win32-error
+    etat: a-rediger
+  - id: intune-inscription-auto-gpo-80180002b-ancien-tenant
+    titre: "Inscription automatique par GPO échouée avec 0x80180002b (poste lié à un ancien tenant)"
+    symptome: "L'inscription GPO échoue (événement 76) car l'appareil a été joint à un autre tenant puis ne l'a pas quitté proprement."
+    erreurs: ["Auto MDM Enroll: Failed (Unknown Win32 Error code: 0x80180002b)"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/windows10-enroll-error-80180002b
+    etat: a-rediger
+  - id: intune-inscription-windows-0x80180003-non-autorise
+    titre: "« This user is not authorized to enroll » (80180003 / 0x801c0003)"
+    symptome: "L'inscription ou la jonction Entra échoue : limite d'appareils atteinte, restriction de type d'appareil, édition Famille ou utilisateur non autorisé à joindre des appareils."
+    erreurs: ["Something went wrong. This user is not authorized to enroll. You can try to do this again or contact your system administrator with error code 80180003.", "This user is not authorized to enroll. (0x801c0003)"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/windows-user-cannot-enroll
+      - https://www.niallbrady.com/2018/01/16/troubleshooting-something-went-wrong-error-801c0003-during-enrollment-via-windows-autopilot-and-microsoft-intune/
+      - https://www.anoopcnair.com/intune-something-went-wrong-error-801c0003
+    etat: a-rediger
+  - id: intune-inscription-windows-8018000a-deja-inscrit
+    titre: "« The device is already enrolled » (8018000a) : un autre utilisateur a déjà inscrit le poste"
+    symptome: "L'ajout du compte professionnel échoue car un autre compte professionnel est déjà connecté sur l'appareil ou une inscription d'un autre MDM subsiste."
+    erreurs: ["Something went wrong. The device is already enrolled. You can contact your system administrator with the error code 8018000a."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-windows-enrollment-errors
+      - https://call4cloud.nl/intune-device-enrollment-errors-mdm-enrollment/
+    etat: a-rediger
+  - id: intune-gpupdate-windows-failed-to-apply-mdm-policy
+    titre: "gpupdate affiche « Windows failed to apply the MDM Policy settings » sur un poste déjà inscrit"
+    symptome: "Avertissement à chaque gpupdate /force sur un poste hybride inscrit ; la GPO d'inscription automatique retente l'inscription (0x8018000a). Comportement attendu, sans impact."
+    erreurs: ["Windows failed to apply the MDM Policy settings", "Extension MDM Policy returned 0x8018000a"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/windows-failed-to-apply-mdm-policy
+    etat: a-rediger
+  - id: intune-inscription-windows-0x8007064c-deja-inscrit-clone
+    titre: "« The machine is already enrolled » (hr 0x8007064c) : image clonée ou ancien certificat présent"
+    symptome: "L'inscription échoue sur un poste cloné ou précédemment inscrit ; un certificat Intune (Sc_Online_Issuing) et la clé OnlineManagement subsistent."
+    erreurs: ["The machine is already enrolled", "hr 0x8007064c"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-windows-enrollment-errors
+    etat: a-rediger
+  - id: intune-inscription-windows-80180026-mdm-bloquee
+    titre: "Inscription Windows « Something went wrong » 80180026 : gestion MDM bloquée"
+    symptome: "La jonction Entra / l'inscription échoue ; une GPO « Désactiver l'inscription MDM » ou un ancien agent PC Intune bloque la gestion MDM."
+    erreurs: ["Something went wrong. Confirm you are using the correct sign-in information and that your organization uses this feature. ... error code 80180026", "MENROLL_E_DEVICE_MANAGEMENT_BLOCKED"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-windows-enrollment-errors
+      - https://learn.microsoft.com/en-us/windows/win32/mdmreg/mdm-registration-constants
+    etat: a-rediger
+  - id: intune-inscription-windows-compte-non-autorise-telephone
+    titre: "« This account is not allowed on this phone » : utilisateur sans licence Intune"
+    symptome: "L'inscription d'un appareil Windows échoue avec un message de compte non autorisé ; aucune licence Intune valide n'est attribuée."
+    erreurs: ["This account is not allowed on this phone. Make sure the information you provided is correct, and then try again or request support from your company."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-windows-enrollment-errors
+    etat: a-rediger
+  - id: intune-inscription-windows-conditions-utilisation-mdm
+    titre: "« Looks like the MDM Terms of Use endpoint is not correctly configured »"
+    symptome: "L'inscription Windows échoue : licence manquante ou URL des conditions d'utilisation MDM incorrecte dans Entra ID (Mobilité MDM et MAM)."
+    erreurs: ["Looks like the MDM Terms of Use endpoint is not correctly configured."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-windows-enrollment-errors
+    etat: a-rediger
+  - id: intune-inscription-windows-travail-ecole-appareil-personnel-bloque
+    titre: "Inscription via « Configurer pour le travail ou l'école » (Set up for work or school) bloquée"
+    symptome: "En OOBE, l'appareil est vu comme personnel et l'inscription échoue car les appareils personnels Windows sont bloqués par les restrictions de plateforme."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-windows-work-school
+    etat: a-rediger
+  - id: intune-inscription-windows-privileges-insuffisants
+    titre: "« You don't have the right privileges to perform this operation » à l'inscription via le Portail d'entreprise"
+    symptome: "Inscription d'un poste Windows déjà configuré refusée car le compte n'est pas administrateur local."
+    erreurs: ["You don't have the right privileges to perform this operation. Please talk to your admin."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/no-permission-to-enroll-windows-devices
+    etat: a-rediger
+  - id: intune-inscription-cogeree-0xcaa9001f
+    titre: "Inscription MDM d'un poste co-géré échoue avec 0xcaa9001f (« Integrated Windows authentication supported only in federation flow »)"
+    symptome: "Les postes hybrides gérés par Configuration Manager n'arrivent pas à s'inscrire dans Intune ; nouvel essai toutes les 15 minutes."
+    erreurs: ["MDM enrollment failed with error code 0xcaa9001f 'Integrated Windows authentication supported only in federation flow.'", "Auto MDM Enroll: Failed (Unknown Win32 Error code: 0xcaa9001f)"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/mdm-enrollment-error-0xcaa9001f
+    etat: a-rediger
+  - id: intune-inscription-hybride-0x8018002a-mfa
+    titre: "Postes Entra ID hybrides qui ne s'inscrivent pas : erreur 0x8018002a (MFA imposée)"
+    symptome: "L'inscription automatique échoue car l'authentification multifacteur est imposée par utilisateur et bloque le jeton sans interaction."
+    erreurs: ["0x8018002a"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/comanage-configmgr/troubleshoot-co-management-auto-enrolling
+    etat: a-rediger
+  - id: intune-inscription-hybride-0x80180023
+    titre: "Poste hybride non inscrit : « MDM Enroll: Failed (0x80180023) » / 0x800706D9"
+    symptome: "L'inscription échoue lors de la configuration du client OMA-DM ; service dmwappushservice absent ou désactivé."
+    erreurs: ["MDM Enroll: OMA-DM client configuration failed. RAWResult: (0x800706D9) Result: (Unknown Win32 Error code: 0x80180023).", "Auto MDM Enroll: Device Credential (0x80180023)"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/comanage-configmgr/troubleshoot-co-management-auto-enrolling
+    etat: a-rediger
+  - id: intune-inscription-masse-package-provisionnement-echec
+    titre: "« A setup failure has occurred during bulk enrollment » (package de provisionnement)"
+    symptome: "L'inscription en masse via un package Windows Configuration Designer échoue ; le compte package_GUID n'a pas le droit de joindre des appareils à Entra ID."
+    erreurs: ["A setup failure has occurred during bulk enrollment."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-windows-enrollment-errors
+    etat: a-rediger
+  - id: intune-sysprep-poste-inscrit-identifiants-dupliques
+    titre: "Image sysprepée d'un poste déjà inscrit : appareils clonés avec les mêmes identifiants MDM"
+    symptome: "Les postes déployés depuis une image d'un poste inscrit à Intune / joint à Entra ne reçoivent pas leur configuration ; Sysprep n'efface pas les certificats MDM."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-sysprep-windows-10-device-enrolled-mdm
+    etat: a-rediger
+  - id: intune-inscription-cname-abonnement-annule
+    titre: "Les appareils tentent de s'inscrire dans un abonnement Intune annulé (CNAME EnterpriseEnrollment obsolète)"
+    symptome: "L'inscription pointe vers un ancien tenant ; des enregistrements DNS enterpriseenrollment / enterpriseregistration pointent encore vers manage.microsoft.com."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/devices-enroll-canceled-intune-subscription
+    etat: a-rediger
+  - id: intune-inscription-ancien-agent-0x80cf4017
+    titre: "Ancien agent PC Intune : « The software cannot be installed, 0x80cf4017 »"
+    symptome: "Message de l'ancien client logiciel Intune (agent PC, retiré) : logiciel client obsolète ou certificat de compte expiré."
+    erreurs: ["The software cannot be installed, 0x80cf4017.", "The account certificate is not valid and may be expired, 0x80cf4017."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-windows-enrollment-errors
+    etat: a-rediger
+  - id: intune-inscription-windows-generique-diagnostic
+    titre: "Un poste Windows ne s'inscrit pas dans Intune (diagnostic général)"
+    symptome: "L'appareil n'apparaît pas dans Intune ou reste « MDM : Aucun » ; à diagnostiquer via le rapport d'échecs d'inscription et le journal DeviceManagement-Enterprise-Diagnostics-Provider."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-device-enrollment-in-intune
+      - https://learn.microsoft.com/windows/client-management/mdm-diagnose-enrollment
+      - https://learn.microsoft.com/en-us/intune/intune-service/enrollment/view-enrollment-reports
+    etat: a-rediger
+  - id: intune-inscription-limite-appareils-atteinte
+    titre: "Limite d'appareils atteinte (DeviceCapReached) : limite Intune ou limite Entra ID"
+    symptome: "L'inscription échoue car l'utilisateur a déjà trop d'appareils ; la limite Entra (nombre maximal d'appareils par utilisateur) peut bloquer même si Intune accepte."
+    erreurs: ["DeviceCapReached", "Company Portal Temporarily Unavailable"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-device-enrollment-in-intune
+      - https://techcommunity.microsoft.com/t5/intune-customer-success/support-tip-troubleshoot-device-cap-reached-when-enrolling/ba-p/4452273
+    etat: a-rediger
+  - id: intune-inscription-licence-manquante-it-admin
+    titre: "« Your IT admin hasn't given you access to use this app » : licence Intune manquante"
+    symptome: "Le Portail d'entreprise refuse l'inscription ; l'utilisateur n'a pas de licence Intune ou a un mauvais type de licence."
+    erreurs: ["Your IT admin hasn't given you access to use this app. Get help from your IT admin or try again later."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-device-enrollment-in-intune
+    etat: a-rediger
+  - id: intune-inscription-autorite-mdm-non-definie
+    titre: "« Looks like your IT admin hasn't set an MDM authority » (MdmAuthorityNotDefined)"
+    symptome: "Aucune inscription possible dans un tenant neuf : l'autorité MDM n'a pas été définie."
+    erreurs: ["Looks like your IT admin hasn't set an MDM authority.", "MdmAuthorityNotDefined"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-device-enrollment-in-intune
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-ios-enrollment-errors
+    etat: a-rediger
+  - id: intune-inscription-caracteres-speciaux-nom-societe
+    titre: "Impossible de créer des stratégies ou d'inscrire des appareils : caractères spéciaux dans le nom de la société"
+    symptome: "Création de stratégie et inscription impossibles ; le nom de l'organisation dans le centre d'administration Microsoft 365 contient des caractères spéciaux."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-device-enrollment-in-intune
+    etat: a-rediger
+  - id: intune-inscription-horloge-incorrecte
+    titre: "Échec d'inscription dû à une date/heure incorrecte sur l'appareil (0x80CF0437)"
+    symptome: "L'inscription échoue ou les certificats sont refusés car l'horloge ou le fuseau de l'appareil sont faux."
+    erreurs: ["0x80CF0437"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-device-enrollment-in-intune
+    etat: a-rediger
+  # --- Windows Autopilot et page d'état d'inscription (ESP) ---
+  - id: intune-autopilot-0x80180022-edition-famille
+    titre: "Autopilot : « Autopilot device enrollment failed with error HRESULT = 0x80180022 » (édition Famille)"
+    symptome: "L'OOBE affiche « We couldn't finish MDM enrollment » ; l'appareil tourne sous Windows Famille, non pris en charge."
+    erreurs: ["Autopilot device enrollment failed with error HRESULT = 0x80180022"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-windows-enrollment-errors
+      - https://www.anoopcnair.com/?p=113515
+    etat: a-rediger
+  - id: intune-autopilot-0x800705b4-securisation-materiel
+    titre: "Autopilot auto-déploiement / pré-provisionnement : « Securing your hardware (Failed: 0x800705b4) »"
+    symptome: "L'étape de sécurisation du matériel échoue puis les étapes suivantes sont marquées « Previous step failed » ; TPM 2.0 physique absent, attestation TPM impossible ou TPM virtuel."
+    erreurs: ["Securing your hardware (Failed: 0x800705b4)", "Joining your organization's network (Previous step failed)"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-windows-enrollment-errors
+      - https://techcommunity.microsoft.com/discussions/microsoft-intune/windows-autopilot-error-code-0x800705b4-preparing-device-for-mobile-management/2310077
+      - https://www.inthecloud247.com/windows-autopilot-securing-your-hardware-failed-0x800705b4/
+    etat: a-rediger
+  - id: intune-autopilot-0x801c03ea-tpm
+    titre: "Autopilot : « Registering your device for mobile management (Failed: 3, 0x801C03EA) »"
+    symptome: "L'inscription échoue en auto-déploiement ; TPM compatible 2.0 mais pas encore mis à niveau, ou appareil ciblé par deux profils Autopilot différents."
+    erreurs: ["Registering your device for mobile management (Failed: 3, 0x801C03EA)"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-windows-enrollment-errors
+    etat: a-rediger
+  - id: intune-autopilot-hybride-80070774-controleur-domaine
+    titre: "Autopilot hybride : « Something went wrong » 80070774 (contrôleur de domaine injoignable)"
+    symptome: "Échec avant le redémarrage en Autopilot Entra hybride : option « Attribuer un utilisateur » utilisée, objet Entra supprimé ou connecteur ODJ sans droits suffisants (événement 30132)."
+    erreurs: ["Something went wrong. Confirm you are using the correct sign-in information and that your organization uses this feature. ... error code 80070774.", "Failed to get the ODJ Blob. The ODJ connector does not have sufficient privileges to complete the operation"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-windows-enrollment-errors
+      - https://learn.microsoft.com/en-us/answers/questions/723643/something-went-wrong-(error-80070774)-version-2
+    etat: a-rediger
+  - id: intune-autopilot-oobeidps-proxy
+    titre: "Autopilot : « Something went wrong. OOBEIDPS » (fournisseur d'identité bloqué)"
+    symptome: "L'OOBE échoue à l'authentification ; un proxy ou un pare-feu bloque l'accès au fournisseur d'identité et aux URL requises par Autopilot."
+    erreurs: ["Something went wrong. OOBEIDPS."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-windows-enrollment-errors
+    etat: a-rediger
+  - id: intune-autopilot-0x81036501-mdm-introuvable
+    titre: "Autopilot pré-provisionnement : 0x81036501 « Autopilot discovery failed to find a valid MDM »"
+    symptome: "Le pré-provisionnement (white glove) échoue alors que le mode piloté par l'utilisateur fonctionne ; objet appareil obsolète ou tenant sans MDM unique configuré."
+    erreurs: ["0x81036501", "Autopilot discovery failed to find a valid MDM. Confirm that the AAD tenant is properly provisioned and licensed for exactly one MDM."]
+    priorite: rare
+    format: express
+    sources:
+      - https://call4cloud.nl/wrath-of-the-0x81036501-mdm-error/
+    etat: a-rediger
+  - id: intune-autopilot-0x81036502-esp-applications
+    titre: "ESP Autopilot en échec 0x81036502 (application requise non installée)"
+    symptome: "La page d'état d'inscription s'arrête sur l'installation des applications avec une erreur 0x81036502 ; une application suivie a échoué."
+    erreurs: ["0x81036502"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/discussions/microsoft-intune/autopilot-error-0x81036502---endpoint-manager/3738394/replies/3761998
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/understand-troubleshoot-esp
+    etat: a-rediger
+  - id: intune-esp-bloque-installation-applications
+    titre: "Page d'état d'inscription (ESP) bloquée ou en délai dépassé pendant l'installation des applications"
+    symptome: "L'ESP reste longtemps sur « Applications » puis affiche une erreur de délai ; mélange d'applications LOB/Win32, application en échec ou redémarrage inattendu."
+    erreurs: ["UnifiedEnrollment_ProvisioningProgressPage_ApplicationsFailed", "UnifiedEnrollment_ProvisioningProgressPage_DeviceConfigurationTimeOut"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/understand-troubleshoot-esp
+      - https://oofhours.com/2020/02/17/what-happened-during-windows-autopilot-esp-decode-it/
+      - https://techcommunity.microsoft.com/discussions/azure/windows-autopilot-esp-app-failures-my-troubleshooting-approach/4564136
+    etat: a-rediger
+  - id: intune-esp-certificats-0-sur-1
+    titre: "ESP bloquée sur « Certificats (0 sur 1 appliqué) » pendant Autopilot"
+    symptome: "La phase de configuration de l'appareil ne termine pas car un profil de certificat (SCEP/PKCS) ne s'applique pas."
+    erreurs: ["Certificates (0 of 1 applied)"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://help.devicie.com/kb/how-to-fix-windows-autopilot-esp-that-shows-certificates-0-out-of-1-applied-
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/understand-troubleshoot-esp
+    etat: a-rediger
+  - id: intune-esp-delai-store-acces-conditionnel
+    titre: "ESP en délai dépassé avant l'écran de connexion (apps Microsoft Store + accès conditionnel « appareil conforme »)"
+    symptome: "L'ESP expire : les applications du Store suivies et une stratégie d'accès conditionnel exigeant un appareil conforme sur toutes les applications cloud se bloquent mutuellement."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-windows-enrollment-errors
+    etat: a-rediger
+  - id: intune-esp-applications-non-suivies
+    titre: "Les applications ne sont pas installées ou pas suivies pendant l'ESP"
+    symptome: "L'ESP se termine sans installer les applications attendues ; affectation non « Requise », application non listée dans les applications bloquantes ou installée en contexte utilisateur."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/understand-troubleshoot-esp
+    etat: a-rediger
+  - id: intune-esp-affichee-hors-autopilot
+    titre: "La page d'état d'inscription s'affiche à chaque nouvel utilisateur ou sur un poste co-géré"
+    symptome: "L'ESP apparaît hors Autopilot (première connexion d'un nouvel utilisateur, co-gestion) ; besoin de désactiver la partie utilisateur (SkipUserStatusPage)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/understand-troubleshoot-esp
+    etat: a-rediger
+  - id: intune-autopilot-something-went-wrong-apres-esp
+    titre: "Autopilot : « Something went wrong » juste après l'ESP lors de la configuration utilisateur"
+    symptome: "Erreur affichée après la phase compte utilisateur sous Windows 11 ; liée au paramètre BlockNonAdminUserInstall selon des retours de terrain."
+    erreurs: ["Something went wrong"]
+    priorite: rare
+    format: express
+    sources:
+      - https://help.devicie.com/kb/autopilot-issue-post-esp-something-went-wrong-error-during-user-setup
+    etat: a-rediger
+  - id: intune-autopilot-import-csv-806-808
+    titre: "Import CSV Autopilot refusé : 806 ZtdDeviceAlreadyAssigned / 808 ZtdDeviceAssignedToOtherTenant"
+    symptome: "L'import du hash matériel échoue car l'appareil est déjà enregistré dans ce tenant ou dans un autre tenant (revendeur, ancien propriétaire)."
+    erreurs: ["806 - ZtdDeviceAlreadyAssigned", "808 - ZtdDeviceAssignedToOtherTenant", "Device is already registered to the same Tenant."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/import-windows-autopilot-device-csv-files-errors
+    etat: a-rediger
+  - id: intune-autopilot-profil-suppression-impossible
+    titre: "Impossible de supprimer un profil de déploiement Autopilot : « The profile is assigned to groups »"
+    symptome: "La suppression du profil échoue car il est encore affecté, ou le groupe affecté a été supprimé avant d'être retiré du profil (nettoyage via Graph)."
+    erreurs: ["Cannot delete <Autopilot Profile Name>. The profile is assigned to groups. You must unassign all groups from this profile before you can delete it."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/cannot-delete-autopilot-deployment-profile
+    etat: a-rediger
+  - id: intune-autopilot-profil-modele-nom-invalide
+    titre: "« An error occurred while creating Autopilot profile » : modèle de nom d'appareil invalide"
+    symptome: "La création du profil échoue : macro en minuscules (%serial%), nom de plus de 15 caractères, espaces ou nom entièrement numérique."
+    erreurs: ["An error occurred while creating Autopilot profile."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-windows-enrollment-errors
+    etat: a-rediger
+  - id: intune-autopilot-profil-non-attribue-oobe-standard
+    titre: "L'appareil n'affiche pas l'OOBE Autopilot (profil non attribué, OOBE standard)"
+    symptome: "L'appareil démarre en OOBE classique sans le branding de l'entreprise ; le profil Autopilot n'est pas encore attribué ou l'appareil n'est pas dans le groupe ciblé."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/azure-ad-device-registration-autopilot
+      - https://dev.to/exactey/windows-autopilot-the-7-most-common-deployment-failures-and-exactly-how-to-fix-them-5f2e
+    etat: a-rediger
+  - id: intune-autopilot-pre-provisionnement-reinscription-bloquee
+    titre: "Autopilot : réinscription bloquée après un pré-provisionnement ou une réinitialisation (0x80180014)"
+    symptome: "Un appareil déjà pré-provisionné ou réinstallé échoue avec 0x80180014 ; il faut le débloquer dans la liste des appareils Autopilot ou supprimer l'ancien objet Intune."
+    erreurs: ["0x80180014"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://www.systemcenterdudes.com/?p=211570
+      - https://techcommunity.microsoft.com/t5/microsoft-intune/intune-enrollment-issues-error-0x80180014/m-p/4545123
+    etat: a-rediger
+  - id: intune-autopilot-tpm-attestation-rsa-3072
+    titre: "Autopilot : échec de l'attestation TPM avec certains TPM (RSA 3072 EK, certificat EK absent)"
+    symptome: "Le pré-provisionnement ou l'auto-déploiement échoue à l'attestation TPM sur certains modèles ; problème connu côté TPM/fabricant."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/autopilot/known-issues
+      - https://www.inthecloud247.com/windows-autopilot-securing-your-hardware-failed-0x800705b4/
+    etat: a-rediger
+  - id: intune-autopilot-reset-apps-non-affichees-esp
+    titre: "Après une réinitialisation Autopilot (Autopilot Reset), les applications requises n'apparaissent pas dans l'ESP"
+    symptome: "Problème connu : après Autopilot Reset, l'ESP ne liste pas les applications requises."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/autopilot/known-issues
+    etat: a-rediger
+  - id: intune-autopilot-collecte-journaux-diagnostic
+    titre: "Autopilot échoue sans message clair : collecter et lire les journaux (mdmdiagnosticstool, registre ESP)"
+    symptome: "Échec Autopilot générique ; diagnostic via mdmdiagnosticstool -area Autopilot, le journal ModernDeployment-Diagnostics-Provider et la clé EnrollmentStatusTracking."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/understand-troubleshoot-esp
+      - https://learn.microsoft.com/en-us/answers/questions/1188926/autopilot-failed-at-device-setup
+    etat: a-rediger
+  - id: intune-autopilot-cogestion-esp-delai
+    titre: "Autopilot avec co-gestion Configuration Manager : ESP en délai dépassé (client ConfigMgr, BITS)"
+    symptome: "L'ESP expire pendant l'installation du client Configuration Manager ou le téléchargement de contenu en co-gestion."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/t5/microsoft-intune/autopilot-co-management-and-esp-timeouts-and-bits-too/td-p/3908659
+    etat: a-rediger
+  # --- Inscription iOS/iPadOS et macOS ---
+  - id: intune-ios-profile-installation-failed-erreur-reseau
+    titre: "iPhone/iPad : « Profile Installation Failed. A Network Error Has Occurred »"
+    symptome: "Le profil de gestion ne s'installe pas pendant l'inscription via le Portail d'entreprise ; appareil inscrit précédemment par un autre utilisateur non retiré."
+    erreurs: ["Profile Installation Failed. A Network Error Has Occurred."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/profile-installation-failed
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-device-enrollment-in-intune
+    etat: a-rediger
+  - id: intune-ios-profile-installation-failed-connexion-serveur
+    titre: "iPhone/iPad : « Profile Installation Failed. Connection to the server could not be established »"
+    symptome: "Échec du profil MDM : appareils personnels iOS bloqués, cookies Safari bloqués, ancien profil d'un autre MDM ou licence Intune manquante."
+    erreurs: ["Profile Installation Failed. Connection to the server could not be established."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/profile-installation-failed
+      - https://techcommunity.microsoft.com/discussions/microsoft-intune/ios-profile-installation-fails-on-corporate-owned-devices-resolution-to-allow-pe/891603/replies/892968
+    etat: a-rediger
+  - id: intune-ios-profile-installation-failed-payload
+    titre: "iPhone/iPad : « The new MDM payload does not match the old payload »"
+    symptome: "Un profil de gestion (autre MDM ou ancienne inscription) est déjà installé ; il faut le retirer dans Réglages > Général > VPN et gestion de l'appareil."
+    erreurs: ["Profile Installation Failed. The new MDM payload does not match the old payload."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/profile-installation-failed
+    etat: a-rediger
+  - id: intune-ios-profile-installation-failed-401
+    titre: "iPhone/iPad : échec d'installation du profil MDM avec une erreur 401"
+    symptome: "Le serveur MDM renvoie une erreur d'authentification pendant l'inscription Apple (identifiants, droits ou licence)."
+    erreurs: ["Profile Installation Failed", "401"]
+    priorite: rare
+    format: express
+    sources:
+      - https://www.anoopcnair.com/fix-mdm-profile-installation-failed-401-error/
+    etat: a-rediger
+  - id: intune-apns-certificat-expire
+    titre: "Certificat push Apple MDM (APNs) expiré : APNSCertificateNotValid / AccountNotOnboarded / NoEnrollmentPolicy"
+    symptome: "Plus aucune inscription iOS/macOS possible et les appareils ne reçoivent plus de commandes ; le certificat APNs n'a pas été renouvelé avec le même identifiant Apple."
+    erreurs: ["APNSCertificateNotValid", "AccountNotOnboarded", "NoEnrollmentPolicy"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-ios-enrollment-errors
+    etat: a-rediger
+  - id: intune-ios-device-type-not-supported
+    titre: "iOS : « DeviceTypeNotSupported » à l'inscription"
+    symptome: "L'inscription est refusée ; type d'appareil ou version iOS non pris en charge."
+    erreurs: ["DeviceTypeNotSupported"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-ios-enrollment-errors
+    etat: a-rediger
+  - id: intune-ios-user-license-type-invalid
+    titre: "iOS : « UserLicenseTypeInvalid » ou « User Name Not Recognized » (licence ou groupe manquant)"
+    symptome: "L'utilisateur ne peut pas inscrire son iPhone ; il n'a pas de licence Intune ou n'est pas dans le groupe requis."
+    erreurs: ["UserLicenseTypeInvalid", "User Name Not Recognized. This user account isn't authorized to use Microsoft Intune."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-ios-enrollment-errors
+    etat: a-rediger
+  - id: intune-ios-invalid-profile-restriction-type
+    titre: "iOS : « The configuration for your iPhone/iPad couldn't be downloaded… Invalid Profile »"
+    symptome: "L'inscription est bloquée par une restriction de type d'appareil (iOS/iPadOS non autorisé)."
+    erreurs: ["The configuration for your iPhone/iPad couldn't be downloaded from <Company Name>: Invalid Profile"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-ios-enrollment-errors
+    etat: a-rediger
+  - id: intune-ios-workplace-join-failed
+    titre: "iOS : « Workplace Join failed » ou « Company Portal Temporarily Unavailable »"
+    symptome: "L'enregistrement échoue dans le Portail d'entreprise ; application obsolète ou corrompue à réinstaller."
+    erreurs: ["Workplace Join failed", "Company Portal Temporarily Unavailable"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-ios-enrollment-errors
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-device-enrollment-in-intune
+    etat: a-rediger
+  - id: intune-ade-inscription-ne-demarre-pas
+    titre: "Apple ADE (Apple Business Manager) : l'inscription automatique ne démarre pas à l'allumage"
+    symptome: "L'iPhone/iPad/Mac neuf ne passe pas par l'inscription Intune ; profil créé avant l'import du jeton ADE ou aucun profil attribué à l'appareil."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/apple-dep-device-fails-auto-enrollment
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-ios-enrollment-errors
+    etat: a-rediger
+  - id: intune-ade-xpc-type-error
+    titre: "Apple ADE : échec d'inscription « XPC_TYPE_ERROR Connection invalid »"
+    symptome: "L'appareil ADE n'arrive pas à joindre le service Apple pendant l'assistant ; problème de réseau entre l'appareil et Apple."
+    erreurs: ["XPC_TYPE_ERROR Connection invalid", "[MobileAssetError:29] Unable to copy asset information from https://mesu.apple.com/assets/"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/dep-enrollment-xpc-type-error
+    etat: a-rediger
+  - id: intune-ade-bloque-connexion-utilisateur-mfa
+    titre: "Apple ADE bloqué après la saisie des identifiants (MFA avec l'assistant de configuration hérité)"
+    symptome: "L'assistant reste figé après la connexion ; la MFA ne fonctionne pas avec la méthode « Setup Assistant (legacy) »."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-ios-enrollment-errors
+    etat: a-rediger
+  - id: intune-ade-ws-trust-adfs
+    titre: "Apple ADE avec affinité utilisateur échoue en environnement AD FS (WS-Trust 1.3 désactivé)"
+    symptome: "L'inscription ADE avec affinité utilisateur échoue car le point de terminaison trust/13/UsernameMixed d'AD FS n'est pas activé."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-ios-enrollment-errors
+    etat: a-rediger
+  - id: intune-ade-jeton-synchronisation-erreur
+    titre: "Jeton d'inscription Apple (ADE) en erreur : « Expired or invalid token », « Access denied », « Terms and conditions not accepted »"
+    symptome: "La synchronisation avec Apple Business Manager / School Manager échoue ; jeton expiré, serveur MDM supprimé côté Apple ou nouvelles conditions à accepter."
+    erreurs: ["Expired or invalid token", "Access denied", "Terms and conditions not accepted", "Invalid cursor", "Apple profile not found"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-ios-enrollment-errors
+    etat: a-rediger
+  - id: intune-ade-televersement-jeton-ajaxerror
+    titre: "« An error occurred while uploading the Enrollment Program token » (AjaxError)"
+    symptome: "L'import du jeton ADE échoue dans le centre d'administration ; contournement via Graph Explorer."
+    erreurs: ["An error occurred while uploading the Enrollment Program token. Request ID: AjaxError: ajaxExtended call failed"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-ios-enrollment-errors
+    etat: a-rediger
+  - id: intune-ios-bloque-awaiting-final-configuration
+    titre: "iPhone/iPad bloqué sur « Awaiting final configuration » ou « Guided Access app unavailable »"
+    symptome: "L'appareil ADE reste plus de 10 minutes sur l'écran d'inscription ; panne Apple ou jeton VPP en erreur pour l'installation du Portail d'entreprise."
+    erreurs: ["Awaiting final configuration from \"Microsoft\"", "Guided Access app unavailable. Please contact your administrator."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/device-stuck-in-enrollment
+    etat: a-rediger
+  - id: intune-ios-appareils-ne-se-synchronisent-plus
+    titre: "Appareils iOS/iPadOS qui ne se signalent plus à Intune (état « Unhealthy »)"
+    symptome: "Les iPhone ne reçoivent plus ni stratégies ni applications et perdent l'accès conditionnel ; ils ne se synchronisent plus avec le service."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/ios-devices-inactive
+    etat: a-rediger
+  - id: intune-ios-certificat-iosprofilesigning-expire
+    titre: "Certificat IOSProfileSigning.manage.microsoft.com expiré affiché dans le profil de gestion iOS"
+    symptome: "Le profil de gestion iOS montre un certificat expiré ; il ne sert qu'à l'installation initiale, sans impact sur les appareils déjà inscrits."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-device-enrollment-in-intune
+    etat: a-rediger
+  - id: intune-ade-acces-ressources-refuse
+    titre: "Appareil ADE inscrit mais « your admin requires your device to be managed » à l'accès aux ressources"
+    symptome: "Après une inscription ADE sans affinité utilisateur ou sans Portail d'entreprise, l'accès conditionnel bloque l'utilisateur."
+    erreurs: ["Your sign-in was successful but your admin requires your device to be managed by <CompanyName> to access this resource."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/cannot-access-company-resources-on-dep
+    etat: a-rediger
+  - id: intune-macos-keychain-25244
+    titre: "Mac : « Your Mac cannot be enrolled at this time » (erreur trousseau -25244)"
+    symptome: "L'inscription macOS via le Portail d'entreprise échoue ; les journaux montrent une erreur de trousseau -25244."
+    erreurs: ["Your Mac cannot be enrolled at this time", "-25244"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/keychain-error-enrolling-macos-devices
+    etat: a-rediger
+  - id: intune-macos-machine-virtuelle-inscription
+    titre: "Mac virtuel : « It looks like you're using a virtual machine » à l'inscription"
+    symptome: "La VM macOS est refusée : numéro de série ou modèle non configurés, restriction « appareils d'entreprise uniquement » ou appareil déjà attribué."
+    erreurs: ["It looks like you're using a virtual machine. Make sure you've fully configured your virtual machine, including serial number and hardware model.", "We're having trouble getting your device managed."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-macos-vm-enrollment
+    etat: a-rediger
+  - id: intune-macos-desinscription-inattendue
+    titre: "Mac désinscrits d'Intune de façon inattendue (problème connu)"
+    symptome: "Un nombre limité de Mac a été désinscrit du service sans action de l'administrateur."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/known-issues
+    etat: a-rediger
+  - id: intune-portail-entreprise-mise-a-jour-inscription
+    titre: "Portail d'entreprise : « We can't update enrollment now. Try again later »"
+    symptome: "La notification « Update enrollment for full access to company resources » ne peut pas être traitée ; version du Portail d'entreprise obsolète."
+    erreurs: ["Update enrollment for full access to company resources", "We can't update enrollment now. Try again later"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/cannot-update-enrollment
+    etat: a-rediger
+  - id: intune-inscription-plusieurs-domaines-adfs
+    titre: "Connexion ou inscription impossible pour les utilisateurs d'un second domaine vérifié (AD FS)"
+    symptome: "Les utilisateurs dont l'UPN porte le second suffixe fédéré ne peuvent pas s'inscrire ; AD FS non configuré pour plusieurs domaines (SupportMultipleDomain)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-device-enrollment-in-intune
+    etat: a-rediger
+  # --- Android (inscription, gestion, applications) ---
+  - id: intune-android-inscription-echec-general
+    titre: "Un appareil Android n'arrive pas à s'inscrire dans Intune (profil professionnel, entièrement géré)"
+    symptome: "L'inscription Android Enterprise échoue ou reste incomplète ; vérifier licence, restrictions de plateforme, limite d'appareils, rapport d'échecs d'inscription et journaux du Portail d'entreprise."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-android-enrollment
+      - https://learn.microsoft.com/en-us/answers/questions/1289313/clients-android-device-failing-to-enrol-intune
+      - https://techcommunity.microsoft.com/discussions/microsoft-intune/android-enterprise-devices-failing-to-register/1166128/replies/1171201
+    etat: a-rediger
+  - id: intune-android-profil-professionnel-creation-impossible
+    titre: "Android : impossible de créer le profil professionnel (Can't create a work profile)"
+    symptome: "La création du profil professionnel échoue ; un profil existe déjà sur l'appareil ou le constructeur bloque la fonction (test avec Test DPC)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-android-enrollment
+    etat: a-rediger
+  - id: intune-android-limite-appareils-atteinte
+    titre: "Android : « Device limit reached » à l'inscription"
+    symptome: "L'utilisateur dépasse la limite d'appareils Intune ou Entra ID ; supprimer les anciens appareils ou relever la limite."
+    erreurs: ["Device limit reached", "DeviceCapReached"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://www.anoopcnair.com/device-limit-reached-error-intune-device-enroll/
+      - https://techcommunity.microsoft.com/t5/intune-customer-success/support-tip-troubleshoot-device-cap-reached-when-enrolling/ba-p/4452273
+    etat: a-rediger
+  - id: intune-android-certificat-manquant-adfs
+    titre: "Android : « certificat manquant » à l'inscription (certificat intermédiaire AD FS absent)"
+    symptome: "Après la connexion fédérée, Android signale un certificat requis manquant ; le serveur AD FS/WAP n'envoie pas la chaîne intermédiaire."
+    erreurs: ["Your device is missing a certificate required by your IT admin"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-android-certificates
+    etat: a-rediger
+  - id: intune-android-proprietaire-change-entreprise
+    titre: "Android : « Your company support changed the ownership type of this device from Personal to Corporate »"
+    symptome: "Un appareil personnel inscrit en profil professionnel passe en propriété « Entreprise » car un identifiant d'appareil d'entreprise (IMEI/série) a été ajouté."
+    erreurs: ["Your company support changed the ownership type of this device from Personal to Corporate."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/device-ownership-changed-to-corporate
+    etat: a-rediger
+  - id: intune-android-effacement-indisponible-profil-pro
+    titre: "Android profil professionnel : l'action « Réinitialiser » (Wipe) est grisée"
+    symptome: "Seule l'action « Mise hors service » est disponible sur un appareil personnel en profil professionnel ; comportement attendu."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-android-enrollment
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-management/troubleshoot-device-actions
+    etat: a-rediger
+  - id: intune-android-reinitialisation-code-non-prise-en-charge
+    titre: "Android : réinitialisation du code d'accès « Not Supported » (profil professionnel)"
+    symptome: "L'action de réinitialisation du code échoue ou est grisée ; seuls le code du profil professionnel géré ou les appareils entièrement gérés/dédiés sont pris en charge."
+    erreurs: ["Not Supported"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-android-enrollment
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-management/troubleshoot-device-actions
+    etat: a-rediger
+  - id: intune-android-12-perte-acces-ressources
+    titre: "Android : perte d'accès aux ressources gérées après mise à niveau vers Android 12 (problème connu)"
+    symptome: "Après la mise à jour Android 12, les applications gérées perdent l'accès aux données de l'entreprise."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/known-issues
+      - https://techcommunity.microsoft.com/blog/intunecustomersuccess/resolved-android-devices-lose-access-to-intune-managed-resources-after-upgrading/3249657/replies/3261464
+    etat: a-rediger
+  - id: intune-android-samsung-certificats-manquants
+    titre: "Samsung profil professionnel : certificats disparus après la mise à jour Android 12"
+    symptome: "Les certificats déployés par Intune ne sont plus présents ; Wi-Fi/VPN en échec après mise à jour."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/known-issues
+      - https://techcommunity.microsoft.com/t5/intune-customer-success/known-issue-missing-certificates-after-updating-samsung-work/ba-p/3039834
+    etat: a-rediger
+  - id: intune-android-samsung-non-conforme-apres-redemarrage
+    titre: "Samsung entièrement gérés non conformes après un redémarrage ou une mise à jour gérée"
+    symptome: "Des appareils Samsung Android Enterprise entièrement gérés passent non conformes après une mise à jour."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/known-issues
+      - https://techcommunity.microsoft.com/t5/intune-customer-success/known-issue-samsung-devices-are-noncompliant-after-restart-or/ba-p/2952544
+    etat: a-rediger
+  - id: intune-android-expiration-mot-de-passe-non-appliquee
+    titre: "Android : l'expiration du mot de passe (jours) ne se déclenche jamais"
+    symptome: "L'utilisateur n'est jamais invité à changer de code ; chaque modification de la stratégie remet le compteur d'expiration à zéro."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/password-expiration-setting-not-working
+    etat: a-rediger
+  - id: intune-android-mot-de-passe-entierement-gere-comportement
+    titre: "Android entièrement géré : l'utilisateur doit changer son code immédiatement ou la stratégie de mot de passe ne s'applique pas comme prévu"
+    symptome: "Comportement différent selon que la stratégie de mot de passe est attribuée avant ou après l'inscription."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/assign-password-setting-android-fully-managed
+    etat: a-rediger
+  - id: intune-android-frp-non-appliquee
+    titre: "Android : la protection contre la réinitialisation d'usine (FRP) n'est pas toujours appliquée"
+    symptome: "Après réinitialisation, l'appareil demande parfois le compte Google défini et parfois non ; dépend de la méthode (réglages, Intune) et de la version Android."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/factory-reset-protection-emails-not-enforced
+    etat: a-rediger
+  - id: intune-android-edge-ignore-pac-vpn
+    titre: "Android 13 : Microsoft Edge ignore le fichier PAC du VPN par application"
+    symptome: "Le proxy défini via PAC dans le profil VPN par application n'est pas utilisé par Edge sous Android 13."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/edge-ignore-pac-android-vpn-profile
+    etat: a-rediger
+  - id: intune-android-piece-jointe-photo-erreur-io
+    titre: "Android profil professionnel : « Unable to add attachment due to IO error » en joignant une photo"
+    symptome: "Impossible de joindre une photo dans Outlook, Word ou OneDrive du profil professionnel ; aucune application de galerie dans le profil pro."
+    erreurs: ["Unable to add attachment due to IO error"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/android-enterprise-enrolled-devices-fails-attaching-photo
+    etat: a-rediger
+  - id: intune-android-applications-personnelles-decouvertes
+    titre: "Android profil professionnel : des applications personnelles semblent apparaître dans « Applications découvertes »"
+    symptome: "Inquiétude sur la vie privée : les applications listées sont en réalité des applications système du profil professionnel."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/discovered-apps-list-personal-apps
+    etat: a-rediger
+  - id: intune-android-apk-app-installation-failed
+    titre: "Android : notification « App installation failed » après la mise à jour d'une application APK (LOB)"
+    symptome: "La mise à jour d'un APK échoue car l'utilisateur avait désinstallé l'application."
+    erreurs: ["App installation failed."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/app-installation-failed-error
+    etat: a-rediger
+  - id: intune-android-apk-signature-differente-0xc7d14fb7
+    titre: "Android : mise à jour d'APK refusée, signature différente (0xC7D14FB7)"
+    symptome: "La nouvelle version de l'application LOB n'est pas signée avec le même certificat que la version installée."
+    erreurs: ["0xC7D14FB7", "The app installation APK file used for the upgrade does not match the signature for the current app on the device."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/app-install-error-codes
+    etat: a-rediger
+  - id: intune-android-installation-annulee-utilisateur-0xc7d14fb1
+    titre: "Android : installation d'application annulée par l'utilisateur (0xC7D14FB1 / 0xC7D14FB9)"
+    symptome: "L'utilisateur a refusé l'invite d'installation de l'application déployée."
+    erreurs: ["0xC7D14FB1", "0xC7D14FB9", "The end user canceled the app installation."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/app-install-error-codes
+    etat: a-rediger
+  - id: intune-android-telechargement-echoue-0xc7d14fb2
+    titre: "Android : téléchargement de l'application échoué ou interrompu (0xC7D14FB2, 0xC7D15078, 0xC7D15015)"
+    symptome: "Le téléchargement d'une application échoue (Wi-Fi lent, batterie faible, processus arrêté par le système)."
+    erreurs: ["0xC7D14FB2", "0xC7D15078", "0xC7D15015", "0xC7D1507C"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/app-install-error-codes
+    etat: a-rediger
+  - id: intune-android-managed-google-play-app-absente
+    titre: "Managed Google Play : application approuvée qui n'apparaît pas dans le Play Store d'entreprise"
+    symptome: "Une application nouvellement approuvée n'est pas visible dans le Google Play professionnel ; mode de collections personnalisées ou synchronisation non faite."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/troubleshoot-google-apps
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-android-enrollment
+    etat: a-rediger
+  - id: intune-android-managed-google-play-apps-non-deployees-visibles
+    titre: "Managed Google Play : des applications non déployées par Intune apparaissent dans le profil professionnel"
+    symptome: "Le profil professionnel affiche des applications non attribuées, ou des applications désapprouvées restent listées dans Intune."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/app-management/troubleshoot-google-apps
+    etat: a-rediger
+  - id: intune-android-edge-connexion-pendant-inscription
+    titre: "Android : Microsoft Edge demande une connexion pendant l'inscription déclenchée par l'accès conditionnel"
+    symptome: "L'utilisateur est redirigé vers Edge et invité à se connecter au lieu de terminer l'inscription dans le Portail d'entreprise."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/troubleshoot-android-enrollment
+    etat: a-rediger
+  - id: intune-android-mfa-appel-inscription
+    titre: "Android : inscription bloquée quand la méthode MFA « Appel téléphonique » est choisie"
+    symptome: "L'inscription n'aboutit pas après validation MFA par appel ; retours de terrain sur Microsoft Q&A."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1377488/issue-with-enrolling-android-devices-and-selecting
+    etat: a-rediger
+  # --- Conformité, accès conditionnel, BitLocker, Defender ---
+  - id: intune-appareil-non-conforme-diagnostic
+    titre: "Appareil marqué « Non conforme » dans Intune : trouver le paramètre en cause"
+    symptome: "L'utilisateur est bloqué par l'accès conditionnel ; l'appareil est non conforme et il faut identifier la stratégie et le paramètre de conformité en échec."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/troubleshoot-conditional-access
+      - https://jannikreinhard.com/intune-troubleshooting-guide/
+    etat: a-rediger
+  - id: intune-conforme-mais-utilisateur-bloque
+    titre: "Appareil conforme dans Intune mais l'utilisateur reste bloqué par l'accès conditionnel"
+    symptome: "Accès refusé malgré un état conforme : licence manquante, délai d'enregistrement de la conformité, appareil coincé en vérification ou application sans authentification moderne."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/troubleshoot-conditional-access
+    etat: a-rediger
+  - id: intune-non-conforme-mais-non-bloque
+    titre: "Appareil non conforme mais l'utilisateur n'est pas bloqué"
+    symptome: "L'accès aux ressources reste possible : groupes ciblés ou exclus, client mail ancien non couvert, cache des droits Exchange de plusieurs heures après mise hors service."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/troubleshoot-conditional-access
+    etat: a-rediger
+  - id: intune-message-appareil-doit-etre-gere
+    titre: "« Your admin requires your device to be managed to access this resource » (accès conditionnel)"
+    symptome: "La connexion Microsoft 365 réussit mais l'accès est refusé car l'appareil n'est pas inscrit, pas conforme ou pas reconnu (navigateur sans prise en charge de l'identité de l'appareil)."
+    erreurs: ["Your sign-in was successful but your admin requires your device to be managed by <CompanyName> to access this resource."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/cannot-access-company-resources-on-dep
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/troubleshoot-conditional-access
+    etat: a-rediger
+  - id: intune-android-no-certificates-found-acces-navigateur
+    titre: "Android inscrit : « No certificates found » à l'accès à Microsoft 365 via le navigateur"
+    symptome: "L'accès est refusé ; l'option « Enable Browser Access » n'a pas été activée dans le Portail d'entreprise."
+    erreurs: ["No certificates found"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/troubleshoot-conditional-access
+    etat: a-rediger
+  - id: intune-conformite-bitlocker-non-conforme-chiffrement-en-cours
+    titre: "Poste chiffré BitLocker affiché « Non conforme » (chiffrement non terminé ou attestation)"
+    symptome: "La règle « Exiger BitLocker » échoue alors que le disque est chiffré ; le chiffrement n'est pas terminé ou l'attestation d'intégrité ne remonte pas encore."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/bitlocker-encrypted-device-not-compliant
+    etat: a-rediger
+  - id: intune-conformite-demarrage-securise-non-conforme
+    titre: "Démarrage sécurisé (Secure Boot) activé mais appareil « Non conforme »"
+    symptome: "La règle « Exiger le démarrage sécurisé » échoue sur des appareils sans TPM 2.0 / UEFI pris en charge par l'attestation d'intégrité."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/secure-boot-enabled-device-shows-not-compliant
+    etat: a-rediger
+  - id: intune-conformite-pare-feu-faux-non-conforme
+    titre: "Pare-feu Microsoft Defender actif mais appareil Windows « Non conforme »"
+    symptome: "La règle Pare-feu « Exiger » marque à tort des postes non conformes (problème connu de certaines versions de Windows 10)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/win10-devices-show-incorrect-compliance-status
+    etat: a-rediger
+  - id: intune-strategie-mot-de-passe-erreur-2016281112
+    titre: "Stratégie de mot de passe en erreur -2016281112 (0x87D1FDE8 « Remediation failed »)"
+    symptome: "Le profil de restriction de mot de passe reste en erreur tant que l'utilisateur n'a pas changé son mot de passe (Android, Windows)."
+    erreurs: ["-2016281112", "0x87D1FDE8", "Remediation failed"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/error-deploying-password-policy
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/device-configuration-profile-reports-error-2016281112
+    etat: a-rediger
+  - id: intune-defender-definitions-obsoletes
+    titre: "Protection des points de terminaison : « Malware definitions out of date » ou analyse en retard"
+    symptome: "Le rapport signale des définitions antivirus de plus de 14 jours ou une analyse complète/rapide non terminée depuis 14 jours."
+    erreurs: ["Malware definitions out of date", "Full scan overdue", "Quick scan overdue"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/general/troubleshoot-endpoint-protection-in-microsoft-intune
+    etat: a-rediger
+  - id: intune-defender-moteur-indisponible-fonctions-desactivees
+    titre: "Protection des points de terminaison : « Endpoint Protection engine unavailable » ou « Features are disabled »"
+    symptome: "Le moteur de protection est corrompu ou désactivé, ou un autre antivirus est actif ; l'appareil peut devenir non conforme."
+    erreurs: ["Endpoint Protection engine unavailable", "Features are disabled", "Another endpoint protection application running"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/general/troubleshoot-endpoint-protection-in-microsoft-intune
+    etat: a-rediger
+  - id: intune-bitlocker-chiffrement-silencieux-echoue
+    titre: "BitLocker via Intune : « Failed to enable Silent Encryption »"
+    symptome: "Le chiffrement silencieux ne démarre pas ; GPO en conflit, TPM indisponible, bus DMA non autorisé ou utilisateur standard (chiffrement non silencieux)."
+    erreurs: ["Failed to enable Silent Encryption.", "BitLocker Encryption cannot be applied to this drive because of conflicting Group Policy settings.", "Un-Allowed DMA capable bus/device(s) detected"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/troubleshoot-bitlocker-policies
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/troubleshoot-bitlocker-admin-center
+    etat: a-rediger
+  - id: intune-bitlocker-tpm-introuvable-853
+    titre: "BitLocker Intune : événement 853 « A compatible Trusted Platform Module (TPM) Security Device cannot be found »"
+    symptome: "Le chiffrement échoue faute de TPM détecté ou activé dans le firmware."
+    erreurs: ["Event ID 853", "A compatible Trusted Platform Module (TPM) Security Device cannot be found on this computer"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/windows-client/windows-security/enforcing-bitlocker-policies-by-using-intune-known-issues
+    etat: a-rediger
+  - id: intune-bitlocker-media-amorcable-853
+    titre: "BitLocker Intune : événement 853 « BitLocker Drive Encryption detected bootable media (CD or DVD) »"
+    symptome: "Le chiffrement ne démarre pas car un média amorçable (clé USB, DVD) est présent."
+    erreurs: ["BitLocker Drive Encryption detected bootable media (CD or DVD) in the computer"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/windows-client/windows-security/enforcing-bitlocker-policies-by-using-intune-known-issues
+    etat: a-rediger
+  - id: intune-bitlocker-winre-non-configure-854
+    titre: "BitLocker Intune : événement 854 « WinRE is not configured »"
+    symptome: "Le chiffrement silencieux échoue car l'environnement de récupération Windows (WinRE) est désactivé ou mal partitionné."
+    erreurs: ["Event ID 854", "WinRE is not configured"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/windows-client/windows-security/enforcing-bitlocker-policies-by-using-intune-known-issues
+    etat: a-rediger
+  - id: intune-bitlocker-bios-851
+    titre: "BitLocker Intune : événement 851 « Contact the manufacturer for BIOS upgrade instructions »"
+    symptome: "Le firmware (BIOS hérité, pas de démarrage UEFI) empêche le chiffrement automatique."
+    erreurs: ["Event ID 851", "Contact the manufacturer for BIOS upgrade instructions"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/windows-client/windows-security/enforcing-bitlocker-policies-by-using-intune-known-issues
+    etat: a-rediger
+  - id: intune-bitlocker-uefi-secureboot-illisible
+    titre: "BitLocker Intune : « The UEFI variable 'SecureBoot' could not be read »"
+    symptome: "Le chiffrement échoue ; profil de validation PCR du TPM ou état du démarrage sécurisé incorrects."
+    erreurs: ["The UEFI variable 'SecureBoot' could not be read"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/windows-client/windows-security/enforcing-bitlocker-policies-by-using-intune-known-issues
+    etat: a-rediger
+  - id: intune-bitlocker-sauvegarde-cle-0x80072f9a
+    titre: "BitLocker Intune : événements 846, 778, 851 avec l'erreur 0x80072f9a (sauvegarde de la clé de récupération)"
+    symptome: "La clé de récupération ne remonte pas dans Entra ID ; erreur TLS/réseau 0x80072f9a."
+    erreurs: ["0x80072f9a", "Event ID 846", "Event ID 778"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/windows-client/windows-security/enforcing-bitlocker-policies-by-using-intune-known-issues
+    etat: a-rediger
+  - id: intune-bitlocker-gpo-conflit-options-recuperation
+    titre: "BitLocker : « There are conflicting group policy settings for recovery options on operating system drives »"
+    symptome: "Le chiffrement Intune est bloqué par des paramètres GPO de récupération incompatibles."
+    erreurs: ["There are conflicting group policy settings for recovery options on operating system drives"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/windows-client/windows-security/enforcing-bitlocker-policies-by-using-intune-known-issues
+    etat: a-rediger
+  - id: intune-bitlocker-rapport-erreur-methode-chiffrement
+    titre: "Rapport de chiffrement Intune : appareil chiffré mais en erreur (XTS-AES 128 / 256 différent)"
+    symptome: "Le profil BitLocker est en erreur car le disque est déjà chiffré avec une autre méthode que celle exigée."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/troubleshoot-bitlocker-admin-center
+    etat: a-rediger
+  - id: intune-bitlocker-pret-mais-non-chiffre
+    titre: "Rapport de chiffrement Intune : appareil « Prêt » mais toujours non chiffré"
+    symptome: "L'appareil est éligible mais le chiffrement ne démarre pas (utilisateur non admin, chiffrement silencieux non configuré, stratégie non reçue)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/troubleshoot-bitlocker-admin-center
+    etat: a-rediger

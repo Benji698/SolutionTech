@@ -1,0 +1,953 @@
+domaine: microsoft-365
+sous_domaine: onedrive
+recense_le: 2026-10-29
+problemes:
+  # --- Synchronisation : fiche déjà rédigée ---
+  - id: onedrive-synchronisation-bloquee
+    titre: "OneDrive ne synchronise plus (croix rouge, fichiers en attente)"
+    symptome: "Des fichiers restent avec une croix rouge ou des flèches de synchronisation qui ne finissent jamais."
+    erreurs: ["This file name isn't valid", "The file path is too long", "Your OneDrive is full"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/troubleshoot-sync-issues
+    etat: redigee
+
+  # --- Connexion / codes d'erreur 0x8004de.. ---
+  - id: onedrive-erreur-0x8004de40-connexion-cloud
+    titre: "Erreur 0x8004de40 ou 0x8004de88 à la connexion à OneDrive"
+    symptome: "OneDrive refuse la connexion alors qu'Internet fonctionne ; le client n'arrive pas à joindre le cloud (TLS, proxy, pare-feu)."
+    erreurs: ["There was a problem connecting to OneDrive. Check your Internet connection, and then try again. (Error Code: 0x8004de40)", "We can't sign into your account, please try again later 0x8004de88"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/error-0x8004de40-in-onedrive
+      - https://techcommunity.microsoft.com/discussions/onedriveforbusiness/there-was-a-problem-connecting-to-onedrive-error-code-0x8004de40/1207767
+    etat: a-rediger
+  - id: onedrive-erreur-0x8004de85-0x8004de8a-mauvais-compte
+    titre: "Erreur 0x8004de85 ou 0x8004de8a : compte introuvable ou mauvais type de compte"
+    symptome: "Connexion impossible : compte manquant, licence OneDrive absente ou confusion entre compte personnel et compte professionnel."
+    erreurs: ["0x8004de85", "0x8004de8a"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/sign-into-onedrive-error-0x8004de85-or-0x8004de8a
+    etat: a-rediger
+  - id: onedrive-erreur-0x8004de80-0x8004de86-identites-multiples
+    titre: "Erreur 0x8004de80 ou 0x8004de86 à la connexion à OneDrive"
+    symptome: "Connexion impossible après l'ajout d'un autre compte : conflit d'identités entre plusieurs comptes."
+    erreurs: ["0x8004de80", "0x8004de86"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/sign-into-onedrive-error-0x8004de80-or-0x8004de86
+    etat: a-rediger
+  - id: onedrive-erreur-0x8004dec5-identites-en-cache
+    titre: "Erreur 0x8004dec5 : identités Office en cache"
+    symptome: "Erreur d'authentification au démarrage de OneDrive, causée par plusieurs identités mises en cache dans le registre Office."
+    erreurs: ["Error Code: 0x8004dec5"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/sign-into-onedrive-error-0x8004dec5
+    etat: a-rediger
+  - id: onedrive-erreur-0x8004deef-acces-service
+    titre: "Erreur 0x8004deef : « You don't have access to this service »"
+    symptome: "L'utilisateur ne peut pas se connecter à OneDrive : licence manquante ou identifiants qui ne correspondent pas."
+    erreurs: ["You don't have access to this service. For help, contact your IT department. (Error code: 0x8004deef)"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/sign-into-onedrive-error-0x8004deef
+    etat: a-rediger
+  - id: onedrive-erreur-0x8004def4-redemarrer-reinstaller
+    titre: "Erreur 0x8004def4 : « Sorry, there was a problem with OneDrive »"
+    symptome: "OneDrive demande de redémarrer ou de réinstaller ; souvent un conflit de nom de dossier ou un bloc-notes OneNote dans le dossier synchronisé."
+    erreurs: ["Sorry, there was a problem with OneDrive. Please restart your computer. If the problem persists, please reinstall OneDrive. (Error Code: 0x8004def4)"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/sign-into-onedrive-error-0x8004def4
+    etat: a-rediger
+  - id: onedrive-erreur-0x8004def7-quota-ou-compte-suspendu
+    titre: "Erreur 0x8004def7 : espace dépassé ou compte suspendu"
+    symptome: "Connexion impossible car l'espace OneDrive est dépassé, le compte est suspendu ou le client est mal configuré."
+    erreurs: ["0x8004def7"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/sign-into-onedrive-error-0x8004def7
+    etat: a-rediger
+  - id: onedrive-erreur-0x8004e4d0-id-utilisateur-different
+    titre: "Erreur 0x8004e4d0 : compte recréé avec le même UPN (ID de site différent)"
+    symptome: "Après suppression puis recréation d'un compte (ou changement d'OU synchronisée), l'utilisateur n'accède plus à son OneDrive."
+    erreurs: ["You don't have access to this service. For help, Contact your IT department. (Error Code: 0x8004e4d0)"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/sign-into-onedrive-error-0x8004e4d0
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sharing-and-permissions/fix-site-user-id-mismatch
+    etat: a-rediger
+  - id: onedrive-aadsts50020-apres-migration-tenant
+    titre: "AADSTS50020 à la connexion à OneDrive après une migration de tenant"
+    symptome: "Le client de synchronisation garde l'identité de l'ancien tenant et refuse la connexion."
+    erreurs: ["AADSTS50020 User Account from identity provider does not exist in tenant and cannot access application (OneDrive SyncEngine)."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/sign-into-onedrive-sync-app-error
+    etat: a-rediger
+  - id: onedrive-erreur-0x80070005-installation-acces
+    titre: "Erreur 0x80070005 à l'installation ou à l'ouverture de OneDrive"
+    symptome: "Installation ou démarrage de OneDrive impossible (accès refusé), parfois en activant la sauvegarde des dossiers PC."
+    erreurs: ["0x80070005"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/install-or-access-onedrive-error-0x80070005
+    etat: a-rediger
+
+  # --- Fichiers à la demande / fournisseur de fichiers cloud ---
+  - id: onedrive-erreur-0x8007016a-fournisseur-cloud-arrete
+    titre: "Erreur 0x8007016a : « The cloud file provider is not running »"
+    symptome: "Copier, ouvrir ou déplacer un fichier OneDrive échoue ; le client ne tourne pas ou est mal configuré (Fichiers à la demande)."
+    erreurs: ["Error 0x8007016a: The cloud file provider is not running."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/copy-files-error-0x8007016a
+    etat: a-rediger
+  - id: onedrive-erreur-0x80070194-fournisseur-cloud-ferme
+    titre: "Erreur 0x80070194 : « The cloud file provider exited unexpectedly »"
+    symptome: "Impossible d'ouvrir ou de copier un fichier en ligne seulement : le processus OneDrive s'est arrêté pendant le téléchargement."
+    erreurs: ["Error 0x80070194: The cloud file provider exited unexpectedly."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://www.thewindowsclub.com/fix-onedrive-error-0x80070194-the-cloud-file-provider-exited-unexpectedly
+      - https://learn.microsoft.com/en-us/answers/a/12238043
+    etat: a-rediger
+  - id: onedrive-erreur-0x80071129-point-analyse-invalide
+    titre: "Erreur 0x80071128 ou 0x80071129 : point d'analyse (reparse point) invalide"
+    symptome: "Supprimer ou déplacer un fichier synchronisé échoue avec Fichiers à la demande activé ; dossier parfois « introuvable »."
+    erreurs: ["Error 0x80071128: The data present in the reparse point buffer is invalid.", "Error 0x80071129: The tag present in the reparse point buffer is invalid."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/delete-onedrive-synced-file-error
+      - https://www.winhelponline.com/blog/ondrive-0x80071129-0x80071128-reparse-point-invalid/
+    etat: a-rediger
+  - id: onedrive-fichier-en-ligne-seulement-ne-s-ouvre-pas
+    titre: "« Can't open online-only file » alors que le poste est connecté"
+    symptome: "Un fichier en ligne seulement refuse de s'ouvrir et OneDrive affiche une erreur de connexion, même en ligne."
+    erreurs: ["Can't open online-only file. Make sure you're connected to the internet, then try again."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/lists-and-libraries/cant-open-online-only-file
+    etat: a-rediger
+  - id: onedrive-erreur-0x8007017c-operation-cloud-invalide
+    titre: "Erreur 0x8007017C : « The cloud operation is invalid »"
+    symptome: "Ouvrir, copier ou télécharger un fichier en ligne seulement échoue ; parfois seulement pour certains types de fichiers (.exe)."
+    erreurs: ["Error 0x8007017C: The cloud operation is invalid."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5720137/error-0x8007017c-when-trying-to-download-files-in
+      - https://www.elevenforum.com/t/onedrive-can-open-all-files-except-exe-files-error-0x80070017c-the-cloud-operation-is-invalid.3078/latest
+    etat: a-rediger
+  - id: onedrive-erreur-0x80070184-fournisseur-sync-reseau
+    titre: "Erreur 0x80070184 : le fournisseur de synchronisation cloud n'a pas pu effectuer l'opération"
+    symptome: "Ouverture ou copie d'un fichier impossible car le réseau est indisponible au moment du téléchargement."
+    erreurs: ["Error 0x80070184: The cloud sync provider failed to perform the operation due to network being unavailable."]
+    priorite: rare
+    format: express
+    sources:
+      - https://thewindowsclub.com/onedrive-error-0x80070184-the-cloud-sync-provider-failed
+    etat: a-rediger
+  - id: onedrive-erreur-0x80070185-operation-cloud-echouee
+    titre: "Erreur 0x80070185 : « The cloud operation was unsuccessful »"
+    symptome: "Les fichiers en ligne seulement ne s'ouvrent plus (sauf parfois les images) ; disque local plein, antivirus ou état du client corrompu."
+    erreurs: ["Error 0x80070185: The cloud operation was unsuccessful."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/discussions/onedriveforbusiness/onedrive-just-opens-jpg-files-others-get-error-0x80070185-cloud-operation-was-un/4554720
+      - https://www.guidingtech.com/fix-onedrive-error-0x80070185-cloud-operation-was-unsuccessful/
+    etat: a-rediger
+  - id: onedrive-erreur-0x80070183-ressources-systeme
+    titre: "Erreur 0x80070183 : ressources système insuffisantes pour l'opération cloud"
+    symptome: "Copie massive de fichiers OneDrive interrompue faute de ressources système."
+    erreurs: ["Error 0x80070183: The cloud sync provider failed to perform the operation due to low system resources."]
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/t5/onedrive/files-on-demand-the-cloud-sync-engine-failed-to-validate-the/m-p/378832
+    etat: a-rediger
+  - id: onedrive-erreur-0x8007018b-fichier-utilise-par-onedrive
+    titre: "Erreur 0x8007018b : déplacement d'un fichier en cours d'utilisation par OneDrive"
+    symptome: "Déplacer ou renommer un fichier échoue parce que OneDrive est en train de le synchroniser."
+    erreurs: ["Error 0x8007018b"]
+    priorite: rare
+    format: express
+    sources:
+      - https://support.microsoft.com/office/what-do-the-onedrive-error-codes-mean-f7a68338-e540-4ebf-ad5d-56c5633acded
+    etat: a-rediger
+  - id: onedrive-erreur-0x80070780-fichier-inaccessible
+    titre: "Erreur 0x80070780 : « The file cannot be accessed by the system »"
+    symptome: "Un fichier ou le dossier OneDrive devient inaccessible (droits, restauration du système, fichier corrompu)."
+    erreurs: ["Error 0x80070780: The file cannot be accessed by the system."]
+    priorite: rare
+    format: complete
+    sources:
+      - https://windowsreport.com/error-0x80070780-windows-10/
+      - https://windows-hexerror.linestarve.com/q/so53532607-unable-to-access-onedrive-after-restore-to-windows-8-from-windows-10
+    etat: a-rediger
+  - id: onedrive-erreur-0x8004de44-proxy-authentifie
+    titre: "Erreur 0x8004de44 : connexion impossible derrière un proxy authentifié"
+    symptome: "OneDrive (et le coffre-fort personnel) refuse la connexion quand le trafic passe par un proxy qui demande un identifiant ou un VPN."
+    erreurs: ["0x8004de44"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5284323/error-code-(0x8004de44
+      - https://techcommunity.microsoft.com/t5/windows-10/cannot-sign-in-to-onedrive-errors-0x8004de44-and-0x80070426/m-p/4143984
+    etat: a-rediger
+  - id: onedrive-erreur-0x8004deed-connexion
+    titre: "Erreur 0x8004deed à la connexion (Windows ou Mac)"
+    symptome: "Connexion impossible : licence absente, identifiants en conflit ou réseau filtré ; sur Mac, trousseau à nettoyer."
+    erreurs: ["0x8004deed", "8004ded2"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5770728/error-code-0x8004deed
+      - https://learn.microsoft.com/en-sg/answers/questions/1463261/what-is-onedrieve-error-code-0x8004deed-meaning-an
+    etat: a-rediger
+  - id: onedrive-erreur-0x8004def0-identifiants-expires
+    titre: "Erreur 0x8004def0 : identifiants expirés, « Re-enter your credentials »"
+    symptome: "OneDrive indique que les fichiers ne sont peut-être plus à jour et demande de ressaisir le mot de passe en boucle."
+    erreurs: ["0x8004def0", "Your files might not be up to date. Re-enter your credentials to start syncing again."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://www.kapilarya.com/fix-you-arent-signed-in-error-for-onedrive-in-windows-10
+    etat: a-rediger
+  - id: onedrive-codes-erreur-1-2-6
+    titre: "OneDrive erreur 1, 2 ou 6 (erreur inconnue, compte, délai dépassé)"
+    symptome: "OneDrive affiche un code court : 1 (inconnu), 2 (récupération des infos du compte), 6 (délai d'attente dépassé)."
+    erreurs: ["Error code 1", "Error code 2", "Error code 6"]
+    priorite: rare
+    format: express
+    sources:
+      - https://support.microsoft.com/office/what-do-the-onedrive-error-codes-mean-f7a68338-e540-4ebf-ad5d-56c5633acded
+      - https://www.thewindowsclub.com/fix-onedrive-error-codes-1-2-or-6
+    etat: a-rediger
+  - id: onedrive-erreur-0x80049d61-application-store
+    titre: "Erreur 0x80049d61 : OneDrive (version Microsoft Store) ne démarre pas"
+    symptome: "L'application OneDrive du Store ne s'ouvre pas ; réinstaller la version de bureau classique."
+    erreurs: ["0x80049d61"]
+    priorite: rare
+    format: express
+    sources:
+      - https://thewindowsclub.com/onedrive-error-0x80049d61
+    etat: a-rediger
+  - id: onedrive-erreur-0x80040c81-0x80040c82-mise-a-jour
+    titre: "Erreur 0x80040c81 ou 0x80040c82 à l'installation ou la mise à jour de OneDrive"
+    symptome: "L'installation ou la mise à jour échoue (réseau, client non pris en charge sur ancien Windows, fichiers système)."
+    erreurs: ["0x80040c81", "0x80040c82"]
+    priorite: rare
+    format: express
+    sources:
+      - https://thewindowsclub.com/onedrive-error-code-0x80040c82-fix
+      - https://windowsreport.com/?p=438224
+    etat: a-rediger
+  - id: onedrive-erreur-0x80040c97-installation
+    titre: "Erreur 0x80040c97 : « OneDrive couldn't be installed »"
+    symptome: "OneDriveSetup.exe échoue : fichier d'installation abîmé, mise à jour Windows en attente, certificats."
+    erreurs: ["OneDrive couldn't be installed (Error code: 0x80040c97)"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/4236082/error-code-0x80040c97
+      - https://www.thewindowsclub.com/onedrive-couldnt-be-installed-error-code-0x80040c97
+    etat: a-rediger
+  - id: onedrive-version-plus-recente-deja-installee
+    titre: "« A newer version of OneDrive is installed » à l'installation"
+    symptome: "L'installation est refusée parce qu'une version plus récente (souvent par machine ou d'un autre canal) est déjà présente."
+    erreurs: ["A newer version of OneDrive is installed"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/article/f3d9a1d2-c8c2-426d-9332-dfc8a4af59fa
+      - https://www.winhelponline.com/blog/tag/onedrive/
+    etat: a-rediger
+  - id: onedrive-mise-a-jour-requise
+    titre: "« An update is required. To continue using OneDrive you need to update it »"
+    symptome: "OneDrive cesse de synchroniser et exige une mise à jour (client trop ancien ou mise à jour bloquée)."
+    erreurs: ["An update is required. To continue using OneDrive you need to update it."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://windowsreport.com/fix-an-update-is-required-to-continue-using-onedrive-you-need-to-update-it/
+    etat: a-rediger
+
+  # --- Sauvegarde des dossiers PC (Known Folder Move) ---
+  - id: onedrive-kfm-option-sauvegarde-absente
+    titre: "Option « Gérer la sauvegarde » (Manage backup) absente ou grisée"
+    symptome: "L'utilisateur ne peut pas activer la sauvegarde Bureau/Documents/Images : client trop ancien, capacités du site personnel, fichier PreSignInSettingsConfig.json manquant."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/lists-and-libraries/determine-known-folder-move-eligibility
+    etat: a-rediger
+  - id: onedrive-kfm-erreur-0x80070005-redirection-gpo
+    titre: "Sauvegarde des dossiers PC en échec (0x80070005) à cause d'une redirection de dossiers par GPO"
+    symptome: "L'activation de la sauvegarde échoue : stratégie de redirection de dossiers ou « Prohibit User from manually redirecting Profile Folders » activée."
+    erreurs: ["Error code: 0x80070005"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/install-or-access-onedrive-error-0x80070005
+      - https://techcommunity.microsoft.com/t5/onedrive/known-folder-move-error-code-0x80070005/m-p/228930
+    etat: a-rediger
+  - id: onedrive-kfm-erreur-0x80004005
+    titre: "Sauvegarde des dossiers PC en échec avec l'erreur 0x80004005"
+    symptome: "La protection d'un dossier connu échoue avec une erreur non spécifiée."
+    erreurs: ["0x80004005"]
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/onedriveforbusiness/known-folder-move-fails-error-code-0x80004005/214911
+    etat: a-rediger
+  - id: onedrive-kfm-dossier-contient-autre-dossier-connu
+    titre: "Sauvegarde impossible : le dossier contient un autre dossier important"
+    symptome: "Un dossier connu (ex. Images dans Documents) est imbriqué dans un autre ; la protection est refusée tant qu'il n'est pas remis à son emplacement."
+    erreurs: ["This folder contains another important folder and can't be protected until the contained folder is moved."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/office/back-up-your-folders-with-onedrive-d61a7930-a6fb-4b95-b28a-6552e77c3057
+      - https://pureinfotech.com/fix-problems-onedrive-folder-protection-windows-10/
+    etat: a-rediger
+  - id: onedrive-kfm-point-jonction-lien-symbolique
+    titre: "Sauvegarde impossible : le dossier contient une jonction ou un lien symbolique"
+    symptome: "Un point d'analyse (« My Music », « My Videos » hérités, liens symboliques) bloque la protection du dossier Documents."
+    erreurs: ["The folder you want to protect contains a special file type that links parts of the file system together. These items can't be protected."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5084426/onedrive-backup-error
+      - https://support.microsoft.com/office/back-up-your-folders-with-onedrive-d61a7930-a6fb-4b95-b28a-6552e77c3057
+    etat: a-rediger
+  - id: onedrive-kfm-dossier-autre-lecteur
+    titre: "Sauvegarde impossible : le dossier n'est pas sur le même lecteur que OneDrive"
+    symptome: "Documents ou Bureau a été déplacé sur D: ou un lecteur réseau ; OneDrive refuse de le protéger."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/office/back-up-your-folders-with-onedrive-d61a7930-a6fb-4b95-b28a-6552e77c3057
+      - https://www.nucleustechnologies.com/blog/onedrive-known-folder-move-not-working/
+    etat: a-rediger
+  - id: onedrive-kfm-fichiers-pst-onenote-bloquants
+    titre: "Sauvegarde bloquée par des fichiers .pst Outlook ou des blocs-notes OneNote"
+    symptome: "Des fichiers non pris en charge (PST ouverts, blocs-notes OneNote locaux) empêchent la sauvegarde du dossier Documents."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/office/back-up-your-folders-with-onedrive-d61a7930-a6fb-4b95-b28a-6552e77c3057
+    etat: a-rediger
+  - id: onedrive-kfm-compte-personnel-poste-domaine
+    titre: "« Folder protection is unavailable » : PC joint au domaine avec un compte OneDrive personnel"
+    symptome: "Sur un poste d'entreprise, la sauvegarde des dossiers d'un compte Microsoft personnel est refusée."
+    erreurs: ["Folder protection is unavailable"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/a/134848
+    etat: a-rediger
+  - id: onedrive-kfm-dossiers-en-double-desktop-1
+    titre: "Dossiers en double après la sauvegarde : « Desktop (1) », « Bureau - NOM-PC »"
+    symptome: "Après activation de la sauvegarde ou un changement de PC, OneDrive crée des dossiers Bureau/Documents en double avec un suffixe."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/discussions/onedriveforbusiness/onedrive-known-folder-move-creating-duplicate-files/270197
+      - https://www.elevenforum.com/t/onedrive-why-multiple-folders-in-explorer.27079/latest
+    etat: a-rediger
+  - id: onedrive-kfm-apres-redirection-dossiers-serveur
+    titre: "Sauvegarde OneDrive en échec après une ancienne redirection de dossiers vers un serveur"
+    symptome: "Les dossiers restent pointés vers un partage réseau ou un ancien chemin même après retrait de la GPO de redirection."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://community.azcomputerguru.com/d/8-onedrive-kfm-fails-after-folder-redirection-migration-heres-whats-actually-going-on
+      - https://techcommunity.microsoft.com/discussions/onedriveforbusiness/policy-preventing-known-folder-move/356043
+    etat: a-rediger
+  - id: onedrive-kfm-arreter-sauvegarde-fichiers-restes-cloud
+    titre: "Arrêter la sauvegarde : les fichiers restent dans OneDrive et le Bureau local est vide"
+    symptome: "Après « Arrêter la sauvegarde », les fichiers ne reviennent pas dans le dossier local (fichiers en ligne seulement non rapatriés)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/office/back-up-your-folders-with-onedrive-d61a7930-a6fb-4b95-b28a-6552e77c3057
+    etat: a-rediger
+
+  # --- États de synchronisation trompeurs ---
+  - id: onedrive-dossiers-affiches-en-cours-de-synchronisation
+    titre: "Fichiers ou dossiers affichés « en cours de synchronisation » indéfiniment"
+    symptome: "Des icônes de synchronisation restent sur des dossiers alors que OneDrive est à jour (fichiers cachés/temporaires, index Windows Search)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/folders-incorrectly-show-status-syncing
+    etat: a-rediger
+  - id: onedrive-bloque-ecran-configuration
+    titre: "OneDrive bloqué sur « Configuration… » / « We're still setting up a few things »"
+    symptome: "Au premier lancement, OneDrive reste plus de 24 h sur l'écran de configuration."
+    erreurs: ["Setting up...", "We're still setting up a few things, but feel free to get started."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/setup/onedrive-stopped-at-setting-up-screen
+    etat: a-rediger
+  - id: onedrive-site-personnel-non-provisionne
+    titre: "Le OneDrive de l'utilisateur n'est pas créé (bloqué sur « Setting up », redirection vers Delve)"
+    symptome: "La vignette OneDrive affiche « We're still working on getting files setup » ou renvoie vers Delve / MyBraryFirstRun.aspx : compte désactivé, licence ou droit « Create Personal Site » manquant."
+    erreurs: ["We're still working on getting files setup on SharePoint This should take us a few minutes"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sites/troubleshooting-guide-for-sites-stopped-at-provisioning
+    etat: a-rediger
+  - id: onedrive-ne-demarre-pas-image-sysprep
+    titre: "OneDrive ne démarre pas sur des postes déployés depuis une image Sysprep"
+    symptome: "Après jonction au domaine d'un poste issu d'une image Sysprep, OneDrive refuse de s'ouvrir."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/lists-and-libraries/cannot-open-onedrive-on-images-using-sysprep
+    etat: a-rediger
+
+  # --- Noms, chemins, limites ---
+  - id: onedrive-nom-fichier-caracteres-interdits
+    titre: "Fichier non synchronisé : nom contenant des caractères interdits ou un espace en début/fin"
+    symptome: "Croix rouge sur un fichier dont le nom contient \" * : < > ? / \\ | ou commence/finit par un espace."
+    erreurs: ["This file name isn't valid", "This file name contains invalid characters."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/help/64883a5d-228e-48f5-b3d2-eb39e07630fa
+    etat: a-rediger
+  - id: onedrive-chemin-trop-long-400-caracteres
+    titre: "Chemin d'accès trop long (plus de 400 caractères) dans OneDrive ou SharePoint"
+    symptome: "Des fichiers profondément imbriqués ne se synchronisent pas ou ne se déplacent pas ; message de chemin trop long."
+    erreurs: ["The file path is too long"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/help/64883a5d-228e-48f5-b3d2-eb39e07630fa
+      - https://blogs.otago.ac.nz/office365/?p=462
+    etat: a-rediger
+  - id: onedrive-noms-reserves-et-dossier-private
+    titre: "Noms réservés refusés (CON, PRN, desktop.ini, _vti_, dossier « _private »)"
+    symptome: "Un dossier nommé _private ou un nom réservé Windows/SharePoint ne se synchronise pas ; les fichiers qu'il contient restent bloqués."
+    erreurs: ["This file name contains invalid characters.", "Sorry, this document can't be opened for editing."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/lists-and-libraries/cannot-sync-files-folders
+      - https://support.microsoft.com/help/64883a5d-228e-48f5-b3d2-eb39e07630fa
+    etat: a-rediger
+  - id: onedrive-fichier-trop-volumineux-250-go
+    titre: "Fichier trop volumineux pour OneDrive (limite de 250 Go)"
+    symptome: "Un très gros fichier (image disque, sauvegarde, vidéo) n'est jamais envoyé."
+    erreurs: ["This file is too big to upload"]
+    priorite: rare
+    format: express
+    sources:
+      - https://support.microsoft.com/help/64883a5d-228e-48f5-b3d2-eb39e07630fa
+    etat: a-rediger
+  - id: onedrive-plus-de-300000-elements-synchronises
+    titre: "Synchronisation très lente ou instable au-delà de 300 000 éléments"
+    symptome: "OneDrive consomme beaucoup de CPU/mémoire, « Traitement des modifications » sans fin quand le total des bibliothèques synchronisées dépasse 300 000 éléments (1 million sur appareils éligibles depuis 2026)."
+    erreurs: ["Processing changes"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://support.microsoft.com/help/64883a5d-228e-48f5-b3d2-eb39e07630fa
+      - https://blog-en.topedia.com/2026/05/onedrive-supports-syncing-up-to-one-million-items-for-eligible-windows-devices/
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/questions-on-onedrive-sync-limitation-/1010902
+    etat: a-rediger
+  - id: onedrive-traitement-modifications-sans-fin
+    titre: "OneDrive reste bloqué sur « Traitement des modifications » (Processing changes)"
+    symptome: "Le client analyse en boucle un grand nombre de fichiers, même non synchronisés, sans jamais terminer."
+    erreurs: ["Processing changes", "Looking for changes"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/discussions/onedriveforbusiness/onedrive-application-keeps-processing-large-number-of-files-even-if-it-is-not-sy/4368450/replies/4384710
+    etat: a-rediger
+
+  # --- Raccourcis et bibliothèques SharePoint ---
+  - id: onedrive-raccourci-dossier-deja-synchronise
+    titre: "« You're already syncing a shortcut to a folder from this shared library »"
+    symptome: "Impossible de synchroniser une bibliothèque déjà ajoutée en raccourci dans Mes fichiers (ou l'inverse)."
+    erreurs: ["Sorry, we can't sync this folder. You're already syncing a shortcut to a folder from this shared library."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/cannot-sync-shortcut-folder
+    etat: a-rediger
+  - id: onedrive-raccourci-mes-fichiers-absent-ou-echec
+    titre: "« Ajouter un raccourci à Mes fichiers » absent, grisé ou en échec (« 1 shortcut wasn't added »)"
+    symptome: "L'option n'apparaît pas (droits en lecture seule, raccourci existant, fonctionnalité désactivée) ou le raccourci n'est pas ajouté."
+    erreurs: ["1 shortcut wasn't added"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5543476/add-shortcut-to-my-files-in-sharepoint-is-missing
+      - https://techcommunity.microsoft.com/discussions/onedriveforbusiness/add-shortcut-to-files-fails/4395797
+    etat: a-rediger
+  - id: onedrive-raccourci-ne-se-synchronise-pas-sur-pc
+    titre: "Raccourci ajouté à Mes fichiers mais absent de l'Explorateur sur le PC"
+    symptome: "Le raccourci est visible sur le web mais le dossier n'apparaît pas dans le dossier OneDrive local."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/discussions/onedriveforbusiness/add-shortcut-to-my-files-not-syncing/2425637
+      - https://techcommunity.microsoft.com/t5/sharepoint/add-shortcut-to-onedrive-feature-not-syncing-to-onedrive-folder/td-p/2631281
+    etat: a-rediger
+  - id: onedrive-raccourci-conflit-nom
+    titre: "« Unable to sync shortcut because it conflicts » : raccourci en conflit avec un dossier existant"
+    symptome: "Un raccourci porte le même nom qu'un dossier local ou qu'un autre raccourci et ne se synchronise pas."
+    erreurs: ["Unable to sync shortcut because it conflicts with another item"]
+    priorite: rare
+    format: express
+    sources:
+      - https://www.cbackup.com/articles/onedrive-unable-to-sync-shortcut-because-it-conflicts-5026-rc.html
+      - https://learn.microsoft.com/en-ie/answers/questions/2284640/get-error-from-onedrive-saying-a-shortcut-exists-s
+    etat: a-rediger
+  - id: onedrive-impossible-ajouter-dossier-bibliotheque
+    titre: "« Sorry, OneDrive can't add your folder right now » en synchronisant une bibliothèque"
+    symptome: "La synchronisation d'une bibliothèque échoue : extraction obligatoire, colonnes requises, sécurité des brouillons ou compte invité."
+    erreurs: ["Sorry, OneDrive can't add your folder right now."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/cant-add-folder-right-now
+    etat: a-rediger
+  - id: onedrive-synchronisation-bibliotheque-interdite
+    titre: "Bouton « Synchroniser » absent : synchronisation interdite sur le site ou la bibliothèque"
+    symptome: "Le bouton Synchroniser n'apparaît pas, ou un message indique que l'administrateur interdit la synchronisation hors connexion."
+    erreurs: ["Options set for this library by your administrator prohibit users from syncing it to a local computer."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/troubleshoot-sync-issues
+    etat: a-rediger
+  - id: onedrive-impossible-connecter-site-sharepoint
+    titre: "« We can't connect to the specified SharePoint site » (SignInOptions)"
+    symptome: "La synchronisation d'une bibliothèque échoue car la clé SignInOptions=3 interdit la connexion avec un compte professionnel."
+    erreurs: ["We can't connect to the specified SharePoint site"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/onedrive-for-business-sync-returns-error
+    etat: a-rediger
+  - id: onedrive-ancien-client-groove-exe
+    titre: "Ancien client OneDrive Entreprise (Groove.exe) encore actif : pas de co-édition, synchronisation obsolète"
+    symptome: "Un poste synchronise encore via Groove.exe : pas de co-édition, doublons dans les fichiers récents, installation autonome qui échoue."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/enable-co-authoring-for-onedrive-synced-file
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/setup/onedrive-for-business-installation-fails
+    etat: a-rediger
+
+  # --- Conflits et doublons ---
+  - id: onedrive-fichiers-en-double-nom-du-pc
+    titre: "Fichiers en double avec le nom du PC (« Rapport-NOMPC.xlsx ») après un conflit"
+    symptome: "OneDrive garde deux versions d'un fichier modifié à deux endroits et ajoute le nom de l'appareil à la copie locale."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/troubleshoot-sync-issues
+    etat: a-rediger
+  - id: onedrive-impossible-fusionner-modifications-office
+    titre: "« We couldn't merge the changes in an Office file » / « You now have two copies of a file »"
+    symptome: "OneDrive n'arrive pas à fusionner un fichier Office modifié ailleurs et crée une seconde copie."
+    erreurs: ["We couldn't merge the changes in an Office file.", "You now have two copies of a file"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/discussions/onedriveforbusiness/onedrive-we-couldn%e2%80%99t-merge-the-changes-in-office-file/3700634
+      - https://www.technipages.com/onedrive-we-couldnt-merge-the-changes-in-office-file/
+    etat: a-rediger
+  - id: onedrive-office-echec-telechargement-upload-failed
+    titre: "Office affiche « Upload failed » / « Échec du chargement » sur un fichier OneDrive"
+    symptome: "Word ou Excel signale un échec d'envoi à chaque ouverture ou une version plus récente disponible sur le serveur."
+    erreurs: ["UPLOAD FAILED. We're sorry, someone updated the server version with edits that conflict with yours.", "Upload pending"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5034071/upload-failed-everytime-i-open-an-excel-file-locat
+      - https://itsupport.mccneb.edu/TDClient/60/Portal/KB/ArticleDet?ID=3583
+    etat: a-rediger
+  - id: onedrive-upload-blocked-autorisations
+    titre: "« UPLOAD BLOCKED: We couldn't verify you have the necessary permissions »"
+    symptome: "L'enregistrement d'un fichier synchronisé échoue car l'application Office est connectée avec un autre compte que OneDrive."
+    erreurs: ["UPLOAD BLOCKED: We couldn't verify you have the necessary permissions to upload the file."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/upload-blocked-error-in-o365
+    etat: a-rediger
+
+  # --- Espace de stockage ---
+  - id: onedrive-espace-plein-quota-depasse
+    titre: "« Votre OneDrive est plein » : quota de stockage atteint, synchronisation arrêtée"
+    symptome: "Les nouveaux fichiers ne s'envoient plus ; OneDrive affiche un avertissement de stockage plein (corbeille et versions comptent dans le quota)."
+    erreurs: ["Your OneDrive is full", "You're out of storage"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/en-us/office/my-onedrive-says-its-full-f0a8a922-d971-497e-b0c6-7b9a47c617c0
+    etat: a-rediger
+  - id: onedrive-site-lecture-seule-quota-depasse
+    titre: "OneDrive passé en lecture seule après dépassement du quota (licence ou quota réduit)"
+    symptome: "Le site OneDrive de l'utilisateur est verrouillé en lecture seule : bannière « This site has exceeded its maximum file storage limit »."
+    erreurs: ["This site has exceeded its maximum file storage limit. To free up space, delete files you don't need and empty the recycle bin.", "Unable to create new file. Site quota is full."]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/sites/site-storage-quota-exceeded
+    etat: a-rediger
+  - id: onedrive-plein-alors-que-vide
+    titre: "OneDrive indique « plein » alors que peu de fichiers sont visibles"
+    symptome: "Le quota semble atteint sans raison : corbeille, historique des versions, pièces jointes Outlook.com (stockage partagé du compte personnel)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5792538/storage-is-empty-but-says-its-full
+      - https://www.cbackup.com/articles/your-onedrive-is-full-but-its-not-6688.html
+    etat: a-rediger
+  - id: onedrive-disque-local-plein
+    titre: "« Disk full » : le disque du PC est plein et bloque la synchronisation"
+    symptome: "OneDrive signale un manque d'espace sur le lecteur local alors que l'espace cloud est libre."
+    erreurs: ["There's not enough space on this PC", "Disk full"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/topic/b875f98b-7a0f-424a-ae87-d5e8af224fb7
+      - https://mtsac.freshservice.com/support/solutions/articles/18000065039
+    etat: a-rediger
+  - id: onedrive-compte-personnel-gele-inactivite-quota
+    titre: "Compte OneDrive personnel gelé (dépassement de quota prolongé ou inactivité)"
+    symptome: "Les fichiers deviennent inaccessibles en écriture après plusieurs mois au-dessus du quota ; risque de suppression."
+    erreurs: ["Your OneDrive account is frozen"]
+    priorite: rare
+    format: express
+    sources:
+      - https://support.microsoft.com/en-us/office/my-onedrive-says-its-full-f0a8a922-d971-497e-b0c6-7b9a47c617c0
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/sign-into-onedrive-error-0x8004def7
+    etat: a-rediger
+
+  # --- Fichiers à la demande ---
+  - id: onedrive-fichiers-a-la-demande-option-absente
+    titre: "Option Fichiers à la demande absente ou grisée"
+    symptome: "Le paramètre Fichiers à la demande ou « Télécharger tous les fichiers » est grisé (GPO imposée) ou absent (pilote CldFlt, version de Windows)."
+    erreurs: ["Download all files is not available due to your organization's policy"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/t5/onedrive/files-on-demand-download-all-files-is-not-available-due-to-your/m-p/3964540
+      - https://techcommunity.microsoft.com/discussions/onedriveforbusiness/files-on-demand-option-missing/670264
+    etat: a-rediger
+  - id: onedrive-fichiers-telecharges-automatiquement-antivirus
+    titre: "Les fichiers en ligne seulement se téléchargent tout seuls et remplissent le disque"
+    symptome: "Un antivirus, l'indexation Windows Search ou un logiciel de sauvegarde ouvre les fichiers et force leur téléchargement."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/t5/onedrive/files-on-demand-randomly-downloading-and-filling-hard-drives/m-p/278713
+      - https://community.cisco.com/t5/endpoint-security/onedrive-for-business-with-fileondemand/m-p/3749902
+    etat: a-rediger
+  - id: onedrive-liberer-espace-redevient-local
+    titre: "Fichiers « Libérer de l'espace » qui redeviennent disponibles localement"
+    symptome: "Des fichiers passés en ligne seulement sont retéléchargés à chaque fois (des Go), ou l'option « Libérer de l'espace » disparaît du menu."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/discussions/onedriveforbusiness/files-on-demand-onedrive-automatically-downloads-gbs-of-files-you-freed-up-every/2282300/replies/3585220
+      - https://www.wps.com/office-quick-solution/document-file-issues/how-to-restore-the-onedrive-free-up-space-option-in-windows/
+    etat: a-rediger
+  - id: onedrive-statut-fichiers-icones-absentes
+    titre: "Icônes d'état OneDrive (nuage, coche verte) absentes dans l'Explorateur"
+    symptome: "Les superpositions d'icônes de statut n'apparaissent plus ou ne se mettent pas à jour."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/discussions/onedriveforbusiness/missing-onedrive-file-on-deman-status-icon/285898
+      - https://learn.microsoft.com/en-us/answers/questions/5853997/onedrive-file-status-not-updating-properly
+    etat: a-rediger
+
+  # --- Suppression, corbeille, versions, restauration ---
+  - id: onedrive-fichier-disparu-dans-corbeille
+    titre: "Fichier synchronisé disparu, retrouvé dans la corbeille OneDrive/SharePoint"
+    symptome: "Un fichier est déplacé dans la corbeille sans action apparente : suppression accidentelle ou application locale qui a supprimé le fichier."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/synced-file-moved-to-recycle-bin
+    etat: a-rediger
+  - id: onedrive-restaurer-fichier-supprime-corbeille-second-niveau
+    titre: "Restaurer un fichier supprimé : corbeille de premier et second niveau (93 jours)"
+    symptome: "Un fichier a été vidé de la corbeille ; il reste récupérable par l'administrateur dans la corbeille de second niveau tant que les 93 jours ne sont pas écoulés."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5028790/onedrive-second-stage-recycle-bin-for-administrato
+      - https://www.sharepointdiary.com/?p=29611
+    etat: a-rediger
+  - id: onedrive-suppression-massive-confirmation
+    titre: "OneDrive demande de confirmer la suppression de milliers d'éléments (« Delete these items? »)"
+    symptome: "OneDrive demande de confirmer la suppression d'un grand nombre de fichiers (dossier vidé, nettoyage, ransomware)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/office/delete-files-or-folders-in-onedrive-21fe345a-e488-4fa7-932b-f053c1bebe8a
+      - https://learn.microsoft.com/en-us/answers/questions/5693495/onedrive-asks-to-delete-these-13888-items
+      - https://m365admin.handsontek.net/?p=10857
+    etat: a-rediger
+  - id: onedrive-restaurer-onedrive-complet-date-anterieure
+    titre: "Restaurer tout le OneDrive à une date antérieure (30 derniers jours)"
+    symptome: "Après une suppression massive, une corruption ou une mauvaise manipulation, revenir à l'état d'une date précise."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://support.microsoft.com/office/restore-your-onedrive-5a3dc200-3537-49b6-9f51-09cd74bc962a
+      - https://learn.microsoft.com/en-us/archive/blogs/josebda/onedrive-files-restore-user-guide
+    etat: a-rediger
+  - id: onedrive-ransomware-fichiers-chiffres
+    titre: "Fichiers OneDrive chiffrés ou renommés par un ransomware"
+    symptome: "Les fichiers ont une extension inconnue, ne s'ouvrent plus, fichiers HELP_DECRYPT dans chaque dossier ; alerte de détection de ransomware Microsoft 365."
+    erreurs: ["Ransomware detected"]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/security/handling-ransomware-in-sharepoint-online
+      - https://support.microsoft.com/office/0d90ec50-6bfd-40f4-acc7-b8c12c73637f
+    etat: a-rediger
+  - id: onedrive-historique-versions-manquant
+    titre: "Historique des versions vide, incomplet ou option « Versions précédentes » absente"
+    symptome: "Les anciennes versions attendues n'apparaissent pas (limite de versions, fichier jamais synchronisé, menu contextuel absent)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5031387/onedrive-version-history-missing-version
+      - https://support.microsoft.com/office/159cad6d-d76e-4981-88ef-de6e96c93893
+      - https://office365itpros.com/2020/07/09/onedrive-clients-version-history
+    etat: a-rediger
+  - id: onedrive-fichiers-revenus-ancienne-version
+    titre: "Fichiers revenus à une ancienne version après synchronisation"
+    symptome: "Des modifications récentes ont disparu : un autre appareil hors ligne a renvoyé une version plus ancienne."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5845883/urgent-one-drive-files-reverted-to-older-file-vers
+    etat: a-rediger
+  - id: onedrive-impossible-supprimer-fichier-retention
+    titre: "Impossible de supprimer un fichier ou dossier OneDrive (rétention, extraction, droits)"
+    symptome: "La suppression est refusée : étiquette ou stratégie de rétention, fichier extrait par un autre utilisateur, quota dépassé."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/administration/unable-to-delete-files
+    etat: a-rediger
+
+  # --- Utilisateur parti, licence, rétention ---
+  - id: onedrive-utilisateur-parti-acces-manager
+    titre: "Récupérer les fichiers OneDrive d'un utilisateur parti (accès du manager)"
+    symptome: "Après le départ d'un salarié, son responsable doit récupérer ses fichiers ; le lien d'accès reçu ne fonctionne pas ou a expiré."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/admin/add-users/remove-former-employee-step-5
+      - https://learn.microsoft.com/en-us/OneDrive/retention-and-deletion
+    etat: a-rediger
+  - id: onedrive-utilisateur-supprime-restaurer-onedrive
+    titre: "OneDrive d'un utilisateur supprimé introuvable : restaurer le site (Restore-SPODeletedSite)"
+    symptome: "Le compte a été supprimé depuis plus de 30 jours ; le OneDrive n'apparaît plus dans le centre d'administration mais peut être dans la corbeille des sites (93 jours)."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5881858/deleted-user-unable-to-retrieve-documents
+      - https://m365scripts.com/microsoft365/how-to-restore-a-deleted-onedrive/
+    etat: a-rediger
+  - id: onedrive-empecher-suppression-onedrive-ancien-salarie
+    titre: "Empêcher la suppression automatique du OneDrive d'un ancien salarié (rétention)"
+    symptome: "Le OneDrive d'un compte supprimé va être effacé après la période de rétention (30 jours par défaut) ; besoin de le conserver."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/OneDrive/retention-and-deletion
+      - https://learn.microsoft.com/en-us/answers/questions/1286871/how-to-prevent-and-ex-user-onedrive-from-being-del
+    etat: a-rediger
+  - id: onedrive-licence-terminee-edition-impossible
+    titre: "« You can't edit your files because your license to use OneDrive ended »"
+    symptome: "Un compte sans licence OneDrive ne peut plus modifier ni envoyer de fichiers ; le site passe en lecture seule puis est archivé (93 jours)."
+    erreurs: ["You can't edit your files because your license to use OneDrive ended over a couple of months ago."]
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sites/cannot-edit-files-onedrive-license-end
+      - https://learn.microsoft.com/sharepoint/unlicensed-onedrive-accounts
+      - https://lazyadmin.nl/office-365/unlicensed-onedrive-accounts-archived/
+    etat: a-rediger
+  - id: onedrive-compte-sans-licence-archive
+    titre: "OneDrive sans licence archivé : contenu inaccessible aux utilisateurs et aux administrateurs"
+    symptome: "Après 93 jours sans licence, le OneDrive est archivé ; la réactivation passe par la facturation des comptes sans licence."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/sharepoint/unlicensed-onedrive-accounts
+      - https://mc.merill.net/message/MC836942
+    etat: a-rediger
+  - id: onedrive-abonnement-expire-site-inaccessible
+    titre: "OneDrive inaccessible (« This site can't be reached ») : abonnement expiré"
+    symptome: "OneDrive et SharePoint ne s'ouvrent plus pour toute l'organisation après expiration de l'abonnement."
+    erreurs: ["This site can't be reached"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/administration/error-accessing-onedrive-sharepoint
+    etat: a-rediger
+
+  # --- Partage ---
+  - id: onedrive-lien-partage-expire-ou-ne-fonctionne-pas
+    titre: "Lien de partage OneDrive expiré ou qui ne fonctionne plus"
+    symptome: "Le destinataire obtient une erreur : date d'expiration atteinte, fichier déplacé/renommé, lien supprimé ou politique de partage modifiée."
+    erreurs: ["This link has expired", "That didn't work. This link doesn't work for you."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/t5/onedrive/expiring-links/m-p/286046
+      - https://office365itpros.com/2021/11/16/sharepoint-expiring-access-policy/amp/
+    etat: a-rediger
+  - id: onedrive-partage-externe-interdit-politique
+    titre: "« Your organization's policies do not allow you to share with these users »"
+    symptome: "Le partage avec une adresse externe est refusé : partage externe désactivé pour le tenant ou le OneDrive de l'utilisateur, ou domaine bloqué."
+    erreurs: ["Your organization's policies do not allow you to share with these users"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sharing-and-permissions/organization-policies-do-not-allow-you-to-share-with-users-error
+    etat: a-rediger
+  - id: onedrive-invitation-invite-bloquee-responsestatusnotok
+    titre: "Partage externe en échec : « ResponseStatusNotOK… Guest invitations not allowed »"
+    symptome: "L'invitation d'un invité échoue à cause des paramètres B2B ou d'accès inter-locataires Entra."
+    erreurs: ["Error: ResponseStatusNotOK, message: This invitation is blocked by cross-tenant access settings.", "At least one invitation failed. Error: ResponseStatusNotOK, message: Guest invitations not allowed for your company."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sharing-and-permissions/responsestatusnotok-sharing-sharepoint-onedrive-site
+    etat: a-rediger
+  - id: onedrive-options-partage-grisees
+    titre: "Options de partage grisées (« Tout le monde », « Personnes externes » indisponibles)"
+    symptome: "Certains types de lien ne peuvent pas être choisis : restrictions de l'administrateur, mode de verrouillage d'accès limité."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sharing-and-permissions/sharing-options-grayed-out-when-sharing-from-SharePoint-Online-or-OneDrive
+    etat: a-rediger
+  - id: onedrive-option-partage-onedrive-disparue-centre-admin
+    titre: "Option « Partage » du OneDrive d'un utilisateur disparue du centre d'administration"
+    symptome: "Dans les détails de l'utilisateur, la section Partage OneDrive n'est plus disponible après avoir décoché l'accès externe."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sharing-and-permissions/restore-onedrive-share-settings-office365
+    etat: a-rediger
+  - id: onedrive-element-n-existe-pas-bibliotheque-renommee
+    titre: "« This item might not exist or is no longer available » à l'ouverture de OneDrive"
+    symptome: "OneDrive web affiche que l'élément n'existe pas : bibliothèque « Documents » renommée, lien vers un élément supprimé ou sans droits."
+    erreurs: ["This item might not exist or is no longer available. This item might have been deleted, expired, or you might not have permission to view it."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sharing-and-permissions/this-item-might-not-exist-error
+    etat: a-rediger
+  - id: onedrive-erreur-403-forbidden-fichier-partage
+    titre: "Erreur 403 Forbidden en ouvrant un fichier partagé OneDrive"
+    symptome: "Le destinataire d'un partage reçoit 403 : cache navigateur, autorisations non répliquées, OneDrive verrouillé."
+    erreurs: ["Error: 403 Forbidden"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sharing-and-permissions/error-403-forbidden
+    etat: a-rediger
+  - id: onedrive-acces-refuse-dossier-partage-verrouillage
+    titre: "Accès refusé à un dossier partagé (mode de verrouillage des accès limités)"
+    symptome: "L'utilisateur avec qui un dossier est partagé obtient « Access Denied » car il n'a pas accès au dossier parent."
+    erreurs: ["Access Denied", "You need permission to access this resource.", "You can't access this item."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sharing-and-permissions/access-denied-shared-folder
+    etat: a-rediger
+  - id: onedrive-mail-partage-non-recu
+    titre: "Le destinataire ne reçoit pas le mail de partage OneDrive"
+    symptome: "Les notifications de partage ne sont pas livrées : attribut Email vide dans Entra ID ou message classé en spam."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sharing-and-permissions/sharing-email-not-delivered
+    etat: a-rediger
+  - id: onedrive-invite-externe-perd-acces
+    titre: "Un invité externe perd l'accès à un fichier partagé (expiration de l'accès invité)"
+    symptome: "Un partenaire n'accède plus à un fichier : stratégie d'expiration de l'accès invité, changement des liens externes, invitation non acceptée."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://office365itpros.com/2021/11/16/sharepoint-expiring-access-policy/amp/
+      - https://techcommunity.microsoft.com/discussions/onedriveforbusiness/guest-link-sharing-has-stopped-working-in-the-onedrive-5tb-business-/4412072
+    etat: a-rediger
+  - id: onedrive-impossible-joindre-serveur-partage
+    titre: "« Unable to reach the server » au moment de partager un fichier"
+    symptome: "La fenêtre de partage échoue : paramètres de demandes d'accès du site ou option Internet « Ne pas enregistrer les pages chiffrées »."
+    erreurs: ["Unable to reach the server"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sharing-and-permissions/share-file-unable-reach-server
+    etat: a-rediger
