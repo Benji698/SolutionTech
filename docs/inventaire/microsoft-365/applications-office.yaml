@@ -1666,3 +1666,96 @@ problemes:
       - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365-apps/activation/use-msoaid-tool-for-authentication-issues
       - https://github.com/MicrosoftDocs/SupportArticles-docs/blob/main/Office/Client/activation/use-msoaid-tool-for-authentication-issues.md
     etat: a-rediger
+
+  # ─────────────── Excel (fin) ───────────────
+
+  - id: excel-power-query-formula-firewall
+    titre: "Excel Power Query : erreur Formula.Firewall à l'actualisation (niveaux de confidentialité)"
+    symptome: "L'actualisation d'une requête échoue car elle combine des sources aux niveaux de confidentialité incompatibles ou référence d'autres requêtes."
+    erreurs: ["Formula.Firewall: Query '<name>' (step '<step>') references other queries or steps, so it may not directly access a data source. Please rebuild this data combination."]
+    priorite: rare
+    format: express
+    sources:
+      - https://exceloffthegrid.com/formula-firewall-in-power-query/
+      - https://community.fabric.microsoft.com/t5/Power-Query/Formula-Firewall-Error-Can-t-Set-Privacy-Levels-to-Ignore/m-p/3523939
+    etat: a-rediger
+
+  - id: excel-presse-papiers-impossible-liberer
+    titre: "Excel : « Impossible de libérer de l'espace dans le Presse-papiers » / problème de presse-papiers"
+    symptome: "Copier-coller impossible dans Excel ; un autre programme (ou Excel lui-même) monopolise le presse-papiers."
+    erreurs: ["We couldn't free up space on the Clipboard. Another program might be using it right now.", "There's a problem with the clipboard, but you can still paste your content within this workbook."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/archive/blogs/the_microsoft_excel_support_team_blog/we-couldnt-free-up-space-on-the-clipboard-another-program-might-be-using-it-right-now-updated-212013
+      - https://thewindowsclub.com/theres-a-problem-with-the-clipboard-excel
+    etat: a-rediger
+
+  - id: excel-personal-xlsb-verrouille
+    titre: "Excel : « PERSONAL.XLSB est verrouillé pour modification » ou macros personnelles absentes"
+    symptome: "Le classeur de macros personnelles s'ouvre en lecture seule ou ne se charge pas (volet de visualisation de l'Explorateur, processus Excel resté ouvert)."
+    erreurs: ["PERSONAL.XLSB is locked for editing by '<user>'."]
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/excelgeneral/personal-xlsb-is-locked-for-editing---how-to-prevent-and-cure/4394427
+      - https://learn.microsoft.com/en-us/answers/questions/4769029/personal-xlsb
+    etat: a-rediger
+
+  # ─────────────── Word (fin) ───────────────
+
+  - id: word-selection-verrouillee
+    titre: "Word : « Cette modification n'est pas autorisée car la sélection est verrouillée »"
+    symptome: "Impossible de modifier le document : restriction de modification, document marqué comme final, contrôles de contenu protégés ou Office non activé."
+    erreurs: ["This modification is not allowed because the selection is locked.", "You can't make this change because the selection is locked."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://www.pcrisk.com/blog/windows/13762-you-cant-make-this-change-because-this-selection-is-locked
+      - https://www.404techsupport.com/2009/01/13/microsoft-word-this-modification-is-not-allowed-because-the-selection-is-locked/amp/
+    etat: a-rediger
+
+  - id: word-suivi-modifications-verrouille
+    titre: "Word : impossible de désactiver le suivi des modifications (verrouillage du suivi)"
+    symptome: "Le bouton Suivi des modifications est bloqué et on ne peut ni accepter ni refuser : le suivi est verrouillé par mot de passe ou par une restriction."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://www.wps.com/office-quick-solution/document-file-issues/why-microsoft-word-cannot-edit-while-track-changes-is-enabled/
+    etat: a-rediger
+
+  - id: word-mode-compatibilite
+    titre: "Word : document en « Mode de compatibilité », fonctions récentes indisponibles"
+    symptome: "Un document .doc ou ancien .docx s'ouvre en mode de compatibilité ; certaines fonctions sont grisées tant qu'il n'est pas converti."
+    erreurs: ["Compatibility Mode"]
+    priorite: rare
+    format: express
+    sources:
+      - https://www.dummies.com/article/technology/software/microsoft-products/word/convert-compatibility-mode-document-word-2016-229046/
+      - https://servicecenter.twu.edu/TDClient/1956/Portal/KB/PrintArticle?ID=26773
+    etat: a-rediger
+
+  # ─────────────── Types d'installation ───────────────
+
+  - id: office-version-microsoft-store-fin-support
+    titre: "Office installé depuis le Microsoft Store : plus de mises à jour, migrer vers Click-to-Run"
+    symptome: "Fichier > Compte indique une installation Microsoft Store ; la version ne reçoit plus de mises à jour de fonctionnalités et entre en conflit avec une installation Click-to-Run."
+    erreurs: []
+    priorite: critique
+    format: express
+    sources:
+      - https://www.pcworld.com/article/2855323/the-microsoft-store-versions-of-office-apps-are-being-discontinued.html
+      - https://winfuture.de/news,152508.html
+    etat: a-rediger
+
+  - id: office-click-to-run-et-msi-meme-poste
+    titre: "Office Click-to-Run et Office MSI (Windows Installer) sur le même poste : non pris en charge"
+    symptome: "Installation refusée ou comportement instable quand une version MSI (2010, 2013, 2016 en volume) coexiste avec Microsoft 365 Apps."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/topic/30775ef4-fa77-4f47-98fb-c5826a6926cd
+      - https://support.microsoft.com/office/6ebb44ce-18a3-43f9-a187-b78c513788bf
+    etat: a-rediger

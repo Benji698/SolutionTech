@@ -775,3 +775,96 @@ problemes:
       - https://learn.microsoft.com/en-us/defender-office-365/safe-links-about
       - https://www.ed.ac.uk/information-services/about/news/safe-links-security-feature
     etat: a-rediger
+  - id: defender-liste-diffusion-transfert-echec-dmarc-arc
+    titre: Mails de listes de diffusion ou transférés par un service tiers bloqués pour échec DMARC (scelleurs ARC approuvés)
+    symptome: Des messages passant par une liste de diffusion, un service de filtrage ou un outil de support échouent DMARC car l'intermédiaire modifie le message ; ils partent en indésirable ou en quarantaine.
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/defender-office-365/email-authentication-dmarc-configure
+      - https://learn.microsoft.com/en-us/defender-office-365/email-auth-sec-ops-guide
+      - https://support.vircom.com/support/solutions/articles/48001238013-add-a-trusted-arc-sealer-to-microsoft-365-for-spf-failures
+    etat: a-rediger
+  - id: defender-outlook-filtre-client-courrier-indesirable
+    titre: Message en Courrier indésirable alors que l'en-tête indique SFV:SKN ou SCL:-1 (filtre d'Outlook ou règle utilisateur)
+    symptome: "EOP a laissé passer le message, mais il se retrouve quand même en Junk : filtre côté client d'Outlook, option « Listes approuvées uniquement » ou règle de boîte de réception."
+    erreurs:
+      - SFV:SKN
+      - SCL:-1
+      - SFV:NSPM
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/defender-office-365/message-headers-eop-mdo
+      - https://techcommunity.microsoft.com/t5/exchange/emails-to-outlook-delivered-to-junk-email-folder-with-scl-1/m-p/149871
+      - https://learn.microsoft.com/da-dk/archive/blogs/tzink/messages-going-to-junk-even-though-they-arent-spam-check-to-see-if-you-have-safe-lists-only-enabled
+    etat: a-rediger
+  - id: defender-analyse-en-tetes-motif-quarantaine
+    titre: "Comprendre pourquoi un message a été bloqué : lire les en-têtes X-Forefront-Antispam-Report et X-Microsoft-Antispam"
+    symptome: Un message est en indésirable ou en quarantaine sans motif clair ; il faut interpréter SFV, CAT, SCL, BCL, SRV:BULK et compauth pour identifier la cause.
+    erreurs:
+      - SFV:SPM
+      - CAT:SPM
+      - CAT:PHSH
+      - SRV:BULK
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/defender-office-365/message-headers-eop-mdo
+      - https://blog.ciaops.com/2025/05/27/analyzing-exchange-online-email-headers-for-junk-quarantine-reasons/
+    etat: a-rediger
+  - id: defender-entree-autorisation-expiree
+    titre: "Expéditeur de nouveau bloqué : l'entrée d'autorisation de la liste du locataire a expiré (45 jours après dernière utilisation)"
+    symptome: Un expéditeur autorisé il y a quelques semaines est à nouveau filtré ; son entrée d'autorisation a été supprimée automatiquement.
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/defender-office-365/tenant-allow-block-list-about
+      - https://learn.microsoft.com/en-us/answers/questions/2041531/workaround-over-tennant-allow-block-lists-allow-en
+      - https://techcommunity.microsoft.com/blog/microsoftdefenderforoffice365blog/automate-tenant-allowblock-list-entries/4213201
+    etat: a-rediger
+  - id: defender-piece-jointe-protegee-mot-de-passe-quarantaine
+    titre: Messages avec pièce jointe protégée par mot de passe (ZIP, PDF, Office) mis en quarantaine
+    symptome: Depuis l'activation de l'option Safe Attachments sur les pièces jointes non analysables, les archives ou documents chiffrés sont mis en quarantaine ; l'utilisateur doit saisir le mot de passe pour libérer.
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://mc.merill.net/message/MC1440701
+      - https://blog-en.topedia.com/2026/08/microsoft-defender-can-quarantine-emails-with-unscannable-attachments/
+    etat: a-rediger
+  - id: defender-balise-externe-absente
+    titre: Balise « Externe » (External) qui n'apparaît pas dans Outlook
+    symptome: Après Set-ExternalInOutlook -Enabled $true, les messages externes ne portent toujours pas la mention Externe (délai, version d'Outlook, mode conversation).
+    erreurs:
+      - Set-ExternalInOutlook
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5234335/set-externalinoutlook-set-to-true-but-external-tag
+      - https://o365reports.com/enable-external-email-warning-tag-in-exchange-online/
+      - https://techcommunity.microsoft.com/discussions/exchange_general/users-cannot-see-external-tag-in-owa-and-outlook-conversation-view/3565759
+    etat: a-rediger
+  - id: defender-balise-externe-sur-mails-internes
+    titre: Balise « Externe » affichée sur des mails internes ou de sous-domaines (liste d'exceptions)
+    symptome: Des messages d'applications internes ou d'un sous-domaine portent la mention Externe ; la liste AllowList est pleine ou ne prend pas les sous-domaines.
+    erreurs:
+      - Maximum AllowList length exceeded. Max 1024
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/exchange_general/set-externalinoutlook--allowlist-sub-domain-ca-still-tagging-emails-as-external/2342001
+      - https://o365reports.com/enable-external-email-warning-tag-in-exchange-online/
+    etat: a-rediger
+  - id: defender-mails-internes-classes-spam
+    titre: Mails internes (entre utilisateurs du même domaine) classés en spam
+    symptome: Des messages envoyés entre collègues ou par des applications internes arrivent en indésirable (SPF/DKIM mal configurés, relais non authentifié, contenu).
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://buralog.jp/?p=15681
+      - https://learn.microsoft.com/en-us/defender-office-365/step-by-step-guides/how-to-handle-false-positives-in-microsoft-defender-for-office-365
+    etat: a-rediger
