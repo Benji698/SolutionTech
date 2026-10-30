@@ -1103,3 +1103,80 @@ problemes:
       - https://support.office.com/en-us/article/4e8ff113-6361-41e2-915a-6338a7e2a1ed
       - https://learn.microsoft.com/purview/edisc-search-results
     etat: a-rediger
+  - id: purview-retention-teams-messages-non-supprimes
+    titre: "Stratégie de rétention Teams : messages toujours visibles après la période de suppression"
+    symptome: Les conversations Teams restent affichées après la date d'expiration ; elles passent par le dossier caché SubstrateHolds (1 à 7 jours) ou une autre conservation bloque la suppression.
+    erreurs:
+      - SubstrateHolds
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/purview/retention-policies-teams
+      - https://learn.microsoft.com/en-us/answers/questions/609486/365-retention-compliance-policies-not-deleting-ite
+    etat: a-rediger
+  - id: purview-retention-conflits-strategies-principes
+    titre: "Contenu conservé ou supprimé de façon inattendue : conflit entre stratégies, étiquettes de rétention et balises MRM"
+    symptome: Un élément est conservé plus longtemps ou supprimé plus tôt que prévu car plusieurs stratégies, étiquettes ou conservations s'appliquent (principes de rétention).
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/training/modules/explore-retention-policies-labels-microsoft-365/5-examine-principles-retention
+      - https://techcommunity.microsoft.com/discussions/exchange_general/understanding-retention-for-exchange/3195871
+    etat: a-rediger
+  - id: purview-coedition-autosave-fichier-chiffre
+    titre: Co-édition et enregistrement automatique (AutoSave) désactivés sur un fichier chiffré par étiquette
+    symptome: Dès qu'une étiquette avec chiffrement est appliquée, AutoSave se coupe, la co-édition est impossible ou le fichier s'ouvre en lecture seule.
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/purview/sensitivity-labels-coauthoring
+      - https://techcommunity.microsoft.com/discussions/data-security/issues-with-autosave-and-sensitivity-labels-%E2%80%93-need-advice-on-best-practices/4363418
+      - https://practical365.com/blog/co-authoring-protected-office-documents/
+    etat: a-rediger
+  - id: purview-complement-aip-office-retire
+    titre: Étiquettes disparues d'Office après la mise hors service du complément Azure Information Protection
+    symptome: Le ruban AIP a disparu de Word/Excel/Outlook et la stratégie d'étiquettes ne se télécharge plus ; il faut passer à l'étiquetage intégré de Microsoft 365 Apps.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://mc.merill.net/message/MC713037
+      - https://office365itpros.com/2023/04/19/unified-labeling-client-retirement/
+      - https://github.com/microsoft/UnifiedLabelingSupportTool
+    etat: a-rediger
+  - id: purview-dlp-partage-sharepoint-bloque
+    titre: "Partage d'un fichier SharePoint/OneDrive bloqué : « The item is protected by a policy in your organization »"
+    symptome: Le partage externe (ou interne) d'un fichier contenant des données sensibles est refusé ; une icône de blocage apparaît sur le document.
+    erreurs:
+      - The item is protected by a policy in your organization
+    priorite: frequent
+    format: express
+    sources:
+      - https://blog.admindroid.com/sharepoint-online-dlp-explained-what-it-is-and-how-it-works/
+      - https://office365itpros.com/2020/07/06/data-loss-prevention-with-sensitivity-labels/
+    etat: a-rediger
+  - id: purview-dlp-sharepoint-bloque-acces-interne
+    titre: Stratégie DLP « personnes extérieures uniquement » qui bloque aussi l'accès des utilisateurs internes
+    symptome: Une règle DLP SharePoint censée bloquer seulement l'externe empêche des collègues d'ouvrir le fichier.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/azurepurview/sp-dlp-block-only-people-outside-your-organization-is-blocking-internal-user-acc/3960667
+    etat: a-rediger
+  - id: purview-search-unifiedauditlog-resultats-incomplets
+    titre: Search-UnifiedAuditLog renvoie des résultats incomplets ou en double (limites 5 000 / 50 000)
+    symptome: Les scripts d'extraction d'audit ne récupèrent pas tous les événements, s'arrêtent sans avertissement ou renvoient des doublons.
+    erreurs:
+      - SessionCommand ReturnLargeSet
+      - HighCompleteness
+      - MO694194
+    priorite: rare
+    format: complete
+    sources:
+      - https://practical365.com/search-unifiedauditlog-cmdlet-changes/
+      - https://office365itpros.com/2024/03/26/high-completeness-audit-log/
+      - https://techcommunity.microsoft.com/discussions/windowspowershell/search-unifiedauditlog-limitation-on-number-of-results/3725523/replies/3725873
+    etat: a-rediger

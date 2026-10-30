@@ -401,7 +401,7 @@ problemes:
     priorite: frequent
     format: express
     sources:
-      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/fix-error-code-5-7-12-in-exchange-online
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/email-delivery/ndr/non-delivery-reports-in-exchange-online
     etat: a-rediger
   - id: exchange-ndr-550-5-7-124-sender-not-in-allowed-list
     titre: "NDR 550 5.7.124 : expéditeur absent de la liste des expéditeurs autorisés du groupe"

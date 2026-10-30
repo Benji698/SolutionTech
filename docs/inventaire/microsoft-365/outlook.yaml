@@ -18,7 +18,7 @@ problemes:
     titre: "Outlook ne démarre pas : « Impossible d'ouvrir la fenêtre Outlook »"
     symptome: "Au lancement, Outlook classique affiche une erreur puis se ferme ; le jeu de dossiers ne peut pas être ouvert."
     erreurs: ["Cannot start Microsoft Outlook. Cannot open the Outlook window. The set of folders cannot be opened."]
-    priorite: frequent
+    priorite: critique
     format: complete
     sources:
       - https://support.microsoft.com/en-us/outlook/i-can-t-start-microsoft-outlook-or-receive-the-error-cannot-start-microsoft-outlook-cannot-open-the
@@ -28,7 +28,7 @@ problemes:
     titre: "« The attempt to log on to Microsoft Exchange has failed » au démarrage"
     symptome: "Outlook classique refuse de s'ouvrir sur une boîte Exchange Online alors que Outlook sur le web fonctionne."
     erreurs: ["Cannot start Microsoft Outlook. Cannot open the Outlook window. The set of folders cannot be opened. The attempt to log on to Microsoft Exchange has failed."]
-    priorite: frequent
+    priorite: critique
     format: express
     sources:
       - https://support.microsoft.com/en-us/support/known-issues/error-when-opening-classic-outlook-cannot-start-microsoft-outlook-cannot-open-the-outlook-window-the
@@ -45,6 +45,7 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/outlook-not-responding-error-or-outlook-freezes
       - https://support.microsoft.com/office/troubleshoot-outlook-for-windows-issues-241bb0fc-b201-4bb2-98d3-74750a27029e
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/how-to-scan-outlook-by-using-microsoft-support-and-recovery-assistant
     etat: a-rediger
   - id: outlook-complement-desactive-automatiquement
     titre: Un complément Outlook a été désactivé automatiquement (lent ou instable)
@@ -62,7 +63,7 @@ problemes:
     titre: "Fichier OST plein : « Le fichier de données Outlook a atteint sa taille maximale »"
     symptome: "Envoi et réception bloqués, alerte de taille maximale atteinte alors que la boîte en ligne n'est pas pleine (limite de 50 Go par défaut)."
     erreurs: ["The Outlook data file has reached the maximum size"]
-    priorite: frequent
+    priorite: critique
     format: express
     sources:
       - https://support.microsoft.com/en-us/topic/how-to-configure-the-size-limit-for-both-pst-and-ost-files-in-outlook-2f13f558-d40e-9c2a-e3b6-02806fa535f4
@@ -79,6 +80,7 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/answers/questions/4716855/outlook-indexing-issue
       - https://www.msoutlook.info/?p=47
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/windows-search-service-setting-results-in-no-matches-found
     etat: a-rediger
 
   # --- Envoi ---
@@ -86,7 +88,7 @@ problemes:
     titre: Messages bloqués dans la boîte d'envoi
     symptome: "Les messages restent dans « Boîte d'envoi » (Outbox) et ne partent pas, parfois un seul message bloque toute la file."
     erreurs: []
-    priorite: frequent
+    priorite: critique
     format: complete
     sources:
       - https://learn.microsoft.com/en-us/answers/questions/5849820/emails-are-stuck-in-the-outbox-and-not-sending-hel
@@ -168,6 +170,7 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/answers/questions/5829234/im-not-getting-notifications-reminders-of-my-meeti
       - https://learn.microsoft.com/en-us/answers/questions/5492144/new-outlook-notifications-not-appearing
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/reminders-in-outlook-do-not-show
     etat: a-rediger
   - id: outlook-reunions-decalees-fuseau-horaire
     titre: Réunions affichées avec une heure de décalage (fuseau horaire, heure d'été)
@@ -200,6 +203,7 @@ problemes:
     sources:
       - https://support.microsoft.com/en-us/outlook/mail/edit-or-fix-a-broken-rule-in-outlook
       - https://learn.microsoft.com/en-us/answers/questions/4701903/rules-only-work-when-run-manually
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-issues/resolve-inbox-rule-issues
     etat: a-rediger
   - id: outlook-erreur-lecture-regles-serveur
     titre: "« There was an error reading the rules from the server »"
@@ -305,7 +309,7 @@ problemes:
     titre: "« La connexion à Microsoft Exchange n'est pas disponible » à la création du profil"
     symptome: "L'ajout du compte Microsoft 365 échoue ; Outlook exige d'être en ligne alors que le réseau fonctionne."
     erreurs: ["The connection to Microsoft Exchange is unavailable. Outlook must be online or connected to complete this action."]
-    priorite: frequent
+    priorite: critique
     format: complete
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-issues/connection-to-microsoft-exchange-is-unavailable-error
@@ -388,7 +392,7 @@ problemes:
     titre: "Outlook affiche « Déconnecté » en permanence dans la barre d'état"
     symptome: "La barre d'état reste sur « Déconnecté » ou « Tentative de connexion » alors qu'Internet fonctionne."
     erreurs: ["Disconnected", "Trying to connect..."]
-    priorite: frequent
+    priorite: critique
     format: complete
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/outlook/connectivity/outlook-shows-disconnected-if-ipv6-is-enabled
@@ -483,7 +487,7 @@ problemes:
     titre: "Outlook reste bloqué sur « Traitement » (Processing) ou « Chargement du profil » au démarrage"
     symptome: "L'écran de démarrage ne dépasse jamais l'étape de traitement ; Outlook ne s'ouvre pas."
     erreurs: ["Processing...", "Loading Profile..."]
-    priorite: frequent
+    priorite: critique
     format: complete
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/outlook-2016-hangs-at-processing
@@ -520,7 +524,7 @@ problemes:
     titre: "Outlook plante (événement 1000 dans le journal Application)"
     symptome: "Outlook se ferme brutalement au démarrage ou pendant l'utilisation ; l'Observateur d'événements montre une erreur d'application 1000."
     erreurs: ["Event ID 1000", "Faulting application name: OUTLOOK.EXE"]
-    priorite: frequent
+    priorite: critique
     format: complete
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/outlook-crashes-and-returns-event-id-1000-crash-signatures
@@ -765,7 +769,7 @@ problemes:
     titre: "Fichier PST endommagé : réparer avec l'outil de réparation de la boîte de réception (scanpst.exe)"
     symptome: "Outlook ne peut pas ouvrir un PST, signale qu'il n'est pas un fichier de données valide ou des éléments sont illisibles."
     erreurs: []
-    priorite: frequent
+    priorite: critique
     format: complete
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/outlook/data-files/how-to-repair-personal-folder-file
@@ -1130,7 +1134,7 @@ problemes:
     titre: "Des messages disparaissent d'un dossier Outlook"
     symptome: "Une partie ou la totalité des éléments d'un dossier disparaît, immédiatement ou après un délai régulier."
     erreurs: []
-    priorite: frequent
+    priorite: critique
     format: complete
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/outlook/email-management/items-disappear-not-visible-outlook-folder
@@ -2602,7 +2606,7 @@ problemes:
     etat: a-rediger
   - id: outlook-mobile-deuxieme-compte-professionnel-refuse
     titre: "Outlook mobile : un second compte professionnel est refusé"
-    symptome: "L'ajout d'un compte d'une autre organisation est bloqué : un seul compte géé par MAM est autorisé."
+    symptome: "L'ajout d'un compte d'une autre organisation est bloqué : un seul compte géré par MAM est autorisé."
     erreurs: ["Accessing Your Organization's Data: The work or school account you specified does not have access to this app. You may have to sign in with a different account."]
     priorite: rare
     format: express
