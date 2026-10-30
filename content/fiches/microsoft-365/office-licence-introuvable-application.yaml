@@ -1,0 +1,251 @@
+id: office-licence-introuvable-application
+titre: "« Office ne trouve pas votre licence pour cette application »"
+resume: "Au lancement de Word, Excel ou Outlook, Office affiche qu'il ne trouve pas la licence, tente une réparation puis se ferme, alors que l'abonnement est actif. Vérifier le service Protection logicielle, le mode de compatibilité de l'application, puis réparer Office ; en dernier recours, corriger les autorisations du service de licences."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: applications-office
+apparait_aussi_dans: [logiciels-metier/microsoft-office]
+niveau: N1
+temps_estime: { min: 15, max: 60 }
+critique: false
+environnements: [win11, win10]
+droits: admin-local
+outils: []
+acces:
+  - Session de l'utilisateur sur son PC et un compte administrateur local.
+
+symptomes:
+  - « Word s'ouvre, dit qu'il ne trouve pas ma licence, puis se ferme tout seul. »
+  - « Excel me propose une réparation qui échoue, et je ne peux plus l'ouvrir. »
+  - « Depuis la mise à jour de Windows, plus aucune application Office ne démarre. »
+
+messages_erreur:
+  - texte: "Microsoft Office can't find your license for this application. A repair attempt was unsuccessful or was cancelled. Microsoft Office will now exit."
+    ou: Fenêtre affichée au lancement d'une application Office
+  - texte: "Microsoft Office cannot verify the license for this product. You should repair the Office program by using Control Panel."
+    ou: Variante du message sur les versions plus anciennes d'Office
+
+causes:
+  - id: c1
+    titre: Le service « Protection logicielle » (sppsvc) est désactivé ou ne démarre pas
+    frequence: frequente
+    detail: "Le service **Protection logicielle** (*Software Protection*, `sppsvc`) gère les licences de Windows et d'Office. S'il a été désactivé (outil d'« optimisation », script de durcissement) ou qu'il ne peut pas démarrer, Office ne lit plus sa licence."
+  - id: c2
+    titre: Installation d'Office endommagée
+    frequence: frequente
+    detail: Fichiers ou composants de licence d'Office abîmés (mise à jour interrompue, antivirus, plusieurs versions d'Office installées).
+  - id: c3
+    titre: L'application est lancée en mode de compatibilité
+    frequence: occasionnelle
+    detail: "Si l'exécutable d'Office (ou son raccourci) est réglé en **mode de compatibilité** pour une autre version de Windows, la vérification de licence échoue. Cause citée par Microsoft."
+  - id: c4
+    titre: Clé de registre ou autorisations du service de licences perdues après une mise à niveau de Windows
+    frequence: rare
+    detail: "Microsoft indique que la clé de registre de la plateforme de protection logicielle peut être supprimée lors d'une mise à niveau depuis Windows 10 version 1909. D'autres cas viennent d'autorisations retirées au compte **SERVICE RÉSEAU** (*NETWORK SERVICE*)."
+  - id: c5
+    titre: Le compte connecté n'a pas de licence Office valide
+    frequence: occasionnelle
+    detail: "Licence retirée, compte personnel ou ancien compte connecté. Ce cas affiche plutôt « Produit sans licence » : il est traité dans une fiche dédiée."
+
+diagnostic:
+  - id: d1
+    titre: Vérifier que le message touche toutes les applications ou une seule
+    niveau: N1
+    graphique: |
+      Lancer successivement Word, Excel et PowerPoint **depuis le menu Démarrer** (pas depuis un raccourci du Bureau).
+
+      - Une seule application en erreur, ou seulement depuis un raccourci : penser au mode de compatibilité.
+      - Toutes les applications en erreur : penser au service de licences ou à l'installation.
+    conclusions:
+      - { si: "Une seule application, ou seulement depuis un raccourci", aller_a: d2 }
+      - { si: "Toutes les applications", aller_a: d3 }
+
+  - id: d2
+    titre: Vérifier le mode de compatibilité
+    niveau: N1
+    graphique: |
+      1. Clic droit sur le raccourci de l'application en erreur › **Propriétés** (*Properties*).
+      2. Onglet **Compatibilité** (*Compatibility*), s'il existe : regarder si **Exécuter ce programme en mode de compatibilité pour** (*Run this program in compatibility mode for*) est coché.
+      3. Faire de même sur l'exécutable lui-même, par exemple `C:\Program Files\Microsoft Office\root\Office16\WINWORD.EXE`, et sur le bouton **Modifier les paramètres pour tous les utilisateurs**.
+    conclusions:
+      - { si: "Le mode de compatibilité est activé", cause: c3, aller_a: r2 }
+      - { si: "Pas de mode de compatibilité", aller_a: d3 }
+
+  - id: d3
+    titre: Vérifier le service Protection logicielle
+    niveau: N1
+    graphique: |
+      1. Touches **Windows + R** › `services.msc` › **OK**.
+      2. Ouvrir le service **Protection logicielle** (*Software Protection*).
+      3. Regarder le **Type de démarrage** (*Startup type*) et essayer **Démarrer** (*Start*).
+
+      Il est **normal** que ce service soit arrêté la plupart du temps : il démarre à la demande puis s'arrête seul. Ce qui pose problème, c'est le type **Désactivé** (*Disabled*) ou un message d'erreur quand on essaie de le démarrer.
+
+      > [!a-verifier]
+      > Selon la version de Windows, le type de démarrage de ce service peut être grisé dans `services.msc` (service protégé) ; il se modifie alors par la commande ou le registre.
+    commande:
+      langage: powershell
+      admin: true
+      code: |
+        Get-Service -Name sppsvc | Select-Object Status, StartType
+        Start-Service -Name sppsvc
+    conclusions:
+      - { si: "Type de démarrage « Désactivé »", cause: c1, aller_a: r1 }
+      - { si: "Le service refuse de démarrer (erreur d'accès refusé ou autre)", cause: c4, aller_a: r4 }
+      - { si: "Le service démarre normalement", aller_a: d4 }
+
+  - id: d4
+    titre: Vérifier le compte et la licence
+    niveau: N1
+    graphique: |
+      Si une application s'ouvre encore : **Fichier** › **Compte** (*Account*) : vérifier que l'adresse professionnelle de l'utilisateur est connectée.
+      Dans le **Centre d'administration Microsoft 365** › **Utilisateurs actifs** › l'utilisateur › **Licences et applications** : vérifier qu'une licence avec les applications de bureau est attribuée.
+    conclusions:
+      - { si: "Mauvais compte ou pas de licence", cause: c5, aller_a: r5 }
+      - { si: "Compte et licence corrects", cause: c2, aller_a: r3 }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Remettre le service Protection logicielle en démarrage automatique
+    etapes:
+      - id: r1-e1
+        titre: Rétablir le type de démarrage par défaut
+        niveau: N1
+        graphique: |
+          1. Dans `services.msc`, ouvrir **Protection logicielle** (*Software Protection*).
+          2. **Type de démarrage** : **Automatique (début différé)** (*Automatic (Delayed Start)*) › **Appliquer** › **Démarrer** › **OK**.
+          3. Redémarrer le PC, puis relancer Word.
+          4. Si le service avait été désactivé par une GPO ou un outil d'optimisation, corriger la source (sinon le problème reviendra).
+        commande:
+          langage: cmd
+          admin: true
+          code: |
+            sc config sppsvc start= delayed-auto
+            sc start sppsvc
+        astuce: "Dans la commande `sc config`, l'espace après `start=` est obligatoire."
+
+  - id: r2
+    causes: [c3]
+    titre: Désactiver le mode de compatibilité
+    etapes:
+      - id: r2-e1
+        titre: Décocher le mode de compatibilité
+        niveau: N1
+        graphique: |
+          1. Clic droit sur le raccourci (ou l'exécutable) › **Propriétés** › onglet **Compatibilité**.
+          2. Décocher **Exécuter ce programme en mode de compatibilité pour**.
+          3. Cliquer aussi sur **Modifier les paramètres pour tous les utilisateurs** et décocher la même case.
+          4. **Appliquer** › **OK**, puis relancer l'application.
+
+  - id: r3
+    causes: [c2]
+    titre: Réparer Office
+    etapes:
+      - id: r3-e1
+        titre: Réparation rapide, puis réparation en ligne
+        niveau: N1
+        graphique:
+          - versions: [win11]
+            texte: |
+              1. Fermer toutes les applications Office.
+              2. **Paramètres** › **Applications** › **Applications installées** › **Microsoft 365 Apps** › **…** › **Modifier** (*Modify*).
+              3. Choisir **Réparation rapide** (*Quick Repair*) › **Réparer**. Relancer Word.
+              4. Si l'erreur persiste, recommencer avec **Réparation en ligne** (*Online Repair*).
+          - versions: [win10]
+            texte: |
+              1. Fermer toutes les applications Office.
+              2. **Paramètres** › **Applications** › **Applications et fonctionnalités** › **Microsoft 365 Apps** › **Modifier** (*Modify*).
+              3. Choisir **Réparation rapide** (*Quick Repair*) › **Réparer**. Relancer Word.
+              4. Si l'erreur persiste, recommencer avec **Réparation en ligne** (*Online Repair*).
+        avertissement:
+          type: attention
+          texte: "La réparation en ligne revient à désinstaller puis réinstaller Office : elle dure longtemps et demande une bonne connexion Internet. Prévenir l'utilisateur, qui ne pourra pas utiliser Office pendant ce temps."
+        astuce: "Vérifier aussi qu'une seule version d'Office est installée : deux versions différentes (par exemple Office 2016 et Microsoft 365 Apps) se disputent la licence."
+      - id: r3-e2
+        titre: Vérifier les fichiers système de Windows
+        niveau: N2
+        graphique: Si la réparation d'Office ne suffit pas, vérifier l'intégrité de Windows avec les commandes ci-dessous, redémarrer, puis refaire une **réparation en ligne**.
+        commande:
+          langage: cmd
+          admin: true
+          code: |
+            DISM /Online /Cleanup-Image /RestoreHealth
+            sfc /scannow
+
+  - id: r4
+    causes: [c4]
+    titre: Rétablir les autorisations du service de licences
+    etapes:
+      - id: r4-e1
+        titre: Réparer Office d'abord
+        niveau: N1
+        graphique: "Commencer par une **réparation en ligne** d'Office (Résolution 3) : elle recrée une partie des clés de registre de licence."
+      - id: r4-e2
+        titre: Vérifier les autorisations du compte SERVICE RÉSEAU
+        niveau: N3
+        graphique: |
+          Si le service ne démarre toujours pas :
+
+          1. Ouvrir l'**Éditeur du Registre** (`regedit`) en administrateur et **exporter** d'abord la clé concernée.
+          2. Aller à `HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\OfficeSoftwareProtectionPlatform`.
+          3. Clic droit › **Autorisations** (*Permissions*) : vérifier que le compte **SERVICE RÉSEAU** (*NETWORK SERVICE*) figure dans la liste avec le **Contrôle total**. S'il manque : **Ajouter** › `NETWORK SERVICE` › cocher **Contrôle total** › **OK**.
+          4. Redémarrer le PC.
+
+          > [!a-verifier]
+          > La clé exacte et les autorisations à rétablir varient selon la version d'Office et de Windows (l'article Microsoft parle de « la clé de registre de la plateforme de protection logicielle »). Si la clé est absente, ne pas la recréer à la main : faire une réparation en ligne, ou désinstaller puis réinstaller Office.
+        avertissement:
+          type: attention
+          texte: "Modifier les autorisations du registre peut affaiblir la sécurité ou casser d'autres services. Exporter la clé avant, ne modifier que celle indiquée, et ne jamais donner de droits à « Tout le monde »."
+
+  - id: r5
+    causes: [c5]
+    titre: Corriger le compte ou la licence
+    etapes:
+      - id: r5-e1
+        titre: Suivre la fiche « Produit sans licence »
+        niveau: N1
+        graphique: Le problème vient du compte ou de la licence, pas du poste. Suivre la fiche dédiée.
+        conclusions:
+          - { si: "Licence ou compte à corriger", aller_a: "fiche:office-produit-sans-licence" }
+
+verification:
+  - id: v1
+    titre: Les applications Office démarrent et sont activées
+    niveau: N1
+    graphique: |
+      1. Lancer Word, Excel et Outlook : aucun message de licence, aucune fermeture automatique.
+      2. **Fichier** › **Compte** : **Produit activé** (*Product Activated*).
+      3. Redémarrer le PC et relancer Word : l'erreur ne revient pas.
+
+prevention:
+  - Ne pas désactiver le service Protection logicielle (sppsvc) dans les scripts d'optimisation ou de durcissement des postes.
+  - Ne pas régler les applications Office en mode de compatibilité.
+  - Après une mise à niveau majeure de Windows, tester l'ouverture d'Office sur un poste pilote avant de généraliser.
+  - Éviter d'installer plusieurs versions d'Office sur un même poste.
+
+comprendre: |
+  Office ne vérifie pas sa licence tout seul : il s'appuie sur le service Windows **Protection logicielle** (*Software Protection Platform*, `sppsvc`), qui lit des informations de licence dans le registre et dans des dossiers protégés. Si le service est désactivé, si ses autorisations ont été retirées ou si l'application tourne dans un environnement « simulé » (mode de compatibilité), Office ne trouve plus sa licence, tente une réparation et se ferme.
+
+fiches_liees: [office-produit-sans-licence, office-reinitialiser-etat-activation, office-impossible-verifier-licence]
+tags: [licence introuvable, can't find your license, cannot verify the license, sppsvc, protection logicielle, software protection, mode de compatibilite, compatibility mode, reparation, quick repair, online repair, network service, office se ferme, word se ferme]
+
+sources:
+  - titre: "\"Microsoft Office can't find your license for this application\" error — Microsoft Learn"
+    url: https://learn.microsoft.com/en-US/office/troubleshoot/activation/license-issue-when-start-office-application
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "\"Microsoft Office cannot verify the license for this product\" error when you start an Office app — Microsoft Support (KB2797062)"
+    url: https://support.microsoft.com/kb/2797062
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "Microsoft Q&A — Office can't find your license (réponse)"
+    url: https://learn.microsoft.com/en-us/answers/a/11476127
+    type: forum
+    consulte_le: 2026-10-30
+  - titre: "Microsoft Office cannot find your license for this application — The Windows Club"
+    url: https://www.thewindowsclub.com/microsoft-office-cannot-find-your-license-for-this-application
+    type: blog
+    consulte_le: 2026-10-30
+
+derniere_verification: 2026-10-30

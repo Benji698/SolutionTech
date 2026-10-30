@@ -1,0 +1,314 @@
+id: teams-camera-ne-fonctionne-pas
+format: complete
+titre: La caméra ne fonctionne pas dans Teams (image noire ou caméra introuvable)
+resume: "Teams affiche une image noire, le bouton caméra est grisé ou aucune caméra n'est détectée. Tester la caméra hors de Teams pour savoir si le problème vient du poste ou de Teams, puis vérifier dans l'ordre : autre application qui utilise la caméra, confidentialité Windows, cache ou touche de désactivation, caméra sélectionnée dans Teams, pilote."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: teams
+apparait_aussi_dans: [materiel-peripheriques/peripheriques-entree]
+niveau: N1
+temps_estime: { min: 5, max: 45 }
+critique: false
+environnements: [win11, win10]
+droits: admin-local
+outils: []
+acces:
+  - Session de l'utilisateur sur son PC (ou prise en main à distance).
+  - Droits d'administrateur local pour le Gestionnaire de périphériques et la réinstallation du pilote.
+
+symptomes:
+  - « Les autres ne me voient pas, ils voient juste mes initiales. »
+  - « L'aperçu de la caméra est tout noir dans Teams. »
+  - « Teams me dit qu'il ne trouve pas de caméra. »
+  - « Le bouton caméra est grisé dans la réunion. »
+  - « La caméra marche dans Zoom mais pas dans Teams. »
+
+messages_erreur:
+  - texte: "We can't find a camera"
+    ou: Teams, écran de préparation de la réunion ou Paramètres › Appareils (libellé anglais, formulation à confirmer)
+  - texte: "Your camera is being used by another app"
+    ou: Teams (libellé anglais, formulation à confirmer)
+
+variables: []
+
+causes:
+  - id: c1
+    titre: Une autre application utilise déjà la caméra
+    frequence: tres-frequente
+    detail: "Zoom, Webex, l'application Caméra, un logiciel de la marque de la caméra ou une ancienne fenêtre Teams restée ouverte peuvent garder la caméra pour eux. Teams affiche alors une image noire ou un message indiquant que la caméra est occupée."
+  - id: c2
+    titre: L'accès à la caméra est refusé dans les paramètres de confidentialité de Windows
+    frequence: frequente
+    detail: "Windows peut bloquer la caméra pour toutes les applications, pour les applications de bureau ou pour Teams seulement. Une mise à jour ou un réglage d'entreprise peut avoir changé ces interrupteurs."
+  - id: c3
+    titre: La caméra est masquée ou coupée physiquement (cache, touche de confidentialité)
+    frequence: frequente
+    detail: "Beaucoup de portables ont un volet coulissant devant l'objectif ou une touche de fonction qui coupe la caméra (souvent F8 ou F10 selon la marque, avec une icône de caméra barrée)."
+  - id: c4
+    titre: Teams utilise une autre caméra que celle attendue
+    frequence: frequente
+    detail: "Avec une webcam USB, une station d'accueil, une caméra virtuelle (OBS, logiciel d'effets) ou une caméra infrarouge Windows Hello, Teams peut avoir sélectionné la mauvaise caméra, ou garder une caméra débranchée."
+  - id: c5
+    titre: Pilote de caméra défectueux, caméra désactivée ou souci matériel USB
+    frequence: occasionnelle
+    detail: "Pilote corrompu après une mise à jour, caméra désactivée dans le Gestionnaire de périphériques, câble, port USB ou station d'accueil défaillants."
+  - id: c6
+    titre: La caméra est bloquée par une stratégie d'entreprise ou par l'antivirus
+    frequence: occasionnelle
+    detail: "Une stratégie de groupe ou une restriction Intune peut interdire la caméra ; certains antivirus ont une « protection webcam » qui bloque les applications non autorisées."
+  - id: c7
+    titre: L'application Teams est en mauvais état (cache) ou Teams web n'a pas l'autorisation du navigateur
+    frequence: occasionnelle
+    detail: "Si la caméra marche partout sauf dans Teams, le cache de Teams peut être en cause. Dans Teams sur le web, c'est le navigateur qui doit autoriser la caméra pour teams.microsoft.com."
+
+diagnostic:
+  - id: d1
+    titre: Vérifier la caméra choisie dans les paramètres de Teams
+    niveau: N1
+    graphique: |
+      1. Dans Teams, cliquer sur **Paramètres et plus** (*Settings and more*, les trois points `…` à côté de la photo de profil) › **Paramètres** (*Settings*) › **Appareils** (*Devices*).
+      2. Dans la partie **Caméra** (*Camera*), regarder quelle caméra est choisie et si l'**aperçu** affiche une image.
+      3. Ouvrir la liste déroulante : noter toutes les caméras proposées (caméra intégrée, webcam USB, caméra « IR », caméra virtuelle…).
+    conclusions:
+      - { si: "La liste propose plusieurs caméras et la mauvaise est choisie", cause: c4, aller_a: r4 }
+      - { si: "Aucune caméra n'est proposée, ou l'aperçu reste noir avec la bonne caméra", aller_a: d2 }
+
+  - id: d2
+    titre: Tester la caméra en dehors de Teams
+    niveau: N1
+    graphique: |
+      1. Quitter Teams complètement (clic droit sur l'icône Teams dans la zone de notification › **Quitter**).
+      2. Ouvrir l'application **Caméra** (*Camera*) de Windows depuis le menu Démarrer.
+
+      - Si l'application Caméra **affiche l'image**, la caméra et le pilote fonctionnent : le problème est du côté de Teams ou d'une autorisation propre à Teams.
+      - Si l'application Caméra affiche **une image noire, un message d'erreur ou ne trouve pas de caméra**, le problème vient du poste (blocage, cache, pilote).
+    astuce: "Sous Windows 11, **Paramètres** › **Bluetooth et appareils** › **Caméras** (*Cameras*) liste les caméras connectées et permet de les tester une par une."
+    conclusions:
+      - { si: "L'image s'affiche dans l'application Caméra", aller_a: d3 }
+      - { si: "Message indiquant que la caméra est utilisée par une autre application", cause: c1, aller_a: r1 }
+      - { si: "Image noire ou caméra introuvable aussi dans l'application Caméra", aller_a: d4 }
+
+  - id: d3
+    titre: Vérifier les autorisations de confidentialité de Windows
+    niveau: N1
+    graphique:
+      - versions: [win11]
+        texte: |
+          **Paramètres** › **Confidentialité et sécurité** (*Privacy & security*) › **Caméra** (*Camera*). Vérifier que ces trois éléments sont **activés** :
+          1. **Accès à la caméra** (*Camera access*).
+          2. **Autoriser les applications à accéder à votre caméra** (*Let apps access your camera*), puis, dans la liste, **Microsoft Teams**.
+          3. **Autoriser les applications de bureau à accéder à votre caméra** (*Let desktop apps access your camera*).
+
+          La même page indique, sous chaque application, si elle utilise la caméra **en ce moment** ou à quelle heure elle l'a utilisée pour la dernière fois.
+      - versions: [win10]
+        texte: |
+          **Paramètres** › **Confidentialité** (*Privacy*) › **Caméra** (*Camera*). Vérifier que sont **activés** :
+          1. **Autoriser l'accès à la caméra sur cet appareil** (bouton **Modifier**).
+          2. **Autoriser les applications à accéder à votre caméra**, puis **Microsoft Teams** dans la liste.
+          3. **Autoriser les applications de bureau à accéder à votre caméra**.
+    commande:
+      langage: powershell
+      code: |
+        # Réglage général pour l'utilisateur (Allow = autorisé, Deny = refusé)
+        Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam' | Select-Object Value
+        # Applications qui utilisent la caméra en ce moment (LastUsedTimeStop à 0)
+        Get-ChildItem 'HKCU:\Software\Microsoft\Windows\CurrentVersion\CapabilityAccessManager\ConsentStore\webcam' -Recurse |
+          Where-Object { (Get-ItemProperty $_.PSPath).LastUsedTimeStop -eq 0 } | Select-Object PSChildName
+    astuce: "> [!a-verifier]\n> Les libellés français exacts peuvent varier selon la version de Windows. Le nouveau Teams apparaît normalement sous le nom **Microsoft Teams** dans la liste des applications ; certains retours indiquent qu'il faut aussi l'accès des **applications de bureau**."
+    conclusions:
+      - { si: "Un des interrupteurs est désactivé", cause: c2, aller_a: r2 }
+      - { si: "Les interrupteurs sont grisés avec la mention « gérés par votre organisation »", cause: c6, aller_a: r6 }
+      - { si: "Une autre application utilise la caméra en ce moment", cause: c1, aller_a: r1 }
+      - { si: "Tout est autorisé et la caméra marche ailleurs, mais pas dans Teams", cause: c7, aller_a: r7 }
+
+  - id: d4
+    titre: Vérifier le cache, la touche de confidentialité et le branchement
+    niveau: N1
+    graphique: |
+      1. Regarder l'objectif : un **volet coulissant** ou un cache adhésif le masque-t-il ?
+      2. Repérer sur le clavier une touche avec une **caméra barrée** (souvent F8 ou F10) ou un interrupteur sur le côté du portable ; l'actionner une fois et retester. Un voyant ou une notification Windows indique souvent « caméra activée / désactivée ».
+      3. Pour une webcam USB : la brancher **directement sur le PC** (pas sur un concentrateur ni sur l'écran ou la station d'accueil), essayer un autre port.
+    conclusions:
+      - { si: "La caméra était masquée ou coupée par la touche", cause: c3, aller_a: r3 }
+      - { si: "Rien de tout cela", aller_a: d5 }
+
+  - id: d5
+    titre: Contrôler la caméra dans le Gestionnaire de périphériques
+    niveau: N1
+    graphique: |
+      1. Clic droit sur **Démarrer** › **Gestionnaire de périphériques** (*Device Manager*).
+      2. Déplier **Caméras** (*Cameras*) et **Périphériques d'imagerie** (*Imaging devices*).
+      3. Regarder l'état de la caméra :
+         - **absente** : elle n'est pas détectée (branchement, caméra coupée dans le BIOS/UEFI, panne) ;
+         - **flèche vers le bas** : elle est **désactivée** ;
+         - **point d'exclamation jaune** : problème de pilote.
+    commande:
+      langage: powershell
+      code: Get-PnpDevice -Class Camera, Image | Format-Table Status, FriendlyName, InstanceId -AutoSize
+    conclusions:
+      - { si: "Caméra désactivée, en erreur ou absente", cause: c5, aller_a: r5 }
+      - { si: "Caméra présente et en état OK, mais toujours noire partout", aller_a: d6 }
+
+  - id: d6
+    titre: Rechercher un blocage par l'antivirus ou par une stratégie
+    niveau: N2
+    graphique: |
+      1. Ouvrir la console de l'antivirus du poste et chercher une fonction de **protection de la webcam** (*webcam protection*) : vérifier si Teams ou toutes les applications sont bloquées.
+      2. Vérifier auprès de l'équipe qui gère les postes si une stratégie interdit la caméra : stratégie de groupe **Autoriser l'utilisation de la caméra** (*Allow Use of Camera*) dans **Configuration ordinateur › Modèles d'administration › Composants Windows › Caméra**, ou restriction d'appareil **Caméra** (*Camera*) dans Intune.
+
+      > [!a-verifier]
+      > Le libellé français exact de la stratégie de groupe et l'emplacement du réglage dans Intune sont à confirmer.
+    conclusions:
+      - { si: "L'antivirus ou une stratégie bloque la caméra", cause: c6, aller_a: r6 }
+      - { si: "Aucun blocage trouvé", cause: c5, aller_a: r5 }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Libérer la caméra utilisée par une autre application
+    etapes:
+      - id: r1-e1
+        titre: Fermer les applications qui utilisent la caméra
+        niveau: N1
+        graphique: |
+          1. Fermer complètement Zoom, Webex, Skype, l'application Caméra, les logiciels de la marque de la webcam et les onglets de navigateur en visioconférence (vérifier aussi la zone de notification, près de l'horloge).
+          2. Sous Windows 11, la page **Confidentialité et sécurité** › **Caméra** indique quelle application l'utilise **en ce moment**.
+          3. Si aucune application n'est visible : ouvrir le **Gestionnaire des tâches** (*Task Manager*, Ctrl+Maj+Échap) et terminer les processus de visioconférence restants, ou redémarrer le PC.
+          4. Relancer Teams et retester l'aperçu dans **Paramètres** › **Appareils**.
+
+  - id: r2
+    causes: [c2]
+    titre: Autoriser Teams à utiliser la caméra
+    etapes:
+      - id: r2-e1
+        titre: Activer les autorisations de confidentialité
+        niveau: N1
+        graphique:
+          - versions: [win11]
+            texte: |
+              **Paramètres** › **Confidentialité et sécurité** › **Caméra** : activer **Accès à la caméra**, **Autoriser les applications à accéder à votre caméra**, **Microsoft Teams**, puis **Autoriser les applications de bureau à accéder à votre caméra**. Si l'interrupteur de Teams est déjà activé, le désactiver puis le réactiver. Quitter et relancer Teams.
+          - versions: [win10]
+            texte: |
+              **Paramètres** › **Confidentialité** › **Caméra** : activer l'accès à la caméra sur l'appareil (**Modifier**), **Autoriser les applications à accéder à votre caméra**, **Microsoft Teams**, puis **Autoriser les applications de bureau à accéder à votre caméra**. Quitter et relancer Teams.
+
+  - id: r3
+    causes: [c3]
+    titre: Découvrir ou réactiver la caméra
+    etapes:
+      - id: r3-e1
+        titre: Ouvrir le volet ou appuyer sur la touche caméra
+        niveau: N1
+        graphique: "Ouvrir le volet de confidentialité, retirer le cache, ou appuyer une fois sur la touche caméra (ou l'interrupteur latéral) jusqu'à voir la notification « caméra activée ». Retester dans l'application Caméra puis dans Teams."
+        astuce: "Si le portable a un logiciel du constructeur (Lenovo Vantage, HP, Dell…), la caméra peut aussi y être coupée en mode « confidentialité »."
+
+  - id: r4
+    causes: [c4]
+    titre: Sélectionner la bonne caméra dans Teams
+    etapes:
+      - id: r4-e1
+        titre: Choisir la caméra dans les paramètres ou en réunion
+        niveau: N1
+        graphique: |
+          1. **Paramètres et plus** (`…`) › **Paramètres** › **Appareils** › **Caméra** : choisir la caméra voulue dans la liste (pas une caméra « IR », qui sert à la reconnaissance faciale Windows Hello, ni une caméra virtuelle si elle n'est pas utilisée).
+          2. Vérifier que l'aperçu affiche l'image.
+          3. En réunion, la caméra peut aussi se changer avec la flèche à côté du bouton **Caméra** (*Camera*) ou dans **Plus** (*More*) › **Paramètres** › **Paramètres de l'appareil** (*Device settings*).
+        astuce: "Si une caméra virtuelle (OBS, logiciel d'effets) pose problème, la désactiver ou la désinstaller si elle n'est pas utile."
+
+  - id: r5
+    causes: [c5]
+    titre: Réactiver ou réinstaller le pilote de la caméra
+    etapes:
+      - id: r5-e1
+        titre: Réactiver la caméra si elle est désactivée
+        niveau: N1
+        graphique: "**Gestionnaire de périphériques** › **Caméras** › clic droit sur la caméra › **Activer le périphérique** (*Enable device*)."
+      - id: r5-e2
+        titre: Mettre à jour Windows et le pilote
+        niveau: N1
+        graphique: |
+          1. **Paramètres** › **Windows Update** : installer les mises à jour, y compris les **mises à jour facultatives** de pilotes.
+          2. Pour un portable, installer le pilote de caméra proposé par l'outil ou le site du constructeur.
+      - id: r5-e3
+        titre: Désinstaller la caméra pour que Windows la réinstalle
+        niveau: N2
+        graphique: |
+          1. **Gestionnaire de périphériques** › **Caméras** › clic droit sur la caméra › **Désinstaller l'appareil** (*Uninstall device*). Ne pas cocher la suppression du pilote au premier essai.
+          2. Redémarrer le PC : Windows détecte et réinstalle la caméra.
+          3. Si la caméra est toujours absente après redémarrage, vérifier qu'elle n'est pas désactivée dans le BIOS/UEFI et tester une autre webcam USB pour écarter une panne.
+        avertissement:
+          type: attention
+          texte: "La caméra est inutilisable jusqu'au redémarrage. Si le PC n'a pas accès à Internet ou à Windows Update, prévoir le pilote du constructeur avant de désinstaller."
+        astuce: "Coupures audio ou vidéo USB répétées sur certains PC Intel récents (puce TPM séparée) : un correctif Windows existe, voir l'article Microsoft cité en source."
+
+  - id: r6
+    causes: [c6]
+    titre: Lever le blocage de l'antivirus ou de la stratégie
+    etapes:
+      - id: r6-e1
+        titre: Autoriser Teams dans l'antivirus ou faire modifier la stratégie
+        niveau: N2
+        graphique: |
+          - **Antivirus** : dans la protection webcam, autoriser **Microsoft Teams** (ou retirer le blocage). Ne pas désactiver toute la protection.
+          - **Stratégie d'entreprise** : si la caméra est volontairement interdite sur ce type de poste, ne pas contourner la règle ; transmettre la demande au responsable de la sécurité ou à l'équipe qui gère les stratégies (GPO, Intune). Après modification, forcer l'application des stratégies (`gpupdate /force` ou synchronisation Intune depuis **Paramètres › Comptes › Accès Professionnel ou Scolaire**) et redémarrer.
+        commande:
+          langage: cmd
+          code: gpupdate /force
+
+  - id: r7
+    causes: [c7]
+    titre: Réparer Teams ou autoriser la caméra dans le navigateur
+    etapes:
+      - id: r7-e1
+        titre: Teams sur le web, autoriser la caméra pour le site
+        niveau: N1
+        graphique: "Dans Edge ou Chrome, cliquer sur l'icône de **cadenas** (ou de réglages) à gauche de l'adresse `teams.microsoft.com` › **Autorisations pour ce site** › **Caméra** : **Autoriser**. Recharger la page."
+      - id: r7-e2
+        titre: Réinitialiser l'application Teams
+        niveau: N1
+        graphique: "Si la caméra fonctionne partout sauf dans l'application Teams : vider le cache ou réinitialiser Teams en suivant la fiche dédiée."
+        conclusions:
+          - { si: "Teams se comporte mal en général", aller_a: "fiche:teams-ne-fonctionne-plus-cache" }
+
+verification:
+  - id: v1
+    titre: L'aperçu et la vidéo en réunion fonctionnent
+    niveau: N1
+    graphique: |
+      1. **Paramètres** › **Appareils** › **Caméra** : l'aperçu affiche l'image de la bonne caméra.
+      2. Lancer un appel de test (**Paramètres** › **Appareils** › **Passer un appel test**, *Make a test call*) ou une réunion **Démarrer une réunion** (*Meet now*) avec un collègue : il voit la vidéo.
+
+prevention:
+  - "Expliquer aux utilisateurs la touche caméra et le volet de leur portable (cause la plus simple et la plus fréquente)."
+  - "Fermer les autres logiciels de visioconférence avant une réunion Teams."
+  - "Maintenir Windows, les pilotes et Teams à jour ; tester la caméra après une mise à jour majeure."
+  - "Documenter les stratégies qui bloquent la caméra, pour que le support sache qu'un blocage est volontaire."
+
+comprendre: |
+  Une caméra ne peut souvent être utilisée que par une seule application à la fois. Windows contrôle ensuite qui y a droit avec ses paramètres de confidentialité : un interrupteur général, un pour les applications du Store (dont le nouveau Teams fait partie) et un pour les applications de bureau classiques. Tester avec l'application Caméra de Windows permet de couper le problème en deux : si elle fonctionne, le matériel et le pilote sont bons et il faut chercher du côté de Teams.
+
+fiches_liees: [teams-micro-ne-fonctionne-pas, teams-video-non-affichee-pilote-nahimic, teams-effets-arriere-plan-absents, teams-ne-fonctionne-plus-cache, teams-lent-ecran-4k-station-accueil]
+tags: [camera, webcam, video, image noire, ecran noir, camera introuvable, "camera not working", teams, confidentialite, privacy, camera ir, windows hello, pilote, gestionnaire de peripheriques, touche camera, volet confidentialite]
+
+sources:
+  - titre: "My camera isn't working in Microsoft Teams — Microsoft Support"
+    url: https://support.microsoft.com/office/9581983b-c6f9-40e3-b0d8-122857972ade
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "Troubleshoot video camera issues in Microsoft Teams Free — Microsoft Support"
+    url: https://support.microsoft.com/en-US/teams/free/troubleshoot/troubleshoot-video-camera-microsoft-teams-free
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "USB audio or video devices malfunction on some Intel-based devices — Microsoft (SupportArticles-docs)"
+    url: https://github.com/MicrosoftDocs/SupportArticles-docs/blob/main/support/windows-client/setup-upgrade-and-drivers/usb-audio-video-devices-malfunction.md
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "Camera showing black screen only when using Teams app — Microsoft Tech Community"
+    url: https://techcommunity.microsoft.com/t5/microsoft-teams/camera-showing-black-screen-only-when-using-teams-app-works-with/m-p/2056902
+    type: forum
+    consulte_le: 2026-10-30
+  - titre: "Fix: Microsoft Teams camera not working — Make Tech Easier"
+    url: https://maketecheasier.com/fix-microsoft-teams-camera-not-working/
+    type: blog
+    consulte_le: 2026-10-30
+
+derniere_verification: 2026-10-30
