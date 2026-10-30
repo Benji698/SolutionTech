@@ -539,3 +539,49 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/admin/miscellaneous/cannot-deploy-add-in-integrated-apps-menu
     etat: a-rediger
+
+  - id: m365-mfa-obligatoire-portails-admin
+    titre: "MFA désormais obligatoire pour les portails d'administration (Microsoft 365, Entra, Azure, Intune) et les outils en ligne de commande"
+    symptome: "Un administrateur ou un compte de service sans MFA est invité à s'inscrire ou bloqué ; scripts et outils PowerShell/CLI qui échouent depuis la phase 2."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/entra/identity/authentication/concept-mandatory-multifactor-authentication
+      - https://www.schneider.im/microsoft-365-admin-center-mandatory-multifactor-authentication
+      - https://learn.microsoft.com/en-us/answers/questions/5793227/question-about-azure-mfa-phase-2-enforcement-behav
+    etat: a-rediger
+    # > [!a-verifier] dates de mise en application des phases 1 et 2, susceptibles d'avoir changé
+
+  - id: entra-pim-role-active-sans-effet
+    titre: "Rôle activé dans PIM mais le centre d'administration refuse toujours l'accès"
+    symptome: "Le jeton du navigateur date d'avant l'activation ; se déconnecter, utiliser une fenêtre privée ou patienter."
+    erreurs: ["You are not authorized"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/a/2018474
+      - https://practical365.com/troubleshooting-recently-activated-permissions-in-privileged-identity-management/
+    etat: a-rediger
+
+  - id: entra-centre-admin-acces-restreint-utilisateurs
+    titre: "Utilisateurs bloqués à l'ouverture du centre d'administration Entra (« Restreindre l'accès au centre d'administration Microsoft Entra »)"
+    symptome: "Les non-administrateurs ne peuvent plus ouvrir le portail Entra ; le réglage ne bloque pas PowerShell ni les API."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/mt-mt/entra/fundamentals/users-default-permissions
+      - https://o365reports.com/different-ways-to-restrict-user-access-to-entra-portal/
+    etat: a-rediger
+
+  - id: m365-partenaire-gdap-acces-client-refuse
+    titre: "Prestataire (partenaire GDAP) : accès refusé au centre d'administration du client"
+    symptome: "Relation GDAP expirée ou non approuvée, groupes de sécurité non associés aux rôles, rôle insuffisant, accès conditionnel du client."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/nb-no/partner-center/gdap-introduction
+      - https://techcommunity.microsoft.com/discussions/cloudservicesproviderspartners/accessing-intune-admin-portal-with-gdap/3819751
+    etat: a-rediger
