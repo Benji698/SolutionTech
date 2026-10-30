@@ -1192,3 +1192,141 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/how-to-use-powershell-to-grant-admin-access-to-all-mailboxes
     etat: a-rediger
+  # ---------- Calendriers : partage et délégués ----------
+  - id: exchange-calendrier-partage-moderne-non-synchronise
+    titre: "Calendrier partagé non mis à jour ou modifications en retard (partage moderne)"
+    symptome: "Un calendrier partagé affiche des événements absents, en retard ou différents selon le client Outlook (nouveau Outlook, classique, web, mobile)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/sharing/resolve-modern-calendar-share-issues
+    etat: a-rediger
+  - id: exchange-calendrier-partage-mapi-herite
+    titre: "Calendrier partagé en mode hérité (MAPI) : lenteurs, données périmées, erreurs dans Outlook classique"
+    symptome: "Un calendrier partagé ouvert avec l'ancien modèle de partage met longtemps à s'actualiser ou affiche des données anciennes."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/sharing/resolve-legacy-calendar-share-issues
+    etat: a-rediger
+  - id: exchange-calendrier-delegue-n-recoit-pas-invitations
+    titre: "Le délégué ne reçoit pas les invitations aux réunions du responsable"
+    symptome: "Les demandes de réunion ne parviennent pas au délégué : règle de boîte masquée de délégation corrompue ; le suivi montre « Message is deleted by mailboxrules »."
+    erreurs: ["StoreDriverRules", "Message is deleted by mailboxrules"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/permissions/fix-delegate-invites
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/permissions/troubleshoot-calendar-delegate-permissions
+    etat: a-rediger
+  - id: exchange-calendrier-delegue-delegatecollectionupdatefailed
+    titre: "« Failed to update delegateCollection » / DelegateCollectionUpdateFailedException en ajoutant un délégué"
+    symptome: "Outlook refuse d'ajouter, modifier ou retirer un délégué : la configuration de délégation de la boîte est corrompue."
+    erreurs: ["DelegateCollectionUpdateFailedException", "Failed to update delegateCollection"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/permissions/fix-corrupt-delegate-permissions
+    etat: a-rediger
+  - id: exchange-calendrier-permission-corrompue-corruptdataexception
+    titre: "Modification d'autorisations de calendrier impossible : CorruptDataException / security principal already present"
+    symptome: "Add-MailboxFolderPermission ou Set-MailboxFolderPermission échoue sur le calendrier à cause d'une entrée d'autorisation incohérente ou périmée."
+    erreurs: ["CorruptDataException", "security principal already present"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/permissions/fix-corrupt-calendar-permissions
+    etat: a-rediger
+  - id: exchange-calendrier-permission-utilisateur-supprime
+    titre: "Un utilisateur inconnu ou supprimé reste dans les autorisations du calendrier"
+    symptome: "La liste des autorisations du calendrier affiche une entrée inconnue qu'on ne peut pas retirer avec la commande habituelle."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/permissions/delete-stale-calendar-permission
+    etat: a-rediger
+  - id: exchange-calendrier-sharingpermissionflags-ignore
+    titre: "Le délégué de calendrier n'est pas pris en compte : SharingPermissionFlags ignoré sans droit Éditeur"
+    symptome: "Les indicateurs Délégué ou Peut voir les éléments privés ne s'appliquent pas car le niveau d'accès au calendrier n'est pas Éditeur."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/permissions/assign-editor-delegate-rights
+    etat: a-rediger
+  - id: exchange-calendrier-delegue-elements-prives
+    titre: "Le délégué ouvre le calendrier mais ne voit pas le détail des éléments privés"
+    symptome: "Les rendez-vous privés du responsable apparaissent sans détail pour le délégué."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/permissions/fix-private-calendar-access
+    etat: a-rediger
+  - id: exchange-calendrier-groupe-securite-delegue
+    titre: "Un groupe de sécurité défini comme délégué de calendrier ne fonctionne pas correctement"
+    symptome: "Les membres d'un groupe configuré comme délégué ont des accès incohérents et ne reçoivent pas les demandes de réunion."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/permissions/replace-security-group-delegates
+    etat: a-rediger
+  - id: exchange-calendrier-acces-total-et-delegue-conflit
+    titre: "Erreurs de calendrier quand un utilisateur a à la fois l'accès total et des droits de délégué"
+    symptome: "Outlook classique affiche des erreurs ou un comportement incohérent sur le calendrier partagé quand l'accès total et la délégation se cumulent."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/permissions/fix-full-access-delegate-conflicts
+    etat: a-rediger
+  - id: exchange-calendrier-delegue-item-has-changed
+    titre: "« The operation cannot be performed because the item has changed » : délégué qui envoie une réunion Teams"
+    symptome: "Un délégué enregistre puis envoie une réunion Teams depuis le calendrier du responsable et obtient cette erreur."
+    erreurs: ["The operation cannot be performed because the item has changed"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/permissions/fix-delegate-draft-save-error
+    etat: a-rediger
+  - id: exchange-hybride-delegues-non-enregistres-send-on-behalf
+    titre: "« The Delegates settings were not saved correctly. Unable to activate send on behalf list » (hybride)"
+    symptome: "En hybride, l'ajout d'un délégué dans Outlook échoue car le droit Envoyer de la part de ne peut pas être écrit sur l'objet local."
+    erreurs: ["The Delegates settings were not saved correctly. Unable to activate send on behalf list. You do not have sufficient permission to perform this operation on this object."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/permissions/fix-delegate-settings-save-error
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/permissions/fix-hybrid-delegate-failures
+    etat: a-rediger
+  - id: exchange-calendrier-delegue-accepte-automatiquement
+    titre: "Les réunions créées par un délégué sont acceptées automatiquement dans son propre calendrier"
+    symptome: "Quand le délégué est aussi participant, la réunion qu'il crée pour le responsable s'ajoute d'office à son calendrier (comportement prévu)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/delegates-accept-meetings-automatically
+    etat: a-rediger
+  - id: exchange-calendrier-partage-archive-delegue
+    titre: "Un calendrier partagé apparaît dans le dossier Archive en ligne du délégué"
+    symptome: "Outlook affiche le calendrier partagé sous l'archive en ligne du délégué au lieu de la liste des calendriers partagés."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/shared-calendar-in-delegate-online-archive
+    etat: a-rediger
+  - id: exchange-calendrier-boite-masquee-acces-impossible
+    titre: "Impossible d'ouvrir le calendrier d'une boîte masquée de la GAL dans Outlook classique"
+    symptome: "L'utilisateur a les droits sur le calendrier mais Outlook ne trouve pas la boîte car elle est masquée de la liste d'adresses globale."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/calendars/cannot-access-shared-calendar-for-hidden-mailbox
+    etat: a-rediger

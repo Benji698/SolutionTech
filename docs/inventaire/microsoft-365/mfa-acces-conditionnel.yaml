@@ -864,3 +864,205 @@ problemes:
       - https://learn.microsoft.com/en-au/Entra/identity/authentication/how-to-mfa-authenticator-lite
       - https://janbakker.tech/authenticator-lite-approve-azure-mfa-prompts-with-the-outlook-app/
     etat: a-rediger
+  # --- Autres messages d'accès conditionnel et sessions ---
+  - id: ca-sign-in-successful-criteres-non-remplis
+    titre: "« Your sign-in was successful but does not meet the criteria to access this resource »"
+    symptome: "Mot de passe et MFA réussis, mais l'accès est refusé (appareil, application, emplacement ou navigateur non autorisé)."
+    erreurs: ["Your sign-in was successful but does not meet the criteria to access this resource."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1833920/you-cannot-access-this-right-now-your-sign-in-was
+      - https://techcommunity.microsoft.com/discussions/microsoftteams/your-sign-in-was-successful-but-does-not-meet-the-criteria-to-access-this-resour/996075
+    etat: a-rediger
+  - id: ca-cae-ip-differente-deconnexion
+    titre: "Évaluation continue de l'accès (CAE) : utilisateurs déconnectés à cause d'une adresse IP différente (tunnel partagé, VPN)"
+    symptome: "Avec l'application stricte des emplacements, Entra et la ressource voient des IP différentes ; Outlook ou Teams bouclent sur un refus."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/entra/identity/conditional-access/concept-continuous-access-evaluation-strict-enforcement
+      - https://learn.microsoft.com/el-gr/entra/identity/conditional-access/howto-continuous-access-evaluation-troubleshoot
+    etat: a-rediger
+  - id: ca-cae-revocation-session-immediate
+    titre: "Après désactivation du compte ou changement de mot de passe, l'utilisateur garde (ou perd immédiatement) l'accès selon CAE"
+    symptome: "Comportement inattendu de révocation : certaines applications coupent l'accès en quelques minutes, d'autres attendent l'expiration du jeton."
+    erreurs: ["AADSTS50173", "AADSTS50133"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity/conditional-access/concept-continuous-access-evaluation
+      - https://learn.microsoft.com/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: ca-blocage-device-code-flow
+    titre: "Blocage du flux « code d'appareil » : Teams Rooms, Azure CLI ou scripts ne se connectent plus"
+    symptome: "Après une stratégie (ou une stratégie gérée par Microsoft) bloquant le device code flow, la connexion via microsoft.com/devicelogin échoue."
+    erreurs: ["AADSTS53003"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/conditional-access/policy-teams-devices-device-code-flow
+      - https://techcommunity.microsoft.com/t5/microsoft-teams-support/microsoft-teams-devices-device-code-flow-sign-in-issue/ba-p/4429547
+      - https://learn.microsoft.com/en-us/microsoftteams/rooms/supported-ca-and-compliance-policies
+    etat: a-rediger
+  - id: ca-strategies-gerees-microsoft
+    titre: "Stratégies d'accès conditionnel créées automatiquement par Microsoft (managed policies) qui bloquent ou exigent la MFA"
+    symptome: "Des stratégies « Microsoft-managed » passent de rapport seul à activé et modifient le comportement des connexions."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity/conditional-access/managed-policies
+    etat: a-rediger
+  - id: ca-invite-mfa-confiance-inter-locataires
+    titre: "Invité B2B : MFA redemandée dans chaque locataire ou force d'authentification impossible à satisfaire"
+    symptome: "La confiance MFA entrante n'est pas activée dans les paramètres d'accès inter-locataires ; l'invité doit enregistrer une méthode chez l'hôte ou est bloqué."
+    erreurs: ["AADSTS90071"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/entra/identity/authentication/concept-authentication-strength-external-users
+      - https://techcommunity.microsoft.com/blog/identity/cross-tenant-access-settings---notes-from-the-field/4081841
+      - https://learn.microsoft.com/en-us/entra/external-id/troubleshoot
+    etat: a-rediger
+  - id: mfa-90072-compte-externe-absent
+    titre: "AADSTS90072 : MFA impossible car le compte externe n'existe pas dans le locataire"
+    symptome: "Un invité ou un utilisateur fédéré ne peut pas faire la MFA (compte absent ou ImmutableID différent entre AD et Entra)."
+    erreurs: ["AADSTS90072"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: ca-inscription-intune-bloquee
+    titre: "Inscription Intune / Company Portal bloquée par l'accès conditionnel (boucle appareil conforme)"
+    symptome: "L'appareil ne peut pas s'inscrire car la stratégie bloque aussi les applications Microsoft Intune et Microsoft Intune Enrollment."
+    erreurs: ["AADSTS53000", "AADSTS53003"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/MEM/intune/enrollment/multi-factor-authentication
+      - https://learn.microsoft.com/entra/identity/conditional-access/policy-alt-all-users-compliant-hybrid-or-mfa
+      - https://techcommunity.microsoft.com/t5/intune-customer-success/preventing-azure-active-directory-tou-from-blocking-intune/ba-p/2318525
+    etat: a-rediger
+  - id: ca-conditions-utilisation-boucle
+    titre: "Conditions d'utilisation (Terms of use) : boucle d'acceptation ou inscription d'appareil bloquée"
+    symptome: "L'utilisateur doit accepter les conditions à répétition, ou l'inscription Intune échoue car la stratégie ToU couvre l'application d'inscription (AADSTS50158 en interruption)."
+    erreurs: ["AADSTS50158"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity/conditional-access/terms-of-use
+      - https://techcommunity.microsoft.com/t5/intune-customer-success/preventing-azure-active-directory-tou-from-blocking-intune/ba-p/2318525
+    etat: a-rediger
+  - id: ca-linux-company-portal
+    titre: "Poste Linux : accès conditionnel « appareil conforme » non satisfait (Edge + Intune pour Linux)"
+    symptome: "Sous Linux, seul Edge avec l'application Intune peut transmettre la conformité ; les autres navigateurs sont bloqués."
+    erreurs: ["AADSTS53000"]
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/microsoft-intune/microsoft-intune-company-portal-for-linux-and-conditional-access-issue/3720549
+    etat: a-rediger
+  # --- Autres méthodes : certificat, OATH, méthodes externes ---
+  - id: mfa-cba-echec-certificat-50017
+    titre: "Authentification par certificat (CBA, carte à puce) : AADSTS50017, chaîne de certificats non approuvée"
+    symptome: "La connexion par carte à puce ou certificat échoue : autorité de certification absente du magasin Entra, extension manquante, pas de PRT sur le poste."
+    erreurs: ["AADSTS50017", "AADSTS50012"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-ie/troubleshoot/entra/entra-id/app-integration/error-code-aadsts50017-certificate-based-authentication-failed
+      - https://learn.microsoft.com/entra/identity/authentication/certificate-based-authentication-faq
+    etat: a-rediger
+  - id: mfa-cba-crl-inaccessible
+    titre: "CBA : « Unable to download CRL » (liste de révocation inaccessible)"
+    symptome: "Toutes les connexions par certificat échouent car Entra ne peut pas télécharger la CRL (pare-feu, URL interne, taille)."
+    erreurs: ["AADSTS500173: Unable to download CRL. Invalid status code Forbidden from CRL distribution point.", "AADSTS220501"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity/authentication/certificate-based-authentication-faq
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/app-integration/error-code-aadsts220501-unable-to-download-certificate-revocation-list
+    etat: a-rediger
+  - id: mfa-cba-certificat-non-transmis-50192
+    titre: "AADSTS50192 : aucun certificat transmis (proxy TLS qui supprime le certificat client)"
+    symptome: "Le navigateur ne présente pas le certificat ou un proxy d'inspection TLS le retire ; la connexion CBA échoue."
+    erreurs: ["AADSTS50192"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  - id: mfa-jeton-oath-materiel-activation
+    titre: "Jeton OATH matériel : échec de l'import CSV ou de l'activation"
+    symptome: "L'import du fichier de graines échoue (clé non Base32, numéro de série altéré par Excel) ou l'activation refuse le code (dérive horaire du jeton)."
+    erreurs: ["Failed to activate the selected OATH token"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/entra/identity/authentication/how-to-mfa-upload-oath-tokens
+      - https://techcommunity.microsoft.com/discussions/azurenetworksecurity/troubleshooting-microsoft-entra-id-oath-hardware-token-upload-errors/4561776
+    etat: a-rediger
+  - id: mfa-methode-externe-duo-controle-personnalise
+    titre: "MFA tierce (Duo, contrôle personnalisé) : connexion bloquée ou MFA non reconnue par l'accès conditionnel"
+    symptome: "Le contrôle personnalisé ne satisfait pas l'exigence « MFA » ; il faut migrer vers une méthode d'authentification externe (EAM)."
+    erreurs: ["AADSTS53003"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/entra/identity/conditional-access/how-to-migrate-custom-controls-external-mfa
+      - https://duo.com/docs/microsoft-eam
+      - https://c7solutions.com/2024/05/migrating-from-entra-id-custom-controls-to-external-authentication-methods
+    etat: a-rediger
+  - id: mfa-50158-defi-securite-externe
+    titre: "AADSTS50158 : défi de sécurité externe non satisfait (MFA tierce, conditions d'utilisation)"
+    symptome: "L'utilisateur est redirigé vers un fournisseur ou une page supplémentaire et la connexion n'aboutit pas."
+    erreurs: ["AADSTS50158: External security challenge not satisfied."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity-platform/reference-error-codes
+    etat: a-rediger
+  # --- Authenticator : sécurité de l'appareil et choix de méthode ---
+  - id: mfa-authenticator-appareil-jailbreak-root
+    titre: "Authenticator refuse de fonctionner sur un téléphone rooté ou jailbreaké (comptes professionnels supprimés)"
+    symptome: "Avertissement puis blocage et suppression des comptes professionnels dans Authenticator sur un appareil modifié (Play Integrity indisponible)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://support.microsoft.com/en-us/authenticator/jailbreak-root-detection-in-microsoft-authenticator
+      - https://mc.merill.net/message/MC1179154
+    etat: a-rediger
+  - id: mfa-authenticator-localisation-gps-refusee
+    titre: "Accès conditionnel par pays basé sur le GPS : Authenticator demande la localisation ou refuse la connexion"
+    symptome: "L'utilisateur doit partager sa position dans Authenticator toutes les heures ; refus si la localisation est désactivée ou si l'appareil est modifié."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/blog/identity/new-microsoft-authenticator-security-features-are-now-available/2464386
+      - https://learn.microsoft.com/entra/identity/conditional-access/concept-assignment-network
+    etat: a-rediger
+  - id: mfa-methode-preferee-systeme-inattendue
+    titre: "La MFA propose une autre méthode que celle par défaut de l'utilisateur (MFA préférée par le système)"
+    symptome: "L'utilisateur avait choisi le SMS mais on lui demande Authenticator ou une passkey ; il croit à une panne."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity/authentication/concept-system-preferred-authentication
+      - https://techcommunity.microsoft.com/blog/identity/ga-system-preferred-multifactor-authentication/3773138
+    etat: a-rediger
+  - id: mfa-contexte-supplementaire-localisation-erronee
+    titre: "Authenticator affiche une localisation ou une application inattendue dans la demande (contexte supplémentaire)"
+    symptome: "La carte de la notification montre une ville lointaine (IP du VPN ou du fournisseur) ; l'utilisateur hésite à approuver."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/entra/identity/authentication/how-to-mfa-additional-context
+      - https://learn.microsoft.com/en-us/answers/questions/5836217/incorrect-public-ip-location-on-microsoft-entra
+    etat: a-rediger

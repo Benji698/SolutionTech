@@ -750,3 +750,377 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/event-4096-is-logged-if-warmup-set-for-vsto-add-ins
     etat: a-rediger
+
+  # --- Fichiers de données OST / PST ---
+  - id: outlook-erreurs-detectees-fichier-ost
+    titre: "« Des erreurs ont été détectées dans le fichier .ost »"
+    symptome: "Au démarrage, Outlook signale des erreurs dans le fichier OST et propose de le réparer ou de le fermer."
+    erreurs: ["Errors have been detected in the file C:\\Users\\<nom>\\AppData\\Local\\Microsoft\\Outlook\\<adresse>.ost"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/data-files/errors-have-been-detected-in-.ost-file
+    etat: a-rediger
+  - id: outlook-fichier-pst-endommage-scanpst
+    titre: "Fichier PST endommagé : réparer avec l'outil de réparation de la boîte de réception (scanpst.exe)"
+    symptome: "Outlook ne peut pas ouvrir un PST, signale qu'il n'est pas un fichier de données valide ou des éléments sont illisibles."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/data-files/how-to-repair-personal-folder-file
+    etat: a-rediger
+  - id: outlook-fichier-pst-taille-maximale
+    titre: "Fichier PST plein ou trop volumineux (limite de taille atteinte)"
+    symptome: "Impossible d'ajouter des éléments dans un PST ou d'y archiver ; message de taille maximale atteinte."
+    erreurs: ["The Outlook data file has reached the maximum size"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/en-us/topic/how-to-configure-the-size-limit-for-both-pst-and-ost-files-in-outlook-2f13f558-d40e-9c2a-e3b6-02806fa535f4
+      - https://office-watch.com/2023/fixing-and-increasing-outlook-pst-ost-size-limits/
+    etat: a-rediger
+  - id: outlook-pst-ost-sur-lecteur-reseau-refuse
+    titre: "« Nom de fichier non valide » ou « Accès refusé » en ajoutant un PST/OST situé sur un lecteur réseau"
+    symptome: "Outlook refuse d'ouvrir un fichier de données placé sur un partage ou un lecteur non local."
+    erreurs: ["Invalid file name", "Access denied"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/data-files/cannot-add-pst-or-ost-file-on-non-local-drive
+    etat: a-rediger
+  - id: outlook-pst-sur-reseau-lenteurs-corruption
+    titre: "PST stocké sur le réseau : lenteurs, blocages et corruption"
+    symptome: "Fichier PST ouvert depuis un partage réseau : Outlook gèle, le fichier s'abîme ; configuration non prise en charge."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/data-files/limits-using-pst-files-over-lan-wan
+    etat: a-rediger
+  - id: outlook-deplacer-fichier-ost-impossible
+    titre: "Impossible de changer l'emplacement du fichier OST"
+    symptome: "Le bouton de changement d'emplacement du fichier OST est absent ou grisé (disque C: plein)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/data-files/cannot-change-the-location-of-ost-file
+    etat: a-rediger
+  - id: outlook-erreur-0x8000ffff-ajout-fichier-donnees
+    titre: "Erreur 0x8000FFFF en ajoutant un fichier de données dans le panneau Courrier"
+    symptome: "L'ajout d'un PST via Panneau de configuration > Courrier échoue avec une erreur inconnue."
+    erreurs: ["An unknown error occurred, error code: 0x8000ffff"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/data-files/error-0x8000ffff-adding-data-file-in-mail-applet
+    etat: a-rediger
+  - id: outlook-strategie-disablepst-ignoree
+    titre: "Les stratégies DisablePST et PSTDisableGrow sont ignorées"
+    symptome: "Les utilisateurs peuvent encore créer ou remplir des PST malgré la GPO, quand DisableCrossAccountCopy est aussi configuré."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/Installation/disablepst-and-pstdisablegrow-policies-are-ignored
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/deployment/policy-template-deploys-disablecrossaccountcopy-as-reg-expand-sz
+    etat: a-rediger
+  - id: outlook-assistant-dossier-public-regle-corrompue
+    titre: "Assistant Dossier inaccessible à cause d'une règle de dossier public corrompue"
+    symptome: "Impossible d'ouvrir l'assistant de gestion des règles d'un dossier public."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/data-files/delete-corrupted-public-folder-rule
+    etat: a-rediger
+  - id: outlook-importer-pst-ansi-mac
+    titre: "Outlook pour Mac refuse d'importer un PST au format ANSI"
+    symptome: "L'importation d'un ancien PST (Outlook 2002 ou antérieur) échoue sur Mac."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/import-and-export/cannot-import-ansi-pst-file
+    etat: a-rediger
+  - id: outlook-importer-olm-mac-vers-windows
+    titre: "Impossible d'importer un fichier .olm (Outlook pour Mac) dans Outlook pour Windows"
+    symptome: "L'export Mac (.olm) n'est pas reconnu par Outlook Windows lors d'un changement de poste."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/import-export/cannot-import-olm-files
+    etat: a-rediger
+
+  # --- Synchronisation, mode mis en cache ---
+  - id: outlook-0x8004010f-fichier-donnees-inaccessible
+    titre: "Erreur 0x8004010F : fichier de données Outlook inaccessible ou objet introuvable"
+    symptome: "L'envoi/réception échoue, souvent lors du téléchargement du carnet d'adresses hors connexion."
+    erreurs: ["0x8004010F: Outlook data file cannot be accessed.", "0x8004010F: The operation failed. An object could not be found."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/synchronization/error-0x8004010f-when-sending-or-receiving-emails
+    etat: a-rediger
+  - id: outlook-nombre-elements-different-serveur
+    titre: "Le nombre d'éléments d'un dossier diffère entre Outlook et le serveur"
+    symptome: "Il manque des messages dans un dossier par rapport à OWA ; les statistiques de synchronisation montrent un écart."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/synchronization/offline-item-count-for-folder-differs-from-server-count
+      - https://learn.microsoft.com/en-us/answers/questions/4691041/shared-email-inbox-is-not-syncing
+    etat: a-rediger
+  - id: outlook-differences-outlook-et-owa
+    titre: "Outlook et Outlook sur le web n'affichent pas les mêmes messages (synchronisation)"
+    symptome: "Des messages, dossiers ou éléments supprimés diffèrent entre le client classique et OWA."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/synchronization/synchronization-issue-between-outlook-owa
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/synchronization/synchronization-issues-occur-in-outlook-owa
+    etat: a-rediger
+  - id: outlook-modifications-serveur-non-synchronisees
+    titre: "Des modifications faites sur le serveur (outil d'archivage, EWS) ne remontent pas dans Outlook"
+    symptome: "En mode mis en cache, des éléments modifiés par une solution tierce restent dans l'ancien état."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/synchronization/synchronization-fails-after-mailbox-items-changed
+    etat: a-rediger
+  - id: outlook-dossier-problemes-synchronisation-termine-en-erreur
+    titre: "Dossier « Problèmes de synchronisation » rempli de journaux « Terminated in error »"
+    symptome: "Le dossier Sync Issues contient de nombreux journaux d'erreur de synchronisation."
+    erreurs: ["Terminated in error"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/performance/terminated-in-error-found-in-sync-issues-log-files
+    etat: a-rediger
+  - id: outlook-messages-fantomes-impossibles-supprimer
+    titre: "Messages fantômes impossibles à supprimer dans Outlook"
+    symptome: "Des éléments qui n'existent plus sur le serveur restent visibles et ne peuvent pas être supprimés."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/synchronization/delete-nonexistent-messages
+    etat: a-rediger
+  - id: outlook-groupes-microsoft-365-non-synchronises
+    titre: "Les groupes Microsoft 365 ne se synchronisent pas dans Outlook"
+    symptome: "Le groupe s'affiche mais son contenu reste vide avec un message indiquant qu'il n'a pas été mis à jour."
+    erreurs: ["This folder has not been updated yet."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/synchronization/Groups-dont-synchronize
+    etat: a-rediger
+  - id: outlook-groupe-microsoft-365-absent
+    titre: "Un groupe Microsoft 365 n'apparaît pas dans Outlook"
+    symptome: "L'utilisateur est membre du groupe mais ne le voit pas dans le volet de navigation."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/groups-and-distribution-lists/microsoft-365-group-does-not-appear-in-outlook
+    etat: a-rediger
+  - id: outlook-anciens-messages-absents-curseur-hors-connexion
+    titre: "Les anciens messages n'apparaissent pas (curseur « Courrier à conserver hors connexion »)"
+    symptome: "Seuls les messages récents (3 jours, 12 mois…) sont visibles ; bandeau indiquant que seuls les messages plus récents sont affichés."
+    erreurs: ["Currently displaying all messages newer than 12 months."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/only-subset-items-synchronized
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/click-here-to-view-more-on-microsoft-exchange-hyperlink-is-missing
+    etat: a-rediger
+  - id: outlook-messages-synchronises-absents-boite-reception
+    titre: "Des messages synchronisés n'apparaissent pas dans la boîte de réception en mode mis en cache"
+    symptome: "Les messages sont visibles en mode en ligne ou dans OWA mais pas dans Outlook en cache."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/emails-not-show-in-cached-mode-inbox-after-synchronized
+    etat: a-rediger
+  - id: outlook-reglage-cache-gpmc-incorrect
+    titre: "La GPO du mode Exchange mis en cache affiche toujours « 3 jours »"
+    symptome: "Dans la console GPMC, le réglage de synchronisation ne reflète pas la valeur réellement configurée."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/Installation/cached-exchange-mode-sync-setting-incorrectly-shown-in-gpmc
+    etat: a-rediger
+  - id: outlook-barre-etat-bloquee-3-99-go
+    titre: "La barre d'état reste bloquée sur « Mise à jour de la boîte de réception 3,99 Go »"
+    symptome: "La progression de synchronisation affiche une valeur qui ne dépasse jamais 3,99 Go."
+    erreurs: ["Updating Inbox 3.99 GB"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/synchronization/status-bar-never-shows-more-than-3-99-gb
+    etat: a-rediger
+
+  # --- Envoi ---
+  - id: outlook-message-reste-boite-envoi-jusqu-a-envoi-manuel
+    titre: "Les messages restent dans la boîte d'envoi jusqu'à un « Envoyer/Recevoir » manuel"
+    symptome: "Les messages ne partent qu'après un clic sur Envoyer/Recevoir tous les dossiers."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/synchronization/email-stays-in-outbox-until-manually-send-or-receive
+    etat: a-rediger
+  - id: outlook-message-reste-une-minute-boite-envoi
+    titre: "Chaque message reste au moins une minute dans la boîte d'envoi"
+    symptome: "Envoi systématiquement différé d'une minute, à cause d'une règle de remise différée."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/email-management/emails-remain-in-outbox-deferred-delivery-rule
+    etat: a-rediger
+  - id: outlook-message-differe-non-envoye
+    titre: "Un message à remise différée n'est pas envoyé à l'heure prévue ou ne peut plus être renvoyé"
+    symptome: "Avec « Ne pas remettre avant », le message reste dans la boîte d'envoi ou le bouton Envoyer disparaît."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/email-not-be-delivered-scheduled-time
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/send-button-missing-delayed-delivery-email-outbox
+    etat: a-rediger
+  - id: outlook-boite-envoi-delegatesentitemsstyle
+    titre: "Message bloqué dans la boîte d'envoi avec la clé DelegateSentItemsStyle"
+    symptome: "Un délégué envoie au nom d'un responsable et le message reste dans la boîte d'envoi."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/email-management/email-remains-in-the-outbox-when-you-use-the-deleg
+    etat: a-rediger
+  - id: outlook-messages-non-enregistres-elements-envoyes
+    titre: "Les messages envoyés ne sont pas enregistrés dans « Éléments envoyés »"
+    symptome: "Les messages partent mais aucune copie n'apparaît dans le dossier Éléments envoyés."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/email-management/email-sent-are-not-saved-to-sent-items-folder
+    etat: a-rediger
+  - id: outlook-transferts-non-enregistres-elements-envoyes
+    titre: "Les messages transférés ne sont pas enregistrés dans « Éléments envoyés »"
+    symptome: "Seuls les transferts manquent dans les éléments envoyés (option ou GPO « Enregistrer les messages transférés »)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/email-management/emails-that-you-forward-not-saved-in-sent-items
+    etat: a-rediger
+  - id: outlook-element-supprime-boite-partagee-mauvaise-corbeille
+    titre: "Un élément supprimé d'une boîte partagée va dans les « Éléments supprimés » de l'utilisateur"
+    symptome: "Les suppressions faites dans la boîte partagée atterrissent dans la corbeille personnelle et non dans celle de la boîte partagée."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/email-management/deleted-items-go-to-wrong-folder
+    etat: a-rediger
+  - id: outlook-0x800ccc80-methodes-authentification
+    titre: "Erreur 0x800CCC80 : aucune méthode d'authentification prise en charge (POP/IMAP/SMTP)"
+    symptome: "L'envoi d'un compte Internet échoue ; client et serveur ne trouvent pas de méthode d'authentification commune."
+    erreurs: ["0x800CCC80 - None of the authentication methods supported by this client are supported by your server."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/profiles-and-accounts/0x800ccc80-error-when-sending-mail-from-outlook
+    etat: a-rediger
+  - id: outlook-operation-echouee-interfaces-messagerie
+    titre: "« L'opération a échoué. Les interfaces de messagerie ont renvoyé une erreur inconnue » à l'envoi"
+    symptome: "Le message ne part pas et Outlook affiche une erreur MAPI générique."
+    erreurs: ["The operation failed. The messaging interfaces have returned an unknown error. If the problem persists, restart Outlook."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/profiles-and-accounts/operation-failed-send-email-outlook
+    etat: a-rediger
+  - id: outlook-programme-tente-envoyer-message
+    titre: "« Un programme tente d'envoyer un message en votre nom » (garde de sécurité du modèle objet)"
+    symptome: "Alerte de sécurité quand une application (ERP, scanner, macro) envoie via Outlook ; l'antivirus apparaît « indisponible » dans le Centre de gestion de la confidentialité."
+    erreurs: ["A program is trying to send an e-mail message on your behalf. If this is unexpected, click Deny and verify your antivirus software is up-to-date."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/security/a-program-is-trying-to-send-an-email-message-on-your-behalf
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/security/outlook-trust-center-shows-antivirus-status-as-unavailable
+    etat: a-rediger
+  - id: outlook-mapisendmail-envoi-externe-echoue
+    titre: "Envoi depuis une autre application (Envoyer vers > Destinataire) en échec : MAPISendMail"
+    symptome: "L'envoi d'une pièce jointe depuis l'Explorateur ou une application tierce échoue ; événement 27."
+    erreurs: ["MAPISendMail: Failed to submit message. Attachments to the message exceeded the size limit set by your Administrator"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/connectivity/event-27-mapisentmail-error-send-attachments
+    etat: a-rediger
+  - id: outlook-message-n-a-pas-pu-etre-envoye-groupe
+    titre: "« Ce message n'a pas pu être envoyé » en envoyant en tant que groupe de distribution"
+    symptome: "Un utilisateur ayant l'autorisation Envoyer en tant que sur un groupe reçoit une erreur ou un NDR."
+    erreurs: ["This message could not be sent. Try sending the message again later, or contact your network administrator."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-issues/this-message-could-not-be-sent-error-when-sending-emails
+    etat: a-rediger
+  - id: outlook-infos-courrier-indisponibles
+    titre: "« Impossible d'afficher les infos courrier pour le moment » (MailTips)"
+    symptome: "Avertissement à la rédaction après avoir changé l'adresse De pour un destinataire sans boîte."
+    erreurs: ["We can't show MailTips right now."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-issues/we-cant-show-mailtips-right-now-warning
+    etat: a-rediger
+  - id: outlook-messages-envoyes-depuis-mauvais-compte
+    titre: "Messages envoyés depuis le mauvais compte quand le profil contient plusieurs comptes"
+    symptome: "Les réponses ou nouveaux messages partent avec une autre adresse que celle attendue."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-issues/emails-sent-to-wrong-account-if-has-many-accounts
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/profiles-and-accounts/issues-that-occur-when-adding-multiple-exchange-accounts
+    etat: a-rediger
+  - id: outlook-quota-proprietes-nommees-depasse
+    titre: "NDR 554 5.2.2 avec MapiExceptionNamedPropsQuotaExceeded à l'envoi"
+    symptome: "L'envoi d'un message ou d'une invitation échoue : le quota de propriétés nommées de la boîte est atteint."
+    erreurs: ["554 5.2.2", "MapiExceptionNamedPropsQuotaExceeded"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/outlook-issues/named-property-quota-exceeded
+    etat: a-rediger
+  - id: outlook-plante-envoi-emplacement-inexistant
+    titre: "Outlook plante à l'envoi quand l'emplacement de remise n'existe plus"
+    symptome: "Fermeture brutale lors de l'envoi, liée à un emplacement de remise (PST) supprimé."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/profiles-and-accounts/outlook-crashes-when-sending-emails
+    etat: a-rediger
+  - id: outlook-envoi-par-modele-echoue
+    titre: "L'envoi d'un message à partir d'un modèle (.oft) échoue"
+    symptome: "Un modèle d'e-mail ouvert puis envoyé ne part pas ou génère une erreur."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/sending-email-by-template-fails
+    etat: a-rediger

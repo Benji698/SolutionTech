@@ -1279,3 +1279,62 @@ problemes:
       - https://learn.microsoft.com/en-us/archive/technet-wiki/54347.excel-troubleshooting-breaking-external-links-fails
       - https://techcommunity.microsoft.com/t5/excel/breaking-external-workbook-links-which-cannot-be-broken-via-edit/m-p/2812619
     etat: a-rediger
+
+  # ─────────────── PowerPoint ───────────────
+
+  - id: powerpoint-probleme-contenu-reparer
+    titre: "PowerPoint : « PowerPoint a détecté un problème de contenu » / « PowerPoint ne peut pas lire »"
+    symptome: "La présentation propose une réparation qui échoue ; fichier bloqué (Mark of the Web), endommagé ou ouvert depuis un dossier synchronisé."
+    erreurs: ["PowerPoint found a problem with content in <file>. PowerPoint can attempt to repair the presentation.", "Sorry, PowerPoint can't read <file>."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/t5/microsoft-365/powerpoint-found-a-problem-with-content-in/m-p/4090391
+      - https://www.guidingtech.com/fix-powerpoint-found-a-problem-with-content/
+    etat: a-rediger
+
+  - id: powerpoint-video-ne-se-lit-pas
+    titre: "PowerPoint : une vidéo ou un son ne se lit pas (codec indisponible, média lié introuvable)"
+    symptome: "La vidéo insérée affiche une erreur ou reste noire ; format non pris en charge, codec manquant, fichier lié déplacé."
+    erreurs: ["PowerPoint cannot insert a video from the selected file.", "Codec unavailable", "Media cannot be played."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://slidemodel.com/how-to-fix-video-not-playing-in-powerpoint/
+      - https://albany.atlassian.net/wiki/x/0_AeAw
+    etat: a-rediger
+
+  - id: powerpoint-mode-presentateur-mauvais-ecran
+    titre: "PowerPoint : le mode Présentateur ou le diaporama s'affiche sur le mauvais écran"
+    symptome: "Les notes s'affichent au public ou le mode Présentateur n'apparaît pas ; écrans en mode dupliqué ou moniteur mal choisi."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://manhattan.teamdynamix.com/TDClient/1932/Portal/KB/Article/3990/PowerPoint-Extended-Monitor-Fix
+      - https://learn.microsoft.com/en-us/answers/questions/2086322/current-slide-not-showing-in-presenter-view
+    etat: a-rediger
+
+  # ─────────────── Word (suite) ───────────────
+
+  - id: office-impression-impossible-word-excel
+    titre: "Word ou Excel n'impriment pas alors que l'imprimante fonctionne depuis Windows"
+    symptome: "La tâche semble partir puis disparaît, ou l'impression plante ; pilote, paramètres de l'application ou installation Office à réparer."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/en-us/kb/5075888
+      - https://learn.microsoft.com/en-us/answers/questions/5771330/i-cant-print-word-documents
+    etat: a-rediger
+
+  - id: word-erreur-ouverture-fichier
+    titre: "Word : « Word a rencontré une erreur lors de l'ouverture du fichier »"
+    symptome: "Un document (souvent reçu par e-mail ou téléchargé) refuse de s'ouvrir ; fichier bloqué, mode protégé, droits ou corruption."
+    erreurs: ["Word experienced an error trying to open the file. Try these suggestions."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/en-us/kb/2749199
+      - https://helpdeskgeek.com/how-to-fix-the-word-experienced-an-error-trying-to-open-the-file-error/
+    etat: a-rediger

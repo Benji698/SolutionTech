@@ -1303,3 +1303,297 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/cannot-access-teams-premium-features
     etat: a-rediger
+
+  # --- Teams Phone, numéros, Direct Routing ---
+  - id: teams-pave-numerique-absent
+    titre: "Le pavé numérique (dial pad) est absent dans Appels de Teams"
+    symptome: "L'utilisateur ne peut pas appeler de numéros externes : licence Teams Phone ou forfait d'appels manquant, EnterpriseVoiceEnabled à False, stratégie de routage vocal, mode Îlots."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/training/modules/monitor-troubleshoot-teams-phone-system/3-diagnose-troubleshoot-microsoft-teams-client-issues
+      - https://callroute.com/blog/microsoft-teams/top-5-reasons-the-microsoft-teams-dialpad-doesnt-appear/
+    etat: a-rediger
+
+  - id: teams-appel-carte-contact-couldnt-complete-the-call
+    titre: "« Couldn't complete the call. With your calling license, you can only call people within your organization »"
+    symptome: "L'appel lancé depuis la carte de contact échoue car l'utilisateur n'est pas activé pour la voix entreprise (Enterprise Voice)."
+    erreurs: ["Couldn't complete the call. With your calling license, you can only call people within your organization. Talk to your IT admin to change your license."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-on-windows/error-call-from-contact-card
+    etat: a-rediger
+
+  - id: teams-numero-compte-ressource-absent-bvd
+    titre: "« The following application instance is not present in BVD » en attribuant un numéro à un compte de ressource"
+    symptome: "Impossible d'attribuer un numéro à un compte de ressource (standard automatique, file d'attente) tant que le compte n'est pas synchronisé."
+    erreurs: ["The following application instance is not present in BVD"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/following-application-instance-not-present-error
+    etat: a-rediger
+
+  - id: teams-numero-service-payant-you-need-a-phone-system-license
+    titre: "« You need a phone system license » en attribuant un numéro de service payant"
+    symptome: "Le centre d'administration refuse l'attribution d'un numéro de service (toll) à un compte de ressource ; passer par PowerShell."
+    erreurs: ["You need a phone system license"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-conferencing/need-a-license-error-when-assigning-a-number
+    etat: a-rediger
+
+  - id: teams-plan-numerotation-erreur-test
+    titre: "Erreur en testant ou gérant un plan de numérotation (dial plan)"
+    symptome: "Le test d'un numéro échoue avec un message sur le plan de numérotation effectif ou un objet de gestion introuvable (utilisateur sans licence)."
+    erreurs: ["We can't get the effective dial plan so the dial plan can't be tested.", "Management object not found for identity"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/dial-plans/errors-managing-dial-plans
+    etat: a-rediger
+
+  - id: teams-appel-sortant-cinq-chiffres-minimum
+    titre: "Appel sortant depuis une réunion : Teams exige au moins cinq chiffres"
+    symptome: "Impossible de composer un numéro court (extension) depuis une réunion malgré une règle de normalisation."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-conferencing/teams-call-requires-five-or-more-digits
+    etat: a-rediger
+
+  - id: teams-messagerie-vocale-non-remise
+    titre: "Les messages vocaux ne sont pas remis dans Teams ou Outlook"
+    symptome: "Les appelants laissent un message mais il n'arrive pas : règles de flux de messagerie, règles d'accès client Exchange, connecteur, boîte aux lettres locale."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/voicemails-not-delivered
+    etat: a-rediger
+
+  - id: teams-direct-routing-sbc-options-tls
+    titre: "Direct Routing : le SBC n'est pas joignable (SIP OPTIONS, certificat TLS)"
+    symptome: "Le SBC apparaît inactif dans le centre d'administration : OPTIONS non reçus ou rejetés, certificat expiré ou non approuvé, FQDN incorrect."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/direct-routing/sip-options-tls-certificate-issues
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/direct-routing/diagnose-direct-routing-issues
+    etat: a-rediger
+
+  - id: teams-direct-routing-appels-sortants-echouent
+    titre: "Direct Routing : certains utilisateurs ne peuvent pas passer d'appels sortants"
+    symptome: "Appels sortants en échec ou connexion au SBC non établie : stratégie de routage vocal, licence, ordre des enregistrements PSTN."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/direct-routing/issues-with-outbound-calls
+    etat: a-rediger
+
+  - id: teams-direct-routing-mauvais-numero-presente
+    titre: "Mauvais numéro présenté (caller ID) pour les appels entrants ou sortants Teams"
+    symptome: "Le correspondant voit un mauvais numéro, ou Teams affiche 266696687 pour un appelant anonyme."
+    erreurs: ["266696687"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/direct-routing/issues-with-outbound-calls
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/direct-routing/issues-with-inbound-calls
+    etat: a-rediger
+
+  - id: teams-appels-coupent-apres-quelques-secondes
+    titre: "Les appels Teams coupent au bout de 4 s, 10 à 20 s ou quelques minutes"
+    symptome: "Coupures systématiques après une durée fixe : ACK non reçu, médias non établis, minuteurs de session côté SBC."
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/direct-routing/issues-with-inbound-calls
+    etat: a-rediger
+
+  - id: teams-appels-entrants-pas-de-tonalite-retour
+    titre: "Pas de tonalité de retour d'appel pour l'appelant RTC qui appelle un utilisateur Teams"
+    symptome: "L'appelant externe n'entend pas sonner ; délai au décroché ou plusieurs notifications d'appels manqués."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/direct-routing/issues-with-inbound-calls
+    etat: a-rediger
+
+  - id: teams-appels-entrants-spam-probable
+    titre: "Appels entrants marqués « Spam probable » (Spam Likely) ou non bloqués comme prévu"
+    symptome: "Des appels légitimes sont signalés comme spam, ou les numéros bloqués passent quand même."
+    erreurs: ["Spam Likely"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/direct-routing/issues-with-inbound-calls
+    etat: a-rediger
+
+  - id: teams-transfert-appel-echoue
+    titre: "Transfert d'appel Teams en échec (standard automatique vers numéro externe, SIP REFER)"
+    symptome: "Le transfert coupe l'appel, ne sonne pas, ou le standard automatique ne transfère pas vers un numéro RTC externe."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/direct-routing/issues-with-call-transfers
+    etat: a-rediger
+
+  - id: teams-lmo-appels-messagerie-vocale
+    titre: "Direct Routing avec LMO et LBR : les appels entrants échouent ou basculent sur la messagerie vocale"
+    symptome: "Avec l'optimisation des médias locaux et le routage géodépendant, les en-têtes X-Ms-UserLocation sont absents ou erronés."
+    erreurs: ["X-Ms-UserLocation", "X-Ms-MediaPath"]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/direct-routing/issues-with-lmo
+    etat: a-rediger
+
+  - id: teams-sip-403-private-calling-disabled
+    titre: "Code SIP 403 / 10199 : « Call rejected as private calling is disabled for the callee »"
+    symptome: "L'appel vers l'utilisateur est refusé car les appels privés sont désactivés dans sa stratégie d'appel."
+    erreurs: ["10199 403 Call rejected as private calling is disabled for the callee"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/direct-routing/microsoft-sip-response-codes-403
+    etat: a-rediger
+
+  - id: teams-sip-403-no-trunk-config
+    titre: "Code SIP 403 / 510532 : « No trunk config was found »"
+    symptome: "Les appels entrants Direct Routing sont refusés car le SBC n'est pas reconnu comme jonction du locataire."
+    erreurs: ["510532 403 No trunk config was found"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/direct-routing/microsoft-sip-response-codes-403
+    etat: a-rediger
+
+  - id: teams-sip-404-user-info-by-number
+    titre: "Code SIP 404 / 511404 : numéro appelé non attribué à un utilisateur Teams"
+    symptome: "L'appel entrant échoue car aucun utilisateur ou compte de ressource ne porte ce numéro (LineURI)."
+    erreurs: ["511404 404 Getting user info by number from RuntimeAPI failed"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/direct-routing/microsoft-sip-response-codes-404
+    etat: a-rediger
+
+  - id: teams-sip-408-timeout
+    titre: "Code SIP 408 : délai dépassé (ACK non reçu, basculement SBC, établissement)"
+    symptome: "Appels en échec avec 408 : accusé de réception non reçu, minuteur de basculement de passerelle expiré."
+    erreurs: ["1106 408", "500001 408 Gateway (SBC) failover timer expired", "560408 408"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/direct-routing/microsoft-sip-response-codes-408
+    etat: a-rediger
+
+  - id: teams-sip-480-no-callee-endpoints
+    titre: "Code SIP 480 / 10037 : « No callee endpoints were found »"
+    symptome: "L'appelé n'a aucun client Teams connecté et la messagerie vocale est désactivée ou injoignable."
+    erreurs: ["10037 480 No callee endpoints were found", "10191 480 Routing to voicemail is disabled in policy"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/direct-routing/microsoft-sip-response-codes-480
+    etat: a-rediger
+
+  - id: teams-sip-488-media-srtp
+    titre: "Code SIP 488 : SDP refusé (pas de média acceptable, SRTP requis, pas de candidats ICE)"
+    symptome: "Les appels échouent à la négociation des médias entre le SBC et Teams (codec, chiffrement SRTP, contournement des médias)."
+    erreurs: ["531000 488 Invalid SDP offer: no media acceptable", "Remote participant did not offer required SRTP support"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/direct-routing/microsoft-sip-response-codes-488
+    etat: a-rediger
+
+  - id: teams-sip-500-loop-no-trunk-outbound
+    titre: "Code SIP 500 : boucle détectée ou aucune jonction sortante trouvée"
+    symptome: "Les appels sortants échouent avec 500 (510482 Loop detected, 510544 no trunk config found)."
+    erreurs: ["510482 500 Loop detected", "510544 500 Get Outbound Direct routing - no trunk config found"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/direct-routing/microsoft-sip-response-codes-500
+    etat: a-rediger
+
+  - id: teams-sip-503-service-unavailable
+    titre: "Code SIP 503 : service indisponible (SBC en maintenance ou surchargé, bot injoignable)"
+    symptome: "Les appels échouent avec 503 : SBC surchargé ou en maintenance, bot de file d'attente qui ne répond pas."
+    erreurs: ["560503 503 Service unavailable", "10320 503 Bot is unreachable or unable to answer before timeout"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/direct-routing/microsoft-sip-response-codes-503
+    etat: a-rediger
+
+  - id: teams-sip-504-tls-invite
+    titre: "Code SIP 504 : « Unable to deliver INVITE » (connexion TLS au SBC impossible)"
+    symptome: "Teams ne peut pas joindre le SBC : TLS déconnecté, connexion refusée, négociation TLS en échec (0x80096004)."
+    erreurs: ["549002 504 Unable to deliver INVITE: TlsTransport is not connected", "569002 504 outgoing TLS negotiation failed; HRESULT=0x80096004"]
+    priorite: critique
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/direct-routing/microsoft-sip-response-codes-504
+    etat: a-rediger
+
+  - id: teams-portabilite-numero-rejetee
+    titre: "Demande de portabilité de numéros rejetée par l'opérateur (port order)"
+    symptome: "La commande de portage passe en « Customer action required » : erreurs dans la lettre d'autorisation (LOA) ou dans les informations du compte."
+    erreurs: ["Your order was rejected by your current carrier. Please click update to fix and resubmit your order."]
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/issues-with-port-orders
+    etat: a-rediger
+
+  - id: teams-telephone-sip-gateway-problemes
+    titre: "Téléphone SIP via SIP Gateway : inscription, connexion ou appels impossibles"
+    symptome: "Le téléphone SIP ne s'enregistre pas, se déconnecte seul, n'apparaît pas dans le centre d'administration ou ne passe/reçoit pas d'appels."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/sip-gateway-issues
+    etat: a-rediger
+
+  - id: teams-appel-rtc-reunion-introuvable-organisateur-supprime
+    titre: "Accès RTC ou CVI à une réunion : « réunion introuvable ou expirée » (organisateur déprovisionné)"
+    symptome: "Les participants par téléphone ou visioconférence (CVI) ne peuvent plus rejoindre car le compte de l'organisateur a perdu sa licence."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/meetings/cannot-join-cvi-pstn-meeting
+    etat: a-rediger
+
+  - id: teams-appelants-rtc-meme-numero-confondus
+    titre: "Dans une réunion, plusieurs appelants RTC apparaissent comme la même personne"
+    symptome: "Des appelants qui présentent le même numéro « From » sont fusionnés en un seul participant."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-conferencing/pstn-callers-shown-with-same-call-in-number
+    etat: a-rediger
+
+  - id: teams-sms-campagne-rejetee
+    titre: "Campagne SMS Teams rejetée (appel à l'action, message d'opt-in, politique de confidentialité)"
+    symptome: "L'inscription de la campagne SMS est refusée à cause d'éléments manquants ou non conformes."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/phone-system/sms-calling-errors
+    etat: a-rediger

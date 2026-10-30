@@ -1495,3 +1495,56 @@ problemes:
     sources:
       - https://techcommunity.microsoft.com/discussions/sharepoint_general/user-cant-create-site---stuck-on-loading-templates/4043090
     etat: a-rediger
+  # --- Déplacement, noms de fichiers, ouverture en lecture seule, colonnes de recherche ---
+  - id: sharepoint-deplacer-vers-autre-site-echoue
+    titre: "« Déplacer vers » ou « Copier vers » un autre site échoue ou ne déplace qu'une partie des éléments"
+    symptome: "Le déplacement entre sites indique « 1 item wasn't moved » ou laisse des fichiers des deux côtés (limites de taille et de nombre, fichier extrait ou verrouillé, incident)."
+    erreurs: ["1 item wasn't moved"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/sharepoint-online---cannot-move-folder-to-a-different-site/1979776
+      - https://sympmarc.com/?p=26127
+    etat: a-rediger
+  - id: sharepoint-nom-fichier-caracteres-non-valides
+    titre: "Nom de fichier ou de dossier refusé par SharePoint (caractères non valides, espaces, longueur)"
+    symptome: "Le chargement ou la synchronisation échoue à cause de caractères interdits (\" * : < > ? / \\ |), d'espaces en début ou fin de nom, ou d'un chemin de plus de 400 caractères."
+    erreurs: ["This file name contains invalid characters", "The file name is invalid"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/en-au/office/-invalid-characters-error-when-you-sync-files-from-windows-explorer-to-onedrive-e2c2a134-e94b-425a-9c57-e1513998e23d
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/special-characters-in-document-names-in-sharepoint-online/179621
+      - https://help.sharegate.com/en/articles/10236717-the-file-or-folder-name-contains-characters-or-which-are-not-supported-by-the-destination-environment
+    etat: a-rediger
+  - id: sharepoint-apostrophe-nom-dossier
+    titre: "Problèmes d'accès ou de liens avec une apostrophe dans le nom d'un dossier SharePoint"
+    symptome: "Un dossier dont le nom contient une apostrophe pose des problèmes d'ouverture, de lien ou de synchronisation."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/sharepoint_general/-apostrophe-character-issue-with-folder-names-in-sharepoint-online/113750
+    etat: a-rediger
+  - id: sharepoint-office-ouvre-en-lecture-seule
+    titre: "Fichier Office ouvert en lecture seule depuis SharePoint (« We opened this workbook read-only from the server »)"
+    symptome: "Word ou Excel ouvre le document en lecture seule : fichier extrait ou non archivé, deux comptes connectés dans Office, version d'Office non compatible, ouverture par l'Explorateur."
+    erreurs: ["We opened this workbook read-only from the server."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/a/751314
+      - https://learn.microsoft.com/en-us/answers/questions/325457/excel-files-in-sharepoint-read-only
+      - https://learn.microsoft.com/en-us/answers/questions/5142294/sharepoint-excel-document-read-only-checked-out-to
+    etat: a-rediger
+  - id: sharepoint-seuil-colonnes-recherche-12
+    titre: "« The query cannot be completed because the number of lookup columns it contains exceeds the lookup column threshold »"
+    symptome: "Une vue (ou une requête Power Apps, REST ou CSOM) contient plus de 12 colonnes de type recherche ou personne, y compris des colonnes cachées."
+    erreurs: ["The query cannot be completed because the number of lookup columns it contains exceeds the lookup column threshold enforced by the administrator."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/1655727/the-query-cannot-be-completed-because-the-number-o
+      - https://learn.microsoft.com/en-us/answers/questions/5334600/sharepoint-the-query-cannot-be-completed-because-t
+      - https://techcommunity.microsoft.com/discussions/sharepointdev/list-query-column-lookup-threshold-error/3705555
+    etat: a-rediger

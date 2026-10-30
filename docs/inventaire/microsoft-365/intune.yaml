@@ -1103,3 +1103,193 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/troubleshoot-bitlocker-admin-center
     etat: a-rediger
+  # --- Profils de configuration, stratégies et synchronisation ---
+  - id: intune-profil-configuration-non-applique
+    titre: "Profil de configuration Intune non appliqué ou bloqué « En attente » sur l'appareil"
+    symptome: "Le paramètre attendu n'arrive pas sur l'appareil ; affectation au mauvais type de groupe, filtre, plateforme non applicable, appareil qui ne se synchronise pas ou conflit."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/troubleshoot-policies-in-microsoft-intune
+    etat: a-rediger
+  - id: intune-profil-conflit-parametres
+    titre: "Profils Intune en état « Conflit » (deux stratégies définissent le même paramètre différemment)"
+    symptome: "Le rapport affiche « Conflict » ; le paramètre n'est pas appliqué car plusieurs profils ou la base de référence de sécurité le définissent avec des valeurs différentes (0x87D1FDEE)."
+    erreurs: ["Conflict", "-2016281106", "0x87D1FDEE", "Not applicable because it lost in conflict resolution"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/troubleshoot-policies-in-microsoft-intune
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/general/troubleshoot-company-resource-access-problems
+    etat: a-rediger
+  - id: intune-profil-non-applicable-0x87d1fde9
+    titre: "Profil Intune « Non applicable » (0x87D1FDE9 « Not applicable for this device »)"
+    symptome: "Le profil ne s'applique pas car l'édition ou la version de l'OS ne prend pas en charge le paramètre (ex. paramètre Entreprise sur Windows Professionnel)."
+    erreurs: ["-2016281111", "0x87D1FDE9", "Not applicable for this device"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/general/troubleshoot-company-resource-access-problems
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/troubleshoot-policies-in-microsoft-intune
+    etat: a-rediger
+  - id: intune-profil-oma-uri-2016281112-remediation-failed
+    titre: "Profil personnalisé OMA-URI en erreur -2016281112 alors que le paramètre fonctionne"
+    symptome: "Le profil (ex. VPN OMA-URI) est appliqué mais signalé en erreur car le XML renvoyé par Windows diffère du XML envoyé."
+    erreurs: ["-2016281112", "Remediation failed"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/device-configuration-profile-reports-error-2016281112
+    etat: a-rediger
+  - id: intune-oma-uri-csp-personnalise-echec
+    titre: "Paramètre CSP personnalisé (OMA-URI) qui ne s'applique pas sous Windows"
+    symptome: "Le profil personnalisé échoue (événement 404 / 454 dans DeviceManagement-Enterprise-Diagnostics-Provider) ; chemin OMA-URI, portée utilisateur/appareil ou type de données incorrects."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/troubleshoot-csp-custom-settings
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/deploy-oma-uris-to-target-csp-via-intune
+    etat: a-rediger
+  - id: intune-strategie-retiree-parametres-restent
+    titre: "Stratégie Intune retirée mais les paramètres restent appliqués sur l'appareil (tatouage)"
+    symptome: "Après désaffectation d'un profil ou d'une stratégie de sécurité, Windows conserve les valeurs ; il faut réaffecter avec les valeurs par défaut."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/troubleshoot-policies-in-microsoft-intune
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/comanage-configmgr/troubleshoot-co-management-workloads
+    etat: a-rediger
+  - id: intune-catalogue-parametres-office-parent-non-active
+    titre: "Catalogue de paramètres : des paramètres Office ne s'appliquent pas car le paramètre parent n'est pas activé"
+    symptome: "Problème connu : certains paramètres Office du catalogue nécessitent d'activer explicitement leur paramètre parent."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/known-issues
+      - https://techcommunity.microsoft.com/t5/intune-customer-success/support-tip-several-office-settings-in-settings-catalog-may-need/ba-p/3075669
+    etat: a-rediger
+  - id: intune-conflit-gpo-mdm
+    titre: "Conflit entre GPO et stratégies Intune (MDM) sur un poste hybride"
+    symptome: "Les paramètres Intune sont écrasés par des GPO (mises à jour, sécurité) ; utiliser ControlPolicyConflict / MDMWinsOverGP et le rapport de diagnostic MDM."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-protection/troubleshoot-update-rings
+    etat: a-rediger
+  - id: intune-ios-2016341112-appareil-occupe
+    titre: "iOS : « 2016341112 - iOS device is currently busy » (0x87D11388)"
+    symptome: "Le profil ou l'application ne s'applique pas tant que l'iPhone est verrouillé ou occupé (installation en cours) ; l'appareil peut apparaître non conforme."
+    erreurs: ["2016341112 -iOS device is currently busy", "0x87D11388"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/2016341112-ios-device-is-currently-busy
+    etat: a-rediger
+  - id: intune-ios-profil-erreurs-payload-87d1
+    titre: "iOS : profil en erreur avec un code 0x87D1xxxx (« Device not supervised », « Bad profile », « Cannot install »)"
+    symptome: "Le profil de configuration iOS échoue avec une erreur renvoyée par l'appareil, par exemple paramètre réservé aux appareils supervisés."
+    erreurs: ["29000:Device not supervised", "25000:Bad profile", "25001:Cannot install", "0x87D19858"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/general/troubleshoot-company-resource-access-problems
+    etat: a-rediger
+  - id: intune-ios-partage-connexion-non-bloque
+    titre: "iOS : la restriction « Partage de connexion » (Personal Hotspot) ne bloque pas"
+    symptome: "Les utilisateurs activent encore le partage de connexion ; non pris en charge avant iOS 12.2."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/restriction-policy-not-blocking-personal-hotspot
+    etat: a-rediger
+  - id: intune-profil-messagerie-mot-de-passe-redemande
+    titre: "Profil de messagerie Intune : l'utilisateur doit ressaisir son mot de passe en boucle"
+    symptome: "L'application Mail native demande sans cesse le mot de passe ; ou aucune invite après changement du mot de passe (EAS en authentification de base)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/troubleshoot-email-profiles-in-microsoft-intune
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/no-password-prompt-after-password-change
+    etat: a-rediger
+  - id: intune-profil-messagerie-deja-installe
+    titre: "Profil de messagerie Intune non déployé : un compte de messagerie existe déjà sur l'appareil"
+    symptome: "Le profil échoue sur iOS/Android car l'utilisateur avait configuré manuellement le même compte ; l'appareil devient non conforme."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/troubleshoot-email-profiles-in-microsoft-intune
+    etat: a-rediger
+  - id: intune-profil-messagerie-knox-0x87d1fde8
+    titre: "Profil de messagerie en erreur 0x87D1FDE8 sur un appareil Samsung KNOX"
+    symptome: "Le profil Exchange ActiveSync échoue sur KNOX Standard ; erreur de remédiation."
+    erreurs: ["0x87D1FDE8"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/troubleshoot-email-profiles-in-microsoft-intune
+    etat: a-rediger
+  - id: intune-kiosque-multi-applications-connexion-impossible
+    titre: "Kiosque multi-applications Windows : les utilisateurs Entra ne peuvent pas ouvrir de session"
+    symptome: "La connexion échoue avant le chargement du profil (événement AAD 1098) ; accès conditionnel exigeant la MFA ou compte local configuré."
+    erreurs: ["Event ID 1098", "AadTokenBrokerPlugin Operation"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/users-cannot-logon-windows-multi-app-kiosk
+    etat: a-rediger
+  - id: intune-liste-sites-mode-entreprise-non-deployee
+    titre: "Liste de sites du mode Entreprise (Enterprise Mode Site List) non déployée par Intune"
+    symptome: "La liste de sites n'est pas appliquée car une valeur Configuration Manager/GPO dans le registre prend le dessus."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-configuration/enterprise-mode-site-list-not-deployed-win10
+    etat: a-rediger
+  - id: intune-synchronisation-windows-impossible-dmwappushservice
+    titre: "Poste Windows qui ne se synchronise plus avec Intune (service dmwappushservice désactivé)"
+    symptome: "Quelques minutes à deux jours après l'inscription, la synchronisation échoue ; les scripts PowerShell (IME) fonctionnent encore."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-management/cannot-sync-windows-10-devices
+    etat: a-rediger
+  - id: intune-synchronisation-echoue-diagnostic
+    titre: "La synchronisation Intune ne se fait pas (Windows, iOS, Android) : diagnostic"
+    symptome: "Bouton Synchroniser sans effet, dernière synchronisation ancienne ; vérifier connexion, état MDM, certificat MDM, tâches planifiées et journaux."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-management/cannot-sync-windows-10-devices
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/device-enrollment/ios-devices-inactive
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/get-support/before-you-call-intune-support
+    etat: a-rediger
+  - id: intune-synchronisation-0xcaa2000c-interaction-requise
+    titre: "Synchronisation échouée : « we weren't able to verify your credentials » (0xCAA2000C, AADSTS50076)"
+    symptome: "Après inscription automatique, la synchronisation échoue car la MFA est exigée pour obtenir le jeton Entra de la session MDM."
+    erreurs: ["Sync wasn't fully successful because we weren't able to verify your credentials. Select Sync to sign in and try again.", "0xCAA2000C", "AADSTS50076"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/comanage-configmgr/troubleshoot-co-management-auto-enrolling
+    etat: a-rediger
+  - id: intune-rapports-strategie-incorrects
+    titre: "Rapports Intune de stratégie ou d'installation d'application incohérents avec l'état réel"
+    symptome: "Le statut affiché (installation d'application, profil) ne correspond pas à l'appareil ; délais de remontée et problèmes connus de rapports."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/mem/intune/known-issues
+      - https://techcommunity.microsoft.com/t5/intune-customer-success/known-issue-status-reporting-for-app-install-lifecycle-and-app/ba-p/2147870
+    etat: a-rediger

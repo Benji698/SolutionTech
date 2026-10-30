@@ -951,3 +951,211 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sharing-and-permissions/share-file-unable-reach-server
     etat: a-rediger
+
+  # --- Comptes multiples, identifiants ---
+  - id: onedrive-vous-synchronisez-un-autre-compte
+    titre: "« Vous synchronisez un autre compte » / « You're already syncing this account »"
+    symptome: "OneDrive refuse la connexion après un changement de mot de passe ou l'ajout d'un second compte ; identifiant en cache obsolète."
+    erreurs: ["You're syncing a different account", "You're already syncing this account"]
+    priorite: frequent
+    format: express
+    sources:
+      - https://support.microsoft.com/en-us/office/onedrive-shows-you-re-syncing-a-different-account-error-88e73727-8b99-40ce-9229-0c5b173953dd
+      - https://www.kapilarya.com/fix-youre-already-syncing-this-account-error-in-onedrive-for-mac
+    etat: a-rediger
+  - id: onedrive-probleme-avec-votre-compte
+    titre: "« There is a problem with your account, please try again later »"
+    symptome: "À l'ouverture d'un document OneDrive dans Office ou à la connexion du client, message d'erreur de compte (cache de fédération Office)."
+    erreurs: ["There is a problem with your account, please try again later."]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/security/problem-with-your-account
+    etat: a-rediger
+  - id: onedrive-pieces-jointes-outlook-deux-comptes-onedrive
+    titre: "Outlook propose deux comptes OneDrive pour les pièces jointes cloud"
+    symptome: "En joignant un fichier depuis OneDrive dans Outlook, deux OneDrive apparaissent (environnement hybride)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/exchange/troubleshoot/send-emails/two-onedrive-accounts-when-uploading-attachments
+    etat: a-rediger
+  - id: onedrive-nom-dossier-local-ancien-nom-organisation
+    titre: "Le dossier OneDrive local garde l'ancien nom de l'organisation (« OneDrive - Ancien nom »)"
+    symptome: "Après changement du nom de l'organisation dans Microsoft 365, le dossier local n'est pas renommé."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/onedrive-local-folder-name-not-updated
+    etat: a-rediger
+  - id: onedrive-synchronisation-impossible-apres-migration-tenant
+    titre: "OneDrive ne synchronise plus après une migration de tenant à tenant"
+    symptome: "Après migration des comptes, le client reste lié à l'ancien tenant ou aux anciennes URL."
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/cant-sync-after-migration
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/sign-into-onedrive-sync-app-error
+    etat: a-rediger
+  - id: onedrive-erreur-tls-windows-7-8
+    titre: "Erreurs d'authentification OneDrive sur Windows 7/8 (TLS 1.2 non activé)"
+    symptome: "Connexion impossible depuis un vieux Windows : 0x8004de40, (400) Bad Request ou connexion sous-jacente fermée."
+    erreurs: ["Error code: 0x8004de40", "The remote server returned an error: (400) Bad Request", "The underlying connection was closed"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/administration/authentication-errors-windows7
+    etat: a-rediger
+
+  # --- Stratégies de groupe / Intune ---
+  - id: onedrive-erreur-0x8004deea-tenant-non-autorise
+    titre: "Erreur 0x8004deea : « Your IT department doesn't allow you to sync files from this location »"
+    symptome: "Un compte d'une autre organisation (ou personnel) ne peut pas être synchronisé à cause d'AllowTenantList / BlockTenantList."
+    erreurs: ["Your IT department doesn't allow you to sync files from this location to your computer (Error Code: 0x8004deea)."]
+    priorite: frequent
+    format: express
+    sources:
+      - https://www.kapilarya.com/?p=24350
+      - https://learn.microsoft.com/he-il/sharepoint/use-group-policy
+      - https://c7solutions.com/2023/03/restricting-onedrive-to-multiple-tenants
+    etat: a-rediger
+  - id: onedrive-connexion-silencieuse-silentaccountconfig-echec
+    titre: "La connexion silencieuse OneDrive (SilentAccountConfig) ne fonctionne pas"
+    symptome: "La GPO ou Intune devrait connecter OneDrive automatiquement mais l'utilisateur doit se connecter manuellement (valeur QWORD, SSO absent, marqueur déjà posé)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/t5/system-center/trouble-with-silently-configure-onedrive-user-accounts/m-p/2985577
+      - https://learn.microsoft.com/en-us/answers/questions/777191/onedrive-silent-config-not-working
+    etat: a-rediger
+  - id: onedrive-kfm-silencieux-gpo-intune-ne-s-applique-pas
+    titre: "Déplacement silencieux des dossiers connus (KFMSilentOptIn) qui ne s'applique pas"
+    symptome: "La stratégie de sauvegarde silencieuse des dossiers PC est déployée mais Bureau/Documents restent en local (Windows ou Mac via profil)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://techcommunity.microsoft.com/t5/onedrive/onedrive-for-business-known-folder-silently-redirection-not-work/m-p/782080
+      - https://community.jamf.com/t5/jamf-pro/has-anyone-gotten-the-kfmsilentoptin-for-microsoft-onedrive-to/td-p/329945
+    etat: a-rediger
+  - id: onedrive-fslogix-unsupported-environment
+    titre: "Erreur FSLogix_unsupported_environment sur des machines virtuelles"
+    symptome: "Sur un bureau virtuel avec une ancienne version de FSLogix, OneDrive refuse de synchroniser et se ferme."
+    erreurs: ["OneDrive can't sync. Contact your system administrator for help. Error code: FSLogix_unsupported_environment"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/fslogix-unsupported-environment-sync-error-vm
+    etat: a-rediger
+  - id: onedrive-acces-refuse-emplacement-reseau-appareil-non-gere
+    titre: "« Due to organizational policies, you can't access this resource from this network location / untrusted device »"
+    symptome: "OneDrive est bloqué depuis un réseau non approuvé ou un appareil non géré (stratégie d'emplacement ou d'appareils non gérés)."
+    erreurs: ["Access Denied. Due to organizational policies, you can't access this resource from this network location.", "Due to organizational policies, you can't access this resource from this untrusted device."]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sharing-and-permissions/access-denied-due-to-org-policies
+    etat: a-rediger
+  - id: onedrive-graph-api-401-strategie-emplacement
+    titre: "Erreur 401 via Microsoft Graph sur OneDrive quand une stratégie d'emplacement réseau est active"
+    symptome: "Une application tierce qui lit OneDrive par Graph reçoit 401 Unauthorized, même depuis le réseau approuvé."
+    erreurs: ["401 Unauthorized"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/sharepoint/troubleshoot/lists-and-libraries/401-error-when-using-graph-api-to-access-data
+    etat: a-rediger
+
+  # --- Mac ---
+  - id: onedrive-mac-synchronisation-bloquee
+    titre: "OneDrive ne synchronise plus sur Mac"
+    symptome: "Fichiers en attente ou erreur sur macOS ; dissocier/réassocier, réinitialiser, nettoyer le trousseau."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/office/fix-onedrive-sync-problems-on-mac-af3012d7-13ec-4ac9-bbb1-ebcd2a0cd756
+    etat: a-rediger
+  - id: onedrive-mac-retraitement-apres-mise-a-jour-macos
+    titre: "Mac : OneDrive retraite tous les fichiers après une mise à jour de macOS"
+    symptome: "Après une mise à jour de macOS (ex. Sonoma), OneDrive recalcule tous les fichiers pendant des heures."
+    erreurs: ["Processing changes"]
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/t5/onedrive/microsoft-onedrive-processing-all-the-files-after-sonoma-update/m-p/3972122
+    etat: a-rediger
+  - id: onedrive-mac-vous-devez-redemarrer-onedrive
+    titre: "Mac : « You must restart OneDrive to continue syncing »"
+    symptome: "OneDrive demande sans cesse de redémarrer ; extension File Provider désactivée ou installation abîmée."
+    erreurs: ["You must restart OneDrive to continue syncing"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://answers.microsoft.com/en-us/msoffice/forum/all/one-drive-not-working-with-mac-os-14-sonoma/0bdafe83-7e9d-4a5d-a797-699b278eb9ef
+      - https://iboysoft.com/howto/you-must-restart-onedrive-continue-syncing.html
+    etat: a-rediger
+  - id: onedrive-mac-emplacement-dossier-refuse
+    titre: "Mac : « Your OneDrive folder can't be created in the location you selected »"
+    symptome: "Impossible de placer le dossier OneDrive sur un volume sensible à la casse, amovible, réseau ou en lecture seule."
+    erreurs: ["Your OneDrive folder can't be created in the location you selected."]
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/onedriveforbusiness/unable-to-set-up-onedrive-on-a-mac/3262325
+      - https://techcommunity.microsoft.com/blog/onedriveblog/improved-filename-and-external-drive-support-for-onedrive-mac/4372026
+    etat: a-rediger
+  - id: onedrive-mac-erreur-8004deed-8004ded2-trousseau
+    titre: "Mac : connexion impossible (8004deed, 8004ded2), identifiants du trousseau à supprimer"
+    symptome: "OneDrive pour Mac refuse la connexion ; supprimer les entrées OneDrive dans Trousseau d'accès."
+    erreurs: ["8004deed", "8004ded2"]
+    priorite: rare
+    format: express
+    sources:
+      - https://www.wps.com/office-quick-solution/error-codes/how-to-fix-onedrive-for-mac-error-8004deed-or-8004ded2/
+      - https://support.microsoft.com/office/fix-onedrive-sync-problems-on-mac-af3012d7-13ec-4ac9-bbb1-ebcd2a0cd756
+    etat: a-rediger
+
+  # --- Mobile ---
+  - id: onedrive-mobile-chargement-appareil-photo-ne-fonctionne-pas
+    titre: "Mobile : le chargement de l'appareil photo (Camera upload) ne fonctionne pas"
+    symptome: "Les photos ne s'envoient pas ou partiellement (actualisation en arrière-plan, photos optimisées iCloud, données mobiles, mauvais compte)."
+    erreurs: ["Camera upload is paused"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/en-gb/office/automatically-save-photos-and-videos-with-onedrive-on-ios-74d406bb-71d0-47c0-8ab8-98679fa1b72e
+      - https://support.microsoft.com/en-us/onedrive/troubleshoot-onedrive-for-android-app-problems
+    etat: a-rediger
+  - id: onedrive-mobile-camera-upload-compte-professionnel-intune
+    titre: "Mobile : chargement de l'appareil photo indisponible sur un compte professionnel géré par Intune"
+    symptome: "L'option Camera upload est absente ou bloquée pour le compte professionnel (stratégie de protection d'application)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5617719/app-configuration-keys-for-enabling-camera-upload
+      - https://techcommunity.microsoft.com/discussions/microsoft-intune/intune-enable-camera-uploads-in-onedrive-app-on-ios-devices/3250118/replies/3250191
+    etat: a-rediger
+  - id: onedrive-mobile-upload-en-pause-connexion
+    titre: "Mobile : « Upload paused, sign in to continue » alors que l'utilisateur est connecté"
+    symptome: "Les envois restent en pause et demandent de se reconnecter en boucle."
+    erreurs: ["Upload paused. Sign in to continue."]
+    priorite: rare
+    format: express
+    sources:
+      - https://www.technipages.com/fix-onedrive-upload-paused-sign-in-to-continue
+    etat: a-rediger
+  - id: onedrive-ios-problemes-application
+    titre: "iOS : l'application OneDrive plante, ne s'ouvre pas ou n'affiche pas les fichiers"
+    symptome: "Problèmes généraux de l'application iPhone/iPad (connexion, fichiers hors ligne, réinitialisation de l'app)."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://www.dell.com/support/kbdoc/en-us/000184809/troubleshoot-onedrive-for-ios-app-problems
+    etat: a-rediger

@@ -1,0 +1,725 @@
+domaine: microsoft-365
+sous_domaine: purview-conformite
+recense_le: 2026-10-29
+problemes:
+  - id: purview-retention-strategie-en-erreur
+    titre: Stratégie de rétention ou d'étiquettes en erreur (état « Erreur » / PolicyNotifyError)
+    symptome: Dans le portail Purview, la stratégie de rétention affiche un état d'erreur (Settings not found, Something went wrong) et ne s'applique pas à tous les emplacements.
+    erreurs:
+      - Settings not found
+      - Something went wrong
+      - PolicyNotifyError
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/retention/identify-errors-in-retention-and-retention-label-policies
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/retention/resolve-errors-in-retention-and-retention-label-policies
+    etat: a-rediger
+  - id: purview-retention-strategie-traitement-en-cours
+    titre: Stratégie de rétention bloquée sur « We're still processing your policy »
+    symptome: La distribution de la stratégie ne se termine pas ; le message de traitement en cours reste affiché pendant des heures ou des jours.
+    erreurs:
+      - We're still processing your policy
+      - We can't process your policy
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/retention/resolve-errors-in-retention-and-retention-label-policies
+    etat: a-rediger
+  - id: purview-retention-strategie-pendingdeletion
+    titre: Stratégie de rétention bloquée en PendingDeletion (suppression impossible)
+    symptome: Une stratégie supprimée reste listée avec l'état PendingDeletion et ne disparaît jamais.
+    erreurs:
+      - Your policy is stuck in PendingDeletion
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/retention/resolve-errors-in-retention-and-retention-label-policies
+    etat: a-rediger
+  - id: purview-retention-emplacement-ambigu
+    titre: "Stratégie de rétention : « The location is ambiguous » (MultipleInactiveRecipientsError)"
+    symptome: La stratégie est en erreur car un emplacement correspond à plusieurs destinataires (souvent une boîte active et une boîte inactive).
+    erreurs:
+      - The location is ambiguous
+      - MultipleInactiveRecipientsError
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/retention/resolve-errors-in-retention-and-retention-label-policies
+    etat: a-rediger
+  - id: purview-retention-site-quota-ou-verrouille
+    titre: Stratégie de rétention en erreur sur un site SharePoint plein ou verrouillé (SiteOutOfQuota, SiteInReadOnlyOrNotAccessible)
+    symptome: "La stratégie ne s'applique pas à certains sites : quota du site atteint ou site en lecture seule / verrouillé."
+    erreurs:
+      - The location is out of storage
+      - SiteOutOfQuota
+      - The site is locked
+      - SiteInReadOnlyOrNotAccessible
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/retention/resolve-errors-in-retention-and-retention-label-policies
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/ediscovery/resolve-ediscovery-hold-issues
+    etat: a-rediger
+  - id: purview-retention-emplacement-introuvable
+    titre: "Stratégie de rétention : « We couldn't find this location »"
+    symptome: Un emplacement (boîte, site, groupe) inclus dans la stratégie a été supprimé ou renommé ; la stratégie passe en erreur.
+    erreurs:
+      - We couldn't find this location
+      - We ran into a problem
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/retention/resolve-errors-in-retention-and-retention-label-policies
+    etat: a-rediger
+  - id: purview-retention-impossible-appliquer-conservation
+    titre: "Stratégie de rétention : « You can't apply a hold here »"
+    symptome: La stratégie ou la conservation échoue sur un emplacement non pris en charge (type de destinataire non autorisé).
+    erreurs:
+      - You can't apply a hold here
+      - RecipientTypeNotAllowed
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/retention/resolve-errors-in-retention-and-retention-label-policies
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/ediscovery/resolve-ediscovery-hold-issues
+    etat: a-rediger
+  - id: purview-etiquette-retention-auto-non-appliquee
+    titre: Étiquette de rétention appliquée automatiquement qui ne s'applique pas aux messages
+    symptome: Une stratégie d'application automatique d'étiquette de rétention est publiée, mais les éléments de la boîte aux lettres ne reçoivent pas l'étiquette.
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/retention/auto-apply-retention-label-not-apply-messages
+    etat: a-rediger
+  - id: purview-retention-messages-teams-supprimes
+    titre: Messages Teams ou Viva Engage supprimés de façon inattendue par une stratégie de rétention
+    symptome: Des conversations Teams disparaissent pour les utilisateurs alors que personne ne les a supprimées.
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-im-presence/messages-unexpectedly-deleted-retention-policy
+    etat: a-rediger
+  - id: purview-retention-pieces-jointes-cloud-non-conservees
+    titre: Pièces jointes cloud (liens OneDrive/SharePoint) non conservées par la rétention
+    symptome: Les fichiers partagés par lien dans Outlook ou Teams ne sont pas conservés comme attendu par la stratégie de rétention des pièces jointes cloud.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/retention/cannot-retain-cloud-attachments
+    etat: a-rediger
+  - id: purview-retention-suppression-site-bloquee
+    titre: "Impossible de supprimer un site ou des fichiers SharePoint/OneDrive : bloqué par une stratégie de conformité"
+    symptome: La suppression d'un site, d'une bibliothèque ou de versions de documents échoue à cause d'une stratégie de rétention ou d'une conservation (parfois invalide).
+    erreurs:
+      - A compliance policy is currently blocking this site deletion.
+      - Versions of this item cannot be deleted because it is on hold or retention policy.
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/sites/compliance-policy-blocking-site-deletion
+      - https://learn.microsoft.com/en-us/troubleshoot/sharepoint/administration/exclude-sites-from-retention-policy
+    etat: a-rediger
+  - id: purview-retention-ne-fonctionne-plus-apres-migration
+    titre: Stratégie de rétention inactive après migration de la boîte aux lettres vers Exchange Online (hybride)
+    symptome: Après le déplacement d'une boîte locale vers Exchange Online, la stratégie de rétention ne s'applique plus.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/holds/retention-policy-not-working-after-mailbox-moved
+    etat: a-rediger
+  - id: purview-disposition-erreur-401-rbac
+    titre: "Révision de destruction impossible : « (401) RBAC check failed »"
+    symptome: Dans Gestion des enregistrements (Records management), l'onglet Destruction (Disposition) renvoie une erreur 401.
+    erreurs:
+      - The remote server returned an error (401) RBAC check failed
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/retention/cannot-manage-disposition-reviews
+    etat: a-rediger
+  - id: purview-mrm-messages-non-deplaces-archive
+    titre: Messages non déplacés vers l'archive malgré la stratégie de rétention (MRM)
+    symptome: La boîte d'archivage est activée mais les anciens messages restent dans la boîte principale ; l'assistant de dossiers gérés ne semble pas passer.
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/archive-mailboxes/message-not-moved-to-archive
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/retention/troubleshoot-mrm-email-archive-deletion
+    etat: a-rediger
+  - id: purview-mrm-elements-non-supprimes
+    titre: Éléments non supprimés par la balise de rétention MRM (RetentionHoldEnabled, ElcProcessingDisabled)
+    symptome: Les messages dépassant la durée de rétention ne sont pas supprimés ; la boîte a une suspension de rétention ou le traitement ELC désactivé.
+    erreurs:
+      - RetentionHoldEnabled
+      - ElcProcessingDisabled
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/retention/troubleshoot-mrm-email-archive-deletion
+    etat: a-rediger
+  - id: purview-boite-quota-atteint-malgre-archive
+    titre: Boîte aux lettres pleine alors que l'archive est activée
+    symptome: "La boîte principale atteint son quota bien qu'une archive existe : la stratégie de déplacement vers l'archive ne s'applique pas ou trop lentement."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/archive-mailboxes/mailbox-reaches-quota
+    etat: a-rediger
+  - id: purview-mrm-elements-reapparaissent-migration-imap
+    titre: Éléments qui réapparaissent ou dupliqués dans l'archive pendant une migration IMAP
+    symptome: Après activation d'une stratégie d'archivage MRM pendant une migration IMAP, des éléments reviennent dans la boîte et se dupliquent dans l'archive.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/archive-mailboxes/items-duplicated
+    etat: a-rediger
+  - id: purview-mrm-dossiers-geres-vides-disparaissent
+    titre: Dossiers gérés (Managed Folders) vides supprimés automatiquement
+    symptome: Des dossiers gérés vides disparaissent régulièrement de la boîte aux lettres Exchange Online.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/retention/managed-folders-disappear
+    etat: a-rediger
+  - id: purview-mrm-balise-personnelle-regle-boite
+    titre: Balise de rétention personnelle mal appliquée par une règle de boîte de réception
+    symptome: Une règle Outlook qui déplace des messages ne leur applique pas la balise personnelle attendue.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/security/personal-policy-tag-not-work-correctly
+    etat: a-rediger
+  - id: purview-elements-recuperables-pleins-conservation
+    titre: Dossier Éléments récupérables plein sur une boîte en conservation pour litige ou rétention
+    symptome: La boîte sous conservation ne peut plus supprimer d'éléments ; le dossier Recoverable Items atteint son quota (100 Go) et n'est pas déplacé vers l'archive.
+    erreurs: []
+    priorite: critique
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/antispam-and-protection/recoverable-items-folder-full
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/archive-mailboxes/mailbox-full-warning-though-not-reached-quota
+    etat: a-rediger
+  - id: purview-avertissement-boite-pleine-quota-non-atteint
+    titre: Avertissement « boîte pleine » alors que le quota n'est pas atteint (impossible de supprimer ou d'accepter une réunion)
+    symptome: L'utilisateur reçoit l'alerte de boîte pleine et ne peut ni supprimer de message ni répondre aux invitations, alors que la taille de la boîte est normale.
+    erreurs:
+      - Your mailbox is full
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/archive-mailboxes/mailbox-full-warning-though-not-reached-quota
+    etat: a-rediger
+  - id: purview-conservation-calendrier-modification-impossible
+    titre: "Boîte en conservation : impossible de modifier des éléments de calendrier (dossier Versions plein)"
+    symptome: Depuis Outlook sur le web ou Outlook pour Mac, les mises à jour de réunions échouent sur une boîte en conservation dont le dossier Versions est plein.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/holds/cannot-update-calendar-items-from-owa-or-outlook-on-mac
+    etat: a-rediger
+  - id: purview-licence-retiree-boite-en-conservation
+    titre: Erreurs après retrait de licence d'un utilisateur dont la boîte est en conservation
+    symptome: Après suppression de la licence d'un utilisateur parti, la boîte en conservation ne devient pas inactive et des erreurs apparaissent.
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/litigation-hold-mailbox-not-turn-into-inactive
+    etat: a-rediger
+  - id: purview-boite-inactive-recuperation-echec
+    titre: Impossible de récupérer une boîte aux lettres inactive (shards supplémentaires)
+    symptome: La commande de récupération ou de restauration d'une boîte inactive échoue lorsque la boîte possède des shards d'archive supplémentaires.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/recover-inactive-mailboxes-error
+    etat: a-rediger
+  - id: purview-ignorelegalhold-indisponible
+    titre: Paramètre IgnoreLegalHold indisponible pour supprimer une boîte Exchange Online en conservation
+    symptome: Disable-Mailbox ou Remove-Mailbox -IgnoreLegalHold ne fonctionne pas sur un objet Exchange Online.
+    erreurs:
+      - IgnoreLegalHold
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/holds/ignorelegalhold-not-available
+    etat: a-rediger
+  - id: purview-litigationholdenabled-different-hybride
+    titre: Valeur LitigationHoldEnabled différente entre Exchange local et Exchange Online
+    symptome: Après migration d'une boîte, la propriété de conservation pour litige ne correspond plus entre l'environnement local et le cloud.
+    erreurs:
+      - LitigationHoldEnabled
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/user-and-shared-mailboxes/litigationholdenabled-property-differs-onpremises-cloud
+    etat: a-rediger
+  - id: purview-restaurer-conservation-hybride
+    titre: Conservation inaltérable / pour litige perdue après déplacement de boîte en hybride
+    symptome: Les paramètres In-Place Hold ou Litigation Hold doivent être réappliqués après un déplacement de boîte entre local et cloud.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/holds/restore-in-place-litigation-hold
+    etat: a-rediger
+  - id: purview-ediscovery-conservation-erreur-deploiement
+    titre: Conservation eDiscovery en erreur de déploiement (PolicySyncTimeout, FailedToOpenContainer…)
+    symptome: Une conservation de cas eDiscovery n'est pas appliquée à tous les emplacements et affiche une erreur de distribution.
+    erreurs:
+      - PolicySyncTimeout
+      - PolicyNotifyError
+      - InternalError
+      - FailedToOpenContainer
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/ediscovery/resolve-ediscovery-hold-issues
+    etat: a-rediger
+  - id: purview-ediscovery-ecart-estimation-export
+    titre: "eDiscovery : nombre d'éléments exportés différent de l'estimation de la recherche"
+    symptome: L'export contient moins (ou plus) d'éléments que l'estimation affichée par la recherche.
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/ediscovery/resolve-ediscovery-issues
+    etat: a-rediger
+  - id: purview-ediscovery-emplacement-ambigu
+    titre: "Recherche eDiscovery : « The location is ambiguous »"
+    symptome: La recherche échoue car une boîte aux lettres incluse correspond à plusieurs objets.
+    erreurs:
+      - The compliance search contains the following invalid location(s)
+      - The location <mailbox identifier> is ambiguous.
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/ediscovery/resolve-ediscovery-issues
+    etat: a-rediger
+  - id: purview-ediscovery-recipient-not-found
+    titre: "Recherche eDiscovery : « Recipient not found »"
+    symptome: La recherche échoue parce qu'un destinataire inclus n'est plus trouvé (supprimé, non synchronisé).
+    erreurs:
+      - Recipient not found
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/ediscovery/resolve-ediscovery-issues
+    etat: a-rediger
+  - id: purview-ediscovery-erreur-cs007
+    titre: Recherche eDiscovery en erreur CS007
+    symptome: La recherche de contenu se termine avec l'erreur CS007 sur certains emplacements.
+    erreurs:
+      - CS007
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/ediscovery/resolve-ediscovery-issues
+    etat: a-rediger
+  - id: purview-ediscovery-erreur-500
+    titre: "Recherche eDiscovery : « Internal server error (500) occurred »"
+    symptome: La recherche échoue avec une erreur interne 500.
+    erreurs:
+      - Internal server error (500) occurred
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/ediscovery/resolve-ediscovery-issues
+    etat: a-rediger
+  - id: purview-ediscovery-nombre-maximal-travaux
+    titre: "eDiscovery : « Maximum number of jobs for your organization are currently running »"
+    symptome: Une recherche ou un export ne démarre pas car trop de travaux tournent déjà dans le locataire.
+    erreurs:
+      - Your request can't be started because the maximum number of jobs for your organization are currently running.
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/ediscovery/resolve-ediscovery-issues
+    etat: a-rediger
+  - id: purview-ediscovery-export-element-deplace-timeout
+    titre: "Export eDiscovery : « Item has been moved or deleted » / « Unable to retrieve item due to timeout »"
+    symptome: Le rapport d'export liste des éléments en erreur car déplacés, supprimés ou trop longs à récupérer.
+    erreurs:
+      - Item has been moved or deleted
+      - Unable to retrieve item due to timeout
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/ediscovery/resolve-ediscovery-issues
+    etat: a-rediger
+  - id: purview-ediscovery-export-fichier-introuvable
+    titre: "Export eDiscovery : « File wasn't exported because it doesn't exist » / « File not found »"
+    symptome: Des fichiers SharePoint/OneDrive trouvés par la recherche ne sont pas exportés.
+    erreurs:
+      - File wasn't exported because it doesn't exist
+      - File not found
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/ediscovery/resolve-ediscovery-issues
+    etat: a-rediger
+  - id: purview-ediscovery-export-ne-telecharge-rien
+    titre: L'export eDiscovery ne télécharge aucun fichier
+    symptome: Le téléchargement de l'export se lance mais aucun fichier n'est récupéré (outil d'export, navigateur, proxy).
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/ediscovery/resolve-ediscovery-issues
+    etat: a-rediger
+  - id: purview-ediscovery-resultat-est-un-dossier
+    titre: "Export eDiscovery : « Search result was not downloaded as it is a folder »"
+    symptome: Certains résultats ne sont pas téléchargés car ils correspondent à des dossiers.
+    erreurs:
+      - Search result was not downloaded as it is a folder
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/ediscovery/resolve-ediscovery-issues
+    etat: a-rediger
+  - id: purview-ediscovery-local-boite-cloud
+    titre: Recherche In-Place eDiscovery depuis Exchange 2016/2019 impossible sur une boîte Exchange Online
+    symptome: En hybride, la recherche lancée depuis le CAE local échoue pour une boîte hébergée dans le cloud.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/ediscovery/cannot-run-ediscovery-search-cloud-mailbox
+    etat: a-rediger
+  - id: purview-audit-recherche-requete-non-aboutie
+    titre: "Recherche dans le journal d'audit : « Your request couldn't be completed »"
+    symptome: La recherche dans le journal d'audit unifié échoue avec un message générique.
+    erreurs:
+      - Your request couldn't be completed. Please try again, and if the problem persists, contact your administrator.
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/audit-logs/issue-search-audit-log
+    etat: a-rediger
+  - id: purview-audit-qui-a-supprime-elements-boite
+    titre: "Éléments disparus d'une boîte aux lettres : retrouver qui les a supprimés (audit de boîte)"
+    symptome: Des messages ou dossiers ont disparu d'une boîte (souvent partagée) ; il faut savoir qui les a supprimés ou déplacés.
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/audit-logs/mailbox-audit-logs
+    etat: a-rediger
+  - id: purview-audit-useragent-protocole-herite
+    titre: "Journal d'audit : identifier le client/protocole (UserAgent) d'une connexion suspecte"
+    symptome: L'audit montre des connexions avec un UserAgent inhabituel (protocoles hérités) qu'il faut interpréter et bloquer.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/audit-logs/useragent-property
+    etat: a-rediger
+  - id: purview-alerte-boxserviceaccount-role
+    titre: "Alerte : « BOXServiceAccount » ajouté à un rôle"
+    symptome: Une alerte Microsoft 365 indique qu'un compte BOXServiceAccount a été ajouté à un rôle administrateur.
+    erreurs:
+      - BOXServiceAccount
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/audit-logs/boxserviceaccount-is-added-to-role
+    etat: a-rediger
+  - id: purview-connexion-powershell-conformite-echec
+    titre: Connexion impossible à Security & Compliance PowerShell (Connect-IPPSSession)
+    symptome: La commande Connect-IPPSSession échoue, empêchant de gérer rétention, eDiscovery ou DLP en PowerShell.
+    erreurs:
+      - Connect-IPPSSession
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/cannot-connect-to-security-compliance-powershell
+    etat: a-rediger
+  - id: purview-dlp-conseils-strategie-non-affiches
+    titre: Conseils de stratégie DLP (policy tips) qui ne s'affichent pas dans Outlook
+    symptome: Le message sensible est bien détecté (ou bloqué), mais l'utilisateur ne voit pas le conseil de stratégie DLP avant l'envoi.
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/data-loss-prevention/data-loss-prevention-policy-tips
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/security/can't-display-dlp-policytip
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/data-loss-prevention/diagnose-dlp-policy-tip-display-issues
+    etat: a-rediger
+  - id: purview-dlp-conseils-pdf-non-affiches
+    titre: Conseil de stratégie DLP absent pour les pièces jointes PDF dans Outlook
+    symptome: Outlook n'affiche pas le conseil DLP lorsque l'information sensible est dans un PDF joint.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/security/dlp-policy-tips-for-pdf-attachments-not-displayed
+    etat: a-rediger
+  - id: purview-dlp-modification-non-prise-en-compte-outlook
+    titre: Modifications d'une stratégie DLP non prises en compte dans Outlook
+    symptome: Après modification de la stratégie DLP, Outlook continue d'appliquer l'ancien comportement (conseils, blocages).
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/data-loss-prevention/data-loss-prevention-not-work
+    etat: a-rediger
+  - id: purview-dlp-endpoint-coller-navigateur
+    titre: "DLP point de terminaison : « Coller dans les navigateurs » n'audite ni ne bloque"
+    symptome: Les données sensibles collées dans un navigateur ne déclenchent ni audit ni blocage malgré la stratégie Endpoint DLP.
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/data-loss-prevention/diagnose-paste-to-supported-browser-issues
+    etat: a-rediger
+  - id: purview-dlp-endpoint-ne-s-applique-pas
+    titre: DLP point de terminaison ne s'applique pas sur un poste Windows
+    symptome: Les actions (copie USB, impression, téléversement) ne sont pas bloquées sur un appareil intégré ; il faut collecter et analyser les journaux de diagnostic.
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/data-loss-prevention/collect-endpoint-dlp-diagnostic-logs
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/data-loss-prevention/analyze-endpoint-dlp-diagnostic-logs
+    etat: a-rediger
+  - id: purview-dlp-teams-antivirus-tiers
+    titre: Teams lent ou en échec à cause d'un antivirus ou DLP tiers (Symantec DLP…)
+    symptome: Teams se fige, plante ou ne démarre pas sur des postes équipés d'un agent DLP tiers.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/third-party-programs/symantec-dlp-interferes-with-teams
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoftteams/teams-administration/include-exclude-teams-from-antivirus-dlp
+    etat: a-rediger
+  - id: purview-etiquettes-sensibilite-absentes
+    titre: Étiquettes de confidentialité absentes ou bouton « Confidentialité » (Sensitivity) indisponible
+    symptome: Dans Outlook, Outlook sur le web ou Word/Excel, l'utilisateur ne voit pas les étiquettes publiées ou le bouton Sensitivity est grisé.
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/sensitivity-labels/sensitivity-labels-missing
+    etat: a-rediger
+  - id: purview-document-protege-invites-connexion
+    titre: "Impossible d'ouvrir un document protégé (IRM) : invites de connexion en boucle"
+    symptome: Un document chiffré reçu d'un autre domaine demande sans cesse une connexion puis refuse l'accès (accès conditionnel du domaine).
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/admin/access-management/cannot-open-irm-protected-document
+    etat: a-rediger
+  - id: purview-contacts-perdent-acces-contenu-chiffre
+    titre: "Contacts de messagerie membres de groupes : accès perdu ou intermittent au contenu chiffré"
+    symptome: Des contacts externes ajoutés à un groupe autorisé par l'étiquette ne peuvent plus ouvrir les documents ou mails chiffrés.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/sensitivity-labels/mail-contacts-lose-access-encrypted-content
+    etat: a-rediger
+  - id: purview-etiquetage-auto-echec-sharepoint
+    titre: Étiquetage automatique en échec sur des fichiers SharePoint / OneDrive
+    symptome: La stratégie d'étiquetage automatique ne pose pas l'étiquette sur certains fichiers ; des codes d'échec apparaissent (SqlThrottled, TransientErrorStorageConnection…).
+    erreurs:
+      - SqlThrottled
+      - TransientErrorStorageConnection
+      - Unknown_SPException
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/sensitivity-labels/auto-labeling-failures-sharepoint-onedrive
+    etat: a-rediger
+  - id: purview-etiquetage-auto-resultats-inattendus
+    titre: "Stratégie d'étiquetage automatique : résultats inattendus (simulation, étiquettes existantes, Exchange)"
+    symptome: La simulation trouve des correspondances mais les fichiers ou mails ne sont pas étiquetés, ou une étiquette existante n'est pas remplacée.
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/sensitivity-labels/troubleshoot-auto-labeling-policies
+    etat: a-rediger
+  - id: purview-etiquette-perdue-format-office-97-2003
+    titre: Étiquette de confidentialité supprimée en enregistrant au format .doc / .xls / .ppt
+    symptome: Un fichier étiqueté perd son étiquette lorsqu'il est enregistré dans un ancien format Office 97-2003 ; la co-édition n'est pas prise en charge pour ces formats.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/sensitivity-labels/known-issues-ip-client
+    etat: a-rediger
+  - id: purview-visionneuse-ip-compte-personnel
+    titre: "Visionneuse Information Protection : fichier protégé illisible avec un compte personnel"
+    symptome: Un destinataire externe utilisant un compte personnel (Microsoft, Live) ne peut pas ouvrir le fichier protégé dans la visionneuse.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/sensitivity-labels/known-issues-ip-client
+    etat: a-rediger
+  - id: purview-scanner-information-protection-erreurs
+    titre: Scanner Information Protection en erreur (jeton, stratégie absente, base SQL, processus bloqué)
+    symptome: "Le scanner local n'analyse plus les partages : erreurs d'authentification, stratégie manquante, schéma de base obsolète ou connexion fermée."
+    erreurs:
+      - Authentication token not accepted
+      - Policy missing
+      - Underlying connection was closed
+      - Unable to connect to remote server
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/information-protection-scanner/resolve-deployment-issues
+    etat: a-rediger
+  - id: purview-connect-aipservice-echec
+    titre: Connexion impossible au service Azure Information Protection (Connect-AipService)
+    symptome: La connexion PowerShell au service de gestion des droits échoue malgré des identifiants corrects.
+    erreurs:
+      - "Connect-AipService : The attempt to connect to the Azure Information Protection service failed."
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/entra/entra-id/user-prov-sync/fail-connect-azure-information-protection-powershell
+    etat: a-rediger
+  - id: purview-import-tpd-rms-online-echec
+    titre: Import du domaine de publication approuvé (TPD) depuis RMS Online impossible
+    symptome: La configuration IRM d'Exchange Online échoue lors de l'import du TPD.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/unable-to-import-trusted-publishing-domain-from-rms-online
+    etat: a-rediger
+  - id: purview-irm-groupe-dynamique-mail-illisible
+    titre: Message IRM envoyé à un groupe de distribution dynamique illisible par les membres (Exchange local)
+    symptome: Les membres d'un groupe de distribution dynamique ne peuvent pas ouvrir un message protégé par IRM.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/mailflow/cannot-open-irm-email-dynamic-distribution-group
+    etat: a-rediger
+  - id: purview-test-irmconfiguration-licence
+    titre: "Test-IRMConfiguration : « Failed to acquire a use license »"
+    symptome: Le test de configuration IRM échoue à obtenir une licence d'utilisation, les messages protégés ne s'ouvrent pas dans OWA.
+    erreurs:
+      - Failed to acquire a use license
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/test-irmconfiguration-failed-to-acquire-use-license
+    etat: a-rediger
+  - id: purview-ome-we-cant-display-message
+    titre: "Message chiffré : « We can't display your message right now » dans Outlook sur le web"
+    symptome: Un utilisateur Exchange Online ne peut pas lire un message chiffré par Purview Message Encryption dans OWA.
+    erreurs:
+      - We can't display your message right now.
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/office-message-encryption/cannot-display-message
+    etat: a-rediger
+  - id: purview-ome-destinataire-externe-ne-peut-pas-ouvrir
+    titre: Destinataire externe incapable d'ouvrir un mail chiffré (OME)
+    symptome: Le destinataire reçoit un message « Vous avez reçu un message chiffré » mais n'arrive pas à l'ouvrir (code à usage unique, compte, portail).
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/security/external-recipient-can't-open-encrypted-email
+    etat: a-rediger
+  - id: purview-ome-chiffrement-ne-fonctionne-pas
+    titre: Chiffrement des messages Purview ne fonctionne pas (option Chiffrer absente, erreur de configuration)
+    symptome: "Le bouton Chiffrer n'apparaît pas ou les messages ne sont pas chiffrés : licence, configuration IRM du locataire ou connexion au service RMS."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/office-message-encryption/fix-message-encryption-issue-microsoft-purview
+    etat: a-rediger
+  - id: purview-ome-envoi-chiffre-nombreux-destinataires
+    titre: Impossible d'envoyer un mail chiffré à un grand nombre de destinataires
+    symptome: L'envoi d'un message chiffré échoue au-delà d'un certain nombre de destinataires.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/sensitivity-labels/encrypted-email-cannot-send-many-recipients
+    etat: a-rediger
+  - id: purview-chiffre-boite-partagee-illisible
+    titre: Message chiffré ou restreint illisible dans une boîte aux lettres partagée
+    symptome: Les membres d'une boîte partagée ne peuvent pas ouvrir un message protégé envoyé à cette boîte dans Outlook.
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/outlook/user-interface/encrypted-restricted-message-shared-mailbox
+    etat: a-rediger
+  - id: purview-barrieres-information-blocage-inattendu
+    titre: "Barrières de l'information : utilisateurs bloqués à tort dans Teams"
+    symptome: Des utilisateurs ne peuvent plus discuter ou appeler certains collègues dans Teams à cause d'une stratégie de barrières de l'information.
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/information-barriers/information-barriers-troubleshooting
+    etat: a-rediger
+  - id: purview-barrieres-information-non-appliquees
+    titre: Barrières de l'information non appliquées ou partiellement appliquées
+    symptome: Des utilisateurs qui devraient être séparés communiquent encore, ou l'application de la stratégie dure très longtemps.
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/information-barriers/information-barriers-troubleshooting
+    etat: a-rediger
+  - id: purview-import-pst-bloque-ou-lent
+    titre: Travail d'importation PST bloqué, très lent ou avec des éléments ignorés
+    symptome: L'import PST du service d'importation Microsoft 365 n'avance plus ou signale des éléments ignorés.
+    erreurs: []
+    priorite: rare
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/pst-import-service/issues-with-pst-import-job
+    etat: a-rediger
+  - id: purview-import-pst-mailboxambiguous
+    titre: "Import PST en échec : MailboxAmbiguous"
+    symptome: Le journal du travail d'importation indique que la boîte cible est ambiguë.
+    erreurs:
+      - MailboxAmbiguous
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/pst-import-service/import-fails-mailboxambiguous
+    etat: a-rediger
+  - id: purview-import-pst-quota-depasse
+    titre: "Import PST en échec : MapiExceptionShutoffQuotaExceeded"
+    symptome: L'import s'arrête car la boîte cible (ou son dossier Éléments récupérables) a atteint son quota.
+    erreurs:
+      - MapiExceptionShutoffQuotaExceeded
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/microsoft-365/purview/pst-import-service/issues-with-pst-import-job
+    etat: a-rediger
+  - id: purview-journalisation-mail-eop-non-journalise
+    titre: Messages reçus via EOP non journalisés (Exchange local)
+    symptome: En hybride ou avec EOP en entrée, certains messages entrants ne sont pas copiés dans la boîte de journalisation.
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/troubleshoot/exchange/administration/email-received-via-eop-not-journaled
+    etat: a-rediger
