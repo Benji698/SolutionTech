@@ -1,0 +1,106 @@
+id: sharepoint-admin-global-sans-acces-site
+format: express
+titre: "Administrateur général mais accès refusé à un site SharePoint"
+resume: "Le rôle Administrateur général ou Administrateur SharePoint permet de gérer les sites depuis le centre d'administration, mais ne donne pas accès à leur contenu. Pour ouvrir un site, s'ajouter comme administrateur du site, de façon tracée et justifiée."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: sharepoint
+apparait_aussi_dans: [microsoft-365/centre-administration]
+niveau: N2
+temps_estime: { min: 5, max: 15 }
+critique: false
+environnements: [m365]
+droits: admin-m365
+outils: []
+acces:
+  - "Rôle **Administrateur SharePoint** ou **Administrateur général** dans Microsoft Entra ID."
+
+symptomes:
+  - « Je suis admin global et SharePoint me dit que je n'ai pas accès au site. »
+  - « Je dois récupérer un fichier sur le site d'un service, mais même avec mon compte admin c'est refusé. »
+
+messages_erreur:
+  - texte: "Sorry, you don't have access to this page"
+    ou: Page SharePoint à l'ouverture du site
+  - texte: "Sorry, this site hasn't been shared with you."
+    ou: Page SharePoint à l'ouverture du site (variante)
+
+variables:
+  - { nom: UrlSite, libelle: "Adresse du site SharePoint", exemple: https://contoso.sharepoint.com/sites/Compta }
+  - { nom: UrlAdmin, libelle: "Adresse du Centre d'administration SharePoint", exemple: https://contoso-admin.sharepoint.com }
+  - { nom: UPN, libelle: "Adresse du compte administrateur", exemple: admin.it@contoso.fr }
+
+causes:
+  - id: c1
+    titre: Les rôles d'administration ne donnent pas accès au contenu des sites
+    frequence: tres-frequente
+    detail: "Un administrateur général ou SharePoint gère les paramètres des sites (partage, stockage, propriétaires), mais n'est pas automatiquement membre ni administrateur de chaque site. Il doit s'ajouter lui-même comme administrateur du site pour voir son contenu."
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: S'ajouter comme administrateur du site
+    etapes:
+      - id: r1-e1
+        titre: Obtenir l'accord du propriétaire des données
+        niveau: N1
+        graphique: |
+          Avant d'ouvrir un site qui n'est pas le sien, s'assurer que la demande est **justifiée et écrite** (ticket validé par le responsable du service ou la direction). L'ajout d'un administrateur de site est **enregistré dans le journal d'audit**.
+      - id: r1-e2
+        titre: Ajouter le compte dans les administrateurs du site
+        niveau: N2
+        graphique: |
+          1. **Centre d'administration SharePoint** › **Sites** › **Sites actifs** (*Active sites*).
+          2. Cliquer sur le **nom du site** pour ouvrir le volet de détails.
+          3. Onglet **Appartenance** (*Membership*) › **Administrateurs de site** (*Site admins*) › **Ajouter des administrateurs de site** (*Add site admins*).
+          4. Saisir son propre compte, puis **Ajouter**.
+          5. Ouvrir le site après quelques minutes.
+
+          > [!a-verifier]
+          > Les libellés français de l'onglet et des boutons sont à confirmer. Sur un site relié à un groupe Microsoft 365 (site d'équipe Teams), un administrateur de site supplémentaire n'a **pas** accès à l'équipe ni à la boîte du groupe : il faut l'ajouter au groupe pour cela.
+        commande:
+          langage: powershell
+          ou: SharePoint Online Management Shell
+          code: |
+            Connect-SPOService -Url '<UrlAdmin>'
+            Set-SPOUser -Site '<UrlSite>' -LoginName '<UPN>' -IsSiteCollectionAdmin $true
+        avertissement:
+          type: attention
+          texte: "Un administrateur de site voit tout le contenu du site, y compris les dossiers aux autorisations restreintes (RH, paie, direction). Ne s'ajouter que pour la durée de l'intervention."
+      - id: r1-e3
+        titre: Se retirer à la fin de l'intervention
+        niveau: N2
+        graphique: "Une fois le travail terminé, revenir dans **Appartenance** › **Administrateurs de site** et retirer son compte. Ne jamais retirer l'**administrateur principal** du site."
+        commande:
+          langage: powershell
+          ou: SharePoint Online Management Shell
+          code: Set-SPOUser -Site '<UrlSite>' -LoginName '<UPN>' -IsSiteCollectionAdmin $false
+
+verification:
+  - id: v1
+    titre: Le site s'ouvre avec le compte administrateur
+    niveau: N1
+    graphique: "Le site s'ouvre et le menu **Paramètres** (roue dentée) affiche **Autorisations du site** et **Informations sur le site**."
+
+fiches_liees: [sharepoint-acces-refuse, sharepoint-centre-admin-inaccessible-admin-sharepoint]
+tags: [sharepoint, administrateur general, global admin, administrateur sharepoint, sharepoint admin, administrateur de site, site admin, site collection administrator, administrateur de collection de sites, acces refuse, access denied]
+
+sources:
+  - titre: "Manage site admins — Microsoft Learn"
+    url: https://learn.microsoft.com/en-my/sharepoint/manage-site-collection-administrators
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "Manage sites in the SharePoint admin center — Microsoft Learn"
+    url: https://learn.microsoft.com/sharepoint/get-started-new-admin-center
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "Admin center site permissions reference — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/sharepoint/site-permissions
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "Sorry, you don't have access to this page, but I'm the admin — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/4894353/sorry-you-dont-have-access-to-this-page-but-im-the
+    type: forum
+    consulte_le: 2026-10-30
+
+derniere_verification: 2026-10-30

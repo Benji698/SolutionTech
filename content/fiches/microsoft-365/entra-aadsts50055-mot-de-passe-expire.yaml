@@ -1,0 +1,125 @@
+id: entra-aadsts50055-mot-de-passe-expire
+format: express
+titre: "Mot de passe expiré à la connexion Microsoft 365 (AADSTS50055)"
+resume: "Le mot de passe cloud du compte a atteint sa date d'expiration : la session est interrompue et l'utilisateur doit le changer. Le changer depuis la page de connexion ou le réinitialiser après vérification d'identité, puis mettre à jour les appareils et comptes de service qui l'utilisent."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: entra-id
+niveau: N1
+temps_estime: { min: 5, max: 20 }
+critique: false
+environnements: [m365]
+droits: admin-m365
+outils: []
+acces:
+  - "Rôle **Administrateur du support technique** (*Helpdesk Administrator*) ou **Administrateur d'utilisateurs** pour réinitialiser un mot de passe."
+  - "Rôle **Administrateur général** pour modifier la stratégie d'expiration de l'organisation."
+
+symptomes:
+  - « On me demande de changer mon mot de passe alors que je n'ai rien demandé. »
+  - « La salle Teams n'arrive plus à se connecter depuis ce matin. »
+  - « Le script qui envoie les rapports par mail ne marche plus. »
+
+messages_erreur:
+  - texte: "AADSTS50055: The password is expired."
+    code: "AADSTS50055"
+    ou: "Page de connexion, application, ou journal de connexion Entra (motif InvalidPasswordExpiredPassword, état Interrompu)"
+  - texte: "Your password has expired. You need to update your password because this is the first time you are signing in, or because your password has expired."
+    ou: "Page de connexion Microsoft (formulation exacte à vérifier)"
+
+variables:
+  - { nom: UPN, libelle: "Adresse de connexion de l'utilisateur", exemple: jean.dupont@contoso.fr }
+
+causes:
+  - id: c1
+    titre: La stratégie d'expiration des mots de passe du locataire est active
+    frequence: tres-frequente
+    detail: "Les locataires créés avant 2021 ont souvent une expiration de 90 jours par défaut ; les plus récents n'expirent pas, sauf réglage contraire. Les comptes cloud uniquement sont concernés (pour un compte synchronisé depuis l'AD, voir AADSTS50144)."
+  - id: c2
+    titre: Compte sans utilisateur devant l'écran (compte de ressource, salle Teams, script)
+    frequence: frequente
+    detail: "Un compte de salle Teams, d'imprimante multifonction ou de script ne peut pas répondre à la demande de changement : il échoue simplement jusqu'à ce qu'un administrateur change le mot de passe et le reporte sur l'appareil."
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Faire changer ou réinitialiser le mot de passe
+    etapes:
+      - id: r1-e1
+        titre: Changer le mot de passe depuis la page de connexion
+        niveau: N1
+        graphique: |
+          1. Se connecter depuis un navigateur sur *https://www.office.com* : la page **Mettre à jour votre mot de passe** (*Update your password*) s'affiche.
+          2. Saisir l'ancien mot de passe, puis le nouveau deux fois.
+          3. Si l'utilisateur ne connaît plus l'ancien : utiliser la réinitialisation en libre-service (**Mot de passe oublié ?**, *https://aka.ms/sspr*) si elle est activée.
+      - id: r1-e2
+        titre: À défaut, réinitialiser le mot de passe en tant qu'administrateur
+        niveau: N1
+        graphique: |
+          1. **Vérifier l'identité de la personne** (rappel sur son numéro connu, présence physique, validation du responsable) avant toute réinitialisation.
+          2. **Centre d'administration Microsoft 365** (*admin.microsoft.com*) › **Utilisateurs** (*Users*) › **Utilisateurs actifs** (*Active users*) › sélectionner l'utilisateur › **Réinitialiser le mot de passe** (*Reset password*).
+          3. Garder cochée l'option qui oblige à changer le mot de passe à la première connexion, puis transmettre le mot de passe temporaire par un canal sûr.
+        avertissement:
+          type: attention
+          texte: "La réinitialisation invalide les sessions ouvertes : Outlook, Teams et le téléphone redemanderont le mot de passe. Prévenir l'utilisateur."
+        conclusions:
+          - { si: "Le nouveau mot de passe est refusé", aller_a: "fiche:entra-changement-mot-de-passe-refuse-aadsts1200xx" }
+
+  - id: r2
+    causes: [c2]
+    titre: Remettre en service un compte de ressource ou de script
+    etapes:
+      - id: r2-e1
+        titre: Changer le mot de passe et le reporter sur l'appareil
+        niveau: N2
+        graphique: |
+          1. Réinitialiser le mot de passe du compte (Résolution 1, étape 2) **sans** imposer de changement à la prochaine connexion.
+          2. Reporter le nouveau mot de passe là où il est enregistré : **Paramètres** de la salle Teams, copieur, coffre de secrets du script.
+          3. Si l'organisation le permet, désactiver l'expiration pour ce seul compte (commande ci-dessous) : la documentation Teams Rooms propose ce réglage pour éviter de reconnecter chaque salle.
+        commande:
+          langage: powershell
+          ou: Microsoft Graph PowerShell (Connect-MgGraph -Scopes 'User.ReadWrite.All')
+          code: |
+            # Vérifier si le mot de passe de ce compte expire
+            Get-MgUser -UserId '<UPN>' -Property UserPrincipalName, PasswordPolicies, LastPasswordChangeDateTime | Select-Object UserPrincipalName, PasswordPolicies, LastPasswordChangeDateTime
+            # Ne plus faire expirer le mot de passe de ce compte
+            Update-MgUser -UserId '<UPN>' -PasswordPolicies DisablePasswordExpiration
+        avertissement:
+          type: attention
+          texte: "Un mot de passe qui n'expire jamais doit être long, unique et stocké dans un coffre. Réserver ce réglage aux comptes de ressource et le documenter."
+
+verification:
+  - id: v1
+    titre: La connexion fonctionne avec le nouveau mot de passe
+    niveau: N1
+    graphique: "L'utilisateur (ou l'appareil) se connecte sans nouvelle demande. Dans **Entra** › **Journaux de connexion** (*Sign-in logs*), la tentative suivante est en **Réussite** et non plus **Interrompu** (*Interrupted*)."
+
+prevention:
+  - "Microsoft recommande de ne plus faire expirer les mots de passe (MFA activée, mots de passe interdits) : **Centre d'administration Microsoft 365** › **Paramètres** › **Paramètres de l'organisation** › **Sécurité et confidentialité** › **Stratégie d'expiration des mots de passe** (*Password expiration policy*) › **Définir les mots de passe pour qu'ils n'expirent jamais**. Décision à valider par la sécurité."
+  - "Microsoft 365 n'envoie plus d'avertissement avant l'expiration : si l'expiration est conservée, prévoir un rappel interne."
+
+comprendre: |
+  Pour un compte cloud, la durée de vie du mot de passe est réglée par domaine (`PasswordValidityPeriodInDays`) et l'exception par compte via `PasswordPolicies = DisablePasswordExpiration`. Une fois la date passée, Entra ID interrompt la connexion (AADSTS50055) et propose le changement si une personne est devant l'écran.
+
+fiches_liees: [entra-aadsts50144-mot-de-passe-ad-expire, entra-changement-mot-de-passe-refuse-aadsts1200xx, m365-connexion-refusee-aadsts, outlook-demande-mot-de-passe-en-boucle]
+tags: [AADSTS50055, "50055", InvalidPasswordExpiredPassword, mot de passe expire, password expired, changer mot de passe, expiration, password expiration policy, teams rooms, compte de service, compte de ressource, DisablePasswordExpiration]
+
+sources:
+  - titre: "Microsoft Entra authentication and authorization error codes — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/entra/identity-platform/reference-error-codes
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "Password policies and account restrictions in Microsoft Entra ID — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/entra/identity/authentication/concept-sspr-policy
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "Set the password expiration policy for your organization — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/microsoft-365/admin/manage/set-password-expiration-policy
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "Teams Rooms resource account sign-in issues — Microsoft SupportArticles-docs"
+    url: https://github.com/MicrosoftDocs/SupportArticles-docs/blob/main/Teams/teams-rooms-and-devices/teams-rooms-resource-account-sign-in-issues.md
+    type: officiel
+    consulte_le: 2026-10-30
+
+derniere_verification: 2026-10-30

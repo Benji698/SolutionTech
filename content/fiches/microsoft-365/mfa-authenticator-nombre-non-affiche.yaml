@@ -1,0 +1,222 @@
+id: mfa-authenticator-nombre-non-affiche
+titre: "Mise en correspondance des nombres : le nombre à saisir n'apparaît pas ou l'application ne propose pas la saisie"
+resume: "L'écran de connexion affiche un nombre à deux chiffres, mais l'utilisateur ne peut pas le saisir dans Authenticator : la notification masque le nombre (connexion sur le même iPhone), l'application est trop ancienne, la demande arrive sur une montre, ou l'inscription est corrompue. Identifier le cas, puis appliquer le contournement ou réinscrire l'application."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: mfa-acces-conditionnel
+apparait_aussi_dans: [mobiles-mdm/securite-mobile]
+niveau: N1
+temps_estime: { min: 5, max: 30 }
+critique: false
+environnements: [m365]
+droits: admin-m365
+outils: []
+acces:
+  - "Le téléphone de l'utilisateur avec **Microsoft Authenticator**."
+  - "Pour la réinscription : rôle Entra **Administrateur d'authentification** (*Authentication Administrator*) sur le centre d'administration Microsoft Entra."
+
+symptomes:
+  - « Le site m'affiche un nombre, mais mon téléphone me demande juste Approuver ou Refuser. »
+  - « Je me connecte sur mon iPhone, la notification cache le nombre, je ne peux pas le lire. »
+  - « Authenticator me demande un nombre, mais je ne vois aucun nombre nulle part. »
+  - « Ma montre vibre mais je ne peux rien valider dessus. »
+
+messages_erreur:
+  - texte: "Open your Authenticator app, and enter the number shown to sign in."
+    ou: Page de connexion Microsoft (le nombre à deux chiffres est affiché en dessous)
+  - texte: "Approve sign-in? Enter the number shown to sign in."
+    ou: Notification ou fenêtre de Microsoft Authenticator (libellé à confirmer selon la version)
+
+variables:
+  - { nom: UPN, libelle: "Adresse de connexion de l'utilisateur (UPN)", exemple: jean.dupont@contoso.fr }
+
+causes:
+  - id: c1
+    titre: "Connexion sur le même téléphone : la fenêtre d'Authenticator recouvre le nombre"
+    frequence: tres-frequente
+    detail: "Quand l'utilisateur se connecte dans un navigateur ou une application du téléphone qui porte Authenticator, la notification ou la fenêtre d'approbation s'affiche par-dessus la page qui montre le nombre. Sur iPhone, dans les flux passant par l'application, la demande recouvre le nombre au bout de deux secondes."
+  - id: c2
+    titre: L'application Authenticator n'est pas à jour
+    frequence: frequente
+    detail: "Une ancienne version d'Authenticator ne sait pas gérer la mise en correspondance des nombres, désormais imposée pour toutes les notifications : l'authentification échoue tant que l'application n'est pas mise à jour."
+  - id: c3
+    titre: "Connexion à Teams ou Outlook sur le même téléphone : « Approuver / Refuser » sans nombre, c'est normal"
+    frequence: occasionnelle
+    detail: "Quand la connexion à une application mobile Microsoft (Teams, Outlook) se fait sur le même appareil qu'Authenticator, la demande propose directement Approuver / Refuser sans saisie de nombre. Ce n'est pas une panne."
+  - id: c4
+    titre: La demande est traitée sur une montre connectée
+    frequence: occasionnelle
+    detail: "La mise en correspondance des nombres n'est pas prise en charge sur Apple Watch ni sur les montres Android : il faut répondre sur le téléphone. Authenticator n'existe plus sur Apple Watch."
+  - id: c5
+    titre: "L'inscription d'Authenticator est obsolète ou corrompue (la fenêtre s'ouvre sans nombre, ou ne s'ouvre pas)"
+    frequence: occasionnelle
+  - id: c6
+    titre: "Accès par VPN (extension NPS) ou AD FS : le comportement est différent"
+    frequence: rare
+    detail: "L'extension NPS ne gère pas la mise en correspondance des nombres : elle demande un code à usage unique (TOTP) ou propose Approuver / Refuser. Un serveur AD FS non mis à jour reste aussi sur Approuver / Refuser."
+
+diagnostic:
+  - id: d1
+    titre: Identifier où l'utilisateur se connecte et où il répond
+    niveau: N1
+    graphique: |
+      Poser trois questions à l'utilisateur :
+      1. Sur **quel appareil** se connecte-t-il (PC, ou le même téléphone que celui qui porte Authenticator) ?
+      2. Dans **quoi** (navigateur, Teams, Outlook, client VPN, bureau à distance) ?
+      3. Répond-il sur le **téléphone** ou sur une **montre** ?
+    conclusions:
+      - { si: "Connexion dans un navigateur du même téléphone, le nombre est masqué", cause: c1, aller_a: r1 }
+      - { si: "Connexion à Teams ou Outlook sur le même téléphone, Approuver / Refuser proposé", cause: c3, aller_a: r3 }
+      - { si: "Il répond sur une montre", cause: c4, aller_a: r4 }
+      - { si: "Connexion à un VPN ou à une passerelle Bureau à distance", cause: c6, aller_a: "fiche:mfa-nps-correspondance-nombres-otp-demande" }
+      - { si: "Connexion sur un PC, réponse sur le téléphone, et pas de champ de saisie", aller_a: d2 }
+
+  - id: d2
+    titre: Vérifier la version d'Authenticator
+    niveau: N1
+    graphique: |
+      1. Ouvrir l'**App Store** (iPhone) ou le **Play Store** (Android) et rechercher **Microsoft Authenticator**.
+      2. Si un bouton **Mettre à jour** (*Update*) apparaît, l'application n'est pas à jour.
+      3. La version installée est aussi visible dans Authenticator : menu **≡** (ou **…**) › **Aide** / **À propos** (*About*).
+
+      > [!a-verifier]
+      > L'emplacement exact de la version dans le menu d'Authenticator varie entre iOS et Android.
+    commande:
+      langage: powershell
+      ou: Microsoft Graph PowerShell (Connect-MgGraph -Scopes UserAuthenticationMethod.Read.All)
+      code: Get-MgUserAuthenticationMicrosoftAuthenticatorMethod -UserId '<UPN>' | Select-Object DisplayName, PhoneAppVersion, CreatedDateTime
+    conclusions:
+      - { si: "Une mise à jour est disponible", cause: c2, aller_a: r2 }
+      - { si: "L'application est à jour", aller_a: d3 }
+
+  - id: d3
+    titre: Vérifier l'inscription de l'appareil dans Entra ID
+    niveau: N2
+    graphique: |
+      1. **Centre d'administration Microsoft Entra** › **Entra ID** › **Utilisateurs** › ouvrir l'utilisateur › **Méthodes d'authentification** (*Authentication methods*).
+      2. Vérifier que la ligne **Microsoft Authenticator** porte le nom du téléphone actuel, et qu'il n'existe pas plusieurs inscriptions (ancien et nouveau téléphone).
+      3. Dans les **Journaux de connexion** (*Sign-in logs*) de l'utilisateur, ouvrir la dernière tentative › **Détails de l'authentification** pour voir le résultat de la demande.
+    conclusions:
+      - { si: "Plusieurs inscriptions, ou inscription d'un ancien appareil / d'une ancienne installation", cause: c5, aller_a: r5 }
+      - { si: "Aucune notification n'arrive du tout", aller_a: "fiche:mfa-authenticator-notification-absente" }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: "Connexion sur le même téléphone : lire le nombre avant de répondre"
+    etapes:
+      - id: r1-e1
+        titre: Mémoriser le nombre, puis l'afficher à nouveau si besoin
+        niveau: N1
+        graphique: |
+          1. Au moment où la page affiche le nombre, le **lire et le retenir** avant de toucher la notification.
+          2. Toucher la notification (ou passer dans Authenticator) et saisir le nombre.
+          3. Sur iPhone, si la fenêtre recouvre le nombre, toucher **Afficher à nouveau le nombre** (*Show me the number again*) quand le lien est proposé.
+          4. Autre solution : revenir à l'application de départ avec le sélecteur d'applications, lire le nombre, puis revenir dans Authenticator.
+
+          > [!a-verifier]
+          > Le lien « Show me the number again » n'existe que dans certains flux iOS ; son libellé français est à confirmer.
+        avertissement:
+          type: attention
+          texte: "Ne pas toucher « Non, ce n'est pas moi » (*No, it's not me*) pour faire disparaître la fenêtre : la demande est alors refusée, et peut être signalée comme frauduleuse selon la configuration du tenant."
+        astuce: "Le plus simple reste souvent de se connecter depuis un PC : le nombre reste affiché à l'écran pendant que l'utilisateur répond sur son téléphone."
+
+  - id: r2
+    causes: [c2]
+    titre: Mettre à jour Microsoft Authenticator
+    etapes:
+      - id: r2-e1
+        titre: Installer la dernière version de l'application
+        niveau: N1
+        graphique: "Mettre à jour **Microsoft Authenticator** depuis l'App Store ou le Play Store, ouvrir l'application une fois, puis relancer la connexion. Sur Android, vérifier aussi que la mise à jour automatique des applications est activée."
+
+  - id: r3
+    causes: [c3]
+    titre: "Expliquer le fonctionnement sur le même appareil"
+    etapes:
+      - id: r3-e1
+        titre: Approuver la demande sans saisir de nombre
+        niveau: N1
+        graphique: "Rassurer l'utilisateur : pour une connexion à **Teams** ou **Outlook** sur le téléphone même qui porte Authenticator, la demande propose **Approuver** / **Refuser** sans nombre. Ce comportement est voulu par Microsoft, car la demande ne s'affiche que sur l'appareil qui a lancé la connexion. Dans un **navigateur** (Edge, Chrome, Safari), la saisie du nombre reste demandée."
+
+  - id: r4
+    causes: [c4]
+    titre: Répondre sur le téléphone et non sur la montre
+    etapes:
+      - id: r4-e1
+        titre: Valider la demande sur le téléphone
+        niveau: N1
+        graphique: |
+          Ignorer la notification sur la montre, ouvrir **Authenticator sur le téléphone** et saisir le nombre.
+          Sur Apple Watch, Microsoft recommande de **supprimer Authenticator de la montre** (application **Watch** de l'iPhone › **Mes montres** › retirer l'application) puisqu'elle n'y fonctionne plus.
+
+  - id: r5
+    causes: [c5]
+    titre: Réinscrire Authenticator
+    etapes:
+      - id: r5-e1
+        titre: Vérifier l'identité de l'utilisateur
+        niveau: N1
+        graphique: "Avant toute modification des méthodes MFA, s'assurer que l'appelant est bien l'utilisateur (rappel sur un numéro connu, validation par le responsable, présence physique)."
+      - id: r5-e2
+        titre: Supprimer l'inscription obsolète et ajouter de nouveau l'application
+        niveau: N1
+        graphique: |
+          1. L'utilisateur se connecte à https://mysignins.microsoft.com/security-info (avec une autre méthode, ou un passe d'accès temporaire donné par l'administrateur).
+          2. Supprimer les lignes **Microsoft Authenticator** obsolètes.
+          3. **+ Ajouter une méthode de connexion** › **Application Microsoft Authenticator** › scanner le QR code.
+          4. Dans Authenticator, supprimer les anciennes entrées du compte restées en double.
+        avertissement:
+          type: destructif
+          texte: "Supprimer l'inscription Authenticator coupe immédiatement cette méthode. Vérifier que l'utilisateur dispose d'une autre méthode ou d'un passe d'accès temporaire avant la suppression."
+        conclusions:
+          - { si: "L'utilisateur n'a plus aucune méthode utilisable", aller_a: "fiche:m365-mfa-nouveau-telephone" }
+
+  - id: r6
+    causes: [c6]
+    titre: "VPN, passerelle RD ou AD FS : traiter côté serveur"
+    etapes:
+      - id: r6-e1
+        titre: Suivre la fiche dédiée à l'extension NPS
+        niveau: N2
+        graphique: "Pour un VPN ou une passerelle Bureau à distance reliés à l'extension NPS, suivre la fiche sur le code à usage unique demandé par l'extension NPS. Pour AD FS, vérifier que les serveurs Windows Server ont reçu les mises à jour de novembre 2021 (Windows Server 2019 et 2022) ou d'octobre 2021 (Windows Server 2016) qui ajoutent la mise en correspondance des nombres."
+        conclusions:
+          - { si: "Accès par VPN ou passerelle RD", aller_a: "fiche:mfa-nps-correspondance-nombres-otp-demande" }
+
+verification:
+  - id: v1
+    titre: La connexion aboutit avec saisie du nombre
+    niveau: N1
+    graphique: "Depuis un PC, ouvrir une fenêtre de navigation privée sur https://myaccount.microsoft.com, se connecter : le nombre s'affiche à l'écran, la fenêtre d'Authenticator propose un champ de saisie, et la connexion aboutit après saisie."
+
+prevention:
+  - Activer la mise à jour automatique des applications sur les téléphones (ou la piloter par Intune).
+  - "Expliquer aux utilisateurs, lors du déploiement, la règle simple : lire le nombre à l'écran avant de toucher la notification."
+  - Ne pas recommander l'usage d'une montre connectée pour valider la MFA.
+  - "Expliquer qu'il ne faut jamais saisir un nombre ou approuver une demande que l'on n'a pas déclenchée."
+
+comprendre: |
+  La **mise en correspondance des nombres** (*number matching*) oblige l'utilisateur à recopier dans Authenticator le nombre affiché sur l'écran de connexion. Un attaquant qui connaît le mot de passe ne peut donc plus obtenir une approbation en envoyant des notifications en boucle : il faudrait que la victime voie son écran. Microsoft l'impose pour toutes les notifications Authenticator ; l'utilisateur ne peut pas la désactiver. Les seules exceptions voulues sont la connexion à une application Microsoft sur le même appareil et l'extension NPS, qui utilise un code à usage unique à la place.
+
+fiches_liees: [mfa-authenticator-notification-absente, m365-mfa-nouveau-telephone, mfa-nps-correspondance-nombres-otp-demande, mfa-demandes-inattendues-fatigue-mfa]
+tags: [mfa, authenticator, number matching, mise en correspondance des nombres, nombre, chiffres, deux chiffres, "2 chiffres", approuver, approve, deny, iphone, ios, android, apple watch, montre, show me the number again, double authentification]
+
+sources:
+  - titre: "How number matching works in MFA push notifications for Authenticator — Microsoft Learn"
+    url: https://learn.microsoft.com/entra/identity/authentication/how-to-mfa-number-match
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "Number matching MFA not working on iPhones — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/1162790/number-matching-mfa-not-working-on-iphones
+    type: forum
+    consulte_le: 2026-10-30
+  - titre: "Catch-22: iOS MS Authenticator prompt blocks the number — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/1183376/catch-22-ios-ms-authenticator-prompt-blocks-the-nu
+    type: forum
+    consulte_le: 2026-10-30
+  - titre: "Authenticator app not showing number — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/5736959/authenticator-app-not-showing-number
+    type: forum
+    consulte_le: 2026-10-30
+
+derniere_verification: 2026-10-30

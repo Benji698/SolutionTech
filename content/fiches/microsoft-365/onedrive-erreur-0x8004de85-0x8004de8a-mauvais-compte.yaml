@@ -1,0 +1,117 @@
+id: onedrive-erreur-0x8004de85-0x8004de8a-mauvais-compte
+format: express
+titre: "Erreur 0x8004de85 ou 0x8004de8a : compte introuvable ou mauvais type de compte"
+resume: "OneDrive refuse la connexion avec le code 0x8004de85 ou 0x8004de8a : le compte saisi n'est pas le bon (compte personnel au lieu du compte professionnel, ou l'inverse), n'existe plus, ou n'a pas de licence OneDrive. Vérifier le compte utilisé, réinitialiser OneDrive, puis contrôler la licence."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: onedrive
+apparait_aussi_dans: [microsoft-365/licences-facturation]
+niveau: N1
+temps_estime: { min: 5, max: 20 }
+critique: false
+environnements: [win11, win10]
+droits: admin-m365
+outils: []
+acces:
+  - Session de l'utilisateur sur le PC.
+  - "Pour la licence : rôle **Administrateur des licences** ou **Administrateur des utilisateurs** dans le Centre d'administration Microsoft 365."
+
+symptomes:
+  - « OneDrive ne veut pas de mon adresse, il m'affiche un code d'erreur. »
+  - « Je me suis connecté avec mon compte Hotmail, maintenant je n'ai plus mes fichiers du travail. »
+  - « Mon OneDrive ne marche plus depuis que mon contrat a changé. »
+
+messages_erreur:
+  - texte: "0x8004de85"
+    code: "0x8004de85"
+    ou: Fenêtre de connexion OneDrive
+  - texte: "0x8004de8a"
+    code: "0x8004de8a"
+    ou: Fenêtre de connexion OneDrive
+
+variables:
+  - { nom: UPN, libelle: "Adresse professionnelle de l'utilisateur", exemple: jean.dupont@contoso.fr }
+
+causes:
+  - id: c1
+    titre: Mauvais type de compte (personnel au lieu de professionnel, ou l'inverse)
+    frequence: tres-frequente
+    detail: "L'utilisateur se connecte au OneDrive professionnel avec un compte Microsoft personnel (Outlook.com, Hotmail), ou l'inverse, ou avec un ancien compte. OneDrive ne trouve pas d'espace correspondant."
+  - id: c2
+    titre: État du client OneDrive incohérent après un changement de compte
+    frequence: frequente
+  - id: c3
+    titre: Compte sans licence OneDrive, licence expirée ou abonnement expiré
+    frequence: occasionnelle
+    detail: "Si plusieurs utilisateurs ont la même erreur au même moment, penser à un abonnement expiré."
+
+resolutions:
+  - id: r1
+    causes: [c1, c2]
+    titre: Se connecter avec le bon compte, puis réinitialiser OneDrive si besoin
+    etapes:
+      - id: r1-e1
+        titre: Vérifier le compte connecté à OneDrive
+        niveau: N1
+        graphique: |
+          1. Vérifier d'abord que le compte fonctionne en ligne : se connecter à `https://www.office.com` avec l'adresse professionnelle (ou à `https://onedrive.live.com` pour un compte personnel).
+          2. Cliquer sur l'**icône OneDrive** (nuage) dans la zone de notification (au besoin, flèche **Afficher les icônes cachées**). Si elle est absente, lancer **OneDrive** depuis le menu **Démarrer**.
+          3. **Aide et paramètres** (*Help & Settings*, roue dentée) › **Paramètres** (*Settings*) › onglet **Compte** (*Account*).
+          4. Vérifier l'adresse affichée. Si ce n'est pas la bonne, **Dissocier ce PC** (*Unlink this PC*) puis se reconnecter avec l'adresse professionnelle `<UPN>` (nuage **bleu**) ; un compte personnel donne un nuage **blanc**.
+        astuce: "OneDrive accepte un compte personnel **et** un ou plusieurs comptes professionnels en même temps, chacun dans son propre dossier : **Ajouter un compte** (*Add an account*) au lieu de remplacer l'un par l'autre."
+      - id: r1-e2
+        titre: Réinitialiser OneDrive
+        niveau: N1
+        graphique: |
+          1. Icône OneDrive › **Aide et paramètres** › **Quitter OneDrive** (*Quit OneDrive*).
+          2. **Windows + R**, coller la commande ci-dessous, **Entrée**.
+          3. Relancer OneDrive depuis le menu **Démarrer** et se connecter avec le compte professionnel.
+        commande:
+          langage: cmd
+          ou: Dans la session de l'utilisateur (Windows + R)
+          code: '%localappdata%\Microsoft\OneDrive\onedrive.exe /reset'
+        astuce: "La réinitialisation ne supprime pas les fichiers, mais OneDrive refait une synchronisation complète. Si le chemin est introuvable, essayer `C:\\Program Files\\Microsoft OneDrive\\onedrive.exe /reset`."
+
+  - id: r2
+    causes: [c3]
+    titre: Vérifier la licence et l'abonnement
+    etapes:
+      - id: r2-e1
+        titre: Contrôler la licence de l'utilisateur
+        niveau: N1
+        graphique: |
+          1. **Centre d'administration Microsoft 365** (*admin.microsoft.com*) › **Utilisateurs** (*Users*) › **Utilisateurs actifs** (*Active users*) › cliquer sur l'utilisateur.
+          2. Onglet **Licences et applications** (*Licenses and apps*) : vérifier qu'une licence incluant OneDrive est cochée, et dans **Applications**, que **OneDrive** (ou *SharePoint*) n'est pas désactivé.
+          3. Si plusieurs utilisateurs sont touchés : **Facturation** (*Billing*) › **Vos produits** (*Your products*) et vérifier l'état de l'abonnement.
+          4. Après l'attribution d'une licence, attendre quelques minutes à quelques heures, puis reconnecter OneDrive.
+        commande:
+          langage: powershell
+          ou: Microsoft Graph PowerShell (Connect-MgGraph -Scopes User.Read.All)
+          code: Get-MgUserLicenseDetail -UserId '<UPN>' | Select-Object SkuPartNumber
+        conclusions:
+          - { si: "La licence est absente ou l'abonnement expiré", aller_a: "fiche:onedrive-licence-terminee-edition-impossible" }
+
+verification:
+  - id: v1
+    titre: OneDrive est connecté au bon compte
+    niveau: N1
+    graphique: "Paramètres OneDrive › **Compte** affiche l'adresse professionnelle, l'icône est un nuage bleu, et le dossier **OneDrive - <Nom de l'organisation>** se remplit."
+
+fiches_liees: [onedrive-erreur-0x8004deef-acces-service, onedrive-licence-terminee-edition-impossible, onedrive-synchronisation-bloquee]
+tags: [onedrive, connexion, sign in, "0x8004de85", "0x8004de8a", compte personnel, compte professionnel, work or school account, microsoft account, licence, license, reset]
+
+sources:
+  - titre: "Error 0x8004de85 or 0x8004de8a when signing in to OneDrive — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/sign-into-onedrive-error-0x8004de85-or-0x8004de8a
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "Error code 0x8004de8a in OneDrive — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/4974821/error-code-0x8004de8a-in-one-drive
+    type: forum
+    consulte_le: 2026-10-30
+  - titre: "Fix OneDrive Error Code 0x8004de85 or 0x8004de8a — The Windows Club"
+    url: https://www.thewindowsclub.com/fix-onedrive-error-code-0x8004de85-or-0x8004de8a
+    type: blog
+    consulte_le: 2026-10-30
+
+derniere_verification: 2026-10-30

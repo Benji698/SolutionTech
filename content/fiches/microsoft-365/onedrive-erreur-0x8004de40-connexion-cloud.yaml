@@ -1,0 +1,275 @@
+id: onedrive-erreur-0x8004de40-connexion-cloud
+format: complete
+titre: "Erreur 0x8004de40 ou 0x8004de88 à la connexion à OneDrive"
+resume: "OneDrive refuse la connexion avec le code 0x8004de40 (ou 0x8004de88) alors qu'Internet semble fonctionner : le client n'arrive pas à joindre le cloud Microsoft. Vérifier la connexion, puis le proxy et le pare-feu, puis TLS 1.2 et les suites de chiffrement, et réinitialiser OneDrive en dernier."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: onedrive
+apparait_aussi_dans: [windows/applications]
+niveau: N1
+temps_estime: { min: 10, max: 60 }
+critique: false
+environnements: [win11, win10]
+droits: admin-local
+outils: []
+acces:
+  - Session de l'utilisateur sur le PC concerné.
+  - Compte administrateur local pour les réglages TLS et les suites de chiffrement.
+
+symptomes:
+  - « OneDrive me dit de vérifier ma connexion Internet, alors qu'Internet marche très bien. »
+  - « Je n'arrive plus à me connecter à OneDrive, j'ai le code 0x8004de40. »
+  - « Ça marche à la maison mais pas au bureau » (ou l'inverse).
+
+messages_erreur:
+  - texte: "There was a problem connecting to OneDrive. Check your Internet connection, and then try again. (Error Code: 0x8004de40)"
+    code: "0x8004de40"
+    ou: Fenêtre de connexion OneDrive
+  - texte: "Login was either interrupted or unsuccessful. Please try logging in again. (Error Code: 0x8004de40)"
+    code: "0x8004de40"
+    ou: Fenêtre de connexion OneDrive
+  - texte: "We can't sign into your account, please try again later 0x8004de88"
+    code: "0x8004de88"
+    ou: Fenêtre de connexion OneDrive
+
+variables: []
+
+causes:
+  - id: c1
+    titre: Connexion Internet absente ou instable
+    frequence: frequente
+    detail: Wi-Fi d'invité avec portail captif, réseau saturé, coupure intermittente. Le code signifie simplement que OneDrive n'a pas réussi à joindre le cloud.
+  - id: c2
+    titre: Proxy, VPN ou pare-feu qui bloque ou inspecte le trafic Microsoft 365
+    frequence: frequente
+    detail: "Proxy mal configuré sur le poste, VPN qui force le trafic par un autre chemin, ou pare-feu / filtrage web qui bloque ou déchiffre (inspection TLS) les adresses Microsoft 365."
+  - id: c3
+    titre: TLS 1.2 désactivé ou suites de chiffrement incompatibles
+    frequence: occasionnelle
+    detail: "Microsoft 365 n'accepte plus TLS 1.0 et 1.1. Un poste « durci » par script ou GPO peut avoir TLS 1.2 désactivé, ou un ordre de suites de chiffrement que le service (Azure Front Door) n'accepte pas."
+  - id: c4
+    titre: Client OneDrive dans un état incohérent
+    frequence: occasionnelle
+    detail: Paramètres ou jetons de connexion corrompus ; la réinitialisation les remet à zéro.
+  - id: c5
+    titre: Problème de jonction de l'appareil à Microsoft Entra ID
+    frequence: rare
+    detail: Sur un poste joint (ou joint en hybride) à Entra ID, un état de jonction défaillant peut empêcher la connexion automatique.
+
+diagnostic:
+  - id: d1
+    titre: Vérifier l'accès aux services Microsoft 365 depuis le navigateur
+    niveau: N1
+    graphique: |
+      1. Sur le même PC, ouvrir un navigateur et se connecter à `https://www.office.com` puis ouvrir **OneDrive** depuis le lanceur d'applications.
+      2. Ouvrir aussi un site quelconque (ex. `https://www.microsoft.com`) pour confirmer l'accès Internet.
+      3. Si le PC est sur un Wi-Fi d'invité ou d'hôtel, vérifier qu'aucune page de connexion (portail captif) n'attend une validation.
+    conclusions:
+      - { si: "Aucun site ne s'ouvre, ou le réseau coupe régulièrement", cause: c1, aller_a: r1 }
+      - { si: "Le web fonctionne, OneDrive web aussi, mais le client OneDrive échoue", aller_a: d2 }
+
+  - id: d2
+    titre: Vérifier le proxy et le VPN
+    niveau: N1
+    graphique:
+      - versions: [win11]
+        texte: |
+          1. **Paramètres** › **Réseau et Internet** (*Network & internet*) › **Proxy**.
+          2. Noter si **Détecter automatiquement les paramètres** (*Automatically detect settings*), **Utiliser un script d'installation** (*Use setup script*) ou **Utiliser un serveur proxy** (*Use a proxy server*) sont activés.
+          3. Si un VPN est connecté, le **déconnecter** et retester la connexion OneDrive (ou faire l'inverse si l'entreprise impose le VPN).
+          4. Tester, si possible, depuis un autre réseau (partage de connexion du téléphone).
+      - versions: [win10]
+        texte: |
+          1. **Paramètres** › **Réseau et Internet** (*Network & Internet*) › **Proxy**.
+          2. Noter si **Détecter automatiquement les paramètres** (*Automatically detect settings*), **Utiliser un script d'installation** (*Use setup script*) ou **Utiliser un serveur proxy** (*Use a proxy server*) sont activés.
+          3. Si un VPN est connecté, le **déconnecter** et retester la connexion OneDrive (ou faire l'inverse si l'entreprise impose le VPN).
+          4. Tester, si possible, depuis un autre réseau (partage de connexion du téléphone).
+    commande:
+      langage: cmd
+      admin: false
+      ou: Invite de commandes sur le poste
+      code: |
+        rem Proxy utilisé par les services système (WinHTTP)
+        netsh winhttp show proxy
+    astuce: "Si OneDrive fonctionne sur un autre réseau (téléphone, domicile) mais pas sur celui de l'entreprise, le problème vient du réseau de l'entreprise (proxy, pare-feu, filtrage), pas du poste."
+    conclusions:
+      - { si: "La connexion fonctionne sans le VPN, sur un autre réseau, ou sans le proxy", cause: c2, aller_a: r2 }
+      - { si: "L'erreur persiste sur tous les réseaux", aller_a: d3 }
+
+  - id: d3
+    titre: Vérifier TLS 1.2 et les suites de chiffrement
+    niveau: N2
+    graphique: |
+      1. **Windows + R**, taper `inetcpl.cpl`, **Entrée** : la fenêtre **Propriétés de : Internet** (*Internet Properties*) s'ouvre.
+      2. Onglet **Avancé** (*Advanced*), section **Sécurité** (*Security*) : vérifier que **Utiliser TLS 1.2** (*Use TLS 1.2*) est coché.
+      3. Pour les suites de chiffrement, lancer la commande ci-dessous dans PowerShell et vérifier que les quatre suites suivantes figurent dans la liste, de préférence en tête :
+         - `TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384`
+         - `TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256`
+         - `TLS_DHE_RSA_WITH_AES_256_GCM_SHA384`
+         - `TLS_DHE_RSA_WITH_AES_128_GCM_SHA256`
+    commande:
+      langage: powershell
+      admin: false
+      code: Get-TlsCipherSuite | Format-Table Name
+    conclusions:
+      - { si: "TLS 1.2 décoché, ou les suites de chiffrement attendues absentes", cause: c3, aller_a: r3 }
+      - { si: "TLS 1.2 et suites de chiffrement corrects", cause: c4, aller_a: r4 }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Rétablir la connexion réseau
+    etapes:
+      - id: r1-e1
+        titre: Corriger la connexion Internet
+        niveau: N1
+        graphique: |
+          1. Valider la page de connexion du Wi-Fi d'invité si elle existe, ou passer sur un réseau stable (câble, Wi-Fi de l'entreprise).
+          2. Redémarrer le PC, puis relancer OneDrive depuis le menu **Démarrer**.
+          3. Si le PC n'accède à aucun site, traiter d'abord le problème réseau du poste (carte réseau, Wi-Fi, DNS), puis revenir à OneDrive.
+
+  - id: r2
+    causes: [c2]
+    titre: Corriger le proxy, le VPN ou le filtrage réseau
+    etapes:
+      - id: r2-e1
+        titre: Corriger le proxy du poste
+        niveau: N1
+        graphique: |
+          1. Si un **serveur proxy** manuel est configuré alors que l'entreprise n'en utilise pas (reste d'un ancien réseau, logiciel malveillant, outil de test), le **désactiver** dans **Paramètres** › **Réseau et Internet** › **Proxy**.
+          2. Si l'entreprise utilise un proxy, vérifier avec l'équipe réseau la bonne adresse ou le bon script (fichier PAC).
+          3. Quitter OneDrive (icône nuage › **roue dentée** › **Quitter OneDrive**), le relancer et se reconnecter.
+        avertissement:
+          type: attention
+          texte: "Ne pas désactiver un proxy imposé par l'entreprise sans l'accord de l'équipe réseau : le poste pourrait perdre l'accès à Internet ou contourner le filtrage de sécurité."
+      - id: r2-e2
+        titre: Autoriser les adresses Microsoft 365 sur le proxy et le pare-feu
+        niveau: N2
+        graphique: |
+          Demander à l'équipe réseau (ou faire, si c'est son rôle) :
+          1. D'autoriser les adresses et plages IP **Microsoft 365** de la catégorie *SharePoint Online et OneDrive* (liste officielle « Microsoft 365 URLs and IP address ranges », en source).
+          2. D'**exclure ces adresses de l'inspection TLS** (déchiffrement) et de l'authentification sur le proxy : le client OneDrive les supporte mal.
+          3. D'autoriser le programme `OneDrive.exe` en sortie sur le pare-feu du poste ou l'antivirus, si un filtrage par application est en place.
+
+          > [!a-verifier]
+          > La liste des adresses change régulièrement : toujours repartir de la page officielle, ne pas recopier une liste ancienne.
+        conclusions:
+          - { si: "Le proxy demande un identifiant (proxy authentifié)", aller_a: "fiche:onedrive-erreur-0x8004de44-proxy-authentifie" }
+
+  - id: r3
+    causes: [c3]
+    titre: Réactiver TLS 1.2 et remettre les bonnes suites de chiffrement
+    etapes:
+      - id: r3-e1
+        titre: Activer TLS 1.2 dans les options Internet
+        niveau: N1
+        graphique: |
+          1. **Windows + R** › `inetcpl.cpl` › onglet **Avancé** (*Advanced*).
+          2. Cocher **Utiliser TLS 1.2** (*Use TLS 1.2*), puis **Appliquer** et **OK**.
+          3. Redémarrer le PC.
+
+          > [!a-verifier]
+          > L'article Microsoft conseille aussi de cocher TLS 1.0 et 1.1. Ces protocoles sont obsolètes et refusés par Microsoft 365 : ne les cocher qu'à titre de test, et les décocher ensuite si la politique de sécurité de l'entreprise l'impose.
+      - id: r3-e2
+        titre: Placer les suites de chiffrement attendues en tête de liste
+        niveau: N2
+        graphique: |
+          - **Par stratégie de groupe** (méthode recommandée en entreprise) : **Configuration ordinateur** (*Computer Configuration*) › **Modèles d'administration** (*Administrative Templates*) › **Réseau** (*Network*) › **Paramètres de configuration SSL** (*SSL Configuration Settings*) › **Ordre des suites de chiffrement SSL** (*SSL Cipher Suite Order*) : ajouter les quatre suites vues au diagnostic, **en tête** de la liste.
+          - **En local** : utiliser la commande ci-dessous (une ligne par suite, la dernière lancée se retrouve en position 0).
+          - Redémarrer le PC, puis vérifier l'ordre avec `Get-TlsCipherSuite`.
+        commande:
+          langage: powershell
+          admin: true
+          code: |
+            Enable-TlsCipherSuite -Name "TLS_DHE_RSA_WITH_AES_128_GCM_SHA256" -Position 0
+            Enable-TlsCipherSuite -Name "TLS_DHE_RSA_WITH_AES_256_GCM_SHA384" -Position 0
+            Enable-TlsCipherSuite -Name "TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256" -Position 0
+            Enable-TlsCipherSuite -Name "TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384" -Position 0
+        astuce: "Si l'ordre ne change pas après la commande, une GPO **Ordre des suites de chiffrement SSL** l'impose : la corriger dans la GPO, sinon elle écrasera le réglage local."
+        avertissement:
+          type: attention
+          texte: "Modifier les protocoles et suites de chiffrement touche toutes les connexions sécurisées du poste. Vérifier que la politique de sécurité de l'entreprise (script de durcissement, GPO) ne les impose pas, et documenter la modification."
+
+  - id: r4
+    causes: [c4]
+    titre: Réinitialiser OneDrive
+    etapes:
+      - id: r4-e1
+        titre: Lancer la réinitialisation de OneDrive
+        niveau: N1
+        graphique: |
+          1. Icône OneDrive › **roue dentée** › **Quitter OneDrive** (*Quit OneDrive*).
+          2. **Windows + R**, coller la commande ci-dessous, **Entrée**.
+          3. Si l'icône OneDrive ne revient pas après deux minutes, relancer OneDrive depuis le menu **Démarrer** et se connecter avec l'adresse professionnelle.
+        commande:
+          langage: cmd
+          ou: Dans la session de l'utilisateur (Windows + R)
+          code: '%localappdata%\Microsoft\OneDrive\onedrive.exe /reset'
+        astuce: "La réinitialisation ne supprime pas les fichiers, mais OneDrive refait une synchronisation complète et oublie les bibliothèques SharePoint ajoutées. Si le chemin est introuvable, essayer `C:\\Program Files\\Microsoft OneDrive\\onedrive.exe /reset`."
+        conclusions:
+          - { si: "L'erreur persiste sur un poste joint à Entra ID", cause: c5, aller_a: r5 }
+
+  - id: r5
+    causes: [c5]
+    titre: Rétablir la jonction de l'appareil à Entra ID
+    etapes:
+      - id: r5-e1
+        titre: Redémarrer, puis vérifier l'état de jonction
+        niveau: N2
+        graphique: |
+          1. Redémarrer le PC **en étant connecté au réseau de l'entreprise** (ou au VPN), pour que l'appareil renouvelle son jeton auprès d'Entra ID.
+          2. Lancer `dsregcmd /status` et regarder `AzureAdJoined`, `DomainJoined` et `AzureAdPrt` : si `AzureAdPrt` vaut `NO`, la jonction ou le jeton de l'appareil pose problème.
+          3. Microsoft propose, en dernier recours, de quitter puis de rejoindre Entra ID (`dsregcmd /leave` puis `dsregcmd /join` dans une invite de commandes administrateur, puis redémarrage).
+
+          > [!a-verifier]
+          > `dsregcmd /join` ne s'applique qu'aux postes joints en hybride (domaine local + Entra ID). Un poste joint uniquement à Entra ID se rejoint depuis **Paramètres** › **Comptes** › **Accès Professionnel ou Scolaire**. Faire valider la démarche par un N2/N3 avant de l'appliquer.
+        commande:
+          langage: cmd
+          admin: true
+          code: |
+            dsregcmd /status
+            rem En dernier recours, poste joint en hybride uniquement, connecté au réseau de l'entreprise :
+            dsregcmd /leave
+            dsregcmd /join
+        avertissement:
+          type: attention
+          texte: "Quitter Entra ID coupe l'authentification unique et peut retirer le poste de la gestion (Intune, accès conditionnel) jusqu'à ce qu'il soit rejoint. Ne jamais le faire hors du réseau de l'entreprise (en déplacement) : le poste pourrait ne pas se rejoindre."
+        conclusions:
+          - { si: "Le problème de jonction concerne tout le poste (Teams, Outlook aussi)", aller_a: "fiche:entra-appareil-hybride-en-attente" }
+
+verification:
+  - id: v1
+    titre: OneDrive est connecté et synchronise
+    niveau: N1
+    graphique: L'icône OneDrive est un nuage **bleu** (compte professionnel) ; le panneau OneDrive indique que les fichiers sont à jour, et un fichier de test créé dans le dossier OneDrive apparaît sur le site OneDrive web.
+
+prevention:
+  - Faire figurer les adresses Microsoft 365 dans les exclusions d'inspection TLS du proxy et du pare-feu, et suivre les mises à jour de la liste officielle.
+  - Tester les scripts et GPO de durcissement TLS sur quelques postes avant de les généraliser.
+  - Garder Windows et OneDrive à jour.
+
+comprendre: |
+  Le client OneDrive parle au cloud Microsoft en HTTPS, via **TLS 1.2** (ou plus). Si la connexion sécurisée n'aboutit pas (pas de réseau, proxy qui bloque ou déchiffre, protocole ou suite de chiffrement refusé par le service), OneDrive renvoie le code générique 0x8004de40. Le navigateur peut fonctionner quand même, car il utilise parfois un autre proxy ou d'autres réglages que le client OneDrive.
+
+fiches_liees: [onedrive-erreur-0x8004de44-proxy-authentifie, onedrive-erreur-tls-windows-7-8, onedrive-synchronisation-bloquee, entra-appareil-hybride-en-attente]
+tags: [onedrive, connexion, sign in, "0x8004de40", "0x8004de88", tls, tls 1.2, cipher suites, suites de chiffrement, proxy, vpn, pare-feu, firewall, inspection ssl, azure front door, reset, dsregcmd]
+
+sources:
+  - titre: "Error Code 0x8004de40 or 0x8004de88 when signing in to OneDrive — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/sharepoint/troubleshoot/sync/error-0x8004de40-in-onedrive
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "Microsoft 365 URLs and IP address ranges — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/microsoft-365/enterprise/urls-and-ip-address-ranges
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "There was a problem connecting to OneDrive. Error code 0x8004de40 — Microsoft Tech Community"
+    url: https://techcommunity.microsoft.com/discussions/onedriveforbusiness/there-was-a-problem-connecting-to-onedrive-error-code-0x8004de40/1207767
+    type: forum
+    consulte_le: 2026-10-30
+  - titre: "How to Fix a OneDrive Error 0x8004de40 — Help Desk Geek"
+    url: https://helpdeskgeek.com/how-to-fix-a-onedrive-error-0x8004de40/
+    type: blog
+    consulte_le: 2026-10-30
+
+derniere_verification: 2026-10-30

@@ -1,0 +1,266 @@
+id: mfa-authenticator-notification-absente
+titre: "Microsoft Authenticator : la notification d'approbation n'arrive pas"
+resume: "La page de connexion attend une approbation, mais aucune notification n'apparaît sur le téléphone. Vérifier d'abord si la demande est visible dans l'application, puis les réglages de notifications et de batterie du téléphone, la connexion internet et enfin l'inscription de l'appareil dans Entra ID."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: mfa-acces-conditionnel
+apparait_aussi_dans: [mobiles-mdm/securite-mobile]
+niveau: N1
+temps_estime: { min: 5, max: 30 }
+critique: false
+environnements: [m365]
+droits: admin-m365
+outils: []
+acces:
+  - "Le téléphone de l'utilisateur, déverrouillé, avec l'application **Microsoft Authenticator** ouverte."
+  - "Pour les étapes d'administration : rôle Entra **Administrateur d'authentification** (*Authentication Administrator*) sur le centre d'administration Microsoft Entra (entra.microsoft.com)."
+
+symptomes:
+  - « Microsoft me dit d'approuver sur mon téléphone, mais je ne reçois rien. »
+  - « La notification Authenticator n'arrive plus depuis quelques jours. »
+  - « Ça marche quand j'ouvre l'application, mais je n'ai jamais la notification. »
+  - « Ma collègue reçoit les notifications, moi non, on a le même téléphone. »
+
+messages_erreur:
+  - texte: "Approve sign in request — Open your Authenticator app, and enter the number shown to sign in."
+    ou: Page de connexion Microsoft, en attente de l'approbation
+  - texte: "AADSTS500121: Authentication failed during strong authentication request."
+    code: "500121"
+    ou: Journaux de connexion Entra, quand la demande n'a pas reçu de réponse
+
+variables:
+  - { nom: UPN, libelle: "Adresse de connexion de l'utilisateur (UPN)", exemple: jean.dupont@contoso.fr }
+  - { nom: IdMethode, libelle: "Id de l'inscription Authenticator à supprimer (colonne Id)", exemple: 6e2b4c1a-1234-4d5e-9f00-abcdef123456 }
+
+causes:
+  - id: c1
+    titre: Les notifications sont bloquées sur le téléphone (notifications désactivées, Ne pas déranger, mode Concentration)
+    frequence: tres-frequente
+    detail: "La demande arrive bien dans l'application, mais le téléphone ne l'affiche pas. Le mode **Ne pas déranger** ou un mode **Concentration** (*Focus*) sur iPhone suffit à masquer la notification."
+  - id: c2
+    titre: "Android : l'économie de batterie empêche l'application de recevoir les notifications en arrière-plan"
+    frequence: frequente
+    detail: "Android, et surtout les surcouches des constructeurs (Samsung, Xiaomi, Huawei, Oppo…), endort les applications peu utilisées. Authenticator ne reçoit alors les demandes qu'à son ouverture."
+  - id: c3
+    titre: L'inscription de l'appareil pour les notifications est obsolète ou corrompue
+    frequence: frequente
+    detail: "Après une restauration de sauvegarde, une réinstallation de l'application ou un changement de téléphone, le compte peut apparaître dans Authenticator alors que les notifications partent vers l'ancien appareil enregistré dans Entra ID."
+  - id: c4
+    titre: La connexion est jugée inhabituelle, Microsoft n'envoie volontairement pas de notification
+    frequence: occasionnelle
+    detail: "Depuis août 2023, une connexion inhabituelle ou depuis un lieu inconnu ne déclenche pas de notification : la demande n'est visible qu'en ouvrant Authenticator et en actualisant la liste. C'est une protection contre la « fatigue MFA »."
+  - id: c5
+    titre: Le téléphone n'a pas accès à internet (ou le réseau Wi-Fi bloque les notifications)
+    frequence: occasionnelle
+    detail: Pas de données mobiles, mode avion, Wi-Fi invité avec portail captif ou réseau d'entreprise filtrant le service de notifications d'Apple ou de Google.
+  - id: c6
+    titre: "Le téléphone ne peut pas recevoir de notifications push (Android sans services Google, application trop ancienne)"
+    frequence: rare
+    detail: "Les notifications Android passent par les services Google Play : un téléphone sans ces services (certains modèles Huawei récents, téléphones achetés en Chine) ne les reçoit pas. Une version ancienne d'Authenticator ne gère pas non plus la mise en correspondance des nombres."
+
+diagnostic:
+  - id: d1
+    titre: Ouvrir Authenticator et actualiser pour voir si la demande est arrivée
+    niveau: N1
+    graphique: |
+      1. Relancer la connexion sur le PC pour obtenir une nouvelle demande (les demandes expirent au bout d'environ une minute).
+      2. Sur le téléphone, ouvrir **Microsoft Authenticator**.
+      3. **Tirer la liste des comptes vers le bas** pour actualiser (ou toucher **Actualiser** / *Refresh* si le bouton est proposé).
+      4. Regarder si une fenêtre **Approuver la connexion ?** (*Approve sign-in?*) apparaît.
+    astuce: "Si la demande s'affiche dans l'application, le service MFA fonctionne : le problème vient de l'affichage des notifications sur le téléphone, ou d'une connexion jugée inhabituelle."
+    conclusions:
+      - { si: "La demande apparaît dans l'application, et l'utilisateur se connecte depuis un lieu ou un appareil habituel", aller_a: d2 }
+      - { si: "La demande apparaît, la connexion vient d'un nouveau lieu, d'un VPN ou d'un nouvel appareil", cause: c4, aller_a: r4 }
+      - { si: "Aucune demande, même après actualisation", aller_a: d3 }
+
+  - id: d2
+    titre: Vérifier les réglages de notifications et de batterie du téléphone
+    niveau: N1
+    graphique: |
+      **iPhone :**
+      1. **Réglages** (*Settings*) › **Notifications** › **Authenticator** : **Autoriser les notifications** (*Allow Notifications*) doit être activé, avec l'affichage sur l'écran verrouillé et en bannière.
+      2. Vérifier qu'aucun mode **Concentration** (*Focus*) ou **Ne pas déranger** n'est actif (centre de contrôle, icône lune).
+
+      **Android :**
+      1. **Paramètres** › **Applications** › **Authenticator** › **Notifications** : les notifications doivent être autorisées (y compris les catégories de notification de l'application).
+      2. Dans la même fiche de l'application, rubrique **Batterie** : noter si l'application est **Optimisée** ou **Restreinte**.
+      3. Vérifier le mode **Ne pas déranger** et le mode **Économie d'énergie**.
+
+      > [!a-verifier]
+      > Les noms exacts des menus Android varient selon le constructeur et la version (Samsung One UI, Xiaomi HyperOS, etc.).
+    conclusions:
+      - { si: "Notifications désactivées, ou mode Ne pas déranger / Concentration actif", cause: c1, aller_a: r1 }
+      - { si: "Android : batterie « Optimisée » ou « Restreinte » pour Authenticator", cause: c2, aller_a: r2 }
+      - { si: "Tous les réglages sont corrects", aller_a: d3 }
+
+  - id: d3
+    titre: Vérifier la connexion internet du téléphone
+    niveau: N1
+    graphique: |
+      1. Vérifier que le mode avion est désactivé et que le téléphone a accès à internet (ouvrir un site web).
+      2. Basculer du Wi-Fi vers les données mobiles (ou l'inverse), puis relancer une connexion.
+      3. Vérifier si d'autres applications (messagerie, e-mail) reçoivent leurs notifications.
+    conclusions:
+      - { si: "La notification arrive en changeant de réseau", cause: c5, aller_a: r5 }
+      - { si: "Aucune application ne reçoit de notification, sur un Android sans services Google", cause: c6, aller_a: r6 }
+      - { si: "Le réseau n'y change rien", aller_a: d4 }
+
+  - id: d4
+    titre: Vérifier l'appareil enregistré et les journaux de connexion (administrateur)
+    niveau: N2
+    graphique: |
+      1. **Centre d'administration Microsoft Entra** › **Entra ID** › **Utilisateurs** › ouvrir l'utilisateur › **Méthodes d'authentification** (*Authentication methods*).
+      2. Regarder la ligne **Microsoft Authenticator** : le **nom de l'appareil** affiché doit correspondre au téléphone actuel de l'utilisateur. Plusieurs lignes peuvent exister (ancien et nouveau téléphone).
+      3. Ouvrir ensuite **Journaux de connexion** (*Sign-in logs*) de l'utilisateur, ouvrir la dernière tentative › onglet **Détails de l'authentification** (*Authentication Details*) : la méthode utilisée et le résultat (demande sans réponse, refusée, expirée) y apparaissent.
+
+      > [!a-verifier]
+      > Les noms et l'emplacement des menus du centre d'administration Entra changent régulièrement.
+    commande:
+      langage: powershell
+      ou: Microsoft Graph PowerShell (Connect-MgGraph -Scopes UserAuthenticationMethod.Read.All)
+      code: Get-MgUserAuthenticationMicrosoftAuthenticatorMethod -UserId '<UPN>' | Select-Object Id, DisplayName, DeviceTag, PhoneAppVersion, CreatedDateTime
+    conclusions:
+      - { si: "L'appareil enregistré n'est pas le téléphone actuel, ou l'application a été réinstallée / restaurée depuis", cause: c3, aller_a: r3 }
+      - { si: "Version d'Authenticator très ancienne", cause: c6, aller_a: r6 }
+      - { si: "Le journal montre une erreur 500121 ou un autre échec MFA", aller_a: "fiche:mfa-echec-500121-authentification-forte" }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Autoriser les notifications d'Authenticator
+    etapes:
+      - id: r1-e1
+        titre: Activer les notifications et désactiver le mode Ne pas déranger
+        niveau: N1
+        graphique: |
+          - **iPhone** : **Réglages** › **Notifications** › **Authenticator** › activer **Autoriser les notifications** ; si un mode **Concentration** est utilisé, ajouter Authenticator à ses **applications autorisées**.
+          - **Android** : **Paramètres** › **Applications** › **Authenticator** › **Notifications** › tout autoriser ; désactiver **Ne pas déranger** ou y ajouter Authenticator en exception.
+
+          Relancer ensuite une connexion pour tester.
+
+  - id: r2
+    causes: [c2]
+    titre: "Android : retirer Authenticator de l'économie de batterie"
+    etapes:
+      - id: r2-e1
+        titre: Passer la batterie de l'application en « Non restreinte »
+        niveau: N1
+        graphique: |
+          1. **Paramètres** › **Applications** › **Authenticator** › **Batterie** › choisir **Non restreinte** (*Unrestricted*) ou **Non optimisée**.
+          2. Dans la même fiche, autoriser les **données en arrière-plan** (rubrique **Données mobiles**).
+          3. Sur les téléphones Samsung, vérifier aussi que l'application n'est pas dans la liste **Applications en veille** ou **Applications en veille prolongée** (**Entretien de l'appareil** › **Batterie**).
+          4. Dans Authenticator, si l'application le propose (menu **Paramètres**), désactiver l'optimisation de batterie.
+
+          > [!a-verifier]
+          > Chaque constructeur a ses propres réglages d'économie d'énergie : les chemins exacts sont à adapter au modèle.
+
+  - id: r3
+    causes: [c3]
+    titre: Réinscrire Authenticator pour ce téléphone
+    etapes:
+      - id: r3-e1
+        titre: Vérifier l'identité de l'utilisateur
+        niveau: N1
+        graphique: "Avant de toucher aux méthodes MFA, s'assurer que l'appelant est bien l'utilisateur (rappel sur un numéro connu de l'annuaire, validation par son responsable ou présence physique). Réinitialiser la MFA d'un imposteur lui ouvre le compte."
+      - id: r3-e2
+        titre: Supprimer l'ancien enregistrement et ajouter de nouveau l'application
+        niveau: N1
+        graphique: |
+          **Si l'utilisateur peut encore se connecter avec une autre méthode** (code de l'application, SMS) :
+          1. Sur un PC, ouvrir https://mysignins.microsoft.com/security-info.
+          2. Supprimer la ligne **Microsoft Authenticator** qui correspond à l'ancien appareil.
+          3. **+ Ajouter une méthode de connexion** › **Application Microsoft Authenticator** › scanner le QR code avec le téléphone.
+          4. Dans Authenticator, supprimer l'ancienne entrée du compte si elle est en double.
+
+          **Sinon (administrateur)** : dans **Méthodes d'authentification** de l'utilisateur, supprimer la méthode Authenticator obsolète, puis donner un **passe d'accès temporaire** pour qu'il enregistre de nouveau l'application (voir la fiche « Nouveau téléphone ou téléphone perdu »).
+        commande:
+          langage: powershell
+          ou: Microsoft Graph PowerShell (Connect-MgGraph -Scopes UserAuthenticationMethod.ReadWrite.All)
+          code: |
+            # Lister les inscriptions Authenticator et repérer l'Id de l'ancien appareil
+            Get-MgUserAuthenticationMicrosoftAuthenticatorMethod -UserId '<UPN>' | Select-Object Id, DisplayName, CreatedDateTime
+            # Supprimer l'inscription obsolète (remplacer l'Id)
+            Remove-MgUserAuthenticationMicrosoftAuthenticatorMethod -UserId '<UPN>' -MicrosoftAuthenticatorAuthenticationMethodId '<IdMethode>'
+        avertissement:
+          type: destructif
+          texte: "Supprimer la méthode Authenticator empêche immédiatement l'utilisateur de valider la MFA avec cet appareil. S'assurer qu'il dispose d'une autre méthode ou d'un passe d'accès temporaire avant de la supprimer."
+        conclusions:
+          - { si: "L'utilisateur n'a plus aucune méthode utilisable", aller_a: "fiche:m365-mfa-nouveau-telephone" }
+
+  - id: r4
+    causes: [c4]
+    titre: Approuver la demande depuis l'application
+    etapes:
+      - id: r4-e1
+        titre: Ouvrir Authenticator, actualiser et approuver
+        niveau: N1
+        graphique: |
+          Expliquer à l'utilisateur que c'est un comportement normal : pour une connexion inhabituelle, Microsoft n'envoie pas de notification. Il doit **ouvrir Authenticator**, **tirer la liste vers le bas** pour l'actualiser, puis approuver la demande en saisissant le nombre affiché sur le PC.
+          **Ne jamais approuver une demande que l'on n'a pas déclenchée soi-même.**
+        conclusions:
+          - { si: "L'utilisateur reçoit des demandes qu'il n'a pas déclenchées", aller_a: "fiche:mfa-demandes-inattendues-fatigue-mfa" }
+
+  - id: r5
+    causes: [c5]
+    titre: Rétablir l'accès internet du téléphone
+    etapes:
+      - id: r5-e1
+        titre: Changer de réseau ou faire autoriser les notifications sur le Wi-Fi
+        niveau: N1
+        graphique: |
+          - Désactiver le mode avion, valider le portail captif du Wi-Fi invité, ou passer en données mobiles.
+          - Si le problème touche tous les téléphones sur le Wi-Fi de l'entreprise, demander à l'équipe réseau de vérifier que le filtrage autorise les services de notification d'Apple (APNs) et de Google (FCM).
+        astuce: "En attendant, l'utilisateur peut choisir **Se connecter d'une autre manière** › **Utiliser un code de vérification** : le code à 6 chiffres d'Authenticator fonctionne sans connexion internet."
+
+  - id: r6
+    causes: [c6]
+    titre: Mettre à jour l'application ou utiliser une autre méthode
+    etapes:
+      - id: r6-e1
+        titre: Mettre à jour Authenticator, sinon passer au code ou à une autre méthode
+        niveau: N1
+        graphique: |
+          1. Mettre à jour **Microsoft Authenticator** depuis l'App Store ou le Play Store.
+          2. Sur un téléphone sans services Google, utiliser le **code de vérification** (TOTP) d'Authenticator, ou enregistrer une autre méthode (clé de sécurité FIDO2, numéro de téléphone si autorisé) sur https://mysignins.microsoft.com/security-info, puis la définir comme **méthode de connexion par défaut**.
+
+verification:
+  - id: v1
+    titre: La notification arrive téléphone verrouillé
+    niveau: N1
+    graphique: "Verrouiller le téléphone, fermer Authenticator, puis lancer une connexion depuis un navigateur en navigation privée sur https://myaccount.microsoft.com : la notification s'affiche sur l'écran verrouillé en quelques secondes et la connexion aboutit après saisie du nombre."
+
+prevention:
+  - "Lors du déploiement d'Authenticator sur Android, inclure dans le guide utilisateur le réglage de batterie « Non restreinte »."
+  - Demander à chaque utilisateur d'enregistrer au moins deux méthodes (Authenticator et une méthode de secours).
+  - "Rappeler que le code à 6 chiffres d'Authenticator reste utilisable sans réseau, via « Se connecter d'une autre manière »."
+  - Faire supprimer l'ancien téléphone dans les informations de sécurité à chaque changement d'appareil.
+
+comprendre: |
+  La notification Authenticator ne part pas directement de Microsoft vers le téléphone : Entra ID la confie au service de notifications d'Apple (iPhone) ou de Google (Android), qui la livre à l'appareil **enregistré** pour le compte. Si le téléphone bloque l'affichage, endort l'application ou n'est plus l'appareil enregistré, la demande reste en attente dans l'application. C'est pourquoi ouvrir Authenticator et actualiser la liste permet de faire la différence entre un problème d'affichage sur le téléphone et un problème d'inscription.
+
+fiches_liees: [m365-mfa-nouveau-telephone, mfa-authenticator-nombre-non-affiche, mfa-echec-500121-authentification-forte, mfa-demandes-inattendues-fatigue-mfa, mfa-authenticator-sauvegarde-restauration-incomplete]
+tags: [mfa, authenticator, notification, push, pas de notification, notification absente, approuver la connexion, ne pas deranger, focus, concentration, batterie, optimisation batterie, android, iphone, "500121", double authentification, 2fa]
+
+sources:
+  - titre: "Troubleshoot problems with Microsoft Authenticator — Microsoft Support"
+    url: https://support.microsoft.com/account-billing/troubleshoot-problems-with-microsoft-authenticator-a3a74493-566b-4c2e-b949-a2789bac0fd3
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "Authentication methods in Microsoft Entra ID — Microsoft Authenticator app — Microsoft Learn"
+    url: https://learn.microsoft.com/entra/identity/authentication/concept-authentication-authenticator-app
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "Authenticator abruptly stopped sending notifications — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/1192179/authenticator-abruptly-stopped-sending-notificatio
+    type: forum
+    consulte_le: 2026-10-30
+  - titre: "Authenticator App not allowing Push notifications on Oppo phone — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/545670/authenticator-app-not-allowing-push-notifications
+    type: forum
+    consulte_le: 2026-10-30
+  - titre: "Why am I not receiving Microsoft Authenticator Push Notifications? — Purdue University"
+    url: https://service.purdue.edu/TDClient/32/Purdue/KB/PrintArticle?ID=2259
+    type: blog
+    consulte_le: 2026-10-30
+
+derniere_verification: 2026-10-30

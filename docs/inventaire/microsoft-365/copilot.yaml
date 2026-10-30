@@ -397,3 +397,237 @@ problemes:
     sources:
       - https://learn.microsoft.com/en-us/copilot/microsoft-365/multiple-account-access
     etat: a-rediger
+
+  # --- Copilot absent ou grisé dans une application ---
+  - id: copilot-excel-grise-fichier-local-autosave
+    titre: "Copilot grisé dans Excel : fichier local, enregistrement automatique désactivé ou fichier extrait"
+    symptome: "Copilot exige un .xlsx/.xlsb/.xlsm stocké sur OneDrive ou SharePoint avec l'enregistrement automatique (AutoSave) activé."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/discussions/microsoft365copilot/copilot-greyed-out-in-excel/3964872
+      - https://learn.microsoft.com/en-us/answers/questions/1682823/copilot-options-are-all-greyed-out
+    etat: a-rediger
+
+  - id: copilot-outlook-classique-boutons-disparus
+    titre: "Boutons Copilot disparus dans Outlook classique pour Windows (problème connu après mise à jour)"
+    symptome: "Copilot et Copilot Chat n'apparaissent plus dans Outlook classique après une mise à jour de build, ou s'affichent grisés."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/en-US/Support/known-issues/copilot-buttons-gone-classic-outlook-windows
+      - https://www.bleepingcomputer.com/news/microsoft/microsoft-fixes-bug-that-hid-copilot-buttons-in-classic-outlook/amp/
+      - https://learn.microsoft.com/en-us/answers/questions/5914307/copilot-not-available-in-outlook-classic-but-works
+    etat: a-rediger
+    # > [!a-verifier] problème lié à des builds précis, corrigé selon Microsoft
+
+  - id: copilot-chat-outlook-gcc-visible-malgre-blocage
+    titre: "Copilot Chat toujours visible dans Outlook classique alors que la licence est retirée ou l'application bloquée"
+    symptome: "L'administrateur a bloqué Copilot mais l'entrée reste affichée dans la barre de gauche (cas GCC-M documenté)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://support.microsoft.com/office/classic-outlook-copilot-chat-appears-available-for-gcc-m-users-when-the-license-is-unassigned-or-the-app-is-blocked-fc2bdc2b-7e9f-4e64-a848-b1ee6a1a605d
+    etat: a-rediger
+
+  - id: copilot-chat-non-epingle-teams-outlook
+    titre: "Copilot Chat n'apparaît pas dans Teams, Outlook ou l'application Microsoft 365 Copilot (épinglage)"
+    symptome: "Réglage « Ne pas épingler », stratégie de configuration d'applications Teams sans Copilot, compte non Entra, délai de propagation."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/copilot/microsoft-365/pin-copilot
+      - https://techcommunity.microsoft.com/discussions/microsoft365copilot/pin-copilot-chat---admin-center/4373268
+      - https://mc.merill.net/message/MC1045945
+    etat: a-rediger
+
+  - id: copilot-teams-recap-absent-sans-transcription
+    titre: "Récapitulatif Copilot absent après une réunion Teams (option « Uniquement pendant la réunion » ou transcription en échec)"
+    symptome: "L'onglet Récapitulatif n'a pas de Copilot : pas de transcription enregistrée, stratégie « transcription enregistrée requise » ou échec du téléversement de la transcription."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/office/use-copilot-without-recording-a-teams-meeting-a59cb88c-0f6b-4a20-a47a-3a1c9a818bd9
+      - https://learn.microsoft.com/en-us/answers/questions/1604121/copilot-not-showing-up-on-teams-meeting-recordings
+      - https://mc.merill.net/message/MC1275312
+    etat: a-rediger
+    # > [!a-verifier] l'option « récapitulatif sans transcription enregistrée » est récente (2026)
+
+  # --- Limites, blocages et réponses refusées ---
+  - id: copilot-researcher-analyst-limite-requetes
+    titre: "Researcher ou Analyst refuse de nouvelles demandes : quota mensuel atteint"
+    symptome: "L'utilisateur a épuisé le nombre limité de requêtes mensuelles des agents de raisonnement ; aucun compteur visible."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/copilot/microsoft-365/faq-researcher
+      - https://techcommunity.microsoft.com/discussions/microsoft365copilot/researcher-and-analyst-usage-limits/4420959
+    etat: a-rediger
+    # > [!a-verifier] valeur du quota (25 requêtes/mois au recensement) susceptible de changer
+
+  - id: copilot-reponse-bloquee-dlp-purview
+    titre: "Copilot refuse de répondre ou ignore des documents : stratégie DLP Purview pour Copilot"
+    symptome: "La demande contient des données sensibles ou cible des fichiers étiquetés ; Copilot affiche que l'organisation a bloqué la réponse."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://mc.merill.net/message/MC1181998
+      - https://techcommunity.microsoft.com/discussions/azurepurview/ms-purview-dlp-web-search-blocking-also-blocks-copilot-response/4566853
+      - https://office365itpros.com/2026/04/16/dlp-policy-for-copilot-web/amp/
+    etat: a-rediger
+
+  - id: copilot-mails-externes-non-traites
+    titre: "Copilot ne traite pas les e-mails venant de l'extérieur (restriction des e-mails externes)"
+    symptome: "Les résumés ignorent les messages de domaines externes après activation de la restriction (préversion)."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://blog-en.topedia.com/2026/08/restrict-processing-of-external-emails-in-microsoft-365-copilot-and-copilot-chat-preview/
+    etat: a-rediger
+    # > [!a-verifier] fonction en préversion au moment du recensement
+
+  - id: copilot-agents-bloques-installation
+    titre: "Agent Copilot impossible à installer ou bloqué (Applications intégrées, centre d'administration Teams)"
+    symptome: "L'agent n'apparaît pas ou l'installation échoue : nouvelles applications Microsoft bloquées par défaut, statut « Bloqué par l'éditeur », agent bloqué dans Copilot > Agents."
+    erreurs: ["Something went wrong", "The tenant admin disabled this bot"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/microsoftteams/manage-apps
+      - https://mc.merill.net/message/MC1169070
+      - https://learn.microsoft.com/en-ie/answers/questions/1703042/the-tenant-admin-disabled-this-bot
+    etat: a-rediger
+
+  - id: copilot-desactiver-pour-certains-utilisateurs
+    titre: "Désactiver ou masquer Copilot pour certains utilisateurs ou certaines applications"
+    symptome: "L'entreprise veut retirer Copilot (licence, stratégie Cloud Policy, expériences connectées, applications Teams) ; le bouton réapparaît ou reste visible."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://support.microsoft.com/privacy/turn-off-copilot-in-microsoft-365-apps
+      - https://learn.microsoft.com/en-us/answers/a/2057628
+      - https://office-watch.com/2025/how-to-disable-copilot-in-microsoft-365/
+    etat: a-rediger
+
+  # --- Connexion et compte ---
+  - id: copilot-chat-compte-personnel-sans-protection
+    titre: "Copilot Chat sans bouclier de protection des données d'entreprise : session ouverte avec un compte personnel"
+    symptome: "L'utilisateur utilise la version grand public de Copilot ; le bouclier (EDP) n'apparaît pas tant qu'il n'est pas connecté avec son compte Entra."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/copilot/faq
+      - https://learn.microsoft.com/copilot/edge
+      - https://learn.microsoft.com/en-us/copilot/microsoft-365/enterprise-data-protection
+    etat: a-rediger
+
+  - id: copilot-app-windows-refuse-compte-pro
+    titre: "L'application Microsoft Copilot de Windows refuse le compte professionnel (redirection vers Copilot Chat)"
+    symptome: "L'application Copilot grand public ne prend pas en charge les comptes Entra ; il faut l'application Microsoft 365 Copilot."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/windows/client-management/manage-windows-copilot
+      - https://techcommunity.microsoft.com/t5/microsoft-365-copilot/updated-copilot-app-doesn-t-work-with-work-account/m-p/4262912
+    etat: a-rediger
+
+  - id: copilot-touche-clavier-remapper
+    titre: "Touche Copilot du clavier qui ouvre la mauvaise application en entreprise : la remapper (Intune)"
+    symptome: "La touche lance Copilot grand public ou rien du tout ; stratégie SetCopilotHardwareKey pour ouvrir l'application Microsoft 365 Copilot."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://techcommunity.microsoft.com/blog/Windows-ITPro-blog/evolving-the-copilot-key-experience-for-commercial-organizations/4356592
+      - https://cloudinfra.net/configure-copilot-hardware-key-using-intune/
+    etat: a-rediger
+
+  - id: copilot-mobile-acces-conditionnel-bloque
+    titre: "Application Copilot mobile bloquée par l'accès conditionnel ou la protection d'applications Intune"
+    symptome: "Connexion du compte professionnel refusée sur iOS/Android : application cliente approuvée exigée, appareil non conforme, stratégie ciblant la mauvaise application."
+    erreurs: ["E010028"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/copilot/mobile
+      - https://learn.microsoft.com/en-us/answers/a/1881184
+      - https://learn.microsoft.com/intune/app-management/ref-protected-apps
+    etat: a-rediger
+
+  # --- Fonctions annexes ---
+  - id: copilot-powerpoint-reference-fichier-introuvable
+    titre: "Copilot dans PowerPoint ou Word ne trouve pas le fichier de référence (« / » ou « créer à partir d'un fichier »)"
+    symptome: "La liste de fichiers est vide ou « Cannot find this file » : fichier local, indexation récente, licence non adaptée."
+    erreurs: ["Cannot find this file"]
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5330501/why-cant-i-create-a-presentation-from-a-file-with
+      - https://techcommunity.microsoft.com/discussions/microsoft365copilot/the-reference-a-file-feature-not-working-as-documented/3998347/replies/4096882
+    etat: a-rediger
+
+  - id: copilot-pages-notebooks-indisponibles
+    titre: "Copilot Pages ou Copilot Notebooks indisponibles (stratégie Cloud Policy, OneDrive non créé)"
+    symptome: "Impossible de créer une page ou un notebook : stratégie « Create and view Copilot Pages and Copilot Notebooks » désactivée ou création de OneDrive bloquée."
+    erreurs: []
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/loop/cpcn-admin-configuration
+      - https://techcommunity.microsoft.com/blog/microsoft365copilotblog/copilot-pages-for-it-admins---sep-2024-update/4241521
+    etat: a-rediger
+
+  - id: copilot-chat-agents-paiement-utilisation
+    titre: "Agents inutilisables dans Copilot Chat : paiement à l'utilisation non relié ou utilisateur hors stratégie"
+    symptome: "Les utilisateurs sans licence Copilot ne peuvent pas utiliser les agents facturés au message ; stratégie de facturation non connectée au service ou abonnement Azure d'un autre tenant."
+    erreurs: []
+    priorite: frequent
+    format: complete
+    sources:
+      - https://learn.microsoft.com/en-us/microsoft-365/copilot/pay-as-you-go/setup
+      - https://practical365.com/licensing-copilot-agents-in-microsoft-365-copilot-chat/
+    etat: a-rediger
+
+  - id: copilot-studio-agent-limite-utilisation
+    titre: "Agent Copilot Studio : « agent has reached its usage limit » sur les canaux publiés"
+    symptome: "L'agent fonctionne dans le volet de test mais pas une fois déployé : capacité épuisée ou facturation non configurée."
+    erreurs: ["This agent has reached its usage limit"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/answers/questions/5806866/copilot-studio-agent-shows-agent-has-reached-its-u
+      - https://learn.microsoft.com/microsoft-copilot-studio/faq-billing-licensing
+    etat: a-rediger
+
+  - id: copilot-rapport-utilisation-vide
+    titre: "Rapport d'utilisation Microsoft 365 Copilot vide ou incomplet"
+    symptome: "Aucun utilisateur actif affiché : délai jusqu'à 72 h, masquage des noms dans les rapports, rôle insuffisant (Administrateur IA)."
+    erreurs: []
+    priorite: frequent
+    format: express
+    sources:
+      - https://learn.microsoft.com/microsoft-365/admin/activity-reports/microsoft-365-copilot-usage
+      - https://learn.microsoft.com/microsoft-365/copilot/microsoft-365-copilot-reports-for-admins
+    etat: a-rediger
+
+  - id: copilot-audit-invites-introuvables
+    titre: "Invites et réponses Copilot introuvables dans l'audit Purview (CopilotInteraction)"
+    symptome: "La recherche d'audit renvoie des événements sans le texte des invites ; passer par eDiscovery ou DSPM pour l'IA."
+    erreurs: ["CopilotInteraction"]
+    priorite: rare
+    format: express
+    sources:
+      - https://learn.microsoft.com/en-us/purview/audit-copilot
+      - https://adamtheautomator.com/purview-missing-ai-prompts/
+    etat: a-rediger

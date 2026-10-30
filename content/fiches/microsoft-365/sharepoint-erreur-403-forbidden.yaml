@@ -1,0 +1,271 @@
+id: sharepoint-erreur-403-forbidden
+titre: "Erreur 403 FORBIDDEN à l'ouverture d'un site SharePoint ou d'un OneDrive"
+resume: "La page affiche « 403 FORBIDDEN » au lieu du site ou du fichier, pour un utilisateur ou pour tout le monde. Écarter d'abord le cache du navigateur, puis vérifier les droits récents, l'état de verrouillage du site (NoAccess), le provisionnement du OneDrive et l'état du service."
+statut: a-relire
+domaine: microsoft-365
+sous_domaine: sharepoint
+apparait_aussi_dans: [microsoft-365/onedrive]
+niveau: N1
+temps_estime: { min: 10, max: 45 }
+critique: false
+environnements: [m365]
+droits: admin-m365
+outils: []
+acces:
+  - "Pour les étapes N1 : un poste avec un navigateur, et l'utilisateur concerné."
+  - "Pour la suite : rôle **Administrateur SharePoint** (ou Administrateur général) sur le Centre d'administration SharePoint et le SharePoint Online Management Shell."
+
+symptomes:
+  - « Quand j'ouvre le site de l'équipe, j'ai juste une page blanche avec 403 FORBIDDEN. »
+  - « Le lien que mon collègue m'a envoyé affiche une erreur 403. »
+  - « Plus personne n'arrive à ouvrir le site du projet depuis ce matin. »
+  - « Je n'arrive pas à ouvrir mon OneDrive dans le navigateur, erreur 403. »
+
+messages_erreur:
+  - texte: "403 FORBIDDEN"
+    code: "403"
+    ou: Page du navigateur à l'ouverture d'un site SharePoint, d'un OneDrive ou d'un fichier partagé
+  - texte: "Error: 403 Forbidden"
+    code: "403"
+    ou: Page du navigateur (variante)
+
+variables:
+  - { nom: UrlSite, libelle: "Adresse du site SharePoint ou du OneDrive", exemple: https://contoso.sharepoint.com/sites/Projets }
+  - { nom: UrlAdmin, libelle: "Adresse du Centre d'administration SharePoint", exemple: https://contoso-admin.sharepoint.com }
+  - { nom: UPN, libelle: "Adresse de l'utilisateur concerné", exemple: jean.dupont@contoso.fr }
+
+causes:
+  - id: c1
+    titre: Cache ou cookies du navigateur corrompus (session mélangée)
+    frequence: tres-frequente
+    detail: "Microsoft cite en premier le cache du navigateur. C'est aussi le cas quand plusieurs comptes Microsoft 365 (personnel, autre organisation) sont ouverts dans le même navigateur."
+  - id: c2
+    titre: Les droits viennent d'être donnés et ne sont pas encore répliqués
+    frequence: frequente
+    detail: "Un partage ou un ajout de droits récent peut ne pas être encore appliqué sur tous les serveurs. Microsoft conseille d'attendre une trentaine de minutes avant d'aller plus loin."
+  - id: c3
+    titre: Le site ou le OneDrive est verrouillé en « NoAccess »
+    frequence: occasionnelle
+    detail: "Un administrateur (ou un outil de migration, de départ d'employé ou de gouvernance) a passé le site à l'état de verrouillage NoAccess. Sans URL de redirection définie pour le tenant, tout le monde obtient une erreur 403. Le symptôme touche alors tous les utilisateurs du site."
+  - id: c4
+    titre: Le OneDrive de l'utilisateur n'a jamais été créé (non provisionné)
+    frequence: occasionnelle
+    detail: "Cas d'un nouvel utilisateur, ou d'un compte dont le OneDrive n'a pas été créé automatiquement. L'adresse du OneDrive existe dans un lien ou un favori, mais le site n'existe pas encore."
+  - id: c5
+    titre: Incident en cours sur le service SharePoint Online
+    frequence: rare
+    detail: Plusieurs sites ou plusieurs utilisateurs sont touchés en même temps, sans changement de configuration.
+
+diagnostic:
+  - id: d1
+    titre: Tester en navigation privée
+    niveau: N1
+    graphique: |
+      1. Ouvrir une fenêtre **InPrivate** dans Microsoft Edge (**Ctrl+Maj+N**), ou une fenêtre de **navigation privée** dans Chrome.
+      2. Coller l'adresse du site ou du lien, et se connecter avec le **compte professionnel** de l'utilisateur.
+      3. Noter si le site s'ouvre.
+    conclusions:
+      - { si: "Le site s'ouvre en navigation privée", cause: c1, aller_a: r1 }
+      - { si: "Toujours 403 en navigation privée", aller_a: d2 }
+
+  - id: d2
+    titre: Mesurer l'étendue du problème
+    niveau: N1
+    graphique: |
+      Demander à un **autre utilisateur** qui a normalement accès au même site de l'ouvrir, et vérifier si d'autres sites SharePoint s'ouvrent pour l'utilisateur concerné.
+      Demander aussi **quand** l'accès a été donné ou le lien envoyé.
+    conclusions:
+      - { si: "Un seul utilisateur touché, droits donnés ou lien envoyé il y a moins de 30 minutes", cause: c2, aller_a: r2 }
+      - { si: "Un seul utilisateur touché, sur son propre OneDrive", aller_a: d4 }
+      - { si: "Tous les utilisateurs sont touchés sur ce site seulement", aller_a: d3 }
+      - { si: "Plusieurs sites touchés pour plusieurs utilisateurs", aller_a: d5 }
+      - { si: "Un seul utilisateur touché sur un site partagé, droits anciens", aller_a: "fiche:sharepoint-acces-refuse" }
+
+  - id: d3
+    titre: Vérifier l'état de verrouillage du site
+    niveau: N2
+    graphique: |
+      1. Ouvrir le **Centre d'administration Microsoft 365** (*admin.microsoft.com*) avec un compte administrateur.
+      2. Lancer le diagnostic Microsoft **Locked Site** (lien direct : `https://aka.ms/PillarLockedSite`), saisir l'adresse du site et cliquer sur **Exécuter les tests** (*Run Tests*). Le diagnostic indique si le site est verrouillé et propose de le déverrouiller.
+
+      > [!a-verifier]
+      > Les diagnostics intégrés ne sont pas disponibles dans les environnements GCC High, DoD et 21Vianet. Le libellé français du bouton est à confirmer.
+    commande:
+      langage: powershell
+      ou: SharePoint Online Management Shell
+      code: |
+        Connect-SPOService -Url '<UrlAdmin>'
+        Get-SPOSite -Identity '<UrlSite>' | Select-Object Url, LockState
+    astuce: "`LockState` vaut `Unlock` (normal), `ReadOnly` (lecture seule) ou `NoAccess` (accès bloqué, d'où l'erreur 403)."
+    conclusions:
+      - { si: "LockState vaut NoAccess", cause: c3, aller_a: r3 }
+      - { si: "LockState vaut ReadOnly (le site s'ouvre en lecture seule)", aller_a: "fiche:sharepoint-site-lecture-seule-verrouille" }
+      - { si: "LockState vaut Unlock", aller_a: d5 }
+
+  - id: d4
+    titre: Vérifier que le OneDrive de l'utilisateur existe
+    niveau: N1
+    graphique: |
+      1. Faire ouvrir **microsoft365.com** (ou *office.com*) par l'utilisateur, puis cliquer sur l'icône **OneDrive** dans le lanceur d'applications. Ce premier accès déclenche normalement la création du OneDrive.
+      2. Côté administrateur : **Centre d'administration Microsoft 365** › **Utilisateurs** › **Utilisateurs actifs** › l'utilisateur › onglet **OneDrive** : vérifier que l'espace de stockage est affiché.
+      3. Vérifier que l'utilisateur a une **licence** qui inclut SharePoint / OneDrive.
+
+      > [!a-verifier]
+      > L'onglet et les informations affichées dans la fiche utilisateur peuvent varier selon la version du centre d'administration.
+    commande:
+      langage: powershell
+      ou: SharePoint Online Management Shell
+      code: Get-SPOSite -IncludePersonalSite $true -Limit All -Filter "Owner -eq '<UPN>'" | Select-Object Url, LockState
+    conclusions:
+      - { si: "Aucun OneDrive n'existe pour l'utilisateur", cause: c4, aller_a: r4 }
+      - { si: "Le OneDrive existe mais LockState vaut NoAccess", cause: c3, aller_a: r3 }
+      - { si: "Le OneDrive existe et n'est pas verrouillé", aller_a: d5 }
+
+  - id: d5
+    titre: Vérifier l'état du service
+    niveau: N1
+    graphique: |
+      **Centre d'administration Microsoft 365** › **Intégrité** › **Intégrité du service** (*Health › Service health*) : rechercher un incident ou un avis en cours sur **SharePoint Online** ou **OneDrive for Business**.
+    conclusions:
+      - { si: "Un incident SharePoint ou OneDrive est en cours", cause: c5, aller_a: r5 }
+      - { si: "Aucun incident, aucune cause trouvée", aller_a: r5 }
+
+resolutions:
+  - id: r1
+    causes: [c1]
+    titre: Vider le cache et les cookies du navigateur
+    etapes:
+      - id: r1-e1
+        titre: Effacer les données de navigation
+        niveau: N1
+        graphique: |
+          1. Dans Edge : **Paramètres** › **Confidentialité, recherche et services** › **Effacer les données de navigation** › **Choisir les éléments à effacer** (*Choose what to clear*). Dans Chrome : **Paramètres** › **Confidentialité et sécurité** › **Supprimer les données de navigation**.
+          2. Cocher **Cookies et autres données de site** et **Images et fichiers en cache**, sur la période **Toutes les périodes**.
+          3. Fermer complètement le navigateur, le rouvrir, puis se connecter avec le compte professionnel.
+        avertissement:
+          type: attention
+          texte: "Effacer les cookies déconnecte l'utilisateur de tous ses sites web (messageries, applications métier). Le prévenir avant."
+        astuce: "Si l'utilisateur jongle entre plusieurs comptes Microsoft 365, lui créer un **profil de navigateur** séparé par compte : c'est la façon la plus sûre d'éviter le retour du problème."
+
+  - id: r2
+    causes: [c2]
+    titre: Laisser les droits se répliquer, puis repartager
+    etapes:
+      - id: r2-e1
+        titre: Attendre 30 minutes, puis repartager si besoin
+        niveau: N1
+        graphique: |
+          1. Faire patienter l'utilisateur **30 minutes**, puis réessayer en navigation privée.
+          2. Si l'erreur persiste, demander au propriétaire du site ou du fichier de **retirer** l'utilisateur dans **Gérer l'accès** (*Manage access*), puis de **repartager** l'élément.
+          3. Si cela ne suffit pas, suivre la fiche sur les accès refusés (vérification des autorisations, compte utilisé, conflit d'identifiant).
+        conclusions:
+          - { si: "Toujours refusé après repartage", aller_a: "fiche:sharepoint-acces-refuse" }
+
+  - id: r3
+    causes: [c3]
+    titre: Déverrouiller le site
+    etapes:
+      - id: r3-e1
+        titre: Vérifier pourquoi le site a été verrouillé
+        niveau: N2
+        graphique: |
+          Avant de déverrouiller, demander à l'équipe d'administration **qui** a verrouillé le site et **pourquoi** : départ d'un employé (OneDrive en cours de transfert), migration, enquête de sécurité, site archivé. Un verrouillage volontaire ne doit pas être levé sans l'accord de son auteur.
+      - id: r3-e2
+        titre: Passer le site à l'état « Unlock »
+        niveau: N2
+        graphique: |
+          Avec l'accord obtenu, relancer le diagnostic **Locked Site** (`https://aka.ms/PillarLockedSite`) depuis le Centre d'administration Microsoft 365 et accepter la proposition de déverrouillage.
+
+          > [!a-verifier]
+          > Le changement d'état de verrouillage se fait officiellement par PowerShell ; le Centre d'administration SharePoint ne propose pas d'option équivalente à la date de rédaction.
+        commande:
+          langage: powershell
+          ou: SharePoint Online Management Shell
+          code: |
+            Connect-SPOService -Url '<UrlAdmin>'
+            Set-SPOSite -Identity '<UrlSite>' -LockState Unlock
+        avertissement:
+          type: attention
+          texte: "Déverrouiller rend le contenu du site de nouveau accessible à tous ses membres. Si le verrouillage protégeait des données (départ d'un salarié, enquête), le lever peut exposer ces données."
+        astuce: "L'état de verrouillage ne s'applique pas au site racine. Un site fermé par une stratégie de fermeture de site ne se déverrouille pas avec cette commande."
+
+  - id: r4
+    causes: [c4]
+    titre: Créer le OneDrive de l'utilisateur
+    etapes:
+      - id: r4-e1
+        titre: Déclencher la création du OneDrive
+        niveau: N2
+        graphique: |
+          1. Vérifier que l'utilisateur a bien une **licence** qui inclut SharePoint Online / OneDrive.
+          2. Lui faire ouvrir **OneDrive** depuis **microsoft365.com** : la création démarre en général au premier accès.
+          3. Si rien ne se passe, lancer la création à la main en PowerShell. Elle peut demander jusqu'à 24 heures.
+        commande:
+          langage: powershell
+          ou: SharePoint Online Management Shell
+          code: |
+            Connect-SPOService -Url '<UrlAdmin>'
+            Request-SPOPersonalSite -UserEmails '<UPN>'
+        conclusions:
+          - { si: "Le OneDrive n'est toujours pas créé après 24 heures", aller_a: "fiche:onedrive-site-personnel-non-provisionne" }
+
+  - id: r5
+    causes: [c5]
+    titre: Suivre l'incident ou ouvrir une demande au support Microsoft
+    etapes:
+      - id: r5-e1
+        titre: Attendre la résolution de l'incident, ou ouvrir une demande
+        niveau: N1
+        graphique: |
+          - **Incident affiché** : informer les utilisateurs, suivre son avancement dans **Intégrité du service**, puis retester après sa résolution.
+          - **Aucun incident** : lancer le diagnostic **Check SharePoint User Access** (`https://aka.ms/PillarCheckUserAccess`) depuis le Centre d'administration Microsoft 365, puis, si rien n'est trouvé, ouvrir une demande auprès du support Microsoft (**Support** › **Afficher les demandes de service**). Joindre l'adresse du site, l'heure de l'erreur et le compte touché.
+
+verification:
+  - id: v1
+    titre: Le site s'ouvre normalement
+    niveau: N1
+    graphique: "L'utilisateur ouvre le site, le OneDrive ou le fichier dans une fenêtre de navigation **normale** (pas privée), sans erreur 403, et retrouve les droits attendus (lecture ou modification)."
+  - id: v2
+    titre: Le site n'est plus verrouillé
+    niveau: N2
+    graphique: Relancer le diagnostic **Locked Site** et vérifier qu'il ne signale plus de verrouillage.
+    commande:
+      langage: powershell
+      ou: SharePoint Online Management Shell
+      code: Get-SPOSite -Identity '<UrlSite>' | Select-Object Url, LockState
+
+prevention:
+  - Utiliser un profil de navigateur par compte Microsoft 365 (professionnel, personnel, client) pour éviter les sessions mélangées.
+  - "Documenter chaque verrouillage de site (qui, pourquoi, jusqu'à quand) dans le ticket ou la procédure de départ des salariés."
+  - "Définir une adresse de redirection pour les sites verrouillés (`Set-SPOTenant -NoAccessRedirectUrl`) vers une page qui explique la situation, au lieu d'une erreur 403 brute."
+  - Prévenir les utilisateurs qu'un nouvel accès peut demander jusqu'à 30 minutes.
+
+comprendre: |
+  Une erreur **403** veut dire que le serveur a bien reçu la demande mais **refuse** d'y répondre. Côté SharePoint, cela vient soit du navigateur (une ancienne session ou un autre compte est présenté), soit du site lui-même : un site en état de verrouillage **NoAccess** répond 403 à tout le monde, administrateurs compris, tant qu'aucune page de redirection n'est définie. Si un seul utilisateur est touché, chercher du côté du navigateur et des droits ; si tout le monde est touché, chercher du côté du site.
+
+fiches_liees: [sharepoint-acces-refuse, sharepoint-site-lecture-seule-verrouille, onedrive-site-personnel-non-provisionne, onedrive-erreur-403-forbidden-fichier-partage, onedrive-acces-refuse-apres-activation-pim]
+tags: [sharepoint, onedrive, "403", 403 forbidden, forbidden, interdit, acces refuse, site verrouille, lockstate, noaccess, cache navigateur, cookies, navigation privee, inprivate, provisionnement onedrive]
+
+sources:
+  - titre: "\"403 Forbidden\" error on OneDrive or SharePoint — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/sharepoint/sharing-and-permissions/error-403-forbidden
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "SharePoint or OneDrive read-only error messages — Microsoft Learn (dépôt SupportArticles-docs)"
+    url: https://github.com/MicrosoftDocs/SupportArticles-docs/blob/main/SharePoint/SharePointOnline/sites/site-is-read-only.md
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "Lock and unlock sites — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/SharePoint/manage-lock-status
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "Access Denied or You need permission errors in SharePoint Online and OneDrive — Microsoft Learn"
+    url: https://learn.microsoft.com/en-us/troubleshoot/sharepoint/administration/access-denied-or-need-permission-error-sharepoint-online-or-onedrive-for-business
+    type: officiel
+    consulte_le: 2026-10-30
+  - titre: "I can not access SharePoint — Microsoft Q&A"
+    url: https://learn.microsoft.com/en-us/answers/questions/5839130/i-can-not-access-sharepoint
+    type: forum
+    consulte_le: 2026-10-30
+
+derniere_verification: 2026-10-30
